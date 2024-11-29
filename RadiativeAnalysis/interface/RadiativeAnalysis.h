@@ -56,6 +56,11 @@
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/RadiativeRootTree.h"
 #include "DataFormats/PatCandidates/interface/Photon.h"
 #include "FWCore/Framework/interface/ConsumesCollector.h"
+#include "DataFormats/PatCandidates/interface/TriggerObjectStandAlone.h"
+#include "DataFormats/PatCandidates/interface/PackedTriggerPrescales.h"
+
+//#include "HLTrigger/HLTcore/interface/HLTPrescaleProvider.h"
+
 
 class RadiativeAnalysis : public edm::one::EDAnalyzer<edm::one::SharedResources> {
 public:
@@ -110,7 +115,7 @@ private:
   edm::InputTag JetTag;
   edm::EDGetTokenT<edm::View<pat::Jet>> JetTagTok;
   edm::InputTag PhotonTag;
-  edm::EDGetTokenT<edm::View<pat::Photon>> PhotonTagTok;
+  edm::EDGetTokenT<edm::View<reco::Photon>> PhotonTagTok;
   edm::InputTag OOTPhotonTag;
   edm::EDGetTokenT<edm::View<pat::Photon>> OOTPhotonTagTok;
   edm::InputTag ElectronTag;
@@ -125,8 +130,12 @@ private:
   edm::EDGetTokenT<reco::BeamSpot> vertexBeamSpotTok;
   edm::InputTag primaryvertex;
   edm::EDGetTokenT<edm::View<reco::Vertex>> primaryvertexTok;
-  edm::InputTag triggerresults;
-  edm::EDGetTokenT<edm::TriggerResults> triggerresultsTok;
+  edm::InputTag triggerbits;
+  edm::EDGetTokenT<edm::TriggerResults> triggerbitsTok;
+  edm::InputTag prescale;
+  edm::EDGetTokenT<pat::PackedTriggerPrescales> prescaleTok;
+  edm::InputTag triggerobj;
+  edm::EDGetTokenT<edm::View<pat::TriggerObjectStandAlone>> triggerobjTok;
   edm::InputTag pfCandTag;
   edm::EDGetTokenT<edm::View<pat::PackedCandidate>> pfCandTagTok;
   edm::InputTag IsoTrackTag;

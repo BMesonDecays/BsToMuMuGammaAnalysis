@@ -48,7 +48,8 @@ void RadiativeRootTree::createTree(const std::string filename)
   bmmgTree_->Branch("errdedxTrk",&errdedxTrk_,"errdedxTrk/D");
   bmmgTree_->Branch("numdedxTrk",&numdedxTrk_,"numdedxTrk/I");
   bmmgTree_->Branch("triggerbit_HLT_DoubleMu4_LowMass_Displaced", &triggerbit_HLT_DoubleMu4_LowMass_Displaced_,"triggerbit_HLT_DoubleMu4_LowMass_Displaced/I");
-  bmmgTree_->Branch("triggerbit_HLT_DoubleMu4_4_Photon4_BsToMMG", &triggerbit_HLT_DoubleMu4_4_Photon4_BsToMMG_,"triggerbit_HLT_DoubleMu4_4_Photon4_BsToMMG/I");
+  bmmgTree_->Branch("triggerbit_HLT_DoubleMu4_LowMass", &triggerbit_HLT_DoubleMu4_LowMass_,"triggerbit_HLT_DoubleMu4_LowMass/I");
+  bmmgTree_->Branch("triggerbit_HLT_DoubleMu4_3_Bs", &triggerbit_HLT_DoubleMu4_3_Bs_,"triggerbit_HLT_DoubleMu4_3_Bs/I");
   bmmgTree_->Branch("triggerbit_HLT_DoubleMu4_3_Photon4_BsToMMG", &triggerbit_HLT_DoubleMu4_3_Photon4_BsToMMG_,"triggerbit_HLT_DoubleMu4_3_Photon4_BsToMMG/I");
   bmmgTree_->Branch("triggerbit_HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG", &triggerbit_HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG_,"triggerbit_HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG/I");
   bmmgTree_->Branch("triggerbit_HLTDimuon4JpsiDisplaced", &triggerbit_HLTDimuon4JpsiDisplaced_,"triggerbit_HLTDimuon4JpsiDisplaced_/I");
@@ -197,7 +198,8 @@ void RadiativeRootTree::resetEntries()
 	errdedxTrk_         = -9999999;
 	numdedxTrk_         = -9999999;
 	triggerbit_HLT_DoubleMu4_LowMass_Displaced_            = -9999999;
-	triggerbit_HLT_DoubleMu4_4_Photon4_BsToMMG_            = -9999999;
+	triggerbit_HLT_DoubleMu4_3_Bs_                         = -9999999;
+	triggerbit_HLT_DoubleMu4_LowMass_                      = -9999999;
 	triggerbit_HLT_DoubleMu4_3_Photon4_BsToMMG_            = -9999999;
 	triggerbit_HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG_  = -9999999;
 	triggerbit_HLTDimuon4JpsiDisplaced_                    = -9999999;
@@ -378,7 +380,8 @@ void RadiativeRootTree::setBranchAddresses(){
   bmmgTree_->SetBranchAddress("numdedxTrk", &numdedxTrk_);
   bmmgTree_->SetBranchAddress("costheta", &costheta_);
   bmmgTree_->SetBranchAddress("triggerbit_HLT_DoubleMu4_LowMass_Displaced", &triggerbit_HLT_DoubleMu4_LowMass_Displaced_);
-  bmmgTree_->SetBranchAddress("triggerbit_HLT_DoubleMu4_4_Photon4_BsToMMG", &triggerbit_HLT_DoubleMu4_4_Photon4_BsToMMG_);
+  bmmgTree_->SetBranchAddress("triggerbit_HLT_DoubleMu4_LowMass", &triggerbit_HLT_DoubleMu4_LowMass_);
+  bmmgTree_->SetBranchAddress("triggerbit_HLT_DoubleMu4_3_Bs", &triggerbit_HLT_DoubleMu4_3_Bs_);
   bmmgTree_->SetBranchAddress("triggerbit_HLT_DoubleMu4_3_Photon4_BsToMMG", &triggerbit_HLT_DoubleMu4_3_Photon4_BsToMMG_);
   bmmgTree_->SetBranchAddress("triggerbit_HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG", &triggerbit_HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG_);
   bmmgTree_->SetBranchAddress("triggerbit_HLTDimuon4JpsiDisplaced",&triggerbit_HLTDimuon4JpsiDisplaced_);

@@ -43,6 +43,8 @@
 #include "DataFormats/Common/interface/Association.h"
 #include "FWCore/Common/interface/TriggerNames.h"
 #include "FWCore/Framework/interface/TriggerNamesService.h"
+#include "DataFormats/PatCandidates/interface/TriggerObjectStandAlone.h"
+#include "DataFormats/PatCandidates/interface/PackedTriggerPrescales.h"
 #include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
 #include "TrackingTools/Records/interface/TransientTrackRecord.h"
 #include "TrackingTools/TransientTrack/interface/TransientTrack.h"
@@ -160,7 +162,7 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig):
 	JetTag                            = iConfig.getParameter<edm::InputTag>("JetTag");
         JetTagTok                         = consumes<edm::View<pat::Jet>>(JetTag);
 	PhotonTag                         = iConfig.getParameter<edm::InputTag>("PhotonTag");
-        PhotonTagTok                      = consumes<edm::View<pat::Photon>>(PhotonTag);
+        PhotonTagTok                      = consumes<edm::View<reco::Photon>>(PhotonTag);
 	OOTPhotonTag                      = iConfig.getParameter<edm::InputTag>("OOTPhotonTag");
         OOTPhotonTagTok                   = consumes<edm::View<pat::Photon>>(OOTPhotonTag);
 	ElectronTag                       = iConfig.getParameter<edm::InputTag>("ElectronTag");
@@ -175,8 +177,12 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig):
         vertexBeamSpotTok                 = consumes<reco::BeamSpot>(vertexBeamSpot);
 	primaryvertex                     = iConfig.getParameter<edm::InputTag>("primaryvertex");
         primaryvertexTok                  = consumes<edm::View<reco::Vertex>>(primaryvertex);
-	triggerresults                    = iConfig.getParameter<edm::InputTag>("triggerresults");
-        triggerresultsTok                 = consumes<edm::TriggerResults>(triggerresults);
+	triggerbits                       = iConfig.getParameter<edm::InputTag>("triggerbits");
+        triggerbitsTok                    = consumes<edm::TriggerResults>(triggerbits);
+	prescale                          = iConfig.getParameter<edm::InputTag>("prescale");
+	prescaleTok                       = consumes<pat::PackedTriggerPrescales>(prescale);
+        triggerobj                        = iConfig.getParameter<edm::InputTag>("triggerobj");
+	triggerobjTok                     = consumes<edm::View<pat::TriggerObjectStandAlone>>(triggerobj);
 	pfCandTag                         = iConfig.getParameter<edm::InputTag>("pfCandTag");
         pfCandTagTok                      = consumes<edm::View<pat::PackedCandidate>>(pfCandTag);
 	IsoTrackTag                       = iConfig.getParameter<edm::InputTag>("IsoTrackTag");
@@ -401,47 +407,98 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 		     std::cout<<" number of BsCandidates : "<<  nBs << "\n";
                      fillMCInfo(genParticles);
                }
-	edm::Handle<edm::TriggerResults> hltresults;
-	iEvent.getByToken(triggerresultsTok, hltresults);
-	//std::cout<<"hlt size:  "<<hltresults->size()<<"\n";
 
-	const  edm::TriggerNames & triggerNames_ = iEvent.triggerNames(*hltresults);
-	int ntrigs = hltresults->size();
+
+         edm::Handle<edm::View<pat::TriggerObjectStandAlone>> triggerObjects;
+	 iEvent.getByToken(triggerobjTok, triggerObjects);
+         edm::Handle<pat::PackedTriggerPrescales> triggerPrescales;
+	 iEvent.getByToken(prescaleTok, triggerPrescales);
+	 edm::Handle<edm::TriggerResults> hltbits;
+	 iEvent.getByToken(triggerbitsTok, hltbits);
+	 
+	 std::cout<<"hlt size:  "<<hltbits->size()<<"\n";
+
+	 std::vector<std::string> triggersOfInterest = {
+                "HLT_DoubleMu4_3_Bs_v19",
+                "HLT_DoubleMu4_3_Jpsi_v19",
+                "HLT_DoubleMu4_3_LowMass_v5",
+                "HLT_DoubleMu4_LowMass_Displaced_v5",
+                "HLT_DoubleMu4_3_Photon4_BsToMMG_v4",
+                "HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG_v4",
+                "HLT_DoubleMu4_JpsiTrkTrk_Displaced_v11",
+                "HLT_DoubleMu4_Jpsi_NoVertexing_v11",
+                "HLT_DoubleMu4_Jpsi_Displaced_v11",
+               
+        };
+	std::cout << "\nTriggers of interest found in this event:\n";
+	std::cout << "----------------------------------------\n";
+
+
+
+
+	const int width_name = 40;  // Width for trigger name column
+        const int width_index = 5;  // Width for trigger index column
+        const int width_accept = 6; // Width for Accept column
+        const int width_prescale = 15; // Width for prescale column
+        std::cout << std::setw(width_name) << std::left << "Trigger Name"
+          << std::setw(width_index) << "Index"
+          << std::setw(width_accept) << "Accept?"
+          << std::setw(width_prescale) << "Prescale Value" << std::endl;
+        std::cout << std::string(width_name + width_index + width_accept + width_prescale, '-') <<"\n";
+
+	const  edm::TriggerNames & triggerNames_ = iEvent.triggerNames(*hltbits);
+	if (!triggerPrescales.isValid()) {
+		edm::LogError("TriggerPrescales") << "Trigger prescales handle is invalid!";
+		return;
+	}
+	pat::PackedTriggerPrescales nonConstTriggerPrescales = *triggerPrescales;
+	nonConstTriggerPrescales.setTriggerNames(triggerNames_);
+	int ntrigs = hltbits->size();
 	for (int itrig = 0; itrig != ntrigs; ++itrig){
 		TString trigName = triggerNames_.triggerName(itrig);
-		//std::cout<<"triggernames:"<<itrig<<"::"<<trigName<<"\n";
-		if (trigName=="triggerbit_HLTDimuon4JpsiDisplaced_")      bmmgRootTree_->triggerbit_HLTDimuon4JpsiDisplaced_             = hltresults->accept(itrig);
-		if (trigName=="triggerbit_HLTDimuon4JpsiNoVertexing_")    bmmgRootTree_->triggerbit_HLTDimuon4JpsiNoVertexing_           = hltresults->accept(itrig);
-		if (trigName=="triggerbit_HLTDimuon4JpsiTrkTrkDisplaced_")bmmgRootTree_->triggerbit_HLTDimuon4JpsiTrkTrkDisplaced_       = hltresults->accept(itrig);
-		if (trigName=="triggerbit_HLT_DoubleMu4_LowMass_Displaced_") bmmgRootTree_->triggerbit_HLT_DoubleMu4_LowMass_Displaced_  = hltresults->accept(itrig);
-		if (trigName=="triggerbit_HLT_DoubleMu4_4_Photon4_BsToMMG_") bmmgRootTree_->triggerbit_HLT_DoubleMu4_4_Photon4_BsToMMG_  = hltresults->accept(itrig);
-		if (trigName=="triggerbit_HLT_DoubleMu4_3_Photon4_BsToMMG_") bmmgRootTree_->triggerbit_HLT_DoubleMu4_3_Photon4_BsToMMG_  = hltresults->accept(itrig);
-		if (trigName=="triggerbit_HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG_") bmmgRootTree_->triggerbit_HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG_ = hltresults->accept(itrig);
+		if (std::find(triggersOfInterest.begin(), triggersOfInterest.end(), trigName.Data()) != triggersOfInterest.end()){
+			bool accept = hltbits->accept(itrig);
+			std::string triggerNameStd = trigName.Data();
+			double prescale = nonConstTriggerPrescales.getPrescaleForName<double>(triggerNameStd);
+			std::cout << std::setw(width_name) << std::left << trigName
+				  << std::setw(width_index) << itrig
+				  << std::setw(width_accept) << (accept ? "Yes" : "No")
+				  << std::setw(width_prescale) << prescale <<"\n";
+		}
+		if (trigName=="HLT_DoubleMu4_Jpsi_Displaced_v11")      bmmgRootTree_->triggerbit_HLTDimuon4JpsiDisplaced_             = hltbits->accept(itrig);
+		if (trigName=="HLT_DoubleMu4_Jpsi_NoVertexing_v11")    bmmgRootTree_->triggerbit_HLTDimuon4JpsiNoVertexing_           = hltbits->accept(itrig);
+		if (trigName=="HLT_DoubleMu4_JpsiTrkTrk_Displaced_v11")bmmgRootTree_->triggerbit_HLTDimuon4JpsiTrkTrkDisplaced_       = hltbits->accept(itrig);
+		if (trigName=="HLT_DoubleMu4_3_LowMass_v5") bmmgRootTree_->triggerbit_HLT_DoubleMu4_LowMass_                          = hltbits->accept(itrig);
+		if (trigName=="HLT_DoubleMu4_LowMass_Displaced_v5") bmmgRootTree_->triggerbit_HLT_DoubleMu4_LowMass_Displaced_        = hltbits->accept(itrig);
+		if (trigName=="HLT_DoubleMu4_3_Bs_v19") bmmgRootTree_->triggerbit_HLT_DoubleMu4_3_Bs_                                 = hltbits->accept(itrig);
+		if (trigName=="HLT_DoubleMu4_3_Photon4_BsToMMG_v4") bmmgRootTree_->triggerbit_HLT_DoubleMu4_3_Photon4_BsToMMG_        = hltbits->accept(itrig);
+		if (trigName=="HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG_v4") bmmgRootTree_->triggerbit_HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG_ = hltbits->accept(itrig);
                 string str = (string) trigName  ;
 	}
-
 
 
 
 	//edm::ESHandle<TransientTrackBuilder> theB;
 	//iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder",theB);
 	const auto& trackBuilder = iSetup.getData(trackBuilderTok);
-
+        
 	edm::Handle<View<pat::PackedCandidate>> pfCands;
 	iEvent.getByToken(pfCandTagTok, pfCands);
 	
-	edm::Handle<edm::View<pat::Photon>> photon;
+	edm::Handle<edm::View<reco::Photon>> photon;
         iEvent.getByToken(PhotonTagTok, photon);
         bmmgRootTree_->photonMultiplicity_ = photon->size();
 	for(size_t iPhoton =0 ; iPhoton < photon->size() ; ++iPhoton){
 		
 		const pat::Photon& ipatPhoton = (*photon)[iPhoton];
+		//const auto ipatPhoton = (*photon)[iPhoton];
 		if (excludedPhotons.find(iPhoton) != excludedPhotons.end()) continue;
 		bool photonExcluded = false;
 
 		for(size_t jPhoton = iPhoton+1; jPhoton < photon->size() ; ++jPhoton){
       
 			const pat::Photon& jpatPhoton = (*photon)[jPhoton];
+			//const auto jpatPhoton = (*photon)[jPhoton];
 			const reco::Photon::ShowerShape& jShowerShape = jpatPhoton.full5x5_showerShapeVariables();
 
 			pat::CompositeCandidate DiGammaCandidate;
@@ -451,9 +508,8 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 			addP4.set(DiGammaCandidate);
 
 
-
 			if ( abs(DiGammaCandidate.mass() - nominalPiZeroMass ) <  PionZeroMassWindowNoFit_ ){
-			
+
 				excludedPhotons.insert(iPhoton);
 				excludedPhotons.insert(jPhoton);
 				photonExcluded = true;
@@ -463,7 +519,7 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 				bmmgRootTree_->PiZeroPt_alone_       = DiGammaCandidate.pt();
 			}
 			else if (abs(DiGammaCandidate.mass() - nominalEtaMesonMass ) < EtaMesonMassWindowNoFit_){
-				
+
 				excludedPhotons.insert(iPhoton);
 				excludedPhotons.insert(jPhoton);
 				photonExcluded = true;
@@ -485,6 +541,11 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 			if (photonExcluded) break; // Exit inner loop if current photon is excluded
  		}
 		        if (photonExcluded) continue;
+
+
+
+
+
 
 /*
 			//BsToPhi(KK)Gamma - need corresponding MC sample,run on data if the MC is not available
@@ -666,7 +727,7 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 			//BsToPhi(mumu)Gamma 
 			//BsToJpsiEta
 
-	        const reco::Photon::ShowerShape& iShowerShape = ipatPhoton.full5x5_showerShapeVariables();
+	                const reco::Photon::ShowerShape& iShowerShape = ipatPhoton.full5x5_showerShapeVariables();
 		        bmmgRootTree_->photonSSSigmaiEtaiEta_ = iShowerShape.sigmaIetaIeta;
 			bmmgRootTree_->photonSSSigmaiEtaiPhi_ = iShowerShape.sigmaIetaIphi;
 			bmmgRootTree_->photonSSSigmaiPhiiPhi_ = iShowerShape.sigmaIphiIphi;
