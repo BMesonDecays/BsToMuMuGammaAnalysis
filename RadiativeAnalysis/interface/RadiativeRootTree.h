@@ -32,6 +32,7 @@ class RadiativeRootTree {
 		 int    isPV_;
 		 int    NVerticesbeforecut_;
 		 int    NVerticesaftercut_;
+		 int    NTracksPVbeforecut_;
 		 int    isBS_;
 		 double BSx_ ;
 		 double BSy_ ;

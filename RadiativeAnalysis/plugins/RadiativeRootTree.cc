@@ -22,6 +22,7 @@ void RadiativeRootTree::createTree(const std::string filename)
   bmmgTree_->Branch("PUinteraction",&PUinteraction_,"PUinteraction/I");
   bmmgTree_->Branch("PUTrueinteraction",&PUTrueinteraction_,"PUTrueinteraction/I");
   bmmgTree_->Branch("isPV",&isPV_,"isPV/I");
+  bmmgTree_->Branch("NTracksPVbeforecut",&NTracksPVbeforecut_,"NTracksPVbeforecut/I");
   bmmgTree_->Branch("NVerticesbeforecut",&NVerticesbeforecut_,"NVerticesbeforecut/I");
   bmmgTree_->Branch("NVerticesaftercut",&NVerticesaftercut_,"NVerticesaftercut/I");
   bmmgTree_->Branch("PVx",&PVx_,"PVx/D");
@@ -170,6 +171,7 @@ void RadiativeRootTree::resetEntries()
 	PUTrueinteraction_  = -9999999;
 	NVerticesbeforecut_ = -9999999;
 	NVerticesaftercut_  = -9999999;
+	NTracksPVbeforecut_ = -9999999;
 	BSx_                = -9999999;
 	BSy_                = -9999999;
 	BSz_                = -9999999;
@@ -354,6 +356,7 @@ void RadiativeRootTree::setBranchAddresses(){
   bmmgTree_->SetBranchAddress("PUTrueinteraction", &PUTrueinteraction_);
   bmmgTree_->SetBranchAddress("NVerticesbeforecut",&NVerticesbeforecut_);
   bmmgTree_->SetBranchAddress("NVerticesaftercut",&NVerticesaftercut_);
+  bmmgTree_->SetBranchAddress("NTracksPVbeforecut",&NTracksPVbeforecut_);
   bmmgTree_->SetBranchAddress("BSx" , &BSx_ );
   bmmgTree_->SetBranchAddress("BSy" , &BSy_ );
   bmmgTree_->SetBranchAddress("BSz", &BSz_ );

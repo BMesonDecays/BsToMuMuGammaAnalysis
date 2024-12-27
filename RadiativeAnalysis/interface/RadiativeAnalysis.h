@@ -77,6 +77,7 @@ public:
   void setFitParHyp1(RefCountedKinematicTree& myTree);
   void setFitParHyp2(RefCountedKinematicTree& myTree);
 private:
+  
   bool MCmatching(const reco::Candidate & particle,  edm::Handle<edm::View<reco::GenParticle>>& genParticles,
                   int &particlemcId, int &particlemomId, int &particlegmomId,
                   int condMom, int condGMom);
@@ -104,6 +105,7 @@ private:
   short int LookForMotherString(reco::GenParticle theGenP);
   const TrackerGeometry* m_tracker;
   bool isMCstudy_;
+  bool isMINIAOD_;
   std::string outputFile_; // output file
   RadiativeRootTree *bmmgRootTree_;
 
@@ -136,8 +138,10 @@ private:
   edm::EDGetTokenT<pat::PackedTriggerPrescales> prescaleTok;
   edm::InputTag triggerobj;
   edm::EDGetTokenT<edm::View<pat::TriggerObjectStandAlone>> triggerobjTok;
-  edm::InputTag pfCandTag;
-  edm::EDGetTokenT<edm::View<pat::PackedCandidate>> pfCandTagTok;
+  //edm::InputTag pfCandTag;
+  //edm::EDGetTokenT<edm::View<pat::PackedCandidate>> pfCandTagTok;
+  edm::InputTag trackTag;
+  edm::EDGetTokenT<edm::View<reco::Track>> trackTagTok;
   edm::InputTag IsoTrackTag;
   edm::EDGetTokenT<edm::View<pat::IsolatedTrack>> IsoTrackTagTok;
   edm::ESGetToken<TransientTrackBuilder, TransientTrackRecord> trackBuilderTok;

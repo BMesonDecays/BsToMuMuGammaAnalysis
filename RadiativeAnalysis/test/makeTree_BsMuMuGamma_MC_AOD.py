@@ -1,4 +1,6 @@
 import FWCore.ParameterSet.Config as cms
+import glob 
+import sys
 process = cms.Process("MUMUGamma")
 process.load("Configuration.StandardSequences.MagneticField_cff")
 process.load("Configuration.StandardSequences.Reconstruction_cff")
@@ -14,8 +16,10 @@ process.load("FWCore.MessageLogger.MessageLogger_cfi")
 from PhysicsTools.PatAlgos.tools.coreTools import *
 process.load("PhysicsTools.PatAlgos.patSequences_cff")
 from PhysicsTools.PatAlgos.tools.pfTools import *
-
-process.maxEvents = cms.untracked.PSet(  input = cms.untracked.int32(-1) )
+if len(sys.argv) < 2:
+    print("Error: Please provide the number of events as an argument.")
+    sys.exit(1)
+process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(int(sys.argv[1])))
 process.source = cms.Source("PoolSource",
                             duplicateCheckMode = cms.untracked.string('noDuplicateCheck'),
                             skipEvents = cms.untracked.uint32(0),
@@ -28,13 +32,10 @@ process.source = cms.Source("PoolSource",
 )
 )
 
-"""
-prefixPath = '/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/BsToMuMuGamma_14_0_17_22_10_2024/TSG-Run3Summer22EEGS_Run2022_BsToMuMuGamma_14_0_17_22_10_2024/BsToMuMuGamma_14_0_17_22_10_2024/241022_160351/0000'
-import glob
+prefixPath = '/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToMuMuGamma_MCTunesRun3ECM13p6TeV/BsToMuMuGamma_CMSSW_12_4_11_patch3_14_12_2024/241214_121515/0000'
 fileList = glob.glob(prefixPath+'/*.root')
 fileList = ['file:'+aFile for aFile in fileList]
 process.source.fileNames = fileList
-"""
 
 
 from Configuration.AlCa.GlobalTag import GlobalTag
@@ -84,10 +85,11 @@ process.electronMatch.resolveByMatchQuality = cms.bool(True)
 
 process.bmmgVertexAnalysis = cms.EDAnalyzer("RadiativeAnalysis",
                                           isMCstudy                     = cms.bool(True),
+                                          isMINIAOD                     = cms.bool(False),
                                           genParticlesLabel             = cms.InputTag("genParticles"),
                                           MuonTag                       = cms.InputTag("muons"),
                                           JetTag                        = cms.InputTag("jets"),
-                                          PhotonTag                     = cms.InputTag("photons",'', 'RECO'),
+                                          PhotonTag                     = cms.InputTag("photons"),
                                           OOTPhotonTag                  = cms.InputTag("ootPhotons"),
                                           ElectronTag                   = cms.InputTag("electrons"),
                                           #SuperClusterTag               = cms.InputTag("reducedEgamma","reducedSuperClusters","PAT"),
@@ -95,7 +97,7 @@ process.bmmgVertexAnalysis = cms.EDAnalyzer("RadiativeAnalysis",
                                           PUInfo                        = cms.InputTag("addPileupInfo"),
                                           vertexBeamSpot                = cms.InputTag("offlineBeamSpot"),
                                           primaryvertex                 = cms.InputTag("offlinePrimaryVertices"),
-                                          triggerresults                = cms.InputTag("TriggerResults",'',"HLT"),
+                                          triggerbits                   = cms.InputTag("TriggerResults",'',"HLT"),
                                           pfCandTag                     = cms.InputTag("generalTracks"),
                                           #IsoTrackTag                   = cms.InputTag("isolatedTracks"),
                                           StoreDeDxInfo                 = cms.bool(True),
