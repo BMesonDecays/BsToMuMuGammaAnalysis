@@ -1,9 +1,4 @@
 import FWCore.ParameterSet.Config as cms
-from FWCore.ParameterSet.VarParsing import VarParsing
-options = VarParsing("analysis")
-options.register("nEvents", 5000, VarParsing.multiplicity.singleton, VarParsing.varType.int, "Number of events to process")
-#options.register("outputFile", "default_output.root", VarParsing.multiplicity.singleton, VarParsing.varType.string, "Output file name")
-options.parseArguments()
 import glob 
 import sys
 process = cms.Process("MUMUGamma")
@@ -21,24 +16,10 @@ process.load("FWCore.MessageLogger.MessageLogger_cfi")
 from PhysicsTools.PatAlgos.tools.coreTools import *
 process.load("PhysicsTools.PatAlgos.patSequences_cff")
 from PhysicsTools.PatAlgos.tools.pfTools import *
-process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(options.nEvents))
-if options.inputFiles:
-    # If input files are provided through the argument
-    process.source = cms.Source("PoolSource",
-                                fileNames = cms.untracked.vstring(options.inputFiles)
-                                )
-else:
-    # If no input files are provided, use the default list (for example)
-    prefixPath = '/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToMuMuGamma_MCTunesRun3ECM13p6TeV/BsToMuMuGamma_CMSSW_12_4_11_patch3_14_12_2024/241214_121515/0000'
-    fileList = glob.glob(prefixPath + '/*.root')
-    fileList = ['file:' + aFile for aFile in fileList]
-    process.source = cms.Source("PoolSource",
-                                fileNames = cms.untracked.vstring(fileList)
-                                )
-
-
-
-"""
+if len(sys.argv) < 2:
+    print("Error: Please provide the number of events as an argument.")
+    sys.exit(1)
+process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(int(sys.argv[1])))
 process.source = cms.Source("PoolSource",
                             duplicateCheckMode = cms.untracked.string('noDuplicateCheck'),
                             skipEvents = cms.untracked.uint32(0),
@@ -55,7 +36,7 @@ prefixPath = '/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/Trackin
 fileList = glob.glob(prefixPath+'/*.root')
 fileList = ['file:'+aFile for aFile in fileList]
 process.source.fileNames = fileList
-"""
+
 
 from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_mc_FULL','')
@@ -145,7 +126,7 @@ process.bmmgVertexAnalysis = cms.EDAnalyzer("RadiativeAnalysis",
                                           EtaMesonPDGMass               = cms.double(0.5478),
                                           EtaPrimePDGMass               = cms.double(0.9577),
                                           PsiPDGMass                    = cms.double(3.6860),
-                                          outputFile                    = cms.untracked.string(options.outputFile),                                          
+                                          outputFile                    = cms.untracked.string("BsToMMG_MC_BsToMuMuG_MuGFilter_AOD.root"),                                          
 )
 
 process.load("MuonAnalysis.MuonAssociators.patMuonsWithTrigger_cff")
