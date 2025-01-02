@@ -144,6 +144,8 @@ private:
   edm::EDGetTokenT<edm::View<reco::Track>> trackTagTok;
   edm::InputTag IsoTrackTag;
   edm::EDGetTokenT<edm::View<pat::IsolatedTrack>> IsoTrackTagTok;
+  edm::InputTag convertedPhotonsTag;
+  edm::EDGetTokenT<std::vector<pat::CompositeCandidate>> convertedPhotonsTagTok;
   edm::ESGetToken<TransientTrackBuilder, TransientTrackRecord> trackBuilderTok;
   bool StoreDeDxInfo_;
   bool verbose_;

@@ -55,23 +55,24 @@ class KinematicConstrainedFit{
 		KinematicConstrainedFit();
 		~KinematicConstrainedFit(){}
 		bool doFit(std::vector<reco::TransientTrack> t_tracks, const double muonMass, const  double mass1, const double  mass2);
-		bool dobsphikkgFit(std::vector<reco::TransientTrack> t_tracks, const  double mass1, const double  mass2);
-		bool dobsphimmgFit(std::vector<reco::TransientTrack> t_tracks, const double muonMass);
-		double getProb() { return vtxprob_Bs; }
-		RefCountedKinematicParticle getParticle() {return bsmmg; }
-        RefCountedKinematicVertex  getVertex()   { return bsVertex; }
-        RefCountedKinematicTree    getTree()     { return myTree_Bs; }
-        RefCountedKinematicTree    getBsMMTree()     { return myTree_BsMM; }
+		bool BsToJpsiPhiFit(std::vector<reco::TransientTrack> t_tracks, const double muonMass, const  double mass1, const double  mass2);
+		bool TrippleObjectVertexFit(std::vector<reco::TransientTrack> muonTT, const double muonMass, std::vector<reco::TransientTrack> electronTT, const double eleMass);
+		bool TetraObjectVertexFit(std::vector<reco::TransientTrack> muonTT, const double muonMass, std::vector<reco::TransientTrack> electronTT, const double eleMass);
+		
+		double getBhadronProb() {return vtxprob_Bhadron;}
+		RefCountedKinematicParticle getBhardon()       {return bhadron;}
+		RefCountedKinematicVertex   getVertex()        {return bVertex;}
+		RefCountedKinematicTree     getBhadronTree()   {return myTree_B;}
+		RefCountedKinematicTree     getJpsiTree()      {return myTree_Jpsi;}
 
 	private:
 	
-		double vtxprob_Bs;
-		RefCountedKinematicParticle bsmmg;
-		RefCountedKinematicParticle bs;
-		RefCountedKinematicVertex bsVertex;
-		RefCountedKinematicTree myTree_Bs;
-		RefCountedKinematicTree myTree_BsMM;
-		RefCountedKinematicTree renewed_BsConstrainedTree;
+		double                              vtxprob_Bhadron;
+		RefCountedKinematicParticle         bhadron;
+		RefCountedKinematicVertex           bVertex;
+		RefCountedKinematicTree             myTree_B;
+		RefCountedKinematicTree             myTree_Jpsi;
+		RefCountedKinematicTree             renewed_BsConstrainedTree;
 		
 		
 

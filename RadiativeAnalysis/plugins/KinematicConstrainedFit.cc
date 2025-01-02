@@ -37,140 +37,213 @@ bool KinematicConstrainedFit::doFit(std::vector<reco::TransientTrack> t_tracks, 
 	allParticlesMu.push_back(pFactory.particle (track_MuM, muonMass, chi, ndf, muon_sigma));
 	KinematicParticleVertexFitter Fitter;
         std::vector<RefCountedKinematicParticle> allParticlesTrk;
-	RefCountedKinematicTree BsMMTree = Fitter.fit(allParticlesMu);
+	RefCountedKinematicTree BsTree = Fitter.fit(allParticlesMu);
 	//if the fit fails, do not consider this as candidate
-	if(BsMMTree->isEmpty()) return 0;
+	if(BsTree->isEmpty()) return 0;
 	KinematicParticleFitter constFitter;
 	double nominalBsMass = 5.36689;
 	double bsMSigma = 0.00019;
-	KinematicConstraint * bsmm_const = new MassKinematicConstraint(nominalBsMass, bsMSigma);
-        BsMMTree = constFitter.fit(bsmm_const,BsMMTree);
-        myTree_BsMM= BsMMTree;
-        if(BsMMTree->isEmpty()) {
-		delete bsmm_const;
+	KinematicConstraint * bs_const = new MassKinematicConstraint(nominalBsMass, bsMSigma);
+        BsTree = constFitter.fit(bs_const,BsTree);
+        myTree_B= BsTree;
+        if(BsTree->isEmpty()) {
+		delete bs_const;
 		return 0;
 	} 
-	BsMMTree->movePointerToTheTop();
-	RefCountedKinematicParticle BsMM_branch = BsMMTree->currentParticle();
-	allParticlesTrk.push_back(BsMM_branch);
-	myTree_Bs = Fitter.fit(allParticlesTrk);
-	if(myTree_Bs->isEmpty()) {
-		delete bsmm_const;
+	BsTree->movePointerToTheTop();
+	RefCountedKinematicParticle Bs_branch = BsTree->currentParticle();
+	allParticlesTrk.push_back(Bs_branch);
+	myTree_B = Fitter.fit(allParticlesTrk);
+	if(myTree_B->isEmpty()) {
+		delete bs_const;
 		return 0;
        	}
-	myTree_Bs->movePointerToTheTop();
-	bsmmg = myTree_Bs->currentParticle();
-        bsVertex = myTree_Bs->currentDecayVertex();
-	if (!bsVertex->vertexIsValid()) {
-        delete bsmm_const;
+	myTree_B->movePointerToTheTop();
+	bhadron = myTree_B->currentParticle();
+        bVertex = myTree_B->currentDecayVertex();
+	if (!bVertex->vertexIsValid()) {
+        delete bs_const;
         return 0;
        }
-	vtxprob_Bs = TMath::Prob(bsmmg->chiSquared(), (int)bsmmg->degreesOfFreedom());
-	delete bsmm_const;
+	vtxprob_Bhadron = TMath::Prob(bhadron->chiSquared(), (int)bhadron->degreesOfFreedom());
+	delete bs_const;
         return 1;
 }
-bool KinematicConstrainedFit::dobsphikkgFit(std::vector<reco::TransientTrack> t_tracks, const double mass1, const double  mass2){
-	reco::TransientTrack track_KP = t_tracks[0];
-	reco::TransientTrack track_KM = t_tracks[1];
+////////////////////////////////////////////////
+/////////BsToJpsiPhiVertexFit-fromData//////////
+////////////////////////////////////////////////
+bool KinematicConstrainedFit::BsToJpsiPhiFit(std::vector<reco::TransientTrack> t_tracks, const double muonMass, const double mass1, const double  mass2){
+  
+  reco::TransientTrack track_MuP = t_tracks[0];
+  reco::TransientTrack track_MuM = t_tracks[1];
+  reco::TransientTrack track_Kp = t_tracks[2];
+  reco::TransientTrack track_Km = t_tracks[3];
+  
+  KinematicParticleFactoryFromTransientTrack pFactory;
+  
+  float muon_sigma = 0.0000000001;
+  float kaon_sigma = 0.000016;
+  //  float pi_sigma = 0.000016;	      
+  
+  float chi = 0.;
+  float ndf = 0.;	    
+  
+  std::vector<RefCountedKinematicParticle> allParticlesMu;
+  allParticlesMu.push_back(pFactory.particle (track_MuP, muonMass, chi, ndf, muon_sigma));
+  allParticlesMu.push_back(pFactory.particle (track_MuM, muonMass, chi, ndf, muon_sigma));
+  
+  
+  std::vector<RefCountedKinematicParticle> allParticlesTrk;
+  allParticlesTrk.push_back(pFactory.particle (track_Kp, mass1, chi, ndf, kaon_sigma));
+  allParticlesTrk.push_back(pFactory.particle (track_Km, mass2, chi, ndf, kaon_sigma));
+  
+  KinematicParticleVertexFitter Fitter;
+  RefCountedKinematicTree JpsiTree = Fitter.fit(allParticlesMu);
+  
+  if(JpsiTree->isEmpty()) return 0;
+  
+  KinematicParticleFitter constFitter;
+  
+  double nominalJpsiMass =  3.096916;
+  float jpsiMsigma = 0.00004;
+  KinematicConstraint * jpsi_const = new MassKinematicConstraint( nominalJpsiMass, jpsiMsigma);
+  
+  JpsiTree = constFitter.fit(jpsi_const,JpsiTree);
+  myTree_Jpsi=JpsiTree;
+ 
+  if(JpsiTree->isEmpty()) {
+    delete jpsi_const;
+    return 0;    
+  }
+  JpsiTree->movePointerToTheTop();
+  RefCountedKinematicParticle Jpsi_branch = JpsiTree->currentParticle();
+  allParticlesTrk.push_back(Jpsi_branch);
+  myTree_B = Fitter.fit(allParticlesTrk);
+  if(myTree_B->isEmpty()) {
+    delete jpsi_const;
+    return 0;
+  }
+  myTree_B->movePointerToTheTop();
+  bhadron = myTree_B->currentParticle();
+  bVertex = myTree_B->currentDecayVertex();
+  
+  if (!bVertex->vertexIsValid()) {
+    delete jpsi_const;
+    return 0;    
+  }
+  vtxprob_Bhadron = TMath::Prob(bhadron->chiSquared(), (int)bhadron->degreesOfFreedom());
+  delete jpsi_const;
+  return 1;
+}
+/////////////////////////////////////////////
+////////////TripleObjectVertex///////////////
+/////////////////////////////////////////////
+bool KinematicConstrainedFit::TrippleObjectVertexFit(std::vector<reco::TransientTrack> muonTT, const double muonMass, std::vector<reco::TransientTrack> electronTT, const double eleMass){
+        const ParticleMass zero_mass(0);
+	float zero_sigma = 1E-6;
+        float eleSigma = 1E-6;
 	KinematicParticleFactoryFromTransientTrack pFactory;
-	float kaon_sigma = 0.0000000001;
+	std::vector<RefCountedKinematicParticle> PhotonParticles;
+        PhotonParticles.push_back(pFactory.particle(electronTT[0], eleMass, float(0), float(0), eleSigma));
+        PhotonParticles.push_back(pFactory.particle(electronTT[1], eleMass, float(0), float(0), eleSigma));
+        KinematicParticleVertexFitter photonfitter;
+        RefCountedKinematicTree photonVertexFitTree;
+        photonVertexFitTree = photonfitter.fit(PhotonParticles);
+	if (!photonVertexFitTree->isEmpty())return 0;
+        edm::ParameterSet pSet;
+        pSet.addParameter<double>("maxDistance", 3);
+        pSet.addParameter<int>("maxNbrOfIterations", 10000);
+        KinematicParticleVertexFitter Fitter(pSet);
+        photonVertexFitTree = Fitter.fit(PhotonParticles);
+        
+	if (photonVertexFitTree->isEmpty()) return 0;
+	KinematicParticleFitter csFitterPhoton;
+        KinematicConstraint * photon_const = new MassKinematicConstraint(zero_mass, zero_sigma);
+	photonVertexFitTree = csFitterPhoton.fit(photon_const, photonVertexFitTree);
+	if(photonVertexFitTree->isEmpty()){
+		delete photon_const;
+		return 0;
+	}
+	photonVertexFitTree->movePointerToTheTop();
+	RefCountedKinematicParticle fittedPhotonBranch = photonVertexFitTree->currentParticle();
+	float muon_sigma = 0.0000000001;
 	float chi = 0.;
 	float ndf = 0.;
-	std::vector<RefCountedKinematicParticle> allParticlesK;
-	allParticlesK.push_back(pFactory.particle (track_KP, mass1, chi, ndf, kaon_sigma));
-	allParticlesK.push_back(pFactory.particle (track_KM, mass1, chi, ndf, kaon_sigma));
-	KinematicParticleVertexFitter Fitter;
-	RefCountedKinematicTree PhiTree = Fitter.fit(allParticlesK);
-	if(PhiTree->isEmpty()) return 0;
-	KinematicParticleFitter constFitter;
-	double nominalPhiMass =  1.019455;
-	float phiMsigma = 0.00002;
-	KinematicConstraint * phi_const = new MassKinematicConstraint( nominalPhiMass, phiMsigma);
-	PhiTree = constFitter.fit(phi_const,PhiTree);
-	myTree_Bs = PhiTree;
-	if(myTree_Bs->isEmpty()) {
-		delete phi_const;
-		return 0;
-	}
-	myTree_Bs->movePointerToTheTop();
-	bs = myTree_Bs->currentParticle();
-	bsVertex = myTree_Bs->currentDecayVertex();
-	/*renewed_BsConstrainedTree->movePointerToTheTop();
-	RefCountedKinematicParticle phi = renewed_BsConstrainedTree->currentParticle();
-	float photon_mass = 0.0;
-    float photon_mass_sigma = 1e-6;
-
-	GlobalVector photonMomentum(photon.px(), photon.py(), photon.pz());
-	GlobalPoint dummyPosition(0, 0, 0); // Photons don't have a well-defined vertex, so this is just a placeholder
-	AlgebraicSymMatrix33 errorMatrix = renewed_BsConstrainedTree->currentDecayVertex()->error().matrix();
-	GlobalError photonMomentumError(errorMatrix);
-	KinematicState photonState(
-        FreeTrajectoryState(GlobalTrajectoryParameters(dummyPosition, photonMomentum, 0, theMagneticField_)),
-		photon_mass, photon_mass_sigma
-    );
-	VirtualKinematicParticleFactory particleFactory;
-    RefCountedKinematicParticle photonParticle = particleFactory.particle(photonState, chi, ndf, nullptr);
-    
-	 // Combine the phi meson and the photon to form the Bs candidate
-    std::vector<RefCountedKinematicParticle> allParticlesBs;
-    allParticlesBs.push_back(phi);
-    allParticlesBs.push_back(photonParticle);
-	RefCountedKinematicTree BsTree = Fitter.fit(allParticlesBs);
-    
-    if (BsTree->isEmpty()) {
-        delete phi_const;
-        return false;
-    }
-    
-    BsTree->movePointerToTheTop();
-	bs = BsTree->currentParticle();
-    bsVertex = BsTree->currentDecayVertex();
-    */
-
-    if (!bsVertex->vertexIsValid()) {
-        delete phi_const;
-        return false;
-    }
-    
-    vtxprob_Bs = TMath::Prob(bs->chiSquared(), (int)bs->degreesOfFreedom());
-    
-    delete phi_const;
-    return true;
-	
-	
-}
-
-bool KinematicConstrainedFit::dobsphimmgFit(std::vector<reco::TransientTrack> t_tracks, const double muonMass){
-	reco::TransientTrack track_MuP = t_tracks[0];
-	reco::TransientTrack track_MuM = t_tracks[1];
-	KinematicParticleFactoryFromTransientTrack pFactory;
-	float muon_sigma =  0.0000000001;
-	float chi =0.;
-	float ndf =0.;
 	std::vector<RefCountedKinematicParticle> allParticlesMu;
-	allParticlesMu.push_back(pFactory.particle (track_MuP, muonMass, chi, ndf, muon_sigma));
-	allParticlesMu.push_back(pFactory.particle (track_MuM, muonMass, chi, ndf, muon_sigma));
-	KinematicParticleVertexFitter Fitter;
-	RefCountedKinematicTree PhiTree = Fitter.fit(allParticlesMu);
-	if(PhiTree->isEmpty()) return 0;
-	KinematicParticleFitter constFitter;
-	double nominalPhiMass =  1.019455;
-	float phiMsigma = 0.00002;
-	KinematicConstraint * phi_const = new MassKinematicConstraint( nominalPhiMass, phiMsigma);
-	PhiTree = constFitter.fit(phi_const,PhiTree);
-	renewed_BsConstrainedTree = PhiTree;
-	if(renewed_BsConstrainedTree->isEmpty()) {
-		delete phi_const;
+	allParticlesMu.push_back(pFactory.particle (muonTT[0], muonMass, chi, ndf, muon_sigma));
+	allParticlesMu.push_back(pFactory.particle (muonTT[1], muonMass, chi, ndf, muon_sigma));
+        allParticlesMu.push_back(fittedPhotonBranch);
+	myTree_B = Fitter.fit(allParticlesMu);
+	if(myTree_B->isEmpty()) {
+		delete photon_const;
 		return 0;
 	}
-	renewed_BsConstrainedTree->movePointerToTheTop();
-	bs = renewed_BsConstrainedTree->currentParticle();
-	bsVertex = renewed_BsConstrainedTree->currentDecayVertex();
-	if (!bsVertex->vertexIsValid()) {
-		delete phi_const;
+	myTree_B->movePointerToTheTop();
+	bhadron = myTree_B->currentParticle();
+	bVertex = myTree_B->currentDecayVertex();
+	if (!bVertex->vertexIsValid()) {
+		delete photon_const;
 		return 0;
 	}
-	vtxprob_Bs = TMath::Prob(bs->chiSquared(), (int)bs->degreesOfFreedom());
-	delete phi_const;
+	vtxprob_Bhadron = TMath::Prob(bhadron->chiSquared(), (int)bhadron->degreesOfFreedom());
+	delete photon_const;
 	return 1;
+}
+/////////////////////////////////////////////
+/////////TetraObjectVertex///////////////////
+/////////////////////////////////////////////
+bool KinematicConstrainedFit::TetraObjectVertexFit(std::vector<reco::TransientTrack> muonTT, const double muonMass, std::vector<reco::TransientTrack> electronTT, const double eleMass){
+
+	const ParticleMass zero_mass(0);
+        float zero_sigma = 1E-6;
+        float eleSigma = 1E-6;
+        std::vector<RefCountedKinematicParticle> PhotonParticles;
+	KinematicParticleFactoryFromTransientTrack pFactory;
+        PhotonParticles.push_back(pFactory.particle(electronTT[0], eleMass, float(0), float(0), eleSigma));
+        PhotonParticles.push_back(pFactory.particle(electronTT[1], eleMass, float(0), float(0), eleSigma));
+        PhotonParticles.push_back(pFactory.particle(electronTT[2], eleMass, float(0), float(0), eleSigma));
+        PhotonParticles.push_back(pFactory.particle(electronTT[3], eleMass, float(0), float(0), eleSigma));
+	KinematicParticleVertexFitter photonfitter;
+        RefCountedKinematicTree photonVertexFitTree;
+        photonVertexFitTree = photonfitter.fit(PhotonParticles);
+        if (!photonVertexFitTree->isEmpty())return 0;
+        edm::ParameterSet pSet;
+        pSet.addParameter<double>("maxDistance", 3);
+        pSet.addParameter<int>("maxNbrOfIterations", 10000);
+        KinematicParticleVertexFitter Fitter(pSet);
+        photonVertexFitTree = Fitter.fit(PhotonParticles);
+
+        if (photonVertexFitTree->isEmpty()) return 0;
+        KinematicParticleFitter csFitterPhoton;
+        KinematicConstraint * photon_const = new MassKinematicConstraint(zero_mass, zero_sigma);
+        photonVertexFitTree = csFitterPhoton.fit(photon_const, photonVertexFitTree);
+        if(photonVertexFitTree->isEmpty()){
+                delete photon_const;
+                return 0;
+        }
+        photonVertexFitTree->movePointerToTheTop();
+	RefCountedKinematicParticle fittedPhotonBranch = photonVertexFitTree->currentParticle();
+        float muon_sigma = 0.0000000001;
+        float chi = 0.;
+        float ndf = 0.;
+        std::vector<RefCountedKinematicParticle> allParticlesMu;
+        allParticlesMu.push_back(pFactory.particle (muonTT[0], muonMass, chi, ndf, muon_sigma));
+        allParticlesMu.push_back(pFactory.particle (muonTT[1], muonMass, chi, ndf, muon_sigma));
+        allParticlesMu.push_back(fittedPhotonBranch);
+        myTree_B = Fitter.fit(allParticlesMu);
+        if(myTree_B->isEmpty()) {
+                delete photon_const;
+                return 0;
+        }
+        myTree_B->movePointerToTheTop();
+        bhadron = myTree_B->currentParticle();
+        bVertex = myTree_B->currentDecayVertex();
+        if (!bVertex->vertexIsValid()) {
+                delete photon_const;
+                return 0;
+        }
+        vtxprob_Bhadron = TMath::Prob(bhadron->chiSquared(), (int)bhadron->degreesOfFreedom());
+        delete photon_const;
+        return 1;
+
 }

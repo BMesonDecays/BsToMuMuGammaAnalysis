@@ -198,6 +198,8 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig):
 		IsoTrackTag                       = iConfig.getParameter<edm::InputTag>("IsoTrackTag");
 		IsoTrackTagTok                    = consumes<edm::View<pat::IsolatedTrack>>(IsoTrackTag);
 	}
+	convertedPhotonsTag               = iConfig.getParameter<edm::InputTag>("convertedPhotons");
+	convertedPhotonsTagTok            = consumes<std::vector<pat::CompositeCandidate>>(convertedPhotonsTag);
         trackBuilderTok                   = esConsumes(edm::ESInputTag("", "TransientTrackBuilder"));
 
 
@@ -422,6 +424,13 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
                }
 
 
+	 edm::Handle<std::vector<pat::CompositeCandidate>> convPhotons;
+	 iEvent.getByToken(convertedPhotonsTagTok, convPhotons);
+	 const pat::CompositeCandidateCollection * conversions = convPhotons.product();
+	 for (pat::CompositeCandidateCollection::const_iterator conv = conversions->begin(); conv!= conversions->end(); ++conv){
+		 const reco::Track tk0=*conv->userData<reco::Track>("track0");
+		 std::cout<< " pt and phi of the composite candidate : "<< tk0.pt()<< "\t" << tk0.phi()<<"\n";
+	 }
 	 edm::Handle<edm::TriggerResults> hltbits;
 	 iEvent.getByToken(triggerbitsTok, hltbits);
 	 std::vector<std::string> triggersOfInterest = {
@@ -729,7 +738,7 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 	                const reco::Photon::ShowerShape& iShowerShape = ipatPhoton.full5x5_showerShapeVariables();
 		        bmmgRootTree_->photonSSSigmaiEtaiEta_ = iShowerShape.sigmaIetaIeta;
 			bmmgRootTree_->photonSSSigmaiEtaiPhi_ = iShowerShape.sigmaIetaIphi;
-			std::cout<< " some outputs : pt : "<< ipatPhoton.pt() << "\n sshape : "<< iShowerShape.e1x5 << "\t enenrgy supercluster : "<< ipatPhoton.superCluster()->energy()<< "\n";
+			//std::cout<< " some outputs : pt : "<< ipatPhoton.pt() << "\n sshape : "<< iShowerShape.e1x5 << "\t enenrgy supercluster : "<< ipatPhoton.superCluster()->energy()<< "\n";
 			bmmgRootTree_->photonSSSigmaiPhiiPhi_ = iShowerShape.sigmaIphiIphi;
 			bmmgRootTree_->photonSSSigmaEtaEta_   = iShowerShape.sigmaEtaEta;
 			bmmgRootTree_->photonSSe1x5_ = iShowerShape.e1x5;
@@ -746,7 +755,7 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 			for (size_t k = 0; k < iShowerShape.hcalOverEcalBc.size(); ++k) {bmmgRootTree_->photonSShcalOverEcalBc_[k] = iShowerShape.hcalOverEcalBc[k];}
 			bmmgRootTree_->photonSSmaxEnergyXtal_  = iShowerShape.maxEnergyXtal;
 			bmmgRootTree_->photonSSeffSigmaRR_     = iShowerShape.effSigmaRR;
-			std::cout<< " shower shapes : "<< iShowerShape.sigmaIphiIphi << "\t : " << iShowerShape.sigmaEtaEta<< "\t";
+			//std::cout<< " shower shapes : "<< iShowerShape.sigmaIphiIphi << "\t : " << iShowerShape.sigmaEtaEta<< "\t";
 			bmmgRootTree_->photonSCEnergy_         = ipatPhoton.superCluster()->energy();
 			bmmgRootTree_->photonSCRawEnergy_      = ipatPhoton.superCluster()->rawEnergy();
 			bmmgRootTree_->photonSCPreShowerEP1_   = ipatPhoton.superCluster()->preshowerEnergyPlane1();
@@ -900,9 +909,6 @@ void RadiativeAnalysis::fillMCInfo(edm::Handle<edm::View<reco::GenParticle>>& ge
 */
 
 
-  if(verbose_ == true){
-    cout<<"NewEvent-------"<<endl;
-  }
   for( size_t i = 0; i < genParticles->size(); ++ i ) {
     const GenParticle & genBsCand = (*genParticles)[ i ];
     int MC_particleID=genBsCand.pdgId();

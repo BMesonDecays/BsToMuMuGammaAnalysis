@@ -18,10 +18,18 @@ process.load('SimGeneral.MixingModule.mixNoPU_cfi')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 
+import HeavyFlavorAnalysis.Onia2MuMu.OniaPhotonConversionProducer_cfi
+process.oniaPhotonCandidates = HeavyFlavorAnalysis.Onia2MuMu.OniaPhotonConversionProducer_cfi.PhotonCandidates.clone()
+# process.oniaPhotonCandidates.conversions 
+process.oniaPhotonCandidates.primaryVertexTag = cms.InputTag('offlinePrimaryVerticesWithBS')
+
+
 from PhysicsTools.PatAlgos.tools.coreTools import *
 process.load("PhysicsTools.PatAlgos.patSequences_cff")
 from PhysicsTools.PatAlgos.tools.pfTools import *
+print("events", options.nEvents)
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(options.nEvents))
+"""
 if options.inputFiles:
     # If input files are provided through the argument
     process.source = cms.Source("PoolSource",
@@ -55,7 +63,7 @@ prefixPath = '/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/Trackin
 fileList = glob.glob(prefixPath+'/*.root')
 fileList = ['file:'+aFile for aFile in fileList]
 process.source.fileNames = fileList
-"""
+
 
 from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_mc_FULL','')
@@ -118,6 +126,7 @@ process.bmmgVertexAnalysis = cms.EDAnalyzer("RadiativeAnalysis",
                                           primaryvertex                 = cms.InputTag("offlinePrimaryVertices"),
                                           triggerbits                   = cms.InputTag("TriggerResults",'',"HLT"),
                                           pfCandTag                     = cms.InputTag("generalTracks"),
+                                          convertedPhotons              = cms.InputTag("oniaPhotonCandidates","conversions"),
                                           #IsoTrackTag                   = cms.InputTag("isolatedTracks"),
                                           StoreDeDxInfo                 = cms.bool(True),
                                           PionZeroMassWindowNoFit       = cms.double(0.0005),
@@ -196,6 +205,6 @@ process.primaryVertexFilter = cms.EDFilter("GoodVertexFilter",
 #print(process.pat)
 
 #process.ntup = cms.Path(process.allPiTracks * process.allKTracks * process.kTracks * process.piTracks * process.bVertexAnalysis )
-process.ntup = cms.Path(process.bmmgVertexAnalysis )
+process.ntup = cms.Path(process.oniaPhotonCandidates*process.bmmgVertexAnalysis )
 #process.filter = cms.Path(process.noScraping)
 process.schedule = cms.Schedule(process.ntup)
