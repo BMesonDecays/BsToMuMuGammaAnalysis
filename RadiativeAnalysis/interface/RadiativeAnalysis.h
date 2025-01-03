@@ -113,7 +113,7 @@ private:
   edm::InputTag genParticlesLabel;
   edm::EDGetTokenT<edm::View<reco::GenParticle>> genParticlesTok;
   edm::InputTag MuonTag;
-  edm::EDGetTokenT<edm::View<pat::Muon>> MuonTagTok;
+  edm::EDGetTokenT<std::vector<reco::Muon>> MuonTagTok;
   edm::InputTag JetTag;
   edm::EDGetTokenT<edm::View<pat::Jet>> JetTagTok;
   edm::InputTag PhotonTag;
@@ -147,6 +147,7 @@ private:
   edm::InputTag convertedPhotonsTag;
   edm::EDGetTokenT<std::vector<pat::CompositeCandidate>> convertedPhotonsTagTok;
   edm::ESGetToken<TransientTrackBuilder, TransientTrackRecord> trackBuilderTok;
+  edm::ESGetToken<MagneticField, IdealMagneticFieldRecord> theBFieldTok;
   bool StoreDeDxInfo_;
   bool verbose_;
   bool TestVerbose_;
@@ -198,6 +199,8 @@ private:
   double MuonsDCA              = -9999999;
   double kaonmass              = 0.493677;
   double pionmass              = 0.139570; 
+  double muonmass              = 0.105658;
+  double electronmass          = 0.000510;
   double DeltaRPhotonJpsi      = -9999999;
   double DeltaRPhotonPsi       = -9999999;
   double JpsiPhotonDCA         = -9999999;

@@ -60,6 +60,7 @@ class KinematicConstrainedFit{
 		bool TetraObjectVertexFit(std::vector<reco::TransientTrack> muonTT, const double muonMass, std::vector<reco::TransientTrack> electronTT, const double eleMass);
 		
 		double getBhadronProb() {return vtxprob_Bhadron;}
+		double getBhadronMass() {return mass_Bhadron;}
 		RefCountedKinematicParticle getBhardon()       {return bhadron;}
 		RefCountedKinematicVertex   getVertex()        {return bVertex;}
 		RefCountedKinematicTree     getBhadronTree()   {return myTree_B;}
@@ -68,6 +69,7 @@ class KinematicConstrainedFit{
 	private:
 	
 		double                              vtxprob_Bhadron;
+		double                              mass_Bhadron;
 		RefCountedKinematicParticle         bhadron;
 		RefCountedKinematicVertex           bVertex;
 		RefCountedKinematicTree             myTree_B;

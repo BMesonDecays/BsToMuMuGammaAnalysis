@@ -132,6 +132,7 @@ bool KinematicConstrainedFit::BsToJpsiPhiFit(std::vector<reco::TransientTrack> t
     return 0;    
   }
   vtxprob_Bhadron = TMath::Prob(bhadron->chiSquared(), (int)bhadron->degreesOfFreedom());
+  mass_Bhadron    = bhadron->currentState().mass();
   delete jpsi_const;
   return 1;
 }
@@ -186,6 +187,7 @@ bool KinematicConstrainedFit::TrippleObjectVertexFit(std::vector<reco::Transient
 		return 0;
 	}
 	vtxprob_Bhadron = TMath::Prob(bhadron->chiSquared(), (int)bhadron->degreesOfFreedom());
+	mass_Bhadron    = bhadron->currentState().mass();
 	delete photon_const;
 	return 1;
 }
@@ -243,7 +245,8 @@ bool KinematicConstrainedFit::TetraObjectVertexFit(std::vector<reco::TransientTr
                 return 0;
         }
         vtxprob_Bhadron = TMath::Prob(bhadron->chiSquared(), (int)bhadron->degreesOfFreedom());
-        delete photon_const;
+        mass_Bhadron    = bhadron->currentState().mass();
+	delete photon_const;
         return 1;
 
 }

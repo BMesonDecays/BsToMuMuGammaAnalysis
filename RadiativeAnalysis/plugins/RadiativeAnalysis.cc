@@ -162,7 +162,7 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig):
 	genParticlesLabel                 = iConfig.getParameter<InputTag>("genParticlesLabel");
         genParticlesTok                   = consumes<edm::View<reco::GenParticle>>(genParticlesLabel);
         MuonTag                           = iConfig.getParameter<edm::InputTag>("MuonTag");
-        MuonTagTok                        = consumes<edm::View<pat::Muon>>(MuonTag);
+        MuonTagTok                        = consumes<std::vector<reco::Muon>>(MuonTag);
 	JetTag                            = iConfig.getParameter<edm::InputTag>("JetTag");
         JetTagTok                         = consumes<edm::View<pat::Jet>>(JetTag);
 	PhotonTag                         = iConfig.getParameter<edm::InputTag>("PhotonTag");
@@ -201,6 +201,7 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig):
 	convertedPhotonsTag               = iConfig.getParameter<edm::InputTag>("convertedPhotons");
 	convertedPhotonsTagTok            = consumes<std::vector<pat::CompositeCandidate>>(convertedPhotonsTag);
         trackBuilderTok                   = esConsumes(edm::ESInputTag("", "TransientTrackBuilder"));
+	theBFieldTok                      = esConsumes<MagneticField, IdealMagneticFieldRecord>();
 
 
 	StoreDeDxInfo_                    = iConfig.getParameter<bool>("StoreDeDxInfo");
@@ -403,8 +404,13 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
         bmmgRootTree_->BSdsigmaZ_  = BSdsigmaZ;
         bmmgRootTree_->BSdxdz_     = BSdxdz;
         bmmgRootTree_->BSdydz_     = BSdydz;
-	
-	
+
+
+	//edm::ESHandle<TransientTrackBuilder> theB;
+        //iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder",theB);
+        const auto& trackBuilder = iSetup.getData(trackBuilderTok);
+       	const auto& theBField    = iSetup.getData(theBFieldTok);
+        	
 	int nBs=0;
 	edm::Handle<edm::View<reco::GenParticle> > genParticles;
 	if(isMCstudy_)
@@ -424,13 +430,7 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
                }
 
 
-	 edm::Handle<std::vector<pat::CompositeCandidate>> convPhotons;
-	 iEvent.getByToken(convertedPhotonsTagTok, convPhotons);
-	 const pat::CompositeCandidateCollection * conversions = convPhotons.product();
-	 for (pat::CompositeCandidateCollection::const_iterator conv = conversions->begin(); conv!= conversions->end(); ++conv){
-		 const reco::Track tk0=*conv->userData<reco::Track>("track0");
-		 std::cout<< " pt and phi of the composite candidate : "<< tk0.pt()<< "\t" << tk0.phi()<<"\n";
-	 }
+
 	 edm::Handle<edm::TriggerResults> hltbits;
 	 iEvent.getByToken(triggerbitsTok, hltbits);
 	 std::vector<std::string> triggersOfInterest = {
@@ -485,14 +485,54 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 	}
 
 
-
-	//edm::ESHandle<TransientTrackBuilder> theB;
-	//iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder",theB);
-	const auto& trackBuilder = iSetup.getData(trackBuilderTok);
         
 	//edm::Handle<View<pat::PackedCandidate>> pfCands;
 	//iEvent.getByToken(pfCandTagTok, pfCands);
-	
+	edm::Handle<std::vector<reco::Muon>> muons;
+        iEvent.getByToken(MuonTagTok, muons);
+
+
+        edm::Handle<std::vector<pat::CompositeCandidate>> convPhotons;
+        iEvent.getByToken(convertedPhotonsTagTok, convPhotons);
+        const pat::CompositeCandidateCollection * conversions = convPhotons.product();
+	for(size_t i=0; i < muons->size(); ++i){
+		const pat::Muon & mu1 = (*muons)[i];
+		if (mu1.innerTrack().isNull())continue;
+		reco::TrackRef muTrack1 = mu1.track();
+		if(!muTrack1) continue;
+		reco::TransientTrack muonTT1 = reco::TransientTrack(muTrack1, &theBField);
+		for (size_t j=i+1; j < muons->size(); ++j){
+			const pat::Muon & mu2 = (*muons)[j];
+			if (mu2.innerTrack().isNull())continue;
+			if(mu1.charge()*mu2.charge() ==1 ) continue;
+			reco::TrackRef muTrack2 = mu2.track();
+			if(!muTrack2) continue;
+			reco::TransientTrack muonTT2 = reco::TransientTrack(muTrack2, &theBField);
+			std::vector<TransientTrack> tttrk_muons;
+			tttrk_muons.push_back(muonTT1);
+			tttrk_muons.push_back(muonTT2);
+
+			for (pat::CompositeCandidateCollection::const_iterator conv = conversions->begin(); conv!= conversions->end(); ++conv){
+				const reco::Track eletk0=*conv->userData<reco::Track>("track0");
+				const reco::Track eletk1=*conv->userData<reco::Track>("track1");
+				reco::TrackCollection convTracks;
+				convTracks.push_back(eletk0);
+				convTracks.push_back(eletk1);
+				std::vector<reco::TransientTrack> tttrk_electrons;
+				reco::TransientTrack electronTT1(convTracks[0], &theBField );
+				reco::TransientTrack electronTT2(convTracks[1], &theBField );
+				tttrk_electrons.push_back(electronTT1);
+				tttrk_electrons.push_back(electronTT2);
+                                KinematicConstrainedFit BCandFitter;
+				bool fitSuccess = BCandFitter.TrippleObjectVertexFit(tttrk_muons,nominalMuonMass,tttrk_electrons,nominalElectronMass);
+				if(fitSuccess != 1) continue;
+				
+				bmmgRootTree_->mass_3vtx_ = BCandFitter.getBhadronMass();
+				//std::cout<< " pt and phi of the composite candidate 1sttrack: "<< eletk0.pt()<< "\t" << eletk0.phi()<<"\n";
+				//std::cout<< " pt and phi of the composite candidate 2ndtrack: "<< eletk1.pt()<< "\t" << eletk1.phi()<<"\n";
+			}
+		}
+	}
 	edm::Handle<edm::View<reco::Photon>> photon;
         iEvent.getByToken(PhotonTagTok, photon);
         bmmgRootTree_->photonMultiplicity_ = photon->size();

@@ -23,7 +23,9 @@ class RadiativeRootTree {
 		void fill();
 		void setBranchAddresses();
 
-	public: 
+	public:
+	         double mass_4vtx_;
+	         double mass_3vtx_;	 
 		 int    runNumber_;
                  int    PUinteraction_;
 		 int    PUTrueinteraction_;

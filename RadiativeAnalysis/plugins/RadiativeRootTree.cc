@@ -15,7 +15,8 @@ void RadiativeRootTree::createTree(const std::string filename)
   int bufsize = 256000;
   // create tree structure
   bmmgTree_ = new TTree("BMMGTree","BMMGTree",bufsize);
-
+  bmmgTree_->Branch("mass_4vtx",&mass_4vtx_ ,"mass_4vtx/D");
+  bmmgTree_->Branch("mass_3vtx",&mass_3vtx_ ,"mass_3vtx/D");
   bmmgTree_->Branch("runNumber",&runNumber_ ,"runNumber/I");
   bmmgTree_->Branch("eventNumber",&eventNumber_,"eventNumber/i");
   bmmgTree_->Branch("lumiSection",&lumiSection_,"lumiSection/I");
@@ -138,10 +139,6 @@ void RadiativeRootTree::createTree(const std::string filename)
   bmmgTree_->Branch("cospsi",&cospsi_,"cospsi/D");
   bmmgTree_->Branch("AngleBsDecayLength",&AngleBsDecayLength_,"AngleBsDecayLength/D");
 
-
-
-
-
   bmmgTree_->Branch("JpsiGenPVz_",&JpsiGenPVz_,"JpsiGenPVz/D");
   bmmgTree_->Branch("JpsiGenPVy_",&JpsiGenPVy_,"JpsiGenPVy/D");
   bmmgTree_->Branch("JpsiGenPVx_",&JpsiGenPVx_,"JpsiGenPVx/D");
@@ -164,6 +161,8 @@ void RadiativeRootTree::writeFile()
 }
 void RadiativeRootTree::resetEntries()
 {
+	mass_4vtx_          = -9999999;
+	mass_3vtx_          = -9999999;
 	runNumber_          = -9999999;
 	eventNumber_        = -9999999;
 	lumiSection_        = -9999999;
@@ -349,6 +348,9 @@ void RadiativeRootTree::readTree(std::vector<std::string> filenames){
   setBranchAddresses();
 }
 void RadiativeRootTree::setBranchAddresses(){
+
+  bmmgTree_->SetBranchAddress("mass_4vtx", &mass_4vtx_);
+  bmmgTree_->SetBranchAddress("mass_3vtx", &mass_3vtx_);
   bmmgTree_->SetBranchAddress("runNumber", &runNumber_);
   bmmgTree_->SetBranchAddress("eventNumber", &eventNumber_);
   bmmgTree_->SetBranchAddress("lumiSection", &lumiSection_ );
@@ -468,15 +470,6 @@ void RadiativeRootTree::setBranchAddresses(){
   
   bmmgTree_->SetBranchAddress("electronMultiplicity", &electronMultiplicity_);
   bmmgTree_->SetBranchAddress("pfCandMultiplicity", &pfCandMultiplicity_);
-
-  double JpsiGenLxy_;
-                 double JpsiGenPVz_;
-                 double JpsiGenPVy_;
-                 double JpsiGenPVx_;
-                 double JpsiGenPt_;
-                 double JpsiGenLxyOld_ ;
-                 double JpsiGenLxyOverPt_;
-                 int    JpsiGenNumberOfCandidates_;
 
   bmmgTree_->SetBranchAddress("JpsiGenPVx", &JpsiGenPVx_);
   bmmgTree_->SetBranchAddress("JpsiGenPVy", &JpsiGenPVy_);
