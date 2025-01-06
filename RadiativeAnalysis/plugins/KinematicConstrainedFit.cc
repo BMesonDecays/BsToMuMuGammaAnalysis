@@ -199,54 +199,96 @@ bool KinematicConstrainedFit::TetraObjectVertexFit(std::vector<reco::TransientTr
 	const ParticleMass zero_mass(0);
         float zero_sigma = 1E-6;
         float eleSigma = 1E-6;
-        std::vector<RefCountedKinematicParticle> PhotonParticles;
-	KinematicParticleFactoryFromTransientTrack pFactory;
-        PhotonParticles.push_back(pFactory.particle(electronTT[0], eleMass, float(0), float(0), eleSigma));
-        PhotonParticles.push_back(pFactory.particle(electronTT[1], eleMass, float(0), float(0), eleSigma));
-        PhotonParticles.push_back(pFactory.particle(electronTT[2], eleMass, float(0), float(0), eleSigma));
-        PhotonParticles.push_back(pFactory.particle(electronTT[3], eleMass, float(0), float(0), eleSigma));
-	KinematicParticleVertexFitter photonfitter;
-        RefCountedKinematicTree photonVertexFitTree;
-        photonVertexFitTree = photonfitter.fit(PhotonParticles);
-        if (photonVertexFitTree->isEmpty())return 0;
-        edm::ParameterSet pSet;
-        pSet.addParameter<double>("maxDistance", 3);
-        pSet.addParameter<int>("maxNbrOfIterations", 10000);
-        KinematicParticleVertexFitter Fitter(pSet);
-        photonVertexFitTree = Fitter.fit(PhotonParticles);
-
-        if (photonVertexFitTree->isEmpty()) return 0;
-        KinematicParticleFitter csFitterPhoton;
-        KinematicConstraint * photon_const = new MassKinematicConstraint(zero_mass, zero_sigma);
-        photonVertexFitTree = csFitterPhoton.fit(photon_const, photonVertexFitTree);
-        if(photonVertexFitTree->isEmpty()){
-                delete photon_const;
-                return 0;
-        }
-        photonVertexFitTree->movePointerToTheTop();
-	RefCountedKinematicParticle fittedPhotonBranch = photonVertexFitTree->currentParticle();
-        float muon_sigma = 0.0000000001;
+	float muon_sigma = 0.0000000001;
         float chi = 0.;
         float ndf = 0.;
-        std::vector<RefCountedKinematicParticle> allParticlesMu;
+	double nominalJpsiMass =  3.096916;
+	float jpsiMsigma = 0.00004;
+	KinematicParticleFactoryFromTransientTrack pFactory;
+	std::vector<RefCountedKinematicParticle> allParticlesMu;
         allParticlesMu.push_back(pFactory.particle (muonTT[0], muonMass, chi, ndf, muon_sigma));
         allParticlesMu.push_back(pFactory.particle (muonTT[1], muonMass, chi, ndf, muon_sigma));
-        allParticlesMu.push_back(fittedPhotonBranch);
-        myTree_B = Fitter.fit(allParticlesMu);
+	KinematicParticleVertexFitter Fitter;
+	RefCountedKinematicTree JpsiTree = Fitter.fit(allParticlesMu);
+	if(JpsiTree->isEmpty()) return 0;
+	KinematicParticleFitter constFitter;
+	KinematicConstraint * jpsi_const = new MassKinematicConstraint( nominalJpsiMass, jpsiMsigma);
+	JpsiTree = constFitter.fit(jpsi_const,JpsiTree);
+	myTree_Jpsi=JpsiTree;
+	if(JpsiTree->isEmpty()) {
+		delete jpsi_const;
+		return 0;
+	}
+	JpsiTree->movePointerToTheTop();
+	RefCountedKinematicParticle Jpsi_branch = JpsiTree->currentParticle();
+	// Fit the first photon
+	std::vector<RefCountedKinematicParticle> firstPhoton;
+	firstPhoton.push_back(pFactory.particle(electronTT[0], eleMass, float(0), float(0), eleSigma));
+	firstPhoton.push_back(pFactory.particle(electronTT[1], eleMass, float(0), float(0), eleSigma));
+
+	KinematicParticleVertexFitter photonfitter1;
+	RefCountedKinematicTree photonVertexFitTree_firstPhoton = photonfitter1.fit(firstPhoton);
+	if (!photonVertexFitTree_firstPhoton || photonVertexFitTree_firstPhoton->isEmpty()) return 0;
+
+	edm::ParameterSet pSet;
+	pSet.addParameter<double>("maxDistance", 3);
+	pSet.addParameter<int>("maxNbrOfIterations", 10000);
+	KinematicParticleVertexFitter photonfitter1_optimized(pSet);
+	photonVertexFitTree_firstPhoton = photonfitter1_optimized.fit(firstPhoton);
+	if (!photonVertexFitTree_firstPhoton || photonVertexFitTree_firstPhoton->isEmpty()) return 0;
+
+	KinematicParticleFitter csFitterPhoton_firstPhoton;
+	KinematicConstraint* photon_const_firstPhoton = new MassKinematicConstraint(zero_mass, zero_sigma);
+	photonVertexFitTree_firstPhoton = csFitterPhoton_firstPhoton.fit(photon_const_firstPhoton, photonVertexFitTree_firstPhoton);
+	if (!photonVertexFitTree_firstPhoton || photonVertexFitTree_firstPhoton->isEmpty()) {
+   		 delete photon_const_firstPhoton;
+   		 return 0;
+	}
+	photonVertexFitTree_firstPhoton->movePointerToTheTop();
+	RefCountedKinematicParticle fittedPhotonBranch_firstPhoton = photonVertexFitTree_firstPhoton->currentParticle();
+
+	// Fit the second photon
+	std::vector<RefCountedKinematicParticle> secondPhoton;
+	secondPhoton.push_back(pFactory.particle(electronTT[2], eleMass, float(0), float(0), eleSigma));
+	secondPhoton.push_back(pFactory.particle(electronTT[3], eleMass, float(0), float(0), eleSigma));
+
+	KinematicParticleVertexFitter photonfitter2;
+	RefCountedKinematicTree photonVertexFitTree_secondPhoton = photonfitter2.fit(secondPhoton);
+	if (!photonVertexFitTree_secondPhoton || photonVertexFitTree_secondPhoton->isEmpty()) return 0;
+
+	KinematicParticleVertexFitter photonfitter2_optimized(pSet);
+	photonVertexFitTree_secondPhoton = photonfitter2_optimized.fit(secondPhoton);
+	if (!photonVertexFitTree_secondPhoton || photonVertexFitTree_secondPhoton->isEmpty()) return 0;
+
+	KinematicParticleFitter csFitterPhoton_secondPhoton;
+	KinematicConstraint* photon_const_secondPhoton = new MassKinematicConstraint(zero_mass, zero_sigma);
+	photonVertexFitTree_secondPhoton = csFitterPhoton_secondPhoton.fit(photon_const_secondPhoton, photonVertexFitTree_secondPhoton);
+	if (!photonVertexFitTree_secondPhoton || photonVertexFitTree_secondPhoton->isEmpty()) {
+		delete photon_const_secondPhoton;
+		return 0;
+	}
+	photonVertexFitTree_secondPhoton->movePointerToTheTop();
+	RefCountedKinematicParticle fittedPhotonBranch_secondPhoton = photonVertexFitTree_secondPhoton->currentParticle();
+	std::vector<RefCountedKinematicParticle> allParticlesB;
+	allParticlesB.push_back(fittedPhotonBranch_firstPhoton);
+	allParticlesB.push_back(fittedPhotonBranch_secondPhoton);
+	allParticlesB.push_back(Jpsi_branch);
+
+        myTree_B = Fitter.fit(allParticlesB);
         if(myTree_B->isEmpty()) {
-                delete photon_const;
+                delete jpsi_const;
                 return 0;
         }
         myTree_B->movePointerToTheTop();
         bhadron = myTree_B->currentParticle();
         bVertex = myTree_B->currentDecayVertex();
         if (!bVertex->vertexIsValid()) {
-                delete photon_const;
+                delete jpsi_const;
                 return 0;
         }
         vtxprob_Bhadron = TMath::Prob(bhadron->chiSquared(), (int)bhadron->degreesOfFreedom());
         mass_Bhadron    = bhadron->currentState().mass();
-	delete photon_const;
+	delete jpsi_const;
         return 1;
 
 }

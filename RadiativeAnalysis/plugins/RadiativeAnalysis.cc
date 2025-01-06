@@ -575,7 +575,7 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
                                 tttrk_electrons.push_back(electronTT3);
                                 tttrk_electrons.push_back(electronTT4);
                                 KinematicConstrainedFit BCandFitter;
-                                bool fitSuccess = BCandFitter.TrippleObjectVertexFit(tttrk_muons,nominalMuonMass,tttrk_electrons,nominalElectronMass);
+                                bool fitSuccess = BCandFitter.TetraObjectVertexFit(tttrk_muons,nominalMuonMass,tttrk_electrons,nominalElectronMass);
                                 if(fitSuccess != 1) continue;
                                 bmmgRootTree_->mass_4vtx_ = BCandFitter.getBhadronMass();
 			}
