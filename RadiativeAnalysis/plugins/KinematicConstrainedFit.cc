@@ -150,7 +150,7 @@ bool KinematicConstrainedFit::TrippleObjectVertexFit(std::vector<reco::Transient
         KinematicParticleVertexFitter photonfitter;
         RefCountedKinematicTree photonVertexFitTree;
         photonVertexFitTree = photonfitter.fit(PhotonParticles);
-	if (!photonVertexFitTree->isEmpty())return 0;
+	if (photonVertexFitTree->isEmpty())return 0;
         edm::ParameterSet pSet;
         pSet.addParameter<double>("maxDistance", 3);
         pSet.addParameter<int>("maxNbrOfIterations", 10000);
@@ -208,7 +208,7 @@ bool KinematicConstrainedFit::TetraObjectVertexFit(std::vector<reco::TransientTr
 	KinematicParticleVertexFitter photonfitter;
         RefCountedKinematicTree photonVertexFitTree;
         photonVertexFitTree = photonfitter.fit(PhotonParticles);
-        if (!photonVertexFitTree->isEmpty())return 0;
+        if (photonVertexFitTree->isEmpty())return 0;
         edm::ParameterSet pSet;
         pSet.addParameter<double>("maxDistance", 3);
         pSet.addParameter<int>("maxNbrOfIterations", 10000);

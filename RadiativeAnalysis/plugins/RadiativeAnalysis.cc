@@ -7,6 +7,8 @@
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/KinematicConstrainedFit.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/RadiativeRootTree.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/RadiativeAnalysis.h"
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/TrippleObjectVertex.h"
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/TetraObjectVertex.h"
 
 
 #include <memory>
@@ -525,14 +527,63 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 				tttrk_electrons.push_back(electronTT2);
                                 KinematicConstrainedFit BCandFitter;
 				bool fitSuccess = BCandFitter.TrippleObjectVertexFit(tttrk_muons,nominalMuonMass,tttrk_electrons,nominalElectronMass);
-				if(fitSuccess != 1) continue;
-				
+				if(fitSuccess != 1) continue;	
 				bmmgRootTree_->mass_3vtx_ = BCandFitter.getBhadronMass();
-				//std::cout<< " pt and phi of the composite candidate 1sttrack: "<< eletk0.pt()<< "\t" << eletk0.phi()<<"\n";
-				//std::cout<< " pt and phi of the composite candidate 2ndtrack: "<< eletk1.pt()<< "\t" << eletk1.phi()<<"\n";
 			}
 		}
 	}
+
+
+	for(size_t i=0; i < muons->size(); ++i){
+                const pat::Muon & mu1 = (*muons)[i];
+                if (mu1.innerTrack().isNull())continue;
+                reco::TrackRef muTrack1 = mu1.track();
+                if(!muTrack1) continue;
+                reco::TransientTrack muonTT1 = reco::TransientTrack(muTrack1, &theBField);
+                for (size_t j=i+1; j < muons->size(); ++j){
+                        const pat::Muon & mu2 = (*muons)[j];
+                        if (mu2.innerTrack().isNull())continue;
+                        if(mu1.charge()*mu2.charge() ==1 ) continue;
+                        reco::TrackRef muTrack2 = mu2.track();
+                        if(!muTrack2) continue;
+                        reco::TransientTrack muonTT2 = reco::TransientTrack(muTrack2, &theBField);
+                        std::vector<TransientTrack> tttrk_muons;
+                        tttrk_muons.push_back(muonTT1);
+                        tttrk_muons.push_back(muonTT2);
+
+                        for (pat::CompositeCandidateCollection::const_iterator conv1 = conversions->begin(); conv1!= conversions->end(); ++conv1){
+               
+				std::vector<reco::TransientTrack> tttrk_electrons;
+				const reco::Track eletk0=*conv1->userData<reco::Track>("track0");
+                                const reco::Track eletk1=*conv1->userData<reco::Track>("track1");
+				reco::TrackCollection convTracks1;
+				convTracks1.push_back(eletk0);
+                                convTracks1.push_back(eletk1);
+				reco::TransientTrack electronTT1(convTracks1[0], &theBField );
+                                reco::TransientTrack electronTT2(convTracks1[1], &theBField );
+				tttrk_electrons.push_back(electronTT1);
+                                tttrk_electrons.push_back(electronTT2);
+			for (pat::CompositeCandidateCollection::const_iterator conv2 = conv1 + 1; conv2 != conversions->end(); ++conv2) {
+				const reco::Track eletk2=*conv2->userData<reco::Track>("track0");
+				const reco::Track eletk3=*conv2->userData<reco::Track>("track1");
+				//std::cout<< " the track output 2 and 3 : "<< eletk2.pt() << "\t"<< eletk3.pt() << "\t" <<eletk2.eta() << "\t"<< eletk3.eta()<< "\n";
+				reco::TrackCollection convTracks2;
+                                convTracks2.push_back(eletk2);
+                                convTracks2.push_back(eletk3);
+                                reco::TransientTrack electronTT3(convTracks2[0], &theBField );
+                                reco::TransientTrack electronTT4(convTracks2[1], &theBField );
+                                tttrk_electrons.push_back(electronTT3);
+                                tttrk_electrons.push_back(electronTT4);
+                                KinematicConstrainedFit BCandFitter;
+                                bool fitSuccess = BCandFitter.TrippleObjectVertexFit(tttrk_muons,nominalMuonMass,tttrk_electrons,nominalElectronMass);
+                                if(fitSuccess != 1) continue;
+                                bmmgRootTree_->mass_4vtx_ = BCandFitter.getBhadronMass();
+			}
+		}
+                }
+        }
+
+
 	edm::Handle<edm::View<reco::Photon>> photon;
         iEvent.getByToken(PhotonTagTok, photon);
         bmmgRootTree_->photonMultiplicity_ = photon->size();
@@ -972,7 +1023,7 @@ void RadiativeAnalysis::fillMCInfo(edm::Handle<edm::View<reco::GenParticle>>& ge
 
  		 }	// ned of for loop
 		} // end of if numJpsiDaus
-	cout << "JpsiPhotoIdx.size() + JpsiMuIdx.size() = " <<  JpsiPhotoIdx.size() + JpsiMuIdx.size() << " = " << numJpsiDaus <<"\n";
+	//cout << "JpsiPhotoIdx.size() + JpsiMuIdx.size() = " <<  JpsiPhotoIdx.size() + JpsiMuIdx.size() << " = " << numJpsiDaus <<"\n";
 	if(JpsiMuIdx.size() == 2){
 		  if( JpsiPhotoIdx.size() + JpsiMuIdx.size() == numJpsiDaus &&  genBsCand.daughter(JpsiMuIdx[0])->pdgId() == -genBsCand.daughter(JpsiMuIdx[1])->pdgId()  ) {
 
@@ -985,8 +1036,8 @@ void RadiativeAnalysis::fillMCInfo(edm::Handle<edm::View<reco::GenParticle>>& ge
                    bmmgRootTree_->JpsiGenLxy_ = GenDisplacementFromBeamspot.perp();
                    bmmgRootTree_->JpsiGenLxyOverPt_ = ( GenDisplacementFromBeamspot.x()*genBsCand.px()  +  GenDisplacementFromBeamspot.y()*genBsCand.py()  ) /( genBsCand.px() * genBsCand.px() + genBsCand.py() * genBsCand.py() );
 	           bmmgRootTree_->JpsiGenPt_ = genBsCand.pt();
-		   cout << "JpsiGenLxy_ : "   << bmmgRootTree_->JpsiGenLxy_ << " = " << GenDisplacementFromBeamspot.perp() << endl;
-		   cout << "JpsiGenLxy/Pt:  " << bmmgRootTree_->JpsiGenLxyOverPt_ << endl;
+		   //cout << "JpsiGenLxy_ : "   << bmmgRootTree_->JpsiGenLxy_ << " = " << GenDisplacementFromBeamspot.perp() << endl;
+		   //cout << "JpsiGenLxy/Pt:  " << bmmgRootTree_->JpsiGenLxyOverPt_ << endl;
 		  }
 	}
 	}
