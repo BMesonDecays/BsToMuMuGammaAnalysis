@@ -28,6 +28,21 @@
 #include "DataFormats/PatCandidates/interface/CompositeCandidate.h"
 #include "DataFormats/PatCandidates/interface/Photon.h"
 #include "DataFormats/EgammaCandidates/interface/Photon.h"
+
+#include "FWCore/Framework/interface/Frameworkfwd.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
+#include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/MakerMacros.h"
+#include "FWCore/ParameterSet/interface/ParameterSet.h"
+#include "FWCore/Utilities/interface/InputTag.h"
+
+#include "DataFormats/Common/interface/Handle.h"
+#include "FWCore/Framework/interface/Event.h"
+#include "FWCore/ParameterSet/interface/Registry.h"
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
+#include "FWCore/Framework/interface/ESHandle.h"
+
+
 #include <memory>
 #include <cstddef>
 #include <cfloat>
@@ -43,7 +58,15 @@ class TrippleObjectVertex{
     public: 
         TrippleObjectVertex();
         ~TrippleObjectVertex(){}
-        bool TrippleObjectDecay(double alpha, float beta );
+        struct DecayChainVariables{
+		double mass;
+	};
+
+	DecayChainVariables TrippleObjectVertexObservables(const std::vector<reco::Muon>& muons, 
+			const pat::CompositeCandidateCollection& conversions,
+			const MagneticField& bField,
+			const double nominalMuonMass,
+			const double nominalElectronMass);
       
 };
 

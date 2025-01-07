@@ -497,42 +497,9 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
         edm::Handle<std::vector<pat::CompositeCandidate>> convPhotons;
         iEvent.getByToken(convertedPhotonsTagTok, convPhotons);
         const pat::CompositeCandidateCollection * conversions = convPhotons.product();
-	for(size_t i=0; i < muons->size(); ++i){
-		const pat::Muon & mu1 = (*muons)[i];
-		if (mu1.innerTrack().isNull())continue;
-		reco::TrackRef muTrack1 = mu1.track();
-		if(!muTrack1) continue;
-		reco::TransientTrack muonTT1 = reco::TransientTrack(muTrack1, &theBField);
-		for (size_t j=i+1; j < muons->size(); ++j){
-			const pat::Muon & mu2 = (*muons)[j];
-			if (mu2.innerTrack().isNull())continue;
-			if(mu1.charge()*mu2.charge() ==1 ) continue;
-			reco::TrackRef muTrack2 = mu2.track();
-			if(!muTrack2) continue;
-			reco::TransientTrack muonTT2 = reco::TransientTrack(muTrack2, &theBField);
-			std::vector<TransientTrack> tttrk_muons;
-			tttrk_muons.push_back(muonTT1);
-			tttrk_muons.push_back(muonTT2);
-
-			for (pat::CompositeCandidateCollection::const_iterator conv = conversions->begin(); conv!= conversions->end(); ++conv){
-				const reco::Track eletk0=*conv->userData<reco::Track>("track0");
-				const reco::Track eletk1=*conv->userData<reco::Track>("track1");
-				reco::TrackCollection convTracks;
-				convTracks.push_back(eletk0);
-				convTracks.push_back(eletk1);
-				std::vector<reco::TransientTrack> tttrk_electrons;
-				reco::TransientTrack electronTT1(convTracks[0], &theBField );
-				reco::TransientTrack electronTT2(convTracks[1], &theBField );
-				tttrk_electrons.push_back(electronTT1);
-				tttrk_electrons.push_back(electronTT2);
-                                KinematicConstrainedFit BCandFitter;
-				bool fitSuccess = BCandFitter.TrippleObjectVertexFit(tttrk_muons,nominalMuonMass,tttrk_electrons,nominalElectronMass);
-				if(fitSuccess != 1) continue;	
-				bmmgRootTree_->mass_3vtx_ = BCandFitter.getBhadronMass();
-			}
-		}
-	}
-
+	TrippleObjectVertex  tripvtxObservables;
+	auto triDecayVar = tripvtxObservables.TrippleObjectVertexObservables(*muons, *conversions, theBField, nominalMuonMass, nominalElectronMass);
+	bmmgRootTree_->mass_3vtx_ = triDecayVar.mass;
 
 	for(size_t i=0; i < muons->size(); ++i){
                 const pat::Muon & mu1 = (*muons)[i];
