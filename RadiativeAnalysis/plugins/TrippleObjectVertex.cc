@@ -43,7 +43,6 @@ TrippleObjectVertex::DecayChainVariables TrippleObjectVertex::TrippleObjectVerte
     const double nominalMuonMass,
     const double nominalElectronMass){
     DecayChainVariables dcv;
-    dcv.mass = 0.0;
     for (size_t i = 0; i < muons.size(); ++i) {
         const reco::Muon& mu1 = muons[i];
         if (mu1.innerTrack().isNull()) continue;

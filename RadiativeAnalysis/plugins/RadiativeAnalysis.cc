@@ -9,7 +9,7 @@
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/RadiativeAnalysis.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/TrippleObjectVertex.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/TetraObjectVertex.h"
-
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/BeamSpotAndVertex.h"
 
 #include <memory>
 #include <cstddef>
@@ -183,7 +183,7 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig):
         vertexBeamSpot                    = iConfig.getParameter<edm::InputTag>("vertexBeamSpot");
         vertexBeamSpotTok                 = consumes<reco::BeamSpot>(vertexBeamSpot);
 	primaryvertex                     = iConfig.getParameter<edm::InputTag>("primaryvertex");
-        primaryvertexTok                  = consumes<edm::View<reco::Vertex>>(primaryvertex);
+        primaryvertexTok                  = consumes<std::vector<reco::Vertex>>(primaryvertex);
 	triggerbits                       = iConfig.getParameter<edm::InputTag>("triggerbits");
         triggerbitsTok                    = consumes<edm::TriggerResults>(triggerbits);
 	if(isMINIAOD_){
@@ -287,25 +287,6 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	}
 
 
-	int    VtxIndex              = -99;
-	//====================================================Beam Spot
-        double BSx         = -9999999.;
-	double BSy         = -9999999.;
-	double BSz         = -9999999.;
-	double BSdx        = -9999999.;
-	double BSdy        = -9999999.;
-	double BSdz        = -9999999.;
-	double BSdxdz      = -9999999.;
-	double BSdydz      = -9999999.;
-	double BSsigmaZ    = -9999999.;
-	double BSdsigmaZ   = -9999999.;
-	//========================================================PV
-	double PVx         = -9999999.;
-	double PVy         = -9999999.;
-	double PVz         = -9999999.;
-	double PVerrx      = -9999999.;
-	double PVerry      = -9999999.;
-	double PVerrz      = -9999999.;
 	
 	excludedPhotons.clear();	
 	
@@ -314,98 +295,37 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	
 	edm::Handle<reco::BeamSpot> vertexBeamSpot ;
 	iEvent.getByToken(vertexBeamSpotTok,vertexBeamSpot);
-	BSx = vertexBeamSpot->x0();
-	BSy = vertexBeamSpot->y0();
-	BSz = vertexBeamSpot->z0();
-	BSdx = vertexBeamSpot->x0Error();
-	BSdy = vertexBeamSpot->y0Error();
-	BSdz = vertexBeamSpot->z0Error();
-	BSdxdz = vertexBeamSpot->dxdz();
-	BSdydz = vertexBeamSpot->dydz();
-	BSsigmaZ = vertexBeamSpot->sigmaZ();
-	BSdsigmaZ = vertexBeamSpot->sigmaZ0Error();
+	edm::Handle<std::vector<reco::Vertex>> recVtxs;
+        iEvent.getByToken(primaryvertexTok, recVtxs);
+	if (!vertexBeamSpot.isValid() || recVtxs->empty()) {return;}
 
-	
-	edm::Handle<edm::View<reco::Vertex>> recVtxs;
-	iEvent.getByToken(primaryvertexTok, recVtxs);
-	if(recVtxs->empty())return;
-	const reco::Vertex &recVtxs_track = recVtxs->front();
-	bmmgRootTree_->NTracksPVbeforecut_ = recVtxs_track.nTracks();
-        bmmgRootTree_->NVerticesbeforecut_ = recVtxs->size();	
-	NSelectedVertices = 0; 
+	BeamSpotAndVertex bsandvtxObservables;
+	auto bsandvtxVar = bsandvtxObservables.BSAndVtxObservables(*vertexBeamSpot, *recVtxs);
+	bmmgRootTree_->NTracksPVbeforecut_ = bsandvtxVar.pv_ntracks;
+	bmmgRootTree_->NVerticesbeforecut_ = bsandvtxVar.pv_multiplicity;
+	for (int i = 0; i < 9; ++i) {bmmgRootTree_->PVcovariance_[i] = bsandvtxVar.pv_covariance[i];}
+	bmmgRootTree_->PVndof_ = bsandvtxVar.pv_ndof;
+        bmmgRootTree_->PVrho_ = bsandvtxVar.pv_rho;
+	bmmgRootTree_->NVerticesaftercut_ = bsandvtxVar.pv_cutmultiplicity;
+	bmmgRootTree_->getVtx(bsandvtxVar.bs_x, bsandvtxVar.bs_y, bsandvtxVar.bs_z,
+                      bsandvtxVar.pv_x, bsandvtxVar.pv_y, bsandvtxVar.pv_z,
+                      bsandvtxVar.pv_errx, bsandvtxVar.pv_erry, bsandvtxVar.pv_errz);
+	bmmgRootTree_->BSdx_       = bsandvtxVar.bs_dx;
+	bmmgRootTree_->BSdy_       = bsandvtxVar.bs_dy;
+	bmmgRootTree_->BSdz_       = bsandvtxVar.bs_dz;
+	bmmgRootTree_->BSsigmaZ_   = bsandvtxVar.bs_sigmaZ;
+	bmmgRootTree_->BSdsigmaZ_  = bsandvtxVar.bs_dsigmaZ;
+	bmmgRootTree_->BSdxdz_     = bsandvtxVar.bs_dxdz;
+	bmmgRootTree_->BSdydz_     = bsandvtxVar.bs_dydz;
+
+
+
 	/*for (const auto& vertex : *recVtxs) {
 		for (auto trackRef = vertex.tracks_begin(); trackRef != vertex.tracks_end(); ++trackRef) {
 			std::cout << "Referenced track key: " << trackRef->key() << "\n";
 			std::cout << "Referenced track weight: " << vertex.trackWeight(*trackRef) << "\n";
 		}
 	}*/
-	
-	for (size_t iVtx = 0; iVtx < recVtxs->size(); ++iVtx) {
-		VtxIndex = iVtx;
-		const reco::Vertex& vtx = (*recVtxs)[iVtx];
-		int iteratorCov =0;
-		for(int i = 0; i < 3 ; ++i){
-			for(int j =0; j< 3; ++j){
-				bmmgRootTree_->PVcovariance_[iteratorCov++] = vtx.covariance(i, j);
-			}
-		}
-
-	        bmmgRootTree_->PVndof_ = vtx.ndof();
-	        bmmgRootTree_->PVrho_ = vtx.position().Rho();
-	        if(!vtx.isValid())continue;
-	        if(vtx.isFake())continue;
-	        if(vtx.ndof() < 4)continue;
-	        if(fabs(vtx.z()) >= 24.0)continue;
-	        if(vtx.position().Rho() >= 2)continue;	
-	 	NSelectedVertices++;
-   
-
-			 /*for(reco::Vertex::trackRef_iterator trackRef = vtx.tracks_begin(); trackRef !=vtx.tracks_end(); ++trackRef){
-				 const reco::TrackBaseRef& vtx_trackRef = *trackRef;
-				 if (vtx_trackRef.isNonnull() && vtx_trackRef.isAvailable()) {
-					 const reco::Track& VtxTrack = *vtx_trackRef.castTo<reco::TrackRef>();
-					 PtSumVertex += std::abs(VtxTrack.pt());
-				 }
-				 else {
-					 std::cout << "Invalid track reference : "<<"\n";
-				 }
-			 }
-			 if (PtSumVertex >  MinPtVertex) {
-				 VtxIndex = iVtx;
-				 MinPtVertex = PtSumVertex;
-				 std::cout<<" min/max pt sum vertex : "<< MinPtVertex <<"\t"<< " & veretx index : " << VtxIndex<< "\n";
-			 }*/
-		 
-	}
-	bmmgRootTree_->NVerticesaftercut_ = NSelectedVertices;
-	
-	const Vertex &RecVtx = (*recVtxs)[VtxIndex];
-	if(VtxIndex !=-99) {
-		bmmgRootTree_->isPV_ = 1;
-		PVx = RecVtx.x();
-		PVy= RecVtx.y();
-		PVz= RecVtx.z();
-		PVerrx=RecVtx.xError();
-		PVerry=RecVtx.yError();
-		PVerrz=RecVtx.zError();
-	}
-	else { 
-		bmmgRootTree_->isBS_ = 1;
-		PVx=BSx;
-		PVy=BSy;
-		PVz=BSz;
-		PVerrx=BSdx;
-		PVerry=BSdy;
-		PVerrz=BSdz;
-	}
-	bmmgRootTree_->getVtx(BSx,BSy,BSz,PVx,PVy,PVz,PVerrx,PVerry,PVerrz);
-	bmmgRootTree_->BSdx_       = BSdx;
-        bmmgRootTree_->BSdy_       = BSdy;
-        bmmgRootTree_->BSdz_       = BSdz;
-        bmmgRootTree_->BSsigmaZ_   = BSsigmaZ;
-        bmmgRootTree_->BSdsigmaZ_  = BSdsigmaZ;
-        bmmgRootTree_->BSdxdz_     = BSdxdz;
-        bmmgRootTree_->BSdydz_     = BSdydz;
 
 
 	//edm::ESHandle<TransientTrackBuilder> theB;
@@ -501,54 +421,9 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 	auto triDecayVar = tripvtxObservables.TrippleObjectVertexObservables(*muons, *conversions, theBField, nominalMuonMass, nominalElectronMass);
 	bmmgRootTree_->mass_3vtx_ = triDecayVar.mass;
 
-	for(size_t i=0; i < muons->size(); ++i){
-                const pat::Muon & mu1 = (*muons)[i];
-                if (mu1.innerTrack().isNull())continue;
-                reco::TrackRef muTrack1 = mu1.track();
-                if(!muTrack1) continue;
-                reco::TransientTrack muonTT1 = reco::TransientTrack(muTrack1, &theBField);
-                for (size_t j=i+1; j < muons->size(); ++j){
-                        const pat::Muon & mu2 = (*muons)[j];
-                        if (mu2.innerTrack().isNull())continue;
-                        if(mu1.charge()*mu2.charge() ==1 ) continue;
-                        reco::TrackRef muTrack2 = mu2.track();
-                        if(!muTrack2) continue;
-                        reco::TransientTrack muonTT2 = reco::TransientTrack(muTrack2, &theBField);
-                        std::vector<TransientTrack> tttrk_muons;
-                        tttrk_muons.push_back(muonTT1);
-                        tttrk_muons.push_back(muonTT2);
-
-                        for (pat::CompositeCandidateCollection::const_iterator conv1 = conversions->begin(); conv1!= conversions->end(); ++conv1){
-               
-				std::vector<reco::TransientTrack> tttrk_electrons;
-				const reco::Track eletk0=*conv1->userData<reco::Track>("track0");
-                                const reco::Track eletk1=*conv1->userData<reco::Track>("track1");
-				reco::TrackCollection convTracks1;
-				convTracks1.push_back(eletk0);
-                                convTracks1.push_back(eletk1);
-				reco::TransientTrack electronTT1(convTracks1[0], &theBField );
-                                reco::TransientTrack electronTT2(convTracks1[1], &theBField );
-				tttrk_electrons.push_back(electronTT1);
-                                tttrk_electrons.push_back(electronTT2);
-			for (pat::CompositeCandidateCollection::const_iterator conv2 = conv1 + 1; conv2 != conversions->end(); ++conv2) {
-				const reco::Track eletk2=*conv2->userData<reco::Track>("track0");
-				const reco::Track eletk3=*conv2->userData<reco::Track>("track1");
-				//std::cout<< " the track output 2 and 3 : "<< eletk2.pt() << "\t"<< eletk3.pt() << "\t" <<eletk2.eta() << "\t"<< eletk3.eta()<< "\n";
-				reco::TrackCollection convTracks2;
-                                convTracks2.push_back(eletk2);
-                                convTracks2.push_back(eletk3);
-                                reco::TransientTrack electronTT3(convTracks2[0], &theBField );
-                                reco::TransientTrack electronTT4(convTracks2[1], &theBField );
-                                tttrk_electrons.push_back(electronTT3);
-                                tttrk_electrons.push_back(electronTT4);
-                                KinematicConstrainedFit BCandFitter;
-                                bool fitSuccess = BCandFitter.TetraObjectVertexFit(tttrk_muons,nominalMuonMass,tttrk_electrons,nominalElectronMass);
-                                if(fitSuccess != 1) continue;
-                                bmmgRootTree_->mass_4vtx_ = BCandFitter.getBhadronMass();
-			}
-		}
-                }
-        }
+	TetraObjectVertex tetradcObservables;
+	auto tetraDecayVar = tetradcObservables.TetraObjectVertexObservables(*muons, *conversions, theBField, nominalMuonMass, nominalElectronMass);
+	bmmgRootTree_->mass_4vtx_ = tetraDecayVar.mass;
 
 
 	edm::Handle<edm::View<reco::Photon>> photon;

@@ -131,7 +131,7 @@ private:
   edm::InputTag vertexBeamSpot;
   edm::EDGetTokenT<reco::BeamSpot> vertexBeamSpotTok;
   edm::InputTag primaryvertex;
-  edm::EDGetTokenT<edm::View<reco::Vertex>> primaryvertexTok;
+  edm::EDGetTokenT<std::vector<reco::Vertex>> primaryvertexTok;
   edm::InputTag triggerbits;
   edm::EDGetTokenT<edm::TriggerResults> triggerbitsTok;
   edm::InputTag prescale;

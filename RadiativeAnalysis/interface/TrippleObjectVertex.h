@@ -59,7 +59,7 @@ class TrippleObjectVertex{
         TrippleObjectVertex();
         ~TrippleObjectVertex(){}
         struct DecayChainVariables{
-		double mass;
+		double mass = -9999999;
 	};
 
 	DecayChainVariables TrippleObjectVertexObservables(const std::vector<reco::Muon>& muons, 
