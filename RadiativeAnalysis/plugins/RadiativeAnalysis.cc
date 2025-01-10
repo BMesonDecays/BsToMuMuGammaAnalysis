@@ -10,6 +10,8 @@
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/TrippleObjectVertex.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/TetraObjectVertex.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/BeamSpotAndVertex.h"
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/RecoPhotons.h"
+
 
 #include <memory>
 #include <cstddef>
@@ -168,7 +170,7 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig):
 	JetTag                            = iConfig.getParameter<edm::InputTag>("JetTag");
         JetTagTok                         = consumes<edm::View<pat::Jet>>(JetTag);
 	PhotonTag                         = iConfig.getParameter<edm::InputTag>("PhotonTag");
-        PhotonTagTok                      = consumes<edm::View<reco::Photon>>(PhotonTag);
+        PhotonTagTok                      = consumes<std::vector<reco::Photon>>(PhotonTag);
 	OOTPhotonTag                      = iConfig.getParameter<edm::InputTag>("OOTPhotonTag");
         OOTPhotonTagTok                   = consumes<edm::View<pat::Photon>>(OOTPhotonTag);
 	ElectronTag                       = iConfig.getParameter<edm::InputTag>("ElectronTag");
@@ -426,7 +428,7 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 	bmmgRootTree_->mass_4vtx_ = tetraDecayVar.mass;
 
 
-	edm::Handle<edm::View<reco::Photon>> photon;
+	edm::Handle<std::vector<reco::Photon>> photon;
         iEvent.getByToken(PhotonTagTok, photon);
         bmmgRootTree_->photonMultiplicity_ = photon->size();
 	for(size_t iPhoton =0 ; iPhoton < photon->size() ; ++iPhoton){
