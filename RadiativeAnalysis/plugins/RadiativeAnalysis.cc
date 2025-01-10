@@ -129,7 +129,7 @@
 #include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
 #include "DataFormats/EgammaCandidates/interface/GsfElectronFwd.h"
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
-#include "TrackingTools/PatternTools/interface/ClosestApproachInRPhi.h"
+//#include "TrackingTools/PatternTools/interface/ClosestApproachInRPhi.h"
 #include "DataFormats/TrackReco/interface/Track.h"
 #include "DataFormats/TrackReco/interface/TrackFwd.h"
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"

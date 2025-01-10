@@ -38,7 +38,7 @@
 using namespace std;
 using namespace reco;
 using namespace edm;
-using namespace pat;
+//using namespace pat;
 
 class RecoPhotons{
     public: 
@@ -56,7 +56,7 @@ class RecoPhotons{
 	};
 
 
-	PhotonVariables PhotonObservables(const std::vector<reco::Photon>& photon);
+	std::vector<PhotonVariables> PhotonObservables(const std::vector<reco::Photon>& photon);
 
       
 };
