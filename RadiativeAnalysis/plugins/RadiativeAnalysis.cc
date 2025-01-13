@@ -431,7 +431,51 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 	edm::Handle<std::vector<reco::Photon>> photon;
         iEvent.getByToken(PhotonTagTok, photon);
         bmmgRootTree_->photonMultiplicity_ = photon->size();
-	for(size_t iPhoton =0 ; iPhoton < photon->size() ; ++iPhoton){
+	RecoPhotons recoPhotonObserbles;
+	std::vector<RecoPhotons::PhotonVariables> photonVar = recoPhotonObserbles.PhotonObservables(*photon);
+	if (!photonVar.empty()) {
+		for (size_t iPhoton = 0; iPhoton < photonVar.size(); ++iPhoton) {
+			const auto& ipatPhoton = (*photon)[iPhoton];
+			if (ipatPhoton.pt() > 50.0 || !ipatPhoton.isEB()) {
+				excludedPhotons.insert(iPhoton);
+				continue;
+			}
+		const RecoPhotons::PhotonVariables& leadingPhoton = photonVar[0]; //leading photon
+		bmmgRootTree_->photonPt_ = leadingPhoton.pt;
+		bmmgRootTree_->photonEta_ = leadingPhoton.eta;
+		bmmgRootTree_->photonPhi_ = leadingPhoton.phi;
+		bmmgRootTree_->photonEnergy_ = leadingPhoton.energy;
+		bmmgRootTree_->photonET_ = leadingPhoton.et;
+		bmmgRootTree_->photonSSSigmaiEtaiEta_ = leadingPhoton.sigmaIEtaIEta;
+		bmmgRootTree_->photonSSSigmaiEtaiPhi_ = leadingPhoton.sigmaIEtaIPhi;
+		bmmgRootTree_->photonSSSigmaiPhiiPhi_ = leadingPhoton.sigmaIPhiIPhi;
+		bmmgRootTree_->photonSCEnergy_ = leadingPhoton.scEnergy;
+		bmmgRootTree_->photonSCRawEnergy_ = leadingPhoton.scRawEnergy;
+		bmmgRootTree_->photonSCR9_ = leadingPhoton.r9;
+		bmmgRootTree_->photonSCHadTowOverEm_ = leadingPhoton.hadTowOverEm;
+		bmmgRootTree_->photonSShcalDepth1OverEcal_ = leadingPhoton.hcalDepth1OverEcal;
+		bmmgRootTree_->photonSShcalDepth2OverEcal_ = leadingPhoton.hcalDepth2OverEcal;
+		bmmgRootTree_->photonSShcalDepth1OverEcalBc_ = leadingPhoton.hcalDepth1OverEcalBc;
+		bmmgRootTree_->photonSShcalDepth2OverEcalBc_ = leadingPhoton.hcalDepth2OverEcalBc;
+		std::fill(std::begin(bmmgRootTree_->photonSShcalOverEcal_), std::end(bmmgRootTree_->photonSShcalOverEcal_), 0.f);
+		std::fill(std::begin(bmmgRootTree_->photonSShcalOverEcalBc_), std::end(bmmgRootTree_->photonSShcalOverEcalBc_), 0.f);
+		for (size_t k = 0; k < leadingPhoton.hcalOverEcal.size(); ++k) {
+			bmmgRootTree_->photonSShcalOverEcal_[k] = leadingPhoton.hcalOverEcal[k];
+		}
+		for (size_t k = 0; k < leadingPhoton.hcalOverEcalBc.size(); ++k) {
+			bmmgRootTree_->photonSShcalOverEcalBc_[k] = leadingPhoton.hcalOverEcalBc[k];
+		}
+		bmmgRootTree_->photonSSmaxEnergyXtal_ = leadingPhoton.maxEnergyXtal;
+		bmmgRootTree_->photonSSeffSigmaRR_ = leadingPhoton.effSigmaRR;
+		bmmgRootTree_->photonSCEta_ = leadingPhoton.scEta;
+		bmmgRootTree_->photonSCPhi_ = leadingPhoton.scPhi;
+		bmmgRootTree_->photonSCEtaWidth_ = leadingPhoton.scEtaWidth;
+		bmmgRootTree_->photonSCPhiWidth_ = leadingPhoton.scPhiWidth;
+		bmmgRootTree_->photonSCBrem_ = leadingPhoton.scPhiWidth / leadingPhoton.scEtaWidth;
+		}
+	}
+
+	/*for(size_t iPhoton =0 ; iPhoton < photon->size() ; ++iPhoton){
 		
 		//const pat::Photon& ipatPhoton = (*photon)[iPhoton];
 		const auto ipatPhoton = (*photon)[iPhoton];
@@ -485,7 +529,11 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
  		}
 		        if (photonExcluded) continue;
 
+              photoncounter_++;
 
+        }//photon loop ends 
+
+*/
 
 
 
@@ -666,58 +714,6 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 			}//End of the BsToPhi(KK)Gamma loop 
 
 */
-
-			//BsToPhi(mumu)Gamma 
-			//BsToJpsiEta
-
-	                const reco::Photon::ShowerShape& iShowerShape = ipatPhoton.full5x5_showerShapeVariables();
-		        bmmgRootTree_->photonSSSigmaiEtaiEta_ = iShowerShape.sigmaIetaIeta;
-			bmmgRootTree_->photonSSSigmaiEtaiPhi_ = iShowerShape.sigmaIetaIphi;
-			//std::cout<< " some outputs : pt : "<< ipatPhoton.pt() << "\n sshape : "<< iShowerShape.e1x5 << "\t enenrgy supercluster : "<< ipatPhoton.superCluster()->energy()<< "\n";
-			bmmgRootTree_->photonSSSigmaiPhiiPhi_ = iShowerShape.sigmaIphiIphi;
-			bmmgRootTree_->photonSSSigmaEtaEta_   = iShowerShape.sigmaEtaEta;
-			bmmgRootTree_->photonSSe1x5_ = iShowerShape.e1x5;
-			bmmgRootTree_->photonSSe2x5_ = iShowerShape.e2x5;
-			bmmgRootTree_->photonSSe3x3_ = iShowerShape.e3x3;
-			bmmgRootTree_->photonSSe5x5_ = iShowerShape.e5x5;
-			bmmgRootTree_->photonSShcalDepth1OverEcal_   = iShowerShape.hcalDepth1OverEcal;
-			bmmgRootTree_->photonSShcalDepth2OverEcal_   = iShowerShape.hcalDepth2OverEcal;
-			bmmgRootTree_->photonSShcalDepth1OverEcalBc_ = iShowerShape.hcalDepth1OverEcalBc;
-			bmmgRootTree_->photonSShcalDepth2OverEcalBc_ = iShowerShape.hcalDepth2OverEcalBc;
-			std::fill(std::begin(bmmgRootTree_->photonSShcalOverEcal_), std::end(bmmgRootTree_->photonSShcalOverEcal_), 0.f);
-			std::fill(std::begin(bmmgRootTree_->photonSShcalOverEcalBc_), std::end(bmmgRootTree_->photonSShcalOverEcalBc_), 0.f);
-			for (size_t k = 0; k < iShowerShape.hcalOverEcal.size(); ++k)   {bmmgRootTree_->photonSShcalOverEcal_[k]   = iShowerShape.hcalOverEcal[k];}
-			for (size_t k = 0; k < iShowerShape.hcalOverEcalBc.size(); ++k) {bmmgRootTree_->photonSShcalOverEcalBc_[k] = iShowerShape.hcalOverEcalBc[k];}
-			bmmgRootTree_->photonSSmaxEnergyXtal_  = iShowerShape.maxEnergyXtal;
-			bmmgRootTree_->photonSSeffSigmaRR_     = iShowerShape.effSigmaRR;
-			//std::cout<< " shower shapes : "<< iShowerShape.sigmaIphiIphi << "\t : " << iShowerShape.sigmaEtaEta<< "\t";
-			bmmgRootTree_->photonSCEnergy_         = ipatPhoton.superCluster()->energy();
-			bmmgRootTree_->photonSCRawEnergy_      = ipatPhoton.superCluster()->rawEnergy();
-			bmmgRootTree_->photonSCPreShowerEP1_   = ipatPhoton.superCluster()->preshowerEnergyPlane1();
-			bmmgRootTree_->photonSCPreShowerEP1_   = ipatPhoton.superCluster()->preshowerEnergyPlane2();
-			bmmgRootTree_->photonSCEta_            = ipatPhoton.superCluster()->eta();
-			bmmgRootTree_->photonSCPhi_            = ipatPhoton.superCluster()->phi();
-			bmmgRootTree_->photonSCEtaWidth_       = ipatPhoton.superCluster()->etaWidth();
-			bmmgRootTree_->photonSCPhiWidth_       = ipatPhoton.superCluster()->phiWidth();
-			bmmgRootTree_->photonSCBrem_           = ipatPhoton.superCluster()->phiWidth()/ipatPhoton.superCluster()->etaWidth();
-			bmmgRootTree_->photonSCR9_             = ipatPhoton.r9();
-			bmmgRootTree_->photonSCHadTowOverEm_   = ipatPhoton.hadTowOverEm();
-
-			bmmgRootTree_->photonPt_        = ipatPhoton.pt();
-			bmmgRootTree_->photonEta_       = ipatPhoton.eta();
-			bmmgRootTree_->photonPhi_       = ipatPhoton.phi();
-			bmmgRootTree_->photonEnergy_    = ipatPhoton.energy();
-			bmmgRootTree_->photonET_        = ipatPhoton.et();
-			/*
-			bmmgRootTree_->photonTrkIso_    = ipatPhoton.trackIso();
-			bmmgRootTree_->photonEcalIso_   = ipatPhoton.ecalIso();
-			bmmgRootTree_->photonHcalIso_   = ipatPhoton.hcalIso();
-			bmmgRootTree_->photonCaloIso_   = ipatPhoton.caloIso();
-			*/
-					
-			photoncounter_++;
-		                       
-	}//photon loop ends 
 
 
 

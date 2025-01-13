@@ -53,6 +53,8 @@ class RecoPhotons{
 		double maxEnergyXtal = -9999.0, effSigmaRR = -9999.0;
 		double scEnergy = -9999.0, scRawEnergy = -9999.0, scEta = -9999.0, scPhi = -9999.0;
 		double scEtaWidth = -9999.0, scPhiWidth = -9999.0, scBrem = -9999.0, r9 = -9999.0, hadTowOverEm = -9999.0;
+		std::vector<float> hcalOverEcal;
+		std::vector<float> hcalOverEcalBc;
 	};
 
 

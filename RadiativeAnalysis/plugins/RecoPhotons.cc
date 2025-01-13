@@ -75,7 +75,11 @@ std::vector<RecoPhotons::PhotonVariables> RecoPhotons::PhotonObservables(const s
         photonVar.scBrem = irecoPhoton.superCluster()->phiWidth() / irecoPhoton.superCluster()->etaWidth();
         photonVar.r9 = irecoPhoton.r9();
         photonVar.hadTowOverEm = irecoPhoton.hadTowOverEm();
+	photonVar.hcalOverEcal.clear();photonVar.hcalOverEcal.assign(iShowerShape.hcalOverEcal.begin(), iShowerShape.hcalOverEcal.end());
+        photonVar.hcalOverEcalBc.clear();photonVar.hcalOverEcalBc.assign(iShowerShape.hcalOverEcalBc.begin(), iShowerShape.hcalOverEcalBc.end());
 
+	//photonVar.hcalOverEcal = iShowerShape.hcalOverEcal;
+	//photonVar.hcalOverEcalBc = iShowerShape.hcalOverEcalBc;
         photonVar.pt = irecoPhoton.pt();
         photonVar.eta = irecoPhoton.eta();
         photonVar.phi = irecoPhoton.phi();

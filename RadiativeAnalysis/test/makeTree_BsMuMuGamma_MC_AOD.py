@@ -1,11 +1,12 @@
 import FWCore.ParameterSet.Config as cms
 from FWCore.ParameterSet.VarParsing import VarParsing
+import glob
+import sys
 options = VarParsing("analysis")
 options.register("nEvents", 5000, VarParsing.multiplicity.singleton, VarParsing.varType.int, "Number of events to process")
 #options.register("outputFile", "default_output.root", VarParsing.multiplicity.singleton, VarParsing.varType.string, "Output file name")
 options.parseArguments()
-import glob 
-import sys
+
 process = cms.Process("MUMUGamma")
 process.load("Configuration.StandardSequences.MagneticField_cff")
 process.load("Configuration.StandardSequences.Reconstruction_cff")
@@ -22,7 +23,6 @@ import HeavyFlavorAnalysis.Onia2MuMu.OniaPhotonConversionProducer_cfi
 process.oniaPhotonCandidates = HeavyFlavorAnalysis.Onia2MuMu.OniaPhotonConversionProducer_cfi.PhotonCandidates.clone()
 # process.oniaPhotonCandidates.conversions 
 process.oniaPhotonCandidates.primaryVertexTag = cms.InputTag('offlinePrimaryVerticesWithBS')
-
 
 from PhysicsTools.PatAlgos.tools.coreTools import *
 process.load("PhysicsTools.PatAlgos.patSequences_cff")
@@ -54,27 +54,29 @@ process.source = cms.Source("PoolSource",
 #'root://cms-xrd-global.cern.ch//store/mc/RunIISummer20UL16MiniAODAPVv2/BdToKPi_BMuonFilter_SoftQCDnonD_TuneCP5_13TeV-pythia8-evtgen/MINIAODSIM/BPH_106X_mcRun2_asymptotic_preVFP_v11-v2/2550000/220F4B68-DEFE-334E-9FCD-ECD84A0737DC.root',
 #'root://xrootd-cms.infn.it//store/data/Run2023D/ParkingDoubleMuonLowMass0/MINIAOD/22Sep2023_v1-v1/2550000/0419eec5-0ae4-4732-8f06-6d72dd25a149.root',
 #'root:///eos/user/a/almuhamm/05.PrivateMC/HeavyFlavorProduction/CMSSW_14_0_17/src/PrivateMCProduction/private_BsToMuMuGamma_Run3.root'
-'root:///eos/home-a/almuhamm/05.PrivateMC/HeavyFlavorProduction/CMSSW_12_4_11_patch3/src/PrivateMCProduction/private_BsToMuMuGamma_Run3.root'
+'root:///eos/user/a/almuhamm/MuSampleSharedDirectory/BPAG_AOD/private_BsToJpsiEta_Run3.root'
+#'root:///eos/home-a/almuhamm/05.PrivateMC/HeavyFlavorProduction/CMSSW_12_4_11_patch3/src/PrivateMCProduction/private_BsToMuMuGamma_Run3.root'
 #'root://cms-xrd-global.cern.ch//store/mc/Run3Winter23MiniAOD/BsToMuMuG_MuGFilter_SoftQCDnonD_TuneCP5_13p6TeV_pythia8-evtgen/MINIAODSIM/GTv3Digi_GTv3_MiniGTv3_126X_mcRun3_2023_forPU65_v3-v2/2540000/27f6ecbd-6839-49f9-86e7-b3c957ae1f46.root',
 )
 )
 
+
+
+#prefixPath ='/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToKStarGamma_MCTunesRun3ECM13p6TeV/BsToKStarGamma_CMSSW_12_4_11_patch3_02_01_2024/250106_134905/0000/'
+#prefixPath = '/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToKStarGamma_MCTunesRun3ECM13p6TeV/BsToKStarGamma_CMSSW_12_4_11_patch3_02_01_2024/250106_134905/0000/'
 prefixPath = '/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToMuMuGamma_MCTunesRun3ECM13p6TeV/BsToMuMuGamma_CMSSW_12_4_11_patch3_14_12_2024/241214_121515/0000'
+#prefixPath ='/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToJpsiPi0_MCTunesRun3ECM13p6TeV/BsToJpsiPi0_CMSSW_12_4_11_patch3_30_11_2024/241209_175957/0000'
 fileList = glob.glob(prefixPath+'/*.root')
 fileList = ['file:'+aFile for aFile in fileList]
 process.source.fileNames = fileList
 
-
 from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_mc_FULL','')
-
 #process.GlobalTag = GlobalTag(process.GlobalTag, '130X_dataRun3_HLT_v2','')
-
 #--PatOverlap, mu/ele--#
 process.load("PhysicsTools.PatAlgos.cleaningLayer1.genericTrackCleaner_cfi")
 process.cleanPatTracks.checkOverlaps.muons.requireNoOverlaps     = cms.bool(False)
 process.cleanPatTracks.checkOverlaps.electrons.requireNoOverlaps = cms.bool(False)
-
 #--Pat Matching --#
 #MUON MC-MATCHING VALUES FROM BsMuMu MUON-ID STUDIES
 process.load("PhysicsTools.PatAlgos.mcMatchLayer0.muonMatch_cfi")
@@ -160,7 +162,6 @@ process.bmmgVertexAnalysis = cms.EDAnalyzer("RadiativeAnalysis",
 process.load("MuonAnalysis.MuonAssociators.patMuonsWithTrigger_cff")
 import PhysicsTools.PatAlgos.producersLayer1.muonProducer_cfi
 process.patMuonsWithoutTrigger = PhysicsTools.PatAlgos.producersLayer1.muonProducer_cfi.patMuons.clone()
-
 
 from MuonAnalysis.MuonAssociators.patMuonsWithTrigger_cff import addMCinfo, changeRecoMuonInput, useL1MatchingWindowForSinglets, changeTriggerProcessName, switchOffAmbiguityResolution
 useL1MatchingWindowForSinglets(process)
