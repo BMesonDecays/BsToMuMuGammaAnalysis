@@ -2,8 +2,8 @@
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/KinematicConstrainedFit.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/RadiativeRootTree.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/RadiativeAnalysis.h"
-
-
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/BeamSpotAndVertex.h"
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/ReferenceResonance.h"
 #include <memory>
 #include <cstddef>
 #include <cfloat>
@@ -39,6 +39,7 @@ TrippleObjectVertex::TrippleObjectVertex(){}
 TrippleObjectVertex::DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
     const std::vector<reco::Muon>& muons,
     const pat::CompositeCandidateCollection& conversions,
+    const BeamSpotAndVertex::BSAndVtxVariables& bsAndVtxInfo,
     const MagneticField& bField,
     const double nominalMuonMass,
     const double nominalElectronMass){

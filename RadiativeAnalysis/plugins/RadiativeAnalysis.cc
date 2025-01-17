@@ -420,7 +420,7 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
         iEvent.getByToken(convertedPhotonsTagTok, convPhotons);
         const pat::CompositeCandidateCollection * conversions = convPhotons.product();
 	TrippleObjectVertex  tripvtxObservables;
-	auto triDecayVar = tripvtxObservables.TrippleObjectVertexObservables(*muons, *conversions, theBField, nominalMuonMass, nominalElectronMass);
+	auto triDecayVar = tripvtxObservables.TrippleObjectVertexObservables(*muons, *conversions, bsandvtxVar, theBField, nominalMuonMass, nominalElectronMass);
 	bmmgRootTree_->mass_3vtx_ = triDecayVar.mass;
 
 	TetraObjectVertex tetradcObservables;

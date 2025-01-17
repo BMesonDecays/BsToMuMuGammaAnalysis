@@ -1,5 +1,7 @@
 #ifndef BsToMuMuGammaAnalysis_RadiativeAnalysis_TrippleObjectVertex_h
 #define BsToMuMuGammaAnalysis_RadiativeAnalysis_TrippleObjectVertex_h
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/BeamSpotAndVertex.h"
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/ReferenceResonance.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 #include "DataFormats/TrackReco/interface/Track.h"
@@ -64,6 +66,7 @@ class TrippleObjectVertex{
 
 	DecayChainVariables TrippleObjectVertexObservables(const std::vector<reco::Muon>& muons, 
 			const pat::CompositeCandidateCollection& conversions,
+			const BeamSpotAndVertex::BSAndVtxVariables& bsAndVtxInfo,
 			const MagneticField& bField,
 			const double nominalMuonMass,
 			const double nominalElectronMass);
