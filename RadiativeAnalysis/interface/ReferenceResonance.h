@@ -50,25 +50,27 @@ class ReferenceResonance{
 
 
     struct Constants {
-	//Mass, masswindow and momentum in GeV
+        // Mass, mass window and momentum in GeV
         static constexpr double JpsiMass_PDG           = 3.0969;    
         static constexpr double PhiMass_PDG            = 1.019;      
-	static constexpr double KStar0Mass_PDG         = 0.89555;    
+        static constexpr double KStar0Mass_PDG         = 0.89555; 
+        static constexpr double nonResonantMass_PDG    = 0.0;   
         static constexpr double EtaMass_PDG            = 0.547862;      
         static constexpr double EtaPrimeMass_PDG       = 0.957780; 
         static constexpr double Pi0Mass_PDG            = 0.1349768;
         static constexpr double BsMass_PDG             = 5.3699;
         static constexpr double BdMass_PDG             = 5.2794;
-        static constexpr double BpMass_PDG	       = 5.2790;
-	static constexpr double JpsiWindow_PDG         = 0.31;
+        static constexpr double BpMass_PDG             = 5.2790;
+        static constexpr double JpsiWindow_PDG         = 0.31;
         static constexpr double PhiWindow_PDG          = 0.03;
-	static constexpr double KStarWindow_PDG        = 0.20;
-	static constexpr double EtaWindow_PDG          = 0.017;
-	static constexpr double EtaPrimeWindow_PDG     = 0.230;
-	static constexpr double Pi0Window_PDG          = 0.0005;
-	static constexpr double BsWindow_Upper         = 6.5;
-        static constexpr double PtCut                  = 5.0;          
-    };
+        static constexpr double nonResonantWindow_PDG  = 0.0;
+        static constexpr double KStar0Window_PDG        = 0.02;
+        static constexpr double EtaWindow_PDG          = 0.017;
+        static constexpr double EtaPrimeWindow_PDG     = 0.230;
+        static constexpr double Pi0Window_PDG          = 0.0005;
+        static constexpr double BsWindow_Upper         = 6.5;
+        static constexpr double PtCut                  = 3.0;          
+    };;
 
     
 

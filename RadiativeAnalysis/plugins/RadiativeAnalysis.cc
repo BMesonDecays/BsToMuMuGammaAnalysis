@@ -164,30 +164,30 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig):
 	isMCstudy_                        = iConfig.getParameter<bool>("isMCstudy");
 	isMINIAOD_                        = iConfig.getParameter<bool>("isMINIAOD");
 	genParticlesLabel                 = iConfig.getParameter<InputTag>("genParticlesLabel");
-        genParticlesTok                   = consumes<edm::View<reco::GenParticle>>(genParticlesLabel);
-        MuonTag                           = iConfig.getParameter<edm::InputTag>("MuonTag");
-        MuonTagTok                        = consumes<std::vector<reco::Muon>>(MuonTag);
+	genParticlesTok                   = consumes<edm::View<reco::GenParticle>>(genParticlesLabel);
+	MuonTag                           = iConfig.getParameter<edm::InputTag>("MuonTag");
+	MuonTagTok                        = consumes<std::vector<reco::Muon>>(MuonTag);
 	JetTag                            = iConfig.getParameter<edm::InputTag>("JetTag");
-        JetTagTok                         = consumes<edm::View<pat::Jet>>(JetTag);
+	JetTagTok                         = consumes<edm::View<pat::Jet>>(JetTag);
 	PhotonTag                         = iConfig.getParameter<edm::InputTag>("PhotonTag");
-        PhotonTagTok                      = consumes<std::vector<reco::Photon>>(PhotonTag);
+	PhotonTagTok                      = consumes<std::vector<reco::Photon>>(PhotonTag);
 	OOTPhotonTag                      = iConfig.getParameter<edm::InputTag>("OOTPhotonTag");
-        OOTPhotonTagTok                   = consumes<edm::View<pat::Photon>>(OOTPhotonTag);
+	OOTPhotonTagTok                   = consumes<edm::View<pat::Photon>>(OOTPhotonTag);
 	ElectronTag                       = iConfig.getParameter<edm::InputTag>("ElectronTag");
-        ElectronTagTok                    = consumes<edm::View<pat::Electron>>(ElectronTag);
+	ElectronTagTok                    = consumes<edm::View<pat::Electron>>(ElectronTag);
 	/*SuperClusterTag                   = iConfig.getParameter<edm::InputTag>("SuperClusterTag");
 	SuperClusterTagTok                = consumes<edm::View<reco::SuperCluster>>(SuperClusterTag);
 	OOTSuperClusterTag                = iConfig.getParameter<edm::InputTag>("OOTSuperClusterTag");
         OOTSuperClusterTagTok             = consumes<edm::View<reco::SuperCluster>>(OOTSuperClusterTag);
 	*/
 	PUInfo                            = iConfig.getParameter<InputTag>("PUInfo");
-        PUInfoTok                         = consumes<edm::View<PileupSummaryInfo>>(PUInfo);
-        vertexBeamSpot                    = iConfig.getParameter<edm::InputTag>("vertexBeamSpot");
-        vertexBeamSpotTok                 = consumes<reco::BeamSpot>(vertexBeamSpot);
+	PUInfoTok                         = consumes<edm::View<PileupSummaryInfo>>(PUInfo);
+	vertexBeamSpot                    = iConfig.getParameter<edm::InputTag>("vertexBeamSpot");
+	vertexBeamSpotTok                 = consumes<reco::BeamSpot>(vertexBeamSpot);
 	primaryvertex                     = iConfig.getParameter<edm::InputTag>("primaryvertex");
-        primaryvertexTok                  = consumes<std::vector<reco::Vertex>>(primaryvertex);
+	primaryvertexTok                  = consumes<std::vector<reco::Vertex>>(primaryvertex);
 	triggerbits                       = iConfig.getParameter<edm::InputTag>("triggerbits");
-        triggerbitsTok                    = consumes<edm::TriggerResults>(triggerbits);
+	triggerbitsTok                    = consumes<edm::TriggerResults>(triggerbits);
 	if(isMINIAOD_){
 		prescale                          = iConfig.getParameter<edm::InputTag>("prescale");
 		prescaleTok                       = consumes<pat::PackedTriggerPrescales>(prescale);
@@ -204,42 +204,41 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig):
 	}
 	convertedPhotonsTag               = iConfig.getParameter<edm::InputTag>("convertedPhotons");
 	convertedPhotonsTagTok            = consumes<std::vector<pat::CompositeCandidate>>(convertedPhotonsTag);
-        trackBuilderTok                   = esConsumes(edm::ESInputTag("", "TransientTrackBuilder"));
+	trackBuilderTok                   = esConsumes(edm::ESInputTag("", "TransientTrackBuilder"));
 	theBFieldTok                      = esConsumes<MagneticField, IdealMagneticFieldRecord>();
-
 
 	StoreDeDxInfo_                    = iConfig.getParameter<bool>("StoreDeDxInfo");
 	PionZeroMassWindowNoFit_          = iConfig.getParameter<double>("PionZeroMassWindowNoFit");
-        JpsiMassWindowBeforeFit_          = iConfig.getParameter<double>("JpsiMassWindowBeforeFit");
-        JpsiMassWindowAfterFit_           = iConfig.getParameter<double>("JpsiMassWindowAfterFit");
-        JpsiPtCut_                        = iConfig.getParameter<double>("JpsiPtCut");
+	JpsiMassWindowBeforeFit_          = iConfig.getParameter<double>("JpsiMassWindowBeforeFit");
+	JpsiMassWindowAfterFit_           = iConfig.getParameter<double>("JpsiMassWindowAfterFit");
+	JpsiPtCut_                        = iConfig.getParameter<double>("JpsiPtCut");
 	KaonTrackPtCut_                   = iConfig.getParameter<double>("KaonTrackPtCut");//https://arxiv.org/pdf/1307.2782.pdf
 	PsiMassWindowBeforeFit_           = iConfig.getParameter<double>("PsiMassWindowBeforeFit");
-        PsiMassWindowAfterFit_            = iConfig.getParameter<double>("PsiMassWindowAfterFit");
+	PsiMassWindowAfterFit_            = iConfig.getParameter<double>("PsiMassWindowAfterFit");
 	PhiMassWindowBeforeFit_           = iConfig.getParameter<double>("PhiMassWindowBeforeFit");
-        PhiMassWindowAfterFit_            = iConfig.getParameter<double>("PhiMassWindowAfterFit");
+	PhiMassWindowAfterFit_            = iConfig.getParameter<double>("PhiMassWindowAfterFit");
 	EtaMesonMassWindowNoFit_          = iConfig.getParameter<double>("EtaMesonMassWindowNoFit");
 	EtaPrimeMassWindowNoFit_          = iConfig.getParameter<double>("EtaPrimeMassWindowNoFit");
 	BsLowerMassCutBeforeFit_          = iConfig.getParameter<double>("BsLowerMassCutBeforeFit");
-        BsUpperMassCutBeforeFit_          = iConfig.getParameter<double>("BsUpperMassCutBeforeFit");
-        BsLowerMassCutAfterFit_           = iConfig.getParameter<double>("BsLowerMassCutAfterFit");
-        BsUpperMassCutAfterFit_           = iConfig.getParameter<double>("BsUpperMassCutAfterFit");
+	BsUpperMassCutBeforeFit_          = iConfig.getParameter<double>("BsUpperMassCutBeforeFit");
+	BsLowerMassCutAfterFit_           = iConfig.getParameter<double>("BsLowerMassCutAfterFit");
+	BsUpperMassCutAfterFit_           = iConfig.getParameter<double>("BsUpperMassCutAfterFit");
 	PionZeroPDGMass_                  = iConfig.getParameter<double>("PionZeroPDGMass");
 	BdPDGMass_                        = iConfig.getParameter<double>("BdPDGMass");
-        BpPDGMass_                        = iConfig.getParameter<double>("BpPDGMass");
-        BsPDGMass_                        = iConfig.getParameter<double>("BsPDGMass");
+	BpPDGMass_                        = iConfig.getParameter<double>("BpPDGMass");
+	BsPDGMass_                        = iConfig.getParameter<double>("BsPDGMass");
 	PionZeroPDGMass_                  = iConfig.getParameter<double>("PionZeroPDGMass");
 	EtaMesonPDGMass_                  = iConfig.getParameter<double>("EtaMesonPDGMass");
 	EtaPrimePDGMass_                  = iConfig.getParameter<double>("EtaPrimePDGMass");
 	outputFile_                       = iConfig.getUntrackedParameter<std::string>("outputFile");
 	verbose_                          = iConfig.getParameter<bool>("verbose");
-        TestVerbose_                      = iConfig.getParameter<bool>("TestVerbose");
-	
+	TestVerbose_                      = iConfig.getParameter<bool>("TestVerbose");
+
 	event_counter_ = 0;
-        elecounter_    = 0;
-        muoncounter_   = 0;
+	elecounter_    = 0;
+	muoncounter_   = 0;
 	jetcounter_    = 0;
-        tagmucounter_  = 0;
+	tagmucounter_  = 0;
 	photoncounter_ = 0;
 
 edm::LogInfo("BsToMuMuGammaAnalysis/RadiativeAnalysis")<< "Initializing Bs to MuMu Gamma  analyser  - Output file: " << outputFile_ <<"\n";
@@ -268,32 +267,24 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	event_counter_++;
 	bmmgRootTree_->resetEntries();
 	bmmgRootTree_->runNumber_   = iEvent.id().run();
-        bmmgRootTree_->eventNumber_ = (unsigned int)iEvent.id().event();
-        bmmgRootTree_->lumiSection_ = iEvent.luminosityBlock();
+	bmmgRootTree_->eventNumber_ = (unsigned int)iEvent.id().event();
+	bmmgRootTree_->lumiSection_ = iEvent.luminosityBlock();
 	if(isMCstudy_){
-
-
 		edm:: Handle<edm::View<PileupSummaryInfo> > PUinfo;
-                iEvent.getByToken( PUInfoTok, PUinfo);
-                edm::View<PileupSummaryInfo>::const_iterator PVI;
-                int numInteraction = 0;
+		iEvent.getByToken( PUInfoTok, PUinfo);
+		edm::View<PileupSummaryInfo>::const_iterator PVI;
+		int numInteraction = 0;
 		int numTrueInteraction =0;
-                for(PVI = PUinfo->begin(); PVI != PUinfo->end(); ++PVI){
+		for(PVI = PUinfo->begin(); PVI != PUinfo->end(); ++PVI){
 			if (PVI->getBunchCrossing()==0){
 				numTrueInteraction += PVI->getTrueNumInteractions();
 				numInteraction += PVI->getPU_NumInteractions();
-			}
-		}
-		bmmgRootTree_->PUinteraction_ = numInteraction;
-		bmmgRootTree_->PUTrueinteraction_ = numTrueInteraction;
-	}
-
-
-	
+				}
+				}
+				bmmgRootTree_->PUinteraction_ = numInteraction;
+				bmmgRootTree_->PUTrueinteraction_ = numTrueInteraction;
+			}	
 	excludedPhotons.clear();	
-	
-	
-	
 	
 	edm::Handle<reco::BeamSpot> vertexBeamSpot ;
 	iEvent.getByToken(vertexBeamSpotTok,vertexBeamSpot);
@@ -307,7 +298,7 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	bmmgRootTree_->NVerticesbeforecut_ = bsandvtxVar.pv_multiplicity;
 	for (int i = 0; i < 9; ++i) {bmmgRootTree_->PVcovariance_[i] = bsandvtxVar.pv_covariance[i];}
 	bmmgRootTree_->PVndof_ = bsandvtxVar.pv_ndof;
-        bmmgRootTree_->PVrho_ = bsandvtxVar.pv_rho;
+	bmmgRootTree_->PVrho_ = bsandvtxVar.pv_rho;
 	bmmgRootTree_->NVerticesaftercut_ = bsandvtxVar.pv_cutmultiplicity;
 	bmmgRootTree_->getVtx(bsandvtxVar.bs_x, bsandvtxVar.bs_y, bsandvtxVar.bs_z,
                       bsandvtxVar.pv_x, bsandvtxVar.pv_y, bsandvtxVar.pv_z,
@@ -371,7 +362,7 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
         };
 
         const  edm::TriggerNames & triggerNames_ = iEvent.triggerNames(*hltbits);
-	if(isMINIAOD_){
+		if(isMINIAOD_){
 		 edm::Handle<edm::View<pat::TriggerObjectStandAlone>> triggerObjects;
                  iEvent.getByToken(triggerobjTok, triggerObjects);
                  edm::Handle<pat::PackedTriggerPrescales> triggerPrescales;
@@ -412,28 +403,26 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
         
 	//edm::Handle<View<pat::PackedCandidate>> pfCands;
 	//iEvent.getByToken(pfCandTagTok, pfCands);
-	edm::Handle<std::vector<reco::Muon>> muons;
+	    edm::Handle<std::vector<reco::Muon>> muons;
         iEvent.getByToken(MuonTagTok, muons);
 
 
         edm::Handle<std::vector<pat::CompositeCandidate>> convPhotons;
         iEvent.getByToken(convertedPhotonsTagTok, convPhotons);
         const pat::CompositeCandidateCollection * conversions = convPhotons.product();
-	TrippleObjectVertex  tripvtxObservables;
-	auto triDecayVar = tripvtxObservables.TrippleObjectVertexObservables(*muons, *conversions, bsandvtxVar, theBField, nominalMuonMass, nominalElectronMass);
-	bmmgRootTree_->mass_3vtx_ = triDecayVar.mass;
-
-	TetraObjectVertex tetradcObservables;
-	auto tetraDecayVar = tetradcObservables.TetraObjectVertexObservables(*muons, *conversions, theBField, nominalMuonMass, nominalElectronMass);
-	bmmgRootTree_->mass_4vtx_ = tetraDecayVar.mass;
-
-
-	edm::Handle<std::vector<reco::Photon>> photon;
+		TrippleObjectVertex  tripvtxObservables;
+		auto triDecayVar = tripvtxObservables.TrippleObjectVertexObservables(*muons, *conversions, bsandvtxVar, theBField, nominalMuonMass, nominalElectronMass);
+		bmmgRootTree_->mass_3vtx_ = triDecayVar.mass;
+		TetraObjectVertex tetradcObservables;
+		auto tetraDecayVar = tetradcObservables.TetraObjectVertexObservables(*muons, *conversions, theBField, nominalMuonMass, nominalElectronMass);
+		bmmgRootTree_->mass_4vtx_ = tetraDecayVar.mass;
+		
+		edm::Handle<std::vector<reco::Photon>> photon;
         iEvent.getByToken(PhotonTagTok, photon);
         bmmgRootTree_->photonMultiplicity_ = photon->size();
-	RecoPhotons recoPhotonObserbles;
-	std::vector<RecoPhotons::PhotonVariables> photonVar = recoPhotonObserbles.PhotonObservables(*photon);
-	if (!photonVar.empty()) {
+		RecoPhotons recoPhotonObserbles;
+		std::vector<RecoPhotons::PhotonVariables> photonVar = recoPhotonObserbles.PhotonObservables(*photon);
+		if (!photonVar.empty()) {
 		for (size_t iPhoton = 0; iPhoton < photonVar.size(); ++iPhoton) {
 			const auto& ipatPhoton = (*photon)[iPhoton];
 			if (ipatPhoton.pt() > 50.0 || !ipatPhoton.isEB()) {

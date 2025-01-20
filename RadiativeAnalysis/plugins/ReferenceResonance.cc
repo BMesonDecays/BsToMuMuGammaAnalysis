@@ -84,9 +84,12 @@ ReferenceResonance::ResonanceDetails ReferenceResonance::applyResonanceMassCut(c
         massWindow = Constants::PhiWindow_PDG;
     } else if (resonanceType == "KStar") {
         nominalMass = Constants::KStar0Mass_PDG;
-        massWindow = Constants::KStarWindow_PDG;
+        massWindow = Constants::KStar0Window_PDG;
+    } else if (resonanceType == "nonResonant") {
+        nominalMass = Constants::nonResonantMass_PDG;
+        massWindow = Constants::nonResonantWindow_PDG;
     }
-
+    
     bool isValid = (fabs(dimuonMass - nominalMass) < massWindow) &&
                    (mu1.pt() > Constants::PtCut) &&
                    (mu2.pt() > Constants::PtCut);

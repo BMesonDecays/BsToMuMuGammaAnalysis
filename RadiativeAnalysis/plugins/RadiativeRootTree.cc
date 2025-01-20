@@ -106,31 +106,33 @@ void RadiativeRootTree::createTree(const std::string filename)
   bmmgTree_->Branch("EtaPrimeEta_alone", &EtaPrimeEta_alone_, "EtaPrimeEta_alone/D");
   bmmgTree_->Branch("EtaPrimePhi_alone", &EtaPrimePhi_alone_, "EtaPrimePhi_alone/D");
   bmmgTree_->Branch("EtaPrimePt_alone", &EtaPrimePt_alone_, "EtaPrimePt_alone/D");
-  bmmgTree_->Branch("K1Pt_beffit", &K1Pt_beffit_,"K1Pt_beffit/D");
-  bmmgTree_->Branch("K1Pz_beffit", &K1Pz_beffit_,"K1Pz_beffit/D");
-  bmmgTree_->Branch("K1Eta_beffit", &K1Eta_beffit_,"K1Eta_beffit/D");
-  bmmgTree_->Branch("K1Phi_beffit", &K1Phi_beffit_,"K1Phi_beffit/D");
-  bmmgTree_->Branch("K2Pt_beffit", &K2Pt_beffit_,"K2Pt_beffit/D");
-  bmmgTree_->Branch("K2Pz_beffit", &K2Pz_beffit_,"K2Pz_beffit/D");
-  bmmgTree_->Branch("K2Eta_beffit", &K2Eta_beffit_,"K2Eta_beffit/D");
-  bmmgTree_->Branch("K2Phi_beffit", &K2Phi_beffit_,"K2Phi_beffit/D");
+  bmmgTree_->Branch("mu1Pt_beffit", &mu1Pt_beffit_,"mu1Pt_beffit/D");
+  bmmgTree_->Branch("mu1Pz_beffit", &mu1Pz_beffit_,"mu1Pz_beffit/D");
+  bmmgTree_->Branch("mu1Eta_beffit", &mu1Eta_beffit_,"mu1Eta_beffit/D");
+  bmmgTree_->Branch("mu1Phi_beffit", &mu1Phi_beffit_,"mu1Phi_beffit/D");
+  bmmgTree_->Branch("mu2Pt_beffit", &mu2Pt_beffit_,"mu2Pt_beffit/D");
+  bmmgTree_->Branch("mu2Pz_beffit", &mu2Pz_beffit_,"mu2Pz_beffit/D");
+  bmmgTree_->Branch("mu2Eta_beffit", &mu2Eta_beffit_,"mu2Eta_beffit/D");
+  bmmgTree_->Branch("mu2Phi_beffit", &mu2Phi_beffit_,"mu2Phi_beffit/D");
+  bmmgTree_->Branch("mu1SoftID", &mu1SoftID_,"mu1SoftID/I");
+  bmmgTree_->Branch("mu2SoftID", &mu2SoftID_,"mu2SoftID/I");
+  bmmgTree_->Branch("DiMuonM_beffit", &DiMuonM_beffit_,"DiMuonM_beffit/D");
+  bmmgTree_->Branch("DiMuonEta_beffit", &DiMuonEta_beffit_,"DiMuonEta_beffit/D");
+  bmmgTree_->Branch("DiMuonPhi_beffit", &DiMuonPhi_beffit_,"DiMuonPhi_beffit/D");
+  bmmgTree_->Branch("DiMuonPt_beffit", &DiMuonPt_beffit_,"DiMuonPt_beffit/D");
+  bmmgTree_->Branch("DiMuon_vtxProb", &DiMuon_vtxProb_,"DiMuon_vtxProb/D");
+  bmmgTree_->Branch("DiMuon_CosineAlpha", &DiMuon_CosineAlpha_,"DiMuon_CosineAlpha/D");
+  bmmgTree_->Branch("DiMuon_DCA", &DiMuon_DCA_,"DiMuon_DCA/D");
+  bmmgTree_->Branch("DiMuon_Chi2pv_KVFvtx", &DiMuon_Chi2pv_KVFvtx_,"DiMuon_Chi2pv_KVFvtx/D");
+  bmmgTree_->Branch("DiMuon_Mahalanobis", &DiMuon_Mahalanobis_,"DiMuon_Mahalanobis/D");
+  bmmgTree_->Branch("DiMuon_ResonanceType", &DiMuon_ResonanceType_, "DiMuon_ResonanceType/I");
+  
+  bmmgTree_->Branch("BsM_beffit", &BsM_beffit_,"BsM_beffit/D");
+  bmmgTree_->Branch("BsEta_beffit", &BsEta_beffit_,"BsEta_beffit/D");
+  bmmgTree_->Branch("BsPhi_beffit", &BsPhi_beffit_,"BsPhi_beffit/D");
+  bmmgTree_->Branch("BsPt_beffit", &BsPt_beffit_,"BsPt_beffit/D");
+  bmmgTree_->Branch("Bs_vtxProb", &Bs_vtxProb_,"Bs_vtxProb/D");
 
-  bmmgTree_->Branch("PhiM_beffit", &PhiM_beffit_, "PhiM_beffit/D");
-  bmmgTree_->Branch("PhiEta_beffit", &PhiEta_beffit_, "PhiEta_beffit/D");
-  bmmgTree_->Branch("PhiPhi_beffit", &PhiPhi_beffit_, "PhiPhi_beffit/D");
-  bmmgTree_->Branch("PhiPt_beffit", &PhiPt_beffit_, "PhiPt_beffit/D");
-  bmmgTree_->Branch("BsPhiGammaM_beffit", &BsPhiGammaM_beffit_, "BsPhiGammaM_beffit/D");
-  bmmgTree_->Branch("BsPhiGammaEta_beffit", &BsPhiGammaEta_beffit_, "BsPhiGammaEta_beffit/D");
-  bmmgTree_->Branch("BsPhiGammaPhi_beffit", &BsPhiGammaPhi_beffit_, "BsPhiGammaPhi_beffit/D");
-  bmmgTree_->Branch("BsPhiGammaPt_beffit", &BsPhiGammaPt_beffit_, "BsPhiGammaPt_beffit/D");
-  bmmgTree_->Branch("BsPhiGamma_vtxProb", &BsPhiGamma_vtxProb_, "BsPhiGamma_vtxProb/D");
-  bmmgTree_->Branch("BsPhiGamma_CosineAlpha", &BsPhiGamma_CosineAlpha_, "BsPhiGamma_CosineAlpha/D");
-  bmmgTree_->Branch("BsPhiGamma_KKDCA", &BsPhiGamma_KKDCA_, "BsPhiGamma_KKDCA/D");
-  bmmgTree_->Branch("BsPhiGamma_Chi2pv_KVFvtx", &BsPhiGamma_Chi2pv_KVFvtx_, "BsPhiGamma_Chi2pv_KVFvtx/D");
-  bmmgTree_->Branch("BsPhiGamma_Mahalanobis", &BsPhiGamma_Mahalanobis_, "BsPhiGamma_Mahalanobis/D");
-  bmmgTree_->Branch("BsPhiGamma_K1Pt_fit", &BsPhiGamma_K1Pt_fit_, "BsPhiGamma_K1Pt_fit/D");
-  bmmgTree_->Branch("BsPhiGamma_K2Pt_fit", &BsPhiGamma_K2Pt_fit_, "BsPhiGamma_K2Pt_fit/D");
-  bmmgTree_->Branch("BsPhiGamma_PhiM_fit", &BsPhiGamma_PhiM_fit_, "BsPhiGamma_PhiM_fit/D");
   
   bmmgTree_->Branch("electronMultiplicity",&electronMultiplicity_,"electronMultiplicity/D");
   bmmgTree_->Branch("pfCandMultiplicity",&pfCandMultiplicity_,"pfCandMultiplicity/D");
@@ -175,7 +177,7 @@ void RadiativeRootTree::resetEntries()
 	BSy_                = -9999999;
 	BSz_                = -9999999;
 	BSdx_               = -9999999;
-        BSdy_               = -9999999;
+  BSdy_               = -9999999;
 	BSdz_               = -9999999;
 	BSdxdz_             = -9999999;
 	BSdydz_             = -9999999;
@@ -251,49 +253,49 @@ void RadiativeRootTree::resetEntries()
 	EtaMesonEta_alone_      = -9999999;
 	EtaMesonPhi_alone_      = -9999999;
 	EtaMesonPt_alone_       = -9999999;
-        EtaPrimeM_alone_        = -9999999;
+  EtaPrimeM_alone_        = -9999999;
 	EtaPrimeEta_alone_      = -9999999;
 	EtaPrimePhi_alone_      = -9999999;
 	EtaPrimePt_alone_       = -9999999;
 
+  mu1Pt_beffit_ = -9999999;
+  mu1Pz_beffit_ = -9999999;
+  mu1Eta_beffit_ = -9999999;
+  mu1Phi_beffit_ = -9999999;
+  mu2Pt_beffit_ = -9999999;
+  mu2Pz_beffit_ = -9999999;
+  mu2Eta_beffit_ = -9999999;
+  mu2Phi_beffit_ = -9999999;
+  mu1SoftID_ = -9999999;
+  mu2SoftID_ = -9999999;
+  DiMuonM_beffit_ = -9999999;
+  DiMuonEta_beffit_ = -9999999;
+  DiMuonPhi_beffit_ = -9999999;
+  DiMuonPt_beffit_ = -9999999;
+  DiMuon_vtxProb_ = -9999999;
+  DiMuon_CosineAlpha_ = -9999999;
+  DiMuon_DCA_ = -9999999;
+  DiMuon_Chi2pv_KVFvtx_ = -9999999;
+  DiMuon_Mahalanobis_ = -9999999;
+  DiMuon_ResonanceType_ = -9999999;
+  
+  BsM_beffit_ = -9999999;
+  BsEta_beffit_ = -9999999;
+  BsPhi_beffit_ = -9999999;
+  BsPt_beffit_ = -9999999;
+  Bs_vtxProb_ = -9999999;
 
-        K1Pt_beffit_ = -9999999;
-        K1Pz_beffit_ = -9999999;
-        K1Eta_beffit_ = -9999999;
-        K1Phi_beffit_ = -9999999;
-        K2Pt_beffit_ = -9999999;
-        K2Pz_beffit_ = -9999999;
-        K2Eta_beffit_ = -9999999;
-        K2Phi_beffit_ = -9999999;
+  electronMultiplicity_   = -9999999;
+  pfCandMultiplicity_     = -9999999;
 
-
-	PhiM_beffit_            = -9999999;
-        PhiEta_beffit_          = -9999999;
-        PhiPhi_beffit_          = -9999999;
-        PhiPt_beffit_           = -9999999;
-	BsPhiGammaM_beffit_     = -9999999;
-        BsPhiGammaEta_beffit_   = -9999999;
-        BsPhiGammaPhi_beffit_   = -9999999;
-        BsPhiGammaPt_beffit_    = -9999999;
-        BsPhiGamma_vtxProb_     = -9999999;
-        BsPhiGamma_CosineAlpha_ = -9999999;
-        BsPhiGamma_KKDCA_       = -9999999;
-        BsPhiGamma_Chi2pv_KVFvtx_ = -9999999;
-        BsPhiGamma_Mahalanobis_ = -9999999;
-        BsPhiGamma_K1Pt_fit_    = -9999999;
-        BsPhiGamma_K2Pt_fit_    = -9999999;
-        BsPhiGamma_PhiM_fit_    = -9999999; 
-	electronMultiplicity_   = -9999999;
-	pfCandMultiplicity_     = -9999999;
-
-	JpsiGenLxy_             = -9999999;
-        JpsiGenPVz_             = -9999999;
-        JpsiGenPVy_             = -9999999;
-        JpsiGenPVx_             = -9999999;
-        JpsiGenPt_              = -9999999;
-        JpsiGenLxyOld_          = -9999999;
-        JpsiGenLxyOverPt_       = -9999999;
-        JpsiGenNumberOfCandidates_= -9999999;
+  JpsiGenLxy_             = -9999999;
+  JpsiGenPVz_             = -9999999;
+  JpsiGenPVy_             = -9999999;
+  JpsiGenPVx_             = -9999999;
+  JpsiGenPt_              = -9999999;
+  JpsiGenLxyOld_          = -9999999;
+  JpsiGenLxyOverPt_       = -9999999;
+  JpsiGenNumberOfCandidates_ = -9999999;
 
 	for(size_t i=0; i<9;++i){PVcovariance_[i] = -9999999;}
 }
@@ -442,31 +444,34 @@ void RadiativeRootTree::setBranchAddresses(){
   bmmgTree_->SetBranchAddress("EtaPrimePhi_alone", &EtaPrimePhi_alone_);
   bmmgTree_->SetBranchAddress("EtaPrimePt_alone",  &EtaPrimePt_alone_);
 
-  bmmgTree_->SetBranchAddress(  "K1Pt_beffit"			  , &K1Pt_beffit_  );
-  bmmgTree_->SetBranchAddress(  "K1Pz_beffit"			  , &K1Pz_beffit_  );
-  bmmgTree_->SetBranchAddress(  "K1Eta_beffit"			  , &K1Eta_beffit_  );
-  bmmgTree_->SetBranchAddress(  "K1Phi_beffit"			  , &K1Phi_beffit_  );
-  bmmgTree_->SetBranchAddress(  "K2Pt_beffit"			  , &K2Pt_beffit_  );
-  bmmgTree_->SetBranchAddress(  "K2Pz_beffit"			  , &K2Pz_beffit_  );
-  bmmgTree_->SetBranchAddress(  "K2Eta_beffit"			  , &K2Eta_beffit_  );
-  bmmgTree_->SetBranchAddress(  "K2Phi_beffit"			  , &K2Phi_beffit_  );
+  bmmgTree_->SetBranchAddress("mu1Pt_beffit", &mu1Pt_beffit_);
+  bmmgTree_->SetBranchAddress("mu1Pz_beffit", &mu1Pz_beffit_);
+  bmmgTree_->SetBranchAddress("mu1Eta_beffit", &mu1Eta_beffit_);
+  bmmgTree_->SetBranchAddress("mu1Phi_beffit", &mu1Phi_beffit_);
+  bmmgTree_->SetBranchAddress("mu2Pt_beffit", &mu2Pt_beffit_);
+  bmmgTree_->SetBranchAddress("mu2Pz_beffit", &mu2Pz_beffit_);
+  bmmgTree_->SetBranchAddress("mu2Eta_beffit", &mu2Eta_beffit_);
+  bmmgTree_->SetBranchAddress("mu2Phi_beffit", &mu2Phi_beffit_);
+  bmmgTree_->SetBranchAddress("mu1SoftID", &mu1SoftID_);
+  bmmgTree_->SetBranchAddress("mu2SoftID", &mu2SoftID_);
+  bmmgTree_->SetBranchAddress("DiMuonM_beffit", &DiMuonM_beffit_);
+  bmmgTree_->SetBranchAddress("DiMuonEta_beffit", &DiMuonEta_beffit_);
+  bmmgTree_->SetBranchAddress("DiMuonPhi_beffit", &DiMuonPhi_beffit_);
+  bmmgTree_->SetBranchAddress("DiMuonPt_beffit", &DiMuonPt_beffit_);
+  bmmgTree_->SetBranchAddress("DiMuon_vtxProb", &DiMuon_vtxProb_);
+  bmmgTree_->SetBranchAddress("DiMuon_CosineAlpha", &DiMuon_CosineAlpha_);
+  bmmgTree_->SetBranchAddress("DiMuon_DCA", &DiMuon_DCA_);
+  bmmgTree_->SetBranchAddress("DiMuon_Chi2pv_KVFvtx", &DiMuon_Chi2pv_KVFvtx_);
+  bmmgTree_->SetBranchAddress("DiMuon_Mahalanobis", &DiMuon_Mahalanobis_);
+  bmmgTree_->SetBranchAddress("DiMuon_ResonanceType", &DiMuon_ResonanceType_);
+  
+  bmmgTree_->SetBranchAddress("BsM_beffit", &BsM_beffit_);
+  bmmgTree_->SetBranchAddress("BsEta_beffit", &BsEta_beffit_);
+  bmmgTree_->SetBranchAddress("BsPhi_beffit", &BsPhi_beffit_);
+  bmmgTree_->SetBranchAddress("BsPt_beffit", &BsPt_beffit_);
 
-  bmmgTree_->SetBranchAddress("PhiM_beffit", &PhiM_beffit_);
-  bmmgTree_->SetBranchAddress("PhiEta_beffit", &PhiEta_beffit_);
-  bmmgTree_->SetBranchAddress("PhiPhi_beffit", &PhiPhi_beffit_);
-  bmmgTree_->SetBranchAddress("PhiPt_beffit", &PhiPt_beffit_);
-  bmmgTree_->SetBranchAddress("BsPhiGammaM_beffit", &BsPhiGammaM_beffit_);
-  bmmgTree_->SetBranchAddress("BsPhiGammaEta_beffit", &BsPhiGammaEta_beffit_);
-  bmmgTree_->SetBranchAddress("BsPhiGammaPhi_beffit", &BsPhiGammaPhi_beffit_);
-  bmmgTree_->SetBranchAddress("BsPhiGammaPt_beffit", &BsPhiGammaPt_beffit_);
-  bmmgTree_->SetBranchAddress("BsPhiGamma_vtxProb", &BsPhiGamma_vtxProb_);
-  bmmgTree_->SetBranchAddress("BsPhiGamma_CosineAlpha", &BsPhiGamma_CosineAlpha_);
-  bmmgTree_->SetBranchAddress("BsPhiGamma_KKDCA", &BsPhiGamma_KKDCA_);
-  bmmgTree_->SetBranchAddress("BsPhiGamma_Chi2pv_KVFvtx", &BsPhiGamma_Chi2pv_KVFvtx_);
-  bmmgTree_->SetBranchAddress("BsPhiGamma_Mahalanobis", &BsPhiGamma_Mahalanobis_);
-  bmmgTree_->SetBranchAddress("BsPhiGamma_K1Pt_fit", &BsPhiGamma_K1Pt_fit_);
-  bmmgTree_->SetBranchAddress("BsPhiGamma_K2Pt_fit", &BsPhiGamma_K2Pt_fit_);
-  bmmgTree_->SetBranchAddress("BsPhiGamma_PhiM_fit", &BsPhiGamma_PhiM_fit_);
+
+
   
   bmmgTree_->SetBranchAddress("electronMultiplicity", &electronMultiplicity_);
   bmmgTree_->SetBranchAddress("pfCandMultiplicity", &pfCandMultiplicity_);

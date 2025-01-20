@@ -2,6 +2,7 @@
 #define BsToMuMuGammaAnalysis_RadiativeAnalysis_TrippleObjectVertex_h
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/BeamSpotAndVertex.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/ReferenceResonance.h"
+
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 #include "DataFormats/TrackReco/interface/Track.h"
@@ -55,6 +56,10 @@
 #include "TLorentzRotation.h"
 #include <iostream>
 #include <TMath.h>
+using namespace reco;
+using namespace edm;
+using namespace std;
+using namespace pat;
 
 class TrippleObjectVertex{
     public: 
@@ -62,6 +67,30 @@ class TrippleObjectVertex{
         ~TrippleObjectVertex(){}
         struct DecayChainVariables{
 		double mass = -9999999;
+		int mu1softid = -9999999;
+		int mu2softid = -9999999;
+		int mu1tightid = -9999999;
+		int mu2tightid = -9999999;
+		int mu1globalMuon = -9999999;
+		int mu2globalMuon = -9999999;
+		int mu1trkMuon = -9999999;
+		int mu2trkMuon = -9999999;
+		double dimuonMass = -9999999;
+		string resonanceType = "";
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
 	};
 
 	DecayChainVariables TrippleObjectVertexObservables(const std::vector<reco::Muon>& muons, 
