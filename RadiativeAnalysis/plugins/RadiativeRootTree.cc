@@ -1,5 +1,4 @@
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/RadiativeRootTree.h"
-using namespace std;
 
 RadiativeRootTree::RadiativeRootTree()
 	{

@@ -1,38 +1,6 @@
-#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/KinematicConstrainedFit.h"
-#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/BeamSpotAndVertex.h"
-#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/ReferenceResonance.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/TetraObjectVertex.h"
 
 
-#include <memory>
-#include <cstddef>
-#include <cfloat>
-#include <string>
-#include "TLorentzVector.h"
-#include "TVector3.h"
-#include "TVector.h"
-#include "TLorentzRotation.h"
-#include <iostream>
-#include <TMath.h>
-#include "DataFormats/PatCandidates/interface/CompositeCandidate.h"
-#include "DataFormats/PatCandidates/interface/Photon.h"
-#include "DataFormats/EgammaCandidates/interface/Photon.h"
-#include "RecoVertex/KinematicFitPrimitives/interface/KinematicState.h"
-#include "DataFormats/GeometryVector/interface/GlobalVector.h"
-#include "DataFormats/GeometryVector/interface/GlobalPoint.h"
-#include "TrackingTools/TrajectoryState/interface/FreeTrajectoryState.h"
-#include "MagneticField/Engine/interface/MagneticField.h"
-#include "MuonAnalysis/MuonAssociators/interface/PropagateToMuon.h"
-#include "MagneticField/Records/interface/IdealMagneticFieldRecord.h"
-#include "FWCore/Framework/interface/Event.h"
-#include "FWCore/Framework/interface/EventSetup.h"
-#include "FWCore/Framework/interface/ESHandle.h"
-#include "DataFormats/Common/interface/Handle.h"
-using namespace reco;
-using namespace edm;
-using namespace std;
-using namespace pat;
-#include <TMath.h>
 
 TetraObjectVertex::TetraObjectVertex(){}
 TetraObjectVertex::DecayChainVariables TetraObjectVertex::TetraObjectVertexObservables(
@@ -55,7 +23,7 @@ TetraObjectVertex::DecayChainVariables TetraObjectVertex::TetraObjectVertexObser
                         reco::TrackRef muTrack2 = mu2.track();
                         if(!muTrack2) continue;
                         reco::TransientTrack muonTT2 = reco::TransientTrack(muTrack2, &bField);
-                        std::vector<TransientTrack> tttrk_muons;
+                        std::vector<reco::TransientTrack> tttrk_muons;
                         tttrk_muons.push_back(muonTT1);
                         tttrk_muons.push_back(muonTT2);
 			for (const auto& conv1 : conversions) {

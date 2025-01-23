@@ -1,50 +1,30 @@
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/RecoPhotons.h"
-#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/KinematicConstrainedFit.h"
-#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/RadiativeRootTree.h"
-#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/RadiativeAnalysis.h"
 
-
+#include <vector>
 #include <memory>
 #include <cstddef>
 #include <cfloat>
 #include <string>
+#include <iostream>
+#include <algorithm>
+
 #include "TLorentzVector.h"
 #include "TVector3.h"
 #include "TVector.h"
 #include "TLorentzRotation.h"
-#include <iostream>
-#include <TMath.h>
-#include <algorithm>
-#include <vector>
-#include "DataFormats/PatCandidates/interface/CompositeCandidate.h"
+#include "TMath.h"
 #include "DataFormats/PatCandidates/interface/Photon.h"
 #include "DataFormats/EgammaCandidates/interface/Photon.h"
-#include "RecoVertex/KinematicFitPrimitives/interface/KinematicState.h"
-#include "DataFormats/GeometryVector/interface/GlobalVector.h"
-#include "DataFormats/GeometryVector/interface/GlobalPoint.h"
-#include "TrackingTools/TrajectoryState/interface/FreeTrajectoryState.h"
-#include "MagneticField/Engine/interface/MagneticField.h"
-#include "MuonAnalysis/MuonAssociators/interface/PropagateToMuon.h"
-#include "MagneticField/Records/interface/IdealMagneticFieldRecord.h"
-#include "FWCore/Framework/interface/Event.h"
-#include "FWCore/Framework/interface/EventSetup.h"
-#include "FWCore/Framework/interface/ESHandle.h"
-#include "DataFormats/Common/interface/Handle.h"
-using namespace reco;
-using namespace edm;
-using namespace std;
-using namespace pat;
 
 RecoPhotons::RecoPhotons(){}
 std::vector<RecoPhotons::PhotonVariables> RecoPhotons::PhotonObservables(const std::vector<reco::Photon>& photon){
 	std::vector<PhotonVariables> phov;
 	std::vector<reco::Photon> sortedPhotons = photon;
-	std::sort(sortedPhotons.begin(), sortedPhotons.end(), [](const reco::Photon& a, const reco::Photon& b) {
-        return a.pt() > b.pt();
-	});
+	std::sort(sortedPhotons.begin(), sortedPhotons.end(), [](const reco::Photon& a, const reco::Photon& b) { return a.pt() > b.pt();});
 
     
     // Loop through the first two highest momentum photons (if available)
+    
     size_t maxPhotons = std::min(sortedPhotons.size(), size_t(2));  // Limit to 2 photons
     for (size_t i = 0; i < maxPhotons; ++i) {
         const reco::Photon& irecoPhoton = sortedPhotons[i];

@@ -2,13 +2,17 @@
 #define BsToMuMuGammaAnalysis_RadiativeAnalysis_BeamSpotAndVertex_h
 
 
+#include <memory>
+#include <cstddef>
+#include <cfloat>
+#include <string>
+#include "TLorentzVector.h"
+#include "TVector3.h"
+#include "TVector.h"
+#include "TLorentzRotation.h"
+#include <iostream>
+#include <TMath.h>
 
-
-#include "DataFormats/Common/interface/Handle.h"
-#include "FWCore/Framework/interface/Event.h"
-#include "FWCore/ParameterSet/interface/Registry.h"
-#include "FWCore/MessageLogger/interface/MessageLogger.h"
-#include "FWCore/Framework/interface/ESHandle.h"
 #include "DataFormats/BeamSpot/interface/BeamSpot.h"
 #include "RecoVertex/VertexTools/interface/VertexDistance3D.h"
 #include "RecoVertex/VertexTools/interface/VertexDistanceXY.h"
@@ -20,20 +24,6 @@
 
 
 
-
-#include <iterator>  
-#include <algorithm> 
-#include <memory>
-#include <cstddef>
-#include <cfloat>
-#include <string>
-#include "TLorentzVector.h"
-#include "TVector3.h"
-#include "TVector.h"
-#include "TLorentzRotation.h"
-#include <iostream>
-#include <TMath.h>
-using namespace std;
 
 class BeamSpotAndVertex{
     public: 

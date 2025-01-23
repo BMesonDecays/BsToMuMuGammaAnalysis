@@ -1,49 +1,25 @@
 #ifndef BsToMuMuGammaAnalysis_RadiativeAnalysis_TrippleObjectVertex_h
 #define BsToMuMuGammaAnalysis_RadiativeAnalysis_TrippleObjectVertex_h
+
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/BeamSpotAndVertex.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/ReferenceResonance.h"
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/KinematicConstrainedFit.h"
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/BeamSpotAndVertex.h"
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/ReferenceResonance.h"
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/MuonClosestApproachCalculator.h"
 
-#include "DataFormats/VertexReco/interface/Vertex.h"
-#include "DataFormats/VertexReco/interface/VertexFwd.h"
-#include "DataFormats/TrackReco/interface/Track.h"
-#include "DataFormats/TrackReco/interface/TrackFwd.h"
-#include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
-#include "TrackingTools/Records/interface/TransientTrackRecord.h"
-#include "TrackingTools/TransientTrack/interface/TransientTrack.h"
-#include "RecoVertex/VertexPrimitives/interface/TransientVertex.h"
-#include "RecoVertex/KalmanVertexFit/interface/KalmanVertexFitter.h"
-#include "DataFormats/Candidate/interface/Candidate.h"
-#include "DataFormats/RecoCandidate/interface/RecoChargedCandidate.h"
-#include "DataFormats/RecoCandidate/interface/RecoChargedCandidateFwd.h"
+
+
 #include "DataFormats/Candidate/interface/CompositeCandidate.h"
-#include "DataFormats/Candidate/interface/CompositeCandidateFwd.h"
 #include "DataFormats/MuonReco/interface/Muon.h"
-#include "DataFormats/MuonReco/interface/MuonTrackLinks.h"
-#include "DataFormats/MuonReco/interface/MuonFwd.h"
-#include "DataFormats/MuonReco/interface/CaloMuon.h"
-#include "DataFormats/MuonReco/interface/MuonSelectors.h"
-#include "DataFormats/HepMCCandidate/interface/GenParticle.h"
-#include "DataFormats/TrackReco/interface/Track.h"
-#include "DataFormats/HepMCCandidate/interface/GenParticle.h"
-#include "DataFormats/TrackReco/interface/HitPattern.h"
-#include "DataFormats/PatCandidates/interface/IsolatedTrack.h"
-#include "DataFormats/Math/interface/LorentzVector.h"
 #include "DataFormats/PatCandidates/interface/CompositeCandidate.h"
-#include "DataFormats/PatCandidates/interface/Photon.h"
-#include "DataFormats/EgammaCandidates/interface/Photon.h"
-
-#include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/one/EDAnalyzer.h"
-#include "FWCore/Framework/interface/Event.h"
-#include "FWCore/Framework/interface/MakerMacros.h"
-#include "FWCore/ParameterSet/interface/ParameterSet.h"
-#include "FWCore/Utilities/interface/InputTag.h"
-
-#include "DataFormats/Common/interface/Handle.h"
-#include "FWCore/Framework/interface/Event.h"
-#include "FWCore/ParameterSet/interface/Registry.h"
-#include "FWCore/MessageLogger/interface/MessageLogger.h"
-#include "FWCore/Framework/interface/ESHandle.h"
+#include "RecoVertex/KalmanVertexFit/interface/KalmanVertexFitter.h"
+#include "RecoVertex/KinematicFitPrimitives/interface/KinematicState.h"
+#include "DataFormats/GeometryVector/interface/GlobalVector.h"
+#include "DataFormats/GeometryVector/interface/GlobalPoint.h"
+#include "TrackingTools/TrajectoryState/interface/FreeTrajectoryState.h"
+#include "MagneticField/Engine/interface/MagneticField.h"
+#include "MuonAnalysis/MuonAssociators/interface/PropagateToMuon.h"
 
 
 #include <memory>
@@ -55,42 +31,30 @@
 #include "TVector.h"
 #include "TLorentzRotation.h"
 #include <iostream>
-#include <TMath.h>
-using namespace reco;
-using namespace edm;
-using namespace std;
-using namespace pat;
+#include "TMath.h"
 
 class TrippleObjectVertex{
     public: 
         TrippleObjectVertex();
         ~TrippleObjectVertex(){}
         struct DecayChainVariables{
-		double mass = -9999999;
-		int mu1softid = -9999999;
-		int mu2softid = -9999999;
-		int mu1tightid = -9999999;
-		int mu2tightid = -9999999;
-		int mu1globalMuon = -9999999;
-		int mu2globalMuon = -9999999;
-		int mu1trkMuon = -9999999;
-		int mu2trkMuon = -9999999;
-		double dimuonMass = -9999999;
-		string resonanceType = "";
+		double mass = -9999;
+		int mu1softid = -9999;
+		int mu2softid = -9999;
+		int mu1tightid = -9999;
+		int mu2tightid = -9999;
+		int mu1globalMuon = -9999;
+		int mu2globalMuon = -9999;
+		int mu1trkMuon = -9999;
+		int mu2trkMuon = -9999;
+
+		std::vector<double> dimuonMasses;
+		std::vector<std::string> resonanceTypes; 
+		double opening_angle = -9999;
+		double dimuonvtxprob = -9999;
+		double mumudca = -9999;	
+		int isCowboy = -9999;
 	
-
-
-
-
-
-
-
-
-
-
-
-
-
 	};
 
 	DecayChainVariables TrippleObjectVertexObservables(const std::vector<reco::Muon>& muons, 

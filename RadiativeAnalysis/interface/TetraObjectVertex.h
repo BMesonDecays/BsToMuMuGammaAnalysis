@@ -1,44 +1,9 @@
 #ifndef BsToMuMuGammaAnalysis_RadiativeAnalysis_TetraObjectVertex_h
 #define BsToMuMuGammaAnalysis_RadiativeAnalysis_TetraObjectVertex_h
-#include "DataFormats/TrackReco/interface/TrackFwd.h"
-#include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
-#include "TrackingTools/Records/interface/TransientTrackRecord.h"
-#include "TrackingTools/TransientTrack/interface/TransientTrack.h"
-#include "RecoVertex/VertexPrimitives/interface/TransientVertex.h"
-#include "RecoVertex/KalmanVertexFit/interface/KalmanVertexFitter.h"
-#include "DataFormats/Candidate/interface/Candidate.h"
-#include "DataFormats/RecoCandidate/interface/RecoChargedCandidate.h"
-#include "DataFormats/RecoCandidate/interface/RecoChargedCandidateFwd.h"
-#include "DataFormats/Candidate/interface/CompositeCandidateFwd.h"
-#include "DataFormats/MuonReco/interface/Muon.h"
-#include "DataFormats/MuonReco/interface/MuonTrackLinks.h"
-#include "DataFormats/MuonReco/interface/MuonFwd.h"
-#include "DataFormats/MuonReco/interface/CaloMuon.h"
-#include "DataFormats/MuonReco/interface/MuonSelectors.h"
-#include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 
-#include "DataFormats/HepMCCandidate/interface/GenParticle.h"
-#include "DataFormats/TrackReco/interface/Track.h"
-#include "DataFormats/HepMCCandidate/interface/GenParticle.h"
-#include "DataFormats/TrackReco/interface/HitPattern.h"
-#include "DataFormats/PatCandidates/interface/IsolatedTrack.h"
-#include "DataFormats/Math/interface/LorentzVector.h"
-#include "DataFormats/PatCandidates/interface/CompositeCandidate.h"
-#include "DataFormats/PatCandidates/interface/Photon.h"
-#include "DataFormats/EgammaCandidates/interface/Photon.h"
-
-#include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/one/EDAnalyzer.h"
-#include "FWCore/Framework/interface/Event.h"
-#include "FWCore/Framework/interface/MakerMacros.h"
-#include "FWCore/ParameterSet/interface/ParameterSet.h"
-#include "FWCore/Utilities/interface/InputTag.h"
-
-#include "DataFormats/Common/interface/Handle.h"
-#include "FWCore/Framework/interface/Event.h"
-#include "FWCore/ParameterSet/interface/Registry.h"
-#include "FWCore/MessageLogger/interface/MessageLogger.h"
-#include "FWCore/Framework/interface/ESHandle.h"
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/KinematicConstrainedFit.h"
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/BeamSpotAndVertex.h"
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/ReferenceResonance.h"
 
 
 #include <memory>
@@ -51,6 +16,24 @@
 #include "TLorentzRotation.h"
 #include <iostream>
 #include <TMath.h>
+
+#include "RecoVertex/VertexPrimitives/interface/TransientVertex.h"
+#include "RecoVertex/KalmanVertexFit/interface/KalmanVertexFitter.h"
+#include "DataFormats/Candidate/interface/Candidate.h"
+#include "DataFormats/Candidate/interface/CompositeCandidateFwd.h"
+#include "DataFormats/MuonReco/interface/Muon.h"
+#include "DataFormats/MuonReco/interface/MuonTrackLinks.h"
+#include "DataFormats/MuonReco/interface/MuonFwd.h"
+#include "DataFormats/PatCandidates/interface/CompositeCandidate.h"
+#include "DataFormats/PatCandidates/interface/Photon.h"
+#include "DataFormats/EgammaCandidates/interface/Photon.h"
+#include "RecoVertex/KinematicFitPrimitives/interface/KinematicState.h"
+#include "DataFormats/GeometryVector/interface/GlobalVector.h"
+#include "DataFormats/GeometryVector/interface/GlobalPoint.h"
+#include "TrackingTools/TrajectoryState/interface/FreeTrajectoryState.h"
+#include "MagneticField/Engine/interface/MagneticField.h"
+#include "MuonAnalysis/MuonAssociators/interface/PropagateToMuon.h"
+#include "MagneticField/Records/interface/IdealMagneticFieldRecord.h"
 
 
 class TetraObjectVertex{

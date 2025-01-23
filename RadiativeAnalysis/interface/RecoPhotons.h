@@ -1,44 +1,21 @@
 #ifndef BsToMuMuGammaAnalysis_RadiativeAnalysis_RecoPhotons_h
 #define BsToMuMuGammaAnalysis_RadiativeAnalysis_RecoPhotons_h
 
-
-
-
-#include "DataFormats/Common/interface/Handle.h"
-#include "FWCore/Framework/interface/Event.h"
-#include "FWCore/ParameterSet/interface/Registry.h"
-#include "FWCore/MessageLogger/interface/MessageLogger.h"
-#include "FWCore/Framework/interface/ESHandle.h"
-#include "DataFormats/BeamSpot/interface/BeamSpot.h"
-#include "RecoVertex/VertexTools/interface/VertexDistance3D.h"
-#include "RecoVertex/VertexTools/interface/VertexDistanceXY.h"
-#include "DataFormats/BTauReco/interface/SecondaryVertexTagInfo.h"
-#include "RecoVertex/VertexPrimitives/interface/VertexState.h"
-#include "SimDataFormats/Vertex/interface/SimVertex.h"
-#include "DataFormats/VertexReco/interface/Vertex.h"
-#include "DataFormats/VertexReco/interface/VertexFwd.h"
 #include "DataFormats/PatCandidates/interface/Photon.h"
 #include "DataFormats/EgammaCandidates/interface/Photon.h"
-
-
-
-
+#include <iostream>
 #include <iterator>  
 #include <algorithm> 
 #include <memory>
 #include <cstddef>
 #include <cfloat>
 #include <string>
+#include <vector>
 #include "TLorentzVector.h"
 #include "TVector3.h"
 #include "TVector.h"
 #include "TLorentzRotation.h"
-#include <iostream>
-#include <TMath.h>
-using namespace std;
-using namespace reco;
-using namespace edm;
-//using namespace pat;
+#include "TMath.h"
 
 class RecoPhotons{
     public: 
@@ -63,4 +40,4 @@ class RecoPhotons{
       
 };
 
-#endif
+#endif // BsToMuMuGammaAnalysis_RadiativeAnalysis_RecoPhotons_h
