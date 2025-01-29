@@ -3,10 +3,6 @@
 
 
 ReferenceResonance::ReferenceResonance(){}
-template <typename T1, typename T2>
-double ReferenceResonance::calculateMass(const T1& p1, const T2& p2) {
-    return (p1.p4() + p2.p4()).M();
-}
 double ReferenceResonance::calculateMassFromComponents(const pat::CompositeCandidateCollection& conv1, const pat::CompositeCandidateCollection& conv2) {
     constexpr double electronMass = 0.000511;
     TLorentzVector totalVec;
@@ -37,7 +33,7 @@ double ReferenceResonance::calculateMassFromComponents(const pat::CompositeCandi
 ReferenceResonance::ResonanceDetails ReferenceResonance::applyResonanceMassCut(const reco::Muon& mu1, const reco::Muon& mu2, const std::string& resonanceType, bool verbose) {
     ResonanceDetails result;
 
-    double dimuonMass = calculateMass(mu1, mu2);
+    double dimuonMass = ReferenceResonance::calculateProperty(mu1, mu2, [](const auto& p4) { return p4.M(); });
     double nominalMass = 0.0;
     double massWindow = 0.0;
 
@@ -59,9 +55,14 @@ ReferenceResonance::ResonanceDetails ReferenceResonance::applyResonanceMassCut(c
                    (mu1.pt() > Constants::PtCut) &&
                    (mu2.pt() > Constants::PtCut);
 
-    result.mass = dimuonMass;
+    
     result.isValid = isValid;
-
+    result.mass = dimuonMass;
+    if (isValid) {
+    result.eta = ReferenceResonance::calculateProperty(mu1, mu2, [](const auto& p4) { return p4.eta(); });
+    result.phi = ReferenceResonance::calculateProperty(mu1, mu2, [](const auto& p4) { return p4.phi(); });
+    result.pt  = ReferenceResonance::calculateProperty(mu1, mu2, [](const auto& p4) { return p4.pt(); });
+    }
     if (verbose) {
         std::cout << "Calculated Dimuon Mass: " << dimuonMass << " (Nominal: " << nominalMass << ", Window: " << massWindow << ")\n";
     }
@@ -71,7 +72,7 @@ ReferenceResonance::ResonanceDetails ReferenceResonance::applyResonanceMassCut(c
 ReferenceResonance::ResonanceDetails ReferenceResonance::applyResonanceMassCut(const reco::Photon& photon1, const reco::Photon& photon2, const std::string& resonanceType, bool verbose) {
     ResonanceDetails result;
 
-    double diPhotonMass = calculateMass(photon1, photon2);
+    double diPhotonMass = CombinedpFour(photon1, photon2).M();
     double nominalMass = 0.0;
     double massWindow = 0.0;
 

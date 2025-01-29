@@ -47,12 +47,22 @@ class TrippleObjectVertex{
 		int mu2globalMuon = -9999;
 		int mu1trkMuon = -9999;
 		int mu2trkMuon = -9999;
+		double max_Dr1 = -9999;
+		double max_Dr2 = -9999;
+		
 
 		std::vector<double> dimuonMasses;
+		std::vector<double> dimuonEta;
+		std::vector<double> dimuonPhi;
+		std::vector<double> dimuonPt;
 		std::vector<std::string> resonanceTypes; 
 		double opening_angle = -9999;
 		double dimuonvtxprob = -9999;
-		double mumudca = -9999;	
+		double mumudca = -9999;
+		double dimuonlxy = -9999;
+		double dimuonlxyerr = -9999;
+		double mu1pz = -9999.0, mu1pt = -9999.0, mu1eta = -9999.0, mu1phi = -9999.0;
+		double mu2pz = -9999.0, mu2pt = -9999.0, mu2eta = -9999.0, mu2phi = -9999.0;
 		int isCowboy = -9999;
 	
 	};

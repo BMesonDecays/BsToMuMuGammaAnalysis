@@ -18,13 +18,14 @@
 #include "TLorentzRotation.h"
 #include "Math/Vector4D.h"
 #include <vector>
+#include <functional>
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/Photon.h"
 #include "DataFormats/PatCandidates/interface/CompositeCandidate.h"
 #include "DataFormats/EgammaCandidates/interface/Photon.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/CompositeCandidate.h"
-
+#include "DataFormats/Math/interface/LorentzVector.h"
 
 class ReferenceResonance{
     public:
@@ -32,7 +33,10 @@ class ReferenceResonance{
         ~ReferenceResonance(){}
 	public:
     struct ResonanceDetails {
-        double mass = -9999999;
+        double mass = -9999;
+	double eta  = -9999;
+	double phi  = -9999;
+	double pt   = -9999;
         bool isValid = false;
     };
 
@@ -69,13 +73,20 @@ class ReferenceResonance{
  
 
 private:
+     template <typename T1, typename T2>
+    static auto CombinedpFour(const T1& p1, const T2& p2) {
+        return (p1.p4() + p2.p4());
+    }
 
-    template <typename T1, typename T2>
-    static double calculateMass(const T1& p1, const T2& p2);
+    template <typename T1, typename T2, typename Func>
+    static auto calculateProperty(const T1& p1, const T2& p2, Func propertyExtractor) {
+        auto combinedP4 = CombinedpFour(p1, p2);
+        return propertyExtractor(combinedP4);
+    }
+
     //template <typename T1, typename T2>
     //static double calculateMassFromComponents(const T1& p1, const T2& p2);
 
-    //const T1& p1, const T2& p2
     static double calculateMassFromComponents(const pat::CompositeCandidateCollection& conv1, const pat::CompositeCandidateCollection& conv2);
 };
 

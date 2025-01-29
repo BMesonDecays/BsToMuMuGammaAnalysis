@@ -125,10 +125,10 @@ class RadiativeRootTree {
 		double mu2Phi_beffit_;
 
 		
-		double DiMuonM_beffit_;
-		double DiMuonEta_beffit_;
-		double DiMuonPhi_beffit_;
-		double DiMuonPt_beffit_;
+		double DiMuonM_beffit_[4];
+		double DiMuonEta_beffit_[4];
+		double DiMuonPhi_beffit_[4];
+		double DiMuonPt_beffit_[4];
 		double DiMuon_vtxProb_;
 		double DiMuon_CosineAlpha_;
 		double DiMuon_DCA_;

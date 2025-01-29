@@ -1,3 +1,4 @@
+//Author : Muhammad Alibordi, University of Warsaw
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/RecoPhotons.h"
 
 #include <vector>

@@ -277,6 +277,24 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 		TrippleObjectVertex  tripvtxObservables;
 		auto triDecayVar = tripvtxObservables.TrippleObjectVertexObservables(*muons, *conversions, bsandvtxVar, theBField, nominalMuonMass, nominalElectronMass);
 		bmmgRootTree_->mass_3vtx_ = triDecayVar.mass;
+		for(size_t i=0; i<triDecayVar.dimuonMasses.size();++i){
+			bmmgRootTree_->DiMuonM_beffit_[i] = triDecayVar.dimuonMasses[i];
+			if(triDecayVar.dimuonMasses[i]> 0){std::cout<< " at the index i = "<<i<<"\t the value of the mass : "<< triDecayVar.dimuonMasses[i] << "\n";}
+			bmmgRootTree_->DiMuonEta_beffit_[i] = triDecayVar.dimuonMasses[i];
+			bmmgRootTree_->DiMuonPhi_beffit_[i] = triDecayVar.dimuonMasses[i];
+			bmmgRootTree_->DiMuonPt_beffit_[i] = triDecayVar.dimuonMasses[i];	
+		}
+		bmmgRootTree_->DiMuon_vtxProb_       = triDecayVar.dimuonvtxprob;
+		bmmgRootTree_->DiMuon_CosineAlpha_   = triDecayVar.opening_angle;
+		bmmgRootTree_->DiMuon_DCA_           = triDecayVar.mumudca;
+		bmmgRootTree_->mu1Pt_beffit_         = triDecayVar.mu1pt;
+		bmmgRootTree_->mu1Pz_beffit_         = triDecayVar.mu1pz;
+		bmmgRootTree_->mu1Eta_beffit_        = triDecayVar.mu1eta;
+		bmmgRootTree_->mu1Phi_beffit_        = triDecayVar.mu1phi;
+		bmmgRootTree_->mu2Phi_beffit_        = triDecayVar.mu2phi;
+		bmmgRootTree_->mu2Pt_beffit_         = triDecayVar.mu2pt;
+		bmmgRootTree_->mu2Pz_beffit_         = triDecayVar.mu2pz;
+		bmmgRootTree_->mu2Eta_beffit_        = triDecayVar.mu2eta;
 		TetraObjectVertex tetradcObservables;
 		auto tetraDecayVar = tetradcObservables.TetraObjectVertexObservables(*muons, *conversions, theBField, nominalMuonMass, nominalElectronMass);
 		bmmgRootTree_->mass_4vtx_ = tetraDecayVar.mass;

@@ -115,10 +115,10 @@ void RadiativeRootTree::createTree(const std::string filename)
   bmmgTree_->Branch("mu2Phi_beffit", &mu2Phi_beffit_,"mu2Phi_beffit/D");
   bmmgTree_->Branch("mu1SoftID", &mu1SoftID_,"mu1SoftID/I");
   bmmgTree_->Branch("mu2SoftID", &mu2SoftID_,"mu2SoftID/I");
-  bmmgTree_->Branch("DiMuonM_beffit", &DiMuonM_beffit_,"DiMuonM_beffit/D");
-  bmmgTree_->Branch("DiMuonEta_beffit", &DiMuonEta_beffit_,"DiMuonEta_beffit/D");
-  bmmgTree_->Branch("DiMuonPhi_beffit", &DiMuonPhi_beffit_,"DiMuonPhi_beffit/D");
-  bmmgTree_->Branch("DiMuonPt_beffit", &DiMuonPt_beffit_,"DiMuonPt_beffit/D");
+  bmmgTree_->Branch("DiMuonM_beffit", &DiMuonM_beffit_,"DiMuonM_beffit[4]/D");
+  bmmgTree_->Branch("DiMuonEta_beffit", &DiMuonEta_beffit_,"DiMuonEta_beffit[4]/D");
+  bmmgTree_->Branch("DiMuonPhi_beffit", &DiMuonPhi_beffit_,"DiMuonPhi_beffit[4]/D");
+  bmmgTree_->Branch("DiMuonPt_beffit", &DiMuonPt_beffit_,"DiMuonPt_beffit[4]/D");
   bmmgTree_->Branch("DiMuon_vtxProb", &DiMuon_vtxProb_,"DiMuon_vtxProb/D");
   bmmgTree_->Branch("DiMuon_CosineAlpha", &DiMuon_CosineAlpha_,"DiMuon_CosineAlpha/D");
   bmmgTree_->Branch("DiMuon_DCA", &DiMuon_DCA_,"DiMuon_DCA/D");
@@ -267,10 +267,12 @@ void RadiativeRootTree::resetEntries()
   mu2Phi_beffit_ = -9999999;
   mu1SoftID_ = -9999999;
   mu2SoftID_ = -9999999;
-  DiMuonM_beffit_ = -9999999;
-  DiMuonEta_beffit_ = -9999999;
-  DiMuonPhi_beffit_ = -9999999;
-  DiMuonPt_beffit_ = -9999999;
+  for(int i =0; i<4 ;++i){
+  DiMuonM_beffit_[i] = -9999999;
+  DiMuonEta_beffit_[i] = -9999999;
+  DiMuonPhi_beffit_[i] = -9999999;
+  DiMuonPt_beffit_[i] = -9999999;
+  }
   DiMuon_vtxProb_ = -9999999;
   DiMuon_CosineAlpha_ = -9999999;
   DiMuon_DCA_ = -9999999;
