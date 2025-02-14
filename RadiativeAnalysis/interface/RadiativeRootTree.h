@@ -24,8 +24,7 @@ class RadiativeRootTree {
 		void setBranchAddresses();
 
 	public:
-		double mass_4vtx_;
-		double mass_3vtx_;
+		
 		int runNumber_;
 		int PUinteraction_;
 		int PUTrueinteraction_;
@@ -65,6 +64,40 @@ class RadiativeRootTree {
 		int triggerbit_HLTDimuon4JpsiDisplaced_;
 		int triggerbit_HLTDimuon4JpsiNoVertexing_;
 		int triggerbit_HLTDimuon4JpsiTrkTrkDisplaced_;
+		double mu1Pt_beffit_;
+		double mu1Pz_beffit_;
+		double mu1Eta_beffit_;
+		double mu1Phi_beffit_;
+		double mu2Pt_beffit_;
+		double mu2Pz_beffit_;
+		double mu2Eta_beffit_;
+		double mu2Phi_beffit_;
+
+		
+		double DiMuonM_beffit_;
+		double DiMuonEta_beffit_;
+		double DiMuonPhi_beffit_;
+		double DiMuonPt_beffit_;
+		double DiMuon_vtxProb_;
+		double DiMuon_CosineAlpha_;
+		double DiMuon_DCA_;
+		double DiMuon_Chi2pv_KVFvtx_;
+		double DiMuon_Mahalanobis_;
+		double DiMuon_Lxy_;
+		double DiMuon_Lxyerr_;
+		double DiMuon_LxyOverPt_;
+		int DiMuon_NumberOfCandidates_;
+		int DiMuon_ResonanceType_;
+		int mu1SoftID_;
+		int mu2SoftID_;
+		int    DiMuon_mu1Cat_alone_;
+		int    DiMuon_mu2Cat_alone_;
+		int    DiMuon_mu1nPixHits_alone_;
+		int    DiMuon_mu2nPixHits_alone_;
+ 
+		double HadronMass_fromVertexFit_;
+
+
 		int photonMultiplicity_;
 		double photonPt_;
 		double photonEta_;
@@ -115,32 +148,7 @@ class RadiativeRootTree {
 		double EtaPrimePhi_alone_;
 		double EtaPrimePt_alone_;
 
-		double mu1Pt_beffit_;
-		double mu1Pz_beffit_;
-		double mu1Eta_beffit_;
-		double mu1Phi_beffit_;
-		double mu2Pt_beffit_;
-		double mu2Pz_beffit_;
-		double mu2Eta_beffit_;
-		double mu2Phi_beffit_;
-
 		
-		double DiMuonM_beffit_[4];
-		double DiMuonEta_beffit_[4];
-		double DiMuonPhi_beffit_[4];
-		double DiMuonPt_beffit_[4];
-		double DiMuon_vtxProb_;
-		double DiMuon_CosineAlpha_;
-		double DiMuon_DCA_;
-		double DiMuon_Chi2pv_KVFvtx_;
-		double DiMuon_Mahalanobis_;
-		int DiMuon_NumberOfCandidates_;
-		int DiMuon_ResonanceType_;
-
-		int mu1SoftID_;
-		int mu2SoftID_;
-
-
 		double BsM_beffit_;
 		double BsEta_beffit_;
 		double BsPhi_beffit_;

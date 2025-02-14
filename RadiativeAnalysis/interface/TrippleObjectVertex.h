@@ -20,6 +20,7 @@
 #include "TrackingTools/TrajectoryState/interface/FreeTrajectoryState.h"
 #include "MagneticField/Engine/interface/MagneticField.h"
 #include "MuonAnalysis/MuonAssociators/interface/PropagateToMuon.h"
+#include "CommonTools/CandUtils/interface/AddFourMomenta.h"
 
 
 #include <memory>
@@ -51,19 +52,26 @@ class TrippleObjectVertex{
 		double max_Dr2 = -9999;
 		
 
-		std::vector<double> dimuonMasses;
-		std::vector<double> dimuonEta;
-		std::vector<double> dimuonPhi;
-		std::vector<double> dimuonPt;
-		std::vector<std::string> resonanceTypes; 
+		double dimuonMass = -9999;
+		double dimuonEta = -9999;
+		double dimuonPhi = -9999;
+		double dimuonPt = -9999;
+		int resonanceFlag = -9999;
 		double opening_angle = -9999;
 		double dimuonvtxprob = -9999;
 		double mumudca = -9999;
 		double dimuonlxy = -9999;
 		double dimuonlxyerr = -9999;
+		double dimuonlxyOverPt = -9999;
+		double dimuonchi2 = -9999;
 		double mu1pz = -9999.0, mu1pt = -9999.0, mu1eta = -9999.0, mu1phi = -9999.0;
 		double mu2pz = -9999.0, mu2pt = -9999.0, mu2eta = -9999.0, mu2phi = -9999.0;
 		int isCowboy = -9999;
+		int diMuon_mu1Cat = -9999;
+		int diMuon_mu2Cat = -9999;
+		int diMuon_mu1PixelHits = -9999;
+		int diMuon_mu2PixelHits = -9999;
+		
 	
 	};
 

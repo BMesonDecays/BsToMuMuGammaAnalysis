@@ -9,7 +9,7 @@ double MuonClosestApproachCalculator::calculateDCA(const TrajectoryStateClosestT
         cApp_.calculate(mu1TS.theState(), mu2TS.theState());
         if (cApp_.status()) {  // Check if calculation was successful
             double dca = cApp_.distance();
-            std::cout << "Distance of closest approach between two muons: " << dca << "\n";
+            //std::cout << "Distance of closest approach between two muons: " << dca << "\n";
             return dca;
         } else {
             std::cerr << "Closest approach calculation failed.\n";

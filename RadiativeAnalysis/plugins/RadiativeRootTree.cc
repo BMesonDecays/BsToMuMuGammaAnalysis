@@ -14,8 +14,6 @@ void RadiativeRootTree::createTree(const std::string filename)
   int bufsize = 256000;
   // create tree structure
   bmmgTree_ = new TTree("BMMGTree","BMMGTree",bufsize);
-  bmmgTree_->Branch("mass_4vtx",&mass_4vtx_ ,"mass_4vtx/D");
-  bmmgTree_->Branch("mass_3vtx",&mass_3vtx_ ,"mass_3vtx/D");
   bmmgTree_->Branch("runNumber",&runNumber_ ,"runNumber/I");
   bmmgTree_->Branch("eventNumber",&eventNumber_,"eventNumber/i");
   bmmgTree_->Branch("lumiSection",&lumiSection_,"lumiSection/I");
@@ -56,6 +54,35 @@ void RadiativeRootTree::createTree(const std::string filename)
   bmmgTree_->Branch("triggerbit_HLTDimuon4JpsiDisplaced", &triggerbit_HLTDimuon4JpsiDisplaced_,"triggerbit_HLTDimuon4JpsiDisplaced_/I");
   bmmgTree_->Branch("triggerbit_HLTDimuon4JpsiNoVertexing",&triggerbit_HLTDimuon4JpsiNoVertexing_,"triggerbit_HLTDimuon4JpsiNoVertexing_/I");
   bmmgTree_->Branch("triggerbit_HLTDimuon4JpsiTrkTrkDisplaced",&triggerbit_HLTDimuon4JpsiTrkTrkDisplaced_,"triggerbit_HLTDimuon4JpsiTrkTrkDisplaced_/I");
+  bmmgTree_->Branch("mu1Pt_beffit", &mu1Pt_beffit_,"mu1Pt_beffit/D");
+  bmmgTree_->Branch("mu1Pz_beffit", &mu1Pz_beffit_,"mu1Pz_beffit/D");
+  bmmgTree_->Branch("mu1Eta_beffit", &mu1Eta_beffit_,"mu1Eta_beffit/D");
+  bmmgTree_->Branch("mu1Phi_beffit", &mu1Phi_beffit_,"mu1Phi_beffit/D");
+  bmmgTree_->Branch("mu2Pt_beffit", &mu2Pt_beffit_,"mu2Pt_beffit/D");
+  bmmgTree_->Branch("mu2Pz_beffit", &mu2Pz_beffit_,"mu2Pz_beffit/D");
+  bmmgTree_->Branch("mu2Eta_beffit", &mu2Eta_beffit_,"mu2Eta_beffit/D");
+  bmmgTree_->Branch("mu2Phi_beffit", &mu2Phi_beffit_,"mu2Phi_beffit/D");
+  bmmgTree_->Branch("mu1SoftID", &mu1SoftID_,"mu1SoftID/I");
+  bmmgTree_->Branch("mu2SoftID", &mu2SoftID_,"mu2SoftID/I");
+  bmmgTree_->Branch("DiMuonM_beffit", &DiMuonM_beffit_,"DiMuonM_beffit/D");
+  bmmgTree_->Branch("DiMuonEta_beffit", &DiMuonEta_beffit_,"DiMuonEta_beffit/D");
+  bmmgTree_->Branch("DiMuonPhi_beffit", &DiMuonPhi_beffit_,"DiMuonPhi_beffit/D");
+  bmmgTree_->Branch("DiMuonPt_beffit", &DiMuonPt_beffit_,"DiMuonPt_beffit/D");
+  bmmgTree_->Branch("DiMuon_vtxProb", &DiMuon_vtxProb_,"DiMuon_vtxProb/D");
+  bmmgTree_->Branch("DiMuon_CosineAlpha", &DiMuon_CosineAlpha_,"DiMuon_CosineAlpha/D");
+  bmmgTree_->Branch("DiMuon_DCA", &DiMuon_DCA_,"DiMuon_DCA/D");
+  bmmgTree_->Branch("DiMuon_Chi2pv_KVFvtx", &DiMuon_Chi2pv_KVFvtx_,"DiMuon_Chi2pv_KVFvtx/D");
+  bmmgTree_->Branch("DiMuon_Mahalanobis", &DiMuon_Mahalanobis_,"DiMuon_Mahalanobis/D");
+  bmmgTree_->Branch("DiMuon_ResonanceType", &DiMuon_ResonanceType_, "DiMuon_ResonanceType/I");
+  bmmgTree_->Branch("DiMuon_Lxy", &DiMuon_Lxy_,"DiMuon_Lxy/D");
+  bmmgTree_->Branch("DiMuon_Lxyerr", &DiMuon_Lxyerr_,"DiMuon_Lxyerr/D");
+  bmmgTree_->Branch("DiMuon_LxyOverPt", &DiMuon_LxyOverPt_,"DiMuon_LxyOverPt/D");
+  bmmgTree_->Branch("DiMuon_mu1Cat_alone", &DiMuon_mu1Cat_alone_,"DiMuon_mu1Cat_alone/I");
+  bmmgTree_->Branch("DiMuon_mu2Cat_alone", &DiMuon_mu2Cat_alone_,"DiMuon_mu2Cat_alone/I");
+  bmmgTree_->Branch("DiMuon_mu1nPixHits_alone", &DiMuon_mu1nPixHits_alone_,"DiMuon_mu1nPixHits_alone/I");
+  bmmgTree_->Branch("DiMuon_mu2nPixHits_alone", &DiMuon_mu2nPixHits_alone_,"DiMuon_mu2nPixHits_alone/I");
+  bmmgTree_->Branch("DiMuon_NumberOfCandidates", &DiMuon_NumberOfCandidates_,"DiMuon_NumberOfCandidates/I");
+  bmmgTree_->Branch("HadronMass_fromVertexFit", &HadronMass_fromVertexFit_,"HadronMass_fromVertexFit/D");
   bmmgTree_->Branch("photonMultiplicity", &photonMultiplicity_,"photonMultiplicity/I");
   bmmgTree_->Branch("photonPt",&photonPt_,"photonPt/D");
   bmmgTree_->Branch("photonEta",&photonEta_,"photonEta/D");
@@ -76,7 +103,7 @@ void RadiativeRootTree::createTree(const std::string filename)
   bmmgTree_->Branch("photonSSe5x5",&photonSSe5x5_,"photonSSe5x5/D");
   bmmgTree_->Branch("photonSShcalDepth1OverEcal",&photonSShcalDepth1OverEcal_,"photonSShcalDepth1OverEcal/D");
   bmmgTree_->Branch("photonSShcalDepth2OverEcal",&photonSShcalDepth2OverEcal_,"photonSShcalDepth2OverEcal/D");
-  bmmgTree_->Branch("photonSShcalDepth1OverEcalBc",&photonSShcalDepth1OverEcalBc_,"photonSShcalDepth1OverEcal/D");
+  bmmgTree_->Branch("photonSShcalDepth1OverEcalBc",&photonSShcalDepth1OverEcalBc_,"photonSShcalDepth1OverEcalBc/D");
   bmmgTree_->Branch("photonSShcalDepth2OverEcalBc",&photonSShcalDepth2OverEcalBc_,"photonSShcalDepth2OverEcalBc/D");
   bmmgTree_->Branch("photonSShcalOverEcal",&photonSShcalOverEcal_,"photonSShcalOverEcal[7]/D");
   bmmgTree_->Branch("photonSShcalOverEcalBc",&photonSShcalOverEcalBc_,"photonSShcalOverEcalBc[7]/D");
@@ -105,26 +132,7 @@ void RadiativeRootTree::createTree(const std::string filename)
   bmmgTree_->Branch("EtaPrimeEta_alone", &EtaPrimeEta_alone_, "EtaPrimeEta_alone/D");
   bmmgTree_->Branch("EtaPrimePhi_alone", &EtaPrimePhi_alone_, "EtaPrimePhi_alone/D");
   bmmgTree_->Branch("EtaPrimePt_alone", &EtaPrimePt_alone_, "EtaPrimePt_alone/D");
-  bmmgTree_->Branch("mu1Pt_beffit", &mu1Pt_beffit_,"mu1Pt_beffit/D");
-  bmmgTree_->Branch("mu1Pz_beffit", &mu1Pz_beffit_,"mu1Pz_beffit/D");
-  bmmgTree_->Branch("mu1Eta_beffit", &mu1Eta_beffit_,"mu1Eta_beffit/D");
-  bmmgTree_->Branch("mu1Phi_beffit", &mu1Phi_beffit_,"mu1Phi_beffit/D");
-  bmmgTree_->Branch("mu2Pt_beffit", &mu2Pt_beffit_,"mu2Pt_beffit/D");
-  bmmgTree_->Branch("mu2Pz_beffit", &mu2Pz_beffit_,"mu2Pz_beffit/D");
-  bmmgTree_->Branch("mu2Eta_beffit", &mu2Eta_beffit_,"mu2Eta_beffit/D");
-  bmmgTree_->Branch("mu2Phi_beffit", &mu2Phi_beffit_,"mu2Phi_beffit/D");
-  bmmgTree_->Branch("mu1SoftID", &mu1SoftID_,"mu1SoftID/I");
-  bmmgTree_->Branch("mu2SoftID", &mu2SoftID_,"mu2SoftID/I");
-  bmmgTree_->Branch("DiMuonM_beffit", &DiMuonM_beffit_,"DiMuonM_beffit[4]/D");
-  bmmgTree_->Branch("DiMuonEta_beffit", &DiMuonEta_beffit_,"DiMuonEta_beffit[4]/D");
-  bmmgTree_->Branch("DiMuonPhi_beffit", &DiMuonPhi_beffit_,"DiMuonPhi_beffit[4]/D");
-  bmmgTree_->Branch("DiMuonPt_beffit", &DiMuonPt_beffit_,"DiMuonPt_beffit[4]/D");
-  bmmgTree_->Branch("DiMuon_vtxProb", &DiMuon_vtxProb_,"DiMuon_vtxProb/D");
-  bmmgTree_->Branch("DiMuon_CosineAlpha", &DiMuon_CosineAlpha_,"DiMuon_CosineAlpha/D");
-  bmmgTree_->Branch("DiMuon_DCA", &DiMuon_DCA_,"DiMuon_DCA/D");
-  bmmgTree_->Branch("DiMuon_Chi2pv_KVFvtx", &DiMuon_Chi2pv_KVFvtx_,"DiMuon_Chi2pv_KVFvtx/D");
-  bmmgTree_->Branch("DiMuon_Mahalanobis", &DiMuon_Mahalanobis_,"DiMuon_Mahalanobis/D");
-  bmmgTree_->Branch("DiMuon_ResonanceType", &DiMuon_ResonanceType_, "DiMuon_ResonanceType/I");
+  
   
   bmmgTree_->Branch("BsM_beffit", &BsM_beffit_,"BsM_beffit/D");
   bmmgTree_->Branch("BsEta_beffit", &BsEta_beffit_,"BsEta_beffit/D");
@@ -162,8 +170,7 @@ void RadiativeRootTree::writeFile()
 }
 void RadiativeRootTree::resetEntries()
 {
-	mass_4vtx_          = -9999999;
-	mass_3vtx_          = -9999999;
+	
 	runNumber_          = -9999999;
 	eventNumber_        = -9999999;
 	lumiSection_        = -9999999;
@@ -207,6 +214,33 @@ void RadiativeRootTree::resetEntries()
 	triggerbit_HLTDimuon4JpsiDisplaced_                    = -9999999;
 	triggerbit_HLTDimuon4JpsiNoVertexing_                  = -9999999;
 	triggerbit_HLTDimuon4JpsiTrkTrkDisplaced_              = -9999999;
+  mu1Pt_beffit_ = -9999999;
+	mu1Pz_beffit_ = -9999999;
+	mu1Eta_beffit_ = -9999999;
+	mu1Phi_beffit_ = -9999999;
+	mu2Pt_beffit_ = -9999999;
+	mu2Pz_beffit_ = -9999999;
+	mu2Eta_beffit_ = -9999999;
+	mu2Phi_beffit_ = -9999999;
+	mu1SoftID_ = -9999999;
+	mu2SoftID_ = -9999999;
+	DiMuonM_beffit_ = -9999999;
+	DiMuonEta_beffit_ = -9999999;
+	DiMuonPhi_beffit_ = -9999999;
+	DiMuonPt_beffit_ = -9999999;
+	DiMuon_vtxProb_ = -9999999;
+	DiMuon_CosineAlpha_ = -9999999;
+	DiMuon_DCA_ = -9999999;
+	DiMuon_Chi2pv_KVFvtx_ = -9999999;
+	DiMuon_Mahalanobis_ = -9999999;
+	DiMuon_ResonanceType_ = -9999999;
+  DiMuon_Chi2pv_KVFvtx_ = -9999999;
+  DiMuon_Lxy_ = -9999999;
+  DiMuon_Lxyerr_ = -9999999;
+  DiMuon_LxyOverPt_ = -9999999;
+  DiMuon_mu1Cat_alone_ = -9999999;
+  DiMuon_mu2Cat_alone_ = -9999999;
+  HadronMass_fromVertexFit_ = -9999999;
 	photonMultiplicity_ = -9999999;
 	photonPt_           = -9999999;
 	photonEta_          = -9999999;
@@ -252,51 +286,26 @@ void RadiativeRootTree::resetEntries()
 	EtaMesonEta_alone_      = -9999999;
 	EtaMesonPhi_alone_      = -9999999;
 	EtaMesonPt_alone_       = -9999999;
-  EtaPrimeM_alone_        = -9999999;
+	EtaPrimeM_alone_        = -9999999;
 	EtaPrimeEta_alone_      = -9999999;
 	EtaPrimePhi_alone_      = -9999999;
 	EtaPrimePt_alone_       = -9999999;
-
-  mu1Pt_beffit_ = -9999999;
-  mu1Pz_beffit_ = -9999999;
-  mu1Eta_beffit_ = -9999999;
-  mu1Phi_beffit_ = -9999999;
-  mu2Pt_beffit_ = -9999999;
-  mu2Pz_beffit_ = -9999999;
-  mu2Eta_beffit_ = -9999999;
-  mu2Phi_beffit_ = -9999999;
-  mu1SoftID_ = -9999999;
-  mu2SoftID_ = -9999999;
-  for(int i =0; i<4 ;++i){
-  DiMuonM_beffit_[i] = -9999999;
-  DiMuonEta_beffit_[i] = -9999999;
-  DiMuonPhi_beffit_[i] = -9999999;
-  DiMuonPt_beffit_[i] = -9999999;
-  }
-  DiMuon_vtxProb_ = -9999999;
-  DiMuon_CosineAlpha_ = -9999999;
-  DiMuon_DCA_ = -9999999;
-  DiMuon_Chi2pv_KVFvtx_ = -9999999;
-  DiMuon_Mahalanobis_ = -9999999;
-  DiMuon_ResonanceType_ = -9999999;
-  
-  BsM_beffit_ = -9999999;
-  BsEta_beffit_ = -9999999;
-  BsPhi_beffit_ = -9999999;
-  BsPt_beffit_ = -9999999;
-  Bs_vtxProb_ = -9999999;
-
-  electronMultiplicity_   = -9999999;
+	
+	BsM_beffit_ = -9999999;
+	BsEta_beffit_ = -9999999;
+	BsPhi_beffit_ = -9999999;
+	BsPt_beffit_ = -9999999;
+	Bs_vtxProb_ = -9999999;
+	electronMultiplicity_   = -9999999;
   pfCandMultiplicity_     = -9999999;
-
-  JpsiGenLxy_             = -9999999;
-  JpsiGenPVz_             = -9999999;
-  JpsiGenPVy_             = -9999999;
-  JpsiGenPVx_             = -9999999;
-  JpsiGenPt_              = -9999999;
-  JpsiGenLxyOld_          = -9999999;
-  JpsiGenLxyOverPt_       = -9999999;
-  JpsiGenNumberOfCandidates_ = -9999999;
+	JpsiGenLxy_             = -9999999;
+	JpsiGenPVz_             = -9999999;
+	JpsiGenPVy_             = -9999999;
+	JpsiGenPVx_             = -9999999;
+	JpsiGenPt_              = -9999999;
+	JpsiGenLxyOld_          = -9999999;
+	JpsiGenLxyOverPt_       = -9999999;
+	JpsiGenNumberOfCandidates_ = -9999999;
 
 	for(size_t i=0; i<9;++i){PVcovariance_[i] = -9999999;}
 }
@@ -352,8 +361,7 @@ void RadiativeRootTree::readTree(std::vector<std::string> filenames){
 }
 void RadiativeRootTree::setBranchAddresses(){
 
-  bmmgTree_->SetBranchAddress("mass_4vtx", &mass_4vtx_);
-  bmmgTree_->SetBranchAddress("mass_3vtx", &mass_3vtx_);
+  
   bmmgTree_->SetBranchAddress("runNumber", &runNumber_);
   bmmgTree_->SetBranchAddress("eventNumber", &eventNumber_);
   bmmgTree_->SetBranchAddress("lumiSection", &lumiSection_ );
@@ -395,6 +403,32 @@ void RadiativeRootTree::setBranchAddresses(){
   bmmgTree_->SetBranchAddress("triggerbit_HLTDimuon4JpsiDisplaced",&triggerbit_HLTDimuon4JpsiDisplaced_);
   bmmgTree_->SetBranchAddress("triggerbit_HLTDimuon4JpsiNoVertexing",&triggerbit_HLTDimuon4JpsiNoVertexing_);
   bmmgTree_->SetBranchAddress("triggerbit_HLTDimuon4JpsiTrkTrkDisplaced_",&triggerbit_HLTDimuon4JpsiTrkTrkDisplaced_);
+  bmmgTree_->SetBranchAddress("mu1Pt_beffit", &mu1Pt_beffit_);
+  bmmgTree_->SetBranchAddress("mu1Pz_beffit", &mu1Pz_beffit_);
+  bmmgTree_->SetBranchAddress("mu1Eta_beffit", &mu1Eta_beffit_);
+  bmmgTree_->SetBranchAddress("mu1Phi_beffit", &mu1Phi_beffit_);
+  bmmgTree_->SetBranchAddress("mu2Pt_beffit", &mu2Pt_beffit_);
+  bmmgTree_->SetBranchAddress("mu2Pz_beffit", &mu2Pz_beffit_);
+  bmmgTree_->SetBranchAddress("mu2Eta_beffit", &mu2Eta_beffit_);
+  bmmgTree_->SetBranchAddress("mu2Phi_beffit", &mu2Phi_beffit_);
+  bmmgTree_->SetBranchAddress("mu1SoftID", &mu1SoftID_);
+  bmmgTree_->SetBranchAddress("mu2SoftID", &mu2SoftID_);
+  bmmgTree_->SetBranchAddress("DiMuonM_beffit", &DiMuonM_beffit_);
+  bmmgTree_->SetBranchAddress("DiMuonEta_beffit", &DiMuonEta_beffit_);
+  bmmgTree_->SetBranchAddress("DiMuonPhi_beffit", &DiMuonPhi_beffit_);
+  bmmgTree_->SetBranchAddress("DiMuonPt_beffit", &DiMuonPt_beffit_);
+  bmmgTree_->SetBranchAddress("DiMuon_vtxProb", &DiMuon_vtxProb_);
+  bmmgTree_->SetBranchAddress("DiMuon_CosineAlpha", &DiMuon_CosineAlpha_);
+  bmmgTree_->SetBranchAddress("DiMuon_DCA", &DiMuon_DCA_);
+  bmmgTree_->SetBranchAddress("DiMuon_Chi2pv_KVFvtx", &DiMuon_Chi2pv_KVFvtx_);
+  bmmgTree_->SetBranchAddress("DiMuon_Mahalanobis", &DiMuon_Mahalanobis_);
+  bmmgTree_->SetBranchAddress("DiMuon_ResonanceType", &DiMuon_ResonanceType_);
+  bmmgTree_->SetBranchAddress("DiMuon_Lxy", &DiMuon_Lxy_);
+  bmmgTree_->SetBranchAddress("DiMuon_Lxyerr", &DiMuon_Lxyerr_);
+  bmmgTree_->SetBranchAddress("DiMuon_LxyOverPt", &DiMuon_LxyOverPt_);
+  bmmgTree_->SetBranchAddress("DiMuon_mu1Cat_alone", &DiMuon_mu1Cat_alone_);
+  bmmgTree_->SetBranchAddress("DiMuon_mu2Cat_alone", &DiMuon_mu2Cat_alone_);
+  bmmgTree_->SetBranchAddress("HadronMass_fromVertexFit", &HadronMass_fromVertexFit_);
   bmmgTree_->SetBranchAddress("photonMultiplicity", &photonMultiplicity_ );
   bmmgTree_->SetBranchAddress("photonPt", &photonPt_ );
   bmmgTree_->SetBranchAddress("photonEta", &photonEta_ );
@@ -445,26 +479,7 @@ void RadiativeRootTree::setBranchAddresses(){
   bmmgTree_->SetBranchAddress("EtaPrimePhi_alone", &EtaPrimePhi_alone_);
   bmmgTree_->SetBranchAddress("EtaPrimePt_alone",  &EtaPrimePt_alone_);
 
-  bmmgTree_->SetBranchAddress("mu1Pt_beffit", &mu1Pt_beffit_);
-  bmmgTree_->SetBranchAddress("mu1Pz_beffit", &mu1Pz_beffit_);
-  bmmgTree_->SetBranchAddress("mu1Eta_beffit", &mu1Eta_beffit_);
-  bmmgTree_->SetBranchAddress("mu1Phi_beffit", &mu1Phi_beffit_);
-  bmmgTree_->SetBranchAddress("mu2Pt_beffit", &mu2Pt_beffit_);
-  bmmgTree_->SetBranchAddress("mu2Pz_beffit", &mu2Pz_beffit_);
-  bmmgTree_->SetBranchAddress("mu2Eta_beffit", &mu2Eta_beffit_);
-  bmmgTree_->SetBranchAddress("mu2Phi_beffit", &mu2Phi_beffit_);
-  bmmgTree_->SetBranchAddress("mu1SoftID", &mu1SoftID_);
-  bmmgTree_->SetBranchAddress("mu2SoftID", &mu2SoftID_);
-  bmmgTree_->SetBranchAddress("DiMuonM_beffit", &DiMuonM_beffit_);
-  bmmgTree_->SetBranchAddress("DiMuonEta_beffit", &DiMuonEta_beffit_);
-  bmmgTree_->SetBranchAddress("DiMuonPhi_beffit", &DiMuonPhi_beffit_);
-  bmmgTree_->SetBranchAddress("DiMuonPt_beffit", &DiMuonPt_beffit_);
-  bmmgTree_->SetBranchAddress("DiMuon_vtxProb", &DiMuon_vtxProb_);
-  bmmgTree_->SetBranchAddress("DiMuon_CosineAlpha", &DiMuon_CosineAlpha_);
-  bmmgTree_->SetBranchAddress("DiMuon_DCA", &DiMuon_DCA_);
-  bmmgTree_->SetBranchAddress("DiMuon_Chi2pv_KVFvtx", &DiMuon_Chi2pv_KVFvtx_);
-  bmmgTree_->SetBranchAddress("DiMuon_Mahalanobis", &DiMuon_Mahalanobis_);
-  bmmgTree_->SetBranchAddress("DiMuon_ResonanceType", &DiMuon_ResonanceType_);
+  
   
   bmmgTree_->SetBranchAddress("BsM_beffit", &BsM_beffit_);
   bmmgTree_->SetBranchAddress("BsEta_beffit", &BsEta_beffit_);

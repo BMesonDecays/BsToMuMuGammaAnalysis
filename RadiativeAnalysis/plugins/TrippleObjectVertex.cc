@@ -12,23 +12,16 @@ TrippleObjectVertex::DecayChainVariables TrippleObjectVertex::TrippleObjectVerte
     const double nominalMuonMass,
     const double nominalElectronMass){
         
-         std::string resonances[] = {"Jpsi", "Phi", "KStar", "nonResonant"};
-         bool verbose = true;
-        
+        bool verbose = true;
         DecayChainVariables dcv;
-        dcv.dimuonMasses.clear();  
-        dcv.resonanceTypes.clear();
-	dcv.dimuonEta.clear();
-	dcv.dimuonPhi.clear();
-	dcv.dimuonPt.clear();
-    for (size_t i = 0; i < muons.size(); ++i) {
-        const reco::Muon& mu1 = muons[i];
-        if (mu1.innerTrack().isNull()) continue;
-        reco::TrackRef muTrack1 = mu1.track();
-        if (!muTrack1) continue;
         
+        for (size_t i = 0; i < muons.size(); ++i) {
+            const reco::Muon& mu1 = muons[i];
+            if (mu1.innerTrack().isNull()) continue;
+            reco::TrackRef muTrack1 = mu1.track();
+            if (!muTrack1) continue;
 
-        for (size_t j = i + 1; j < muons.size(); ++j) {
+            for (size_t j = i + 1; j < muons.size(); ++j) {
             const reco::Muon& mu2 = muons[j];
             if (mu2.innerTrack().isNull()) continue;
             if (mu1.charge() * mu2.charge() == 1) continue;
@@ -36,43 +29,22 @@ TrippleObjectVertex::DecayChainVariables TrippleObjectVertex::TrippleObjectVerte
             if (!muTrack2) continue;
             dcv.mu1softid = mu1.passed(reco::Muon::SoftCutBasedId);
             dcv.mu2softid = mu2.passed(reco::Muon::SoftCutBasedId);
-            if(!mu1.isGlobalMuon() && !mu1.isTrackerMuon()) continue;
-            if(!mu2.isGlobalMuon() && !mu2.isTrackerMuon()) continue;
-            std::string bestResonanceType;
-            bool isAnyValidResonance = false;
-            std::vector<std::string> validResonanceTypes;
-            std::vector<double> validMasses;
-	    std::vector<double> validEta;
-	    std::vector<double> validPhi;
-	    std::vector<double> validPt;
+            if (!mu1.isGlobalMuon() && !mu1.isTrackerMuon()) continue;
+            if (!mu2.isGlobalMuon() && !mu2.isTrackerMuon()) continue;
+            
 
+           ReferenceResonance::ResonanceDetails resonanceResult = ReferenceResonance::findResonances(mu1, mu2, verbose);
+           if (resonanceResult.isValid) {
+            dcv.dimuonMass = resonanceResult.mass;
+            dcv.dimuonEta = resonanceResult.eta;
+            dcv.dimuonPhi = resonanceResult.phi;
+            dcv.dimuonPt = resonanceResult.pt;
+            dcv.resonanceFlag = static_cast<int>(resonanceResult.resonanceFlag); 
+            }
 
-            for (const std::string& resonanceType : resonances) {
-                ReferenceResonance::ResonanceDetails resonanceResult = ReferenceResonance::applyResonanceMassCut(mu1, mu2, resonanceType, verbose);
-                if (resonanceResult.isValid) {
-                    validResonanceTypes.push_back(resonanceType);
-                    validMasses.push_back(resonanceResult.mass);
-		    validEta.push_back(resonanceResult.eta);
-		    validPhi.push_back(resonanceResult.phi);
-		    validPt.push_back(resonanceResult.pt);
-                    isAnyValidResonance = true;
-                    //std::cout << "Found dimuon resonance: " << resonanceType << " with mass: " << resonanceResult.mass << std::endl;
-                    //goto resonance_found;
-                }
-               // break;
-            }
-            //resonance_found:
-            if (isAnyValidResonance && !validResonanceTypes.empty()) {
-                for (size_t i = 0; i < validMasses.size(); ++i) {
-                    dcv.dimuonMasses.push_back(validMasses[i]);
-                    dcv.dimuonEta.push_back(validEta[i]);
-                    dcv.dimuonPhi.push_back(validPhi[i]);
-                    dcv.dimuonPt.push_back(validPt[i]);
-                    dcv.resonanceTypes.push_back(validResonanceTypes[i]);
-                    std::cout << "Selected dimuon resonance: " << dcv.resonanceTypes[i] << " with mass: " << dcv.dimuonMasses[i] << std::endl;
-		    std::cout << "Eta , Phi and Pt:  "<< dcv.dimuonEta[i] << "\t"<< dcv.dimuonPhi[i]<<"\t"<< dcv.dimuonPt[i]<<"\n";
-                    }
-            }
+   
+    
+
             
             reco::TransientTrack muonTT1(muTrack1, &bField);
             reco::TransientTrack muonTT2(muTrack2, &bField);
@@ -98,18 +70,19 @@ TrippleObjectVertex::DecayChainVariables TrippleObjectVertex::TrippleObjectVerte
                    if ( (mupPhi - mumPhi)>0 ) dcv.isCowboy=1;
                   }
              
-	     reco::Vertex vertex = tv;
+	         reco::Vertex vertex = tv;
              double  vtxProb_dimuon = TMath::Prob(vertex.chi2(),(int)vertex.ndof());
              dcv.dimuonvtxprob = vtxProb_dimuon;
+             dcv.dimuonchi2 = vertex.chi2();             
              math::XYZVector      pperp(mu1.px() + mu2.px(), mu1.py() + mu2.py(), 0.);
              reco::Vertex::Point  vpoint=vertex.position();
              GlobalPoint secondaryVertex (vpoint.x(), vpoint.y(), vpoint.z());
              GlobalPoint displacementFromBeamspot( -1*((bsAndVtxInfo.bs_x -  secondaryVertex.x()) +  
              (secondaryVertex.z() - bsAndVtxInfo.bs_z) * bsAndVtxInfo.bs_dxdz),-1*((bsAndVtxInfo.bs_y - secondaryVertex.y())+
                (secondaryVertex.z() - bsAndVtxInfo.bs_z) * bsAndVtxInfo.bs_dydz), 0);
-	     reco::Vertex::Point vperp(displacementFromBeamspot.x(),displacementFromBeamspot.y(),0.);
-	     double CosAlpha = vperp.Dot(pperp)/(vperp.R()*pperp.R());
-	     dcv.opening_angle = CosAlpha;
+               reco::Vertex::Point vperp(displacementFromBeamspot.x(),displacementFromBeamspot.y(),0.);
+               double CosAlpha = vperp.Dot(pperp)/(vperp.R()*pperp.R());
+               dcv.opening_angle = CosAlpha;
                TrajectoryStateClosestToPoint mu1TS = muonTT1.impactPointTSCP();
                TrajectoryStateClosestToPoint mu2TS = muonTT2.impactPointTSCP();
                if (mu1TS.isValid() && mu2TS.isValid()) {
@@ -125,7 +98,12 @@ TrippleObjectVertex::DecayChainVariables TrippleObjectVertex::TrippleObjectVerte
 	       GlobalError err(verr.At(0,0), verr.At(1,0), verr.At(1,1), verr.At(2,0), verr.At(2,1), verr.At(2,2) );
 	       dcv.dimuonlxy = displacementFromBeamspot.perp();
 	       dcv.dimuonlxyerr = sqrt(err.rerr(displacementFromBeamspot));
-	       //std::cout<<"LXYerror: "<<dcv.dimuonlxyerr<<"\t"<<"LXY: "<<dcv.dimuonlxy<<"\n";
+           if (resonanceResult.isValid) {
+           dcv.dimuonlxyOverPt = (displacementFromBeamspot.x() * resonanceResult.px+ 
+           displacementFromBeamspot.y() * resonanceResult.py) / (resonanceResult.pt * resonanceResult.pt);
+                //std::cout<< "LXYOverPt: "<<dcv.dimuonlxyOverPt<<"\n";
+           }
+            //std::cout<<"LXYerror: "<<dcv.dimuonlxyerr<<"\t"<<"LXY: "<<dcv.dimuonlxy<<"\n";
 		if (mu1.charge() == -1) {
 			dcv.mu1pt = mu1.pt();dcv.mu1pz = mu1.pz();dcv.mu1eta = mu1.eta();dcv.mu1phi = mu1.phi();	
 			dcv.mu2phi = mu2.phi();dcv.mu2pt = mu2.pt();dcv.mu2pz = mu2.pz();dcv.mu2eta = mu2.eta();
@@ -134,7 +112,36 @@ TrippleObjectVertex::DecayChainVariables TrippleObjectVertex::TrippleObjectVerte
 			dcv.mu1phi = mu2.phi();dcv.mu1pt = mu2.pt();dcv.mu1pz = mu2.pz();dcv.mu1eta = mu2.eta();
 		}
 		//std::cout << "mu1pt: " << dcv.mu1pt << ", "<< "mu1pz: " << dcv.mu1pz << ", "<< "mu1eta: " << dcv.mu1eta << ", "<< "mu1phi: " << dcv.mu1phi <<"\n";
-
+        if (mu1.isTrackerMuon() && !mu1.isGlobalMuon())       dcv.diMuon_mu1Cat = 1;
+        else if (!mu1.isTrackerMuon() && mu1.isGlobalMuon())  dcv.diMuon_mu1Cat = 2;
+        else if (mu1.isTrackerMuon() && mu1.isGlobalMuon())   dcv.diMuon_mu1Cat = 3;
+        else if (!mu1.isTrackerMuon() && !mu1.isGlobalMuon()) dcv.diMuon_mu1Cat = 4;
+        if (mu1.isPFMuon())       dcv.diMuon_mu1Cat = 1;
+        if (mu2.isTrackerMuon() && !mu2.isGlobalMuon())       dcv.diMuon_mu2Cat = 1;
+        else if (!mu2.isTrackerMuon() && mu2.isGlobalMuon())  dcv.diMuon_mu2Cat = 2;
+        else if (mu2.isTrackerMuon() && mu2.isGlobalMuon())   dcv.diMuon_mu2Cat = 3;
+        else if (!mu2.isTrackerMuon() && !mu2.isGlobalMuon()) dcv.diMuon_mu2Cat = 4;
+        if (mu2.isPFMuon())       dcv.diMuon_mu2Cat = 1;
+        
+        int pixhits1 = 0;
+        const reco::HitPattern& pp1 = muTrack1.get()->hitPattern();
+        for (int iter=0; iter<pp1.numberOfAllHits(reco::HitPattern::TRACK_HITS); iter++) {
+			uint32_t hit = pp1.getHitPattern(reco::HitPattern::TRACK_HITS,iter);
+            std::cout<<"hits  for first muon  : "<<hit<<"\n";
+			if (pp1.validHitFilter(hit) && pp1.pixelBarrelHitFilter(hit)) pixhits1++;
+			if (pp1.validHitFilter(hit) && pp1.pixelEndcapHitFilter(hit)) pixhits1++;
+            }
+      dcv.diMuon_mu1PixelHits   = pixhits1;
+      int pixhits2 = 0;
+      const reco::HitPattern& pp2 = muTrack1.get()->hitPattern();
+      for (int iter=0; iter<pp2.numberOfAllHits(reco::HitPattern::TRACK_HITS); iter++) {
+			uint32_t hit = pp2.getHitPattern(reco::HitPattern::TRACK_HITS,iter);
+            std::cout<<"hits for second muon : "<<hit<<"\n";
+			if (pp2.validHitFilter(hit) && pp2.pixelBarrelHitFilter(hit)) pixhits2++;
+			if (pp2.validHitFilter(hit) && pp2.pixelEndcapHitFilter(hit)) pixhits2++;
+      }
+     
+      dcv.diMuon_mu2PixelHits = pixhits2;
             for (const auto& conv : conversions) {
                 const reco::Track eletk0 = *conv.userData<reco::Track>("track0");
                 const reco::Track eletk1 = *conv.userData<reco::Track>("track1");

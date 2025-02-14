@@ -30,46 +30,55 @@ double ReferenceResonance::calculateMassFromComponents(const pat::CompositeCandi
     return totalVec.M();
 
 }
-ReferenceResonance::ResonanceDetails ReferenceResonance::applyResonanceMassCut(const reco::Muon& mu1, const reco::Muon& mu2, const std::string& resonanceType, bool verbose) {
+///////////////////////////////////////////////////
+///////////////////////////////////////////////////
+ReferenceResonance::ResonanceDetails ReferenceResonance::findResonances(const reco::Muon& mu1, const reco::Muon& mu2, bool verbose) 
+{
     ResonanceDetails result;
-
     double dimuonMass = ReferenceResonance::calculateProperty(mu1, mu2, [](const auto& p4) { return p4.M(); });
-    double nominalMass = 0.0;
-    double massWindow = 0.0;
 
-    if (resonanceType == "Jpsi") {
-        nominalMass = Constants::JpsiMass_PDG;
-        massWindow = Constants::JpsiWindow_PDG;
-    } else if (resonanceType == "Phi") {
-        nominalMass = Constants::PhiMass_PDG;
-        massWindow = Constants::PhiWindow_PDG;
-    } else if (resonanceType == "KStar") {
-        nominalMass = Constants::KStar0Mass_PDG;
-        massWindow = Constants::KStar0Window_PDG;
-    } else if (resonanceType == "nonResonant") {
-        nominalMass = Constants::nonResonantMass_PDG;
-        massWindow = Constants::nonResonantWindow_PDG;
+    std::vector<std::pair<ResonanceFlag, std::pair<double, double>>> resonanceList = {
+        {Jpsi, {Constants::JpsiMass_PDG, Constants::JpsiWindow_PDG}},
+        {Phi, {Constants::PhiMass_PDG, Constants::PhiWindow_PDG}},
+        {KStar, {Constants::KStar0Mass_PDG, Constants::KStar0Window_PDG}},
+        {NonResonant, {Constants::nonResonantMass_PDG, Constants::nonResonantWindow_PDG}}
+    };
+
+    result.resonanceFlag = ResonanceFlag::None;  // Default: no resonance found
+
+    for (const auto& [flag, massInfo] : resonanceList) {
+        double nominalMass = massInfo.first;
+        double massWindow = massInfo.second;
+        
+        if (fabs(dimuonMass - nominalMass) < massWindow &&
+            mu1.pt() > Constants::PtCut && mu2.pt() > Constants::PtCut) 
+        {
+            result.resonanceFlag = flag;  // Assign flag directly from enum
+            result.isValid = true;
+            break;
+        }
     }
-    
-    bool isValid = (fabs(dimuonMass - nominalMass) < massWindow) &&
-                   (mu1.pt() > Constants::PtCut) &&
-                   (mu2.pt() > Constants::PtCut);
 
-    
-    result.isValid = isValid;
     result.mass = dimuonMass;
-    if (isValid) {
-    result.eta = ReferenceResonance::calculateProperty(mu1, mu2, [](const auto& p4) { return p4.eta(); });
-    result.phi = ReferenceResonance::calculateProperty(mu1, mu2, [](const auto& p4) { return p4.phi(); });
-    result.pt  = ReferenceResonance::calculateProperty(mu1, mu2, [](const auto& p4) { return p4.pt(); });
+    if (result.isValid) {
+        result.eta = ReferenceResonance::calculateProperty(mu1, mu2, [](const auto& p4) { return p4.eta(); });
+        result.phi = ReferenceResonance::calculateProperty(mu1, mu2, [](const auto& p4) { return p4.phi(); });
+        result.pt  = ReferenceResonance::calculateProperty(mu1, mu2, [](const auto& p4) { return p4.pt(); });
+        result.px  = ReferenceResonance::calculateProperty(mu1, mu2, [](const auto& p4) { return p4.px(); });
+        result.py  = ReferenceResonance::calculateProperty(mu1, mu2, [](const auto& p4) { return p4.py(); });
     }
+
     if (verbose) {
-        std::cout << "Calculated Dimuon Mass: " << dimuonMass << " (Nominal: " << nominalMass << ", Window: " << massWindow << ")\n";
+        std::cout << "Dimuon Mass: " << dimuonMass 
+                  << " | Resonance Flag: " << static_cast<int>(result.resonanceFlag)
+                  << " | Valid: " << result.isValid << "\n";
     }
 
     return result;
 }
-ReferenceResonance::ResonanceDetails ReferenceResonance::applyResonanceMassCut(const reco::Photon& photon1, const reco::Photon& photon2, const std::string& resonanceType, bool verbose) {
+
+
+ReferenceResonance::ResonanceDetails ReferenceResonance::findResonances(const reco::Photon& photon1, const reco::Photon& photon2, const std::string& resonanceType, bool verbose) {
     ResonanceDetails result;
 
     double diPhotonMass = CombinedpFour(photon1, photon2).M();
@@ -98,7 +107,7 @@ ReferenceResonance::ResonanceDetails ReferenceResonance::applyResonanceMassCut(c
 
     return result;
 }
-ReferenceResonance::ResonanceDetails ReferenceResonance::applyResonanceMassCut(const pat::CompositeCandidateCollection& conversion1, const pat::CompositeCandidateCollection& conversion2, const std::string& resonanceType, bool verbose) {
+ReferenceResonance::ResonanceDetails ReferenceResonance::findResonances(const pat::CompositeCandidateCollection& conversion1, const pat::CompositeCandidateCollection& conversion2, const std::string& resonanceType, bool verbose) {
     ResonanceDetails result;
     double diConversionMass = calculateMassFromComponents(conversion1, conversion2);
     double nominalMass = 0.0;
