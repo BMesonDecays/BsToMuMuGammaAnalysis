@@ -82,6 +82,11 @@ void RadiativeRootTree::createTree(const std::string filename)
   bmmgTree_->Branch("DiMuon_mu1nPixHits_alone", &DiMuon_mu1nPixHits_alone_,"DiMuon_mu1nPixHits_alone/I");
   bmmgTree_->Branch("DiMuon_mu2nPixHits_alone", &DiMuon_mu2nPixHits_alone_,"DiMuon_mu2nPixHits_alone/I");
   bmmgTree_->Branch("DiMuon_NumberOfCandidates", &DiMuon_NumberOfCandidates_,"DiMuon_NumberOfCandidates/I");
+  bmmgTree_->Branch("BsM_beffit", &BsM_beffit_,"BsM_beffit/D");
+  bmmgTree_->Branch("BsEta_beffit", &BsEta_beffit_,"BsEta_beffit/D");
+  bmmgTree_->Branch("BsPhi_beffit", &BsPhi_beffit_,"BsPhi_beffit/D");
+  bmmgTree_->Branch("BsPt_beffit", &BsPt_beffit_,"BsPt_beffit/D");
+  bmmgTree_->Branch("Bs_vtxProb", &Bs_vtxProb_,"Bs_vtxProb/D");
   bmmgTree_->Branch("HadronMass_fromVertexFit", &HadronMass_fromVertexFit_,"HadronMass_fromVertexFit/D");
   bmmgTree_->Branch("photonMultiplicity", &photonMultiplicity_,"photonMultiplicity/I");
   bmmgTree_->Branch("photonPt",&photonPt_,"photonPt/D");
@@ -134,12 +139,7 @@ void RadiativeRootTree::createTree(const std::string filename)
   bmmgTree_->Branch("EtaPrimePt_alone", &EtaPrimePt_alone_, "EtaPrimePt_alone/D");
   
   
-  bmmgTree_->Branch("BsM_beffit", &BsM_beffit_,"BsM_beffit/D");
-  bmmgTree_->Branch("BsEta_beffit", &BsEta_beffit_,"BsEta_beffit/D");
-  bmmgTree_->Branch("BsPhi_beffit", &BsPhi_beffit_,"BsPhi_beffit/D");
-  bmmgTree_->Branch("BsPt_beffit", &BsPt_beffit_,"BsPt_beffit/D");
-  bmmgTree_->Branch("Bs_vtxProb", &Bs_vtxProb_,"Bs_vtxProb/D");
-
+ 
   
   bmmgTree_->Branch("electronMultiplicity",&electronMultiplicity_,"electronMultiplicity/D");
   bmmgTree_->Branch("pfCandMultiplicity",&pfCandMultiplicity_,"pfCandMultiplicity/D");

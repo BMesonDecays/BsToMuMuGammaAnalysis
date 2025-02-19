@@ -41,10 +41,6 @@ TrippleObjectVertex::DecayChainVariables TrippleObjectVertex::TrippleObjectVerte
             dcv.dimuonPt = resonanceResult.pt;
             dcv.resonanceFlag = static_cast<int>(resonanceResult.resonanceFlag); 
             }
-
-   
-    
-
             
             reco::TransientTrack muonTT1(muTrack1, &bField);
             reco::TransientTrack muonTT2(muTrack2, &bField);
@@ -127,7 +123,7 @@ TrippleObjectVertex::DecayChainVariables TrippleObjectVertex::TrippleObjectVerte
         const reco::HitPattern& pp1 = muTrack1.get()->hitPattern();
         for (int iter=0; iter<pp1.numberOfAllHits(reco::HitPattern::TRACK_HITS); iter++) {
 			uint32_t hit = pp1.getHitPattern(reco::HitPattern::TRACK_HITS,iter);
-            std::cout<<"hits  for first muon  : "<<hit<<"\n";
+            //std::cout<<"hits  for first muon  : "<<hit<<"\n";
 			if (pp1.validHitFilter(hit) && pp1.pixelBarrelHitFilter(hit)) pixhits1++;
 			if (pp1.validHitFilter(hit) && pp1.pixelEndcapHitFilter(hit)) pixhits1++;
             }
@@ -136,7 +132,6 @@ TrippleObjectVertex::DecayChainVariables TrippleObjectVertex::TrippleObjectVerte
       const reco::HitPattern& pp2 = muTrack1.get()->hitPattern();
       for (int iter=0; iter<pp2.numberOfAllHits(reco::HitPattern::TRACK_HITS); iter++) {
 			uint32_t hit = pp2.getHitPattern(reco::HitPattern::TRACK_HITS,iter);
-            std::cout<<"hits for second muon : "<<hit<<"\n";
 			if (pp2.validHitFilter(hit) && pp2.pixelBarrelHitFilter(hit)) pixhits2++;
 			if (pp2.validHitFilter(hit) && pp2.pixelEndcapHitFilter(hit)) pixhits2++;
       }
@@ -149,12 +144,33 @@ TrippleObjectVertex::DecayChainVariables TrippleObjectVertex::TrippleObjectVerte
                     reco::TransientTrack(eletk0, &bField),
                     reco::TransientTrack(eletk1, &bField)
                 };
-
+                TLorentzVector BCand, eleTrack1, eleTrack2, muonTrack1, muonTrack2;
+                eleTrack1.SetPtEtaPhiM(eletk0.pt(), eletk0.eta(), eletk0.phi(), nominalElectronMass);
+                eleTrack2.SetPtEtaPhiM(eletk1.pt(), eletk1.eta(), eletk1.phi(), nominalElectronMass);
+                muonTrack1.SetPtEtaPhiM(mu1.pt(), mu1.eta(), mu1.phi(), nominalMuonMass);
+                muonTrack2.SetPtEtaPhiM(mu2.pt(), mu2.eta(), mu2.phi(), nominalMuonMass);
+                BCand = eleTrack1 + eleTrack2 + muonTrack1 + muonTrack2;
+                MassLimits m_lim;
+                if (BCand.M() < m_lim.BsMassCutLower || BCand.M() > m_lim.BsMassCutUpper) continue;
+                std::cout<<"mass B: "<<BCand.M()<<"\n";
+       	  		/*BCand.addDaughter(mu1);
+       	  		BCand.addDaughter(mu2);
+       	  	    BCand.addDaughter(eletk0);
+       	  		BCand.addDaughter(eletk1);
+       	  		AddFourMomenta add4mom;
+       	  		add4mom.set(BCand);*/
+               
+       	  		
+                
                 KinematicConstrainedFit BCandFitter;
                 bool fitSuccess = BCandFitter.TrippleObjectVertexFit(ttrk_muons, nominalMuonMass, tttrk_electrons, nominalElectronMass);
                 if (!fitSuccess) continue;
 		        std::cout<<"print the fit sucess : "<< fitSuccess<< "\n";
-                dcv.mass = BCandFitter.getBhadronMass();
+                dcv.fittedBmass = BCandFitter.getBhadronMass();
+                dcv.BsMass = BCand.M();
+                dcv.BsPt   = BCand.Pt();
+                dcv.BsEta  = BCand.Eta();
+                dcv.BsPhi  = BCand.Phi();
 	    }
 	}
     }

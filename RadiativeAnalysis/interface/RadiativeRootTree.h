@@ -86,15 +86,19 @@ class RadiativeRootTree {
 		double DiMuon_Lxy_;
 		double DiMuon_Lxyerr_;
 		double DiMuon_LxyOverPt_;
-		int DiMuon_NumberOfCandidates_;
-		int DiMuon_ResonanceType_;
-		int mu1SoftID_;
-		int mu2SoftID_;
+		int    DiMuon_NumberOfCandidates_;
+		int    DiMuon_ResonanceType_;
+		int    mu1SoftID_;
+		int    mu2SoftID_;
 		int    DiMuon_mu1Cat_alone_;
 		int    DiMuon_mu2Cat_alone_;
 		int    DiMuon_mu1nPixHits_alone_;
 		int    DiMuon_mu2nPixHits_alone_;
- 
+		double BsM_beffit_;
+		double BsEta_beffit_;
+		double BsPhi_beffit_;
+		double BsPt_beffit_;
+		double Bs_vtxProb_;
 		double HadronMass_fromVertexFit_;
 
 
@@ -149,11 +153,7 @@ class RadiativeRootTree {
 		double EtaPrimePt_alone_;
 
 		
-		double BsM_beffit_;
-		double BsEta_beffit_;
-		double BsPhi_beffit_;
-		double BsPt_beffit_;
-		double Bs_vtxProb_;
+		
 
 		
 

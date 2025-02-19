@@ -159,7 +159,7 @@ bool KinematicConstrainedFit::TrippleObjectVertexFit(std::vector<reco::Transient
         
 	if (photonVertexFitTree->isEmpty()) return 0;
 	KinematicParticleFitter csFitterPhoton;
-        KinematicConstraint * photon_const = new MassKinematicConstraint(zero_mass, zero_sigma);
+	KinematicConstraint * photon_const = new MassKinematicConstraint(zero_mass, zero_sigma);
 	photonVertexFitTree = csFitterPhoton.fit(photon_const, photonVertexFitTree);
 	if(photonVertexFitTree->isEmpty()){
 		delete photon_const;
@@ -197,17 +197,17 @@ bool KinematicConstrainedFit::TrippleObjectVertexFit(std::vector<reco::Transient
 bool KinematicConstrainedFit::TetraObjectVertexFit(std::vector<reco::TransientTrack> muonTT, const double muonMass, std::vector<reco::TransientTrack> electronTT, const double eleMass){
 
 	const ParticleMass zero_mass(0);
-        float zero_sigma = 1E-6;
-        float eleSigma = 1E-6;
+    float zero_sigma = 1E-6;
+    float eleSigma = 1E-6;
 	float muon_sigma = 0.0000000001;
-        float chi = 0.;
-        float ndf = 0.;
+    float chi = 0.;
+    float ndf = 0.;
 	double nominalJpsiMass =  3.096916;
 	float jpsiMsigma = 0.00004;
 	KinematicParticleFactoryFromTransientTrack pFactory;
 	std::vector<RefCountedKinematicParticle> allParticlesMu;
-        allParticlesMu.push_back(pFactory.particle (muonTT[0], muonMass, chi, ndf, muon_sigma));
-        allParticlesMu.push_back(pFactory.particle (muonTT[1], muonMass, chi, ndf, muon_sigma));
+    allParticlesMu.push_back(pFactory.particle (muonTT[0], muonMass, chi, ndf, muon_sigma));
+    allParticlesMu.push_back(pFactory.particle (muonTT[1], muonMass, chi, ndf, muon_sigma));
 	KinematicParticleVertexFitter Fitter;
 	RefCountedKinematicTree JpsiTree = Fitter.fit(allParticlesMu);
 	if(JpsiTree->isEmpty()) return 0;

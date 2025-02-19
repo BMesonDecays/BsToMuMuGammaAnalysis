@@ -23,6 +23,7 @@
 #include "CommonTools/CandUtils/interface/AddFourMomenta.h"
 
 
+
 #include <memory>
 #include <cstddef>
 #include <cfloat>
@@ -39,7 +40,7 @@ class TrippleObjectVertex{
         TrippleObjectVertex();
         ~TrippleObjectVertex(){}
         struct DecayChainVariables{
-		double mass = -9999;
+		double fittedBmass = -9999;
 		int mu1softid = -9999;
 		int mu2softid = -9999;
 		int mu1tightid = -9999;
@@ -71,9 +72,23 @@ class TrippleObjectVertex{
 		int diMuon_mu2Cat = -9999;
 		int diMuon_mu1PixelHits = -9999;
 		int diMuon_mu2PixelHits = -9999;
+		double BsMass = -9999;
+		double BsPt = -9999;
+		double BsEta = -9999;
+		double BsPhi = -9999;
+		
 		
 	
 	};
+	struct MassLimits {
+        
+        static constexpr double BsMassCutLower   = 4.5; 
+		static constexpr double BsMassCutUpper   = 6.0;
+		static constexpr double BdMassCutLower   = 4.5;
+		static constexpr double BdMassCutUpper   = 6.0; 
+		  
+               
+    };
 
 	DecayChainVariables TrippleObjectVertexObservables(const std::vector<reco::Muon>& muons, 
 			const pat::CompositeCandidateCollection& conversions,

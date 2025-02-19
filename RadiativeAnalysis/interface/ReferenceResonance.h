@@ -24,7 +24,6 @@
 #include "DataFormats/PatCandidates/interface/CompositeCandidate.h"
 #include "DataFormats/EgammaCandidates/interface/Photon.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
-#include "DataFormats/PatCandidates/interface/CompositeCandidate.h"
 #include "DataFormats/Math/interface/LorentzVector.h"
 #include "CommonTools/CandUtils/interface/AddFourMomenta.h"
 
@@ -71,9 +70,8 @@ class ReferenceResonance{
         static constexpr double EtaWindow_PDG          = 0.017;
         static constexpr double EtaPrimeWindow_PDG     = 0.230;
         static constexpr double Pi0Window_PDG          = 0.0005;
-        static constexpr double BsWindow_Upper         = 6.5;
         static constexpr double PtCut                  = 3.0;          
-    };;
+    };
 
     
 

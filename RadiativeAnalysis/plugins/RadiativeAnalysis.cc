@@ -301,10 +301,15 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 		bmmgRootTree_->DiMuon_mu2Cat_alone_  = triDecayVar.diMuon_mu2Cat;
 		bmmgRootTree_->DiMuon_mu1nPixHits_alone_ = triDecayVar.diMuon_mu1PixelHits;
 		bmmgRootTree_->DiMuon_mu2nPixHits_alone_ = triDecayVar.diMuon_mu2PixelHits;
-		TetraObjectVertex tetradcObservables;
+		bmmgRootTree_->BsM_beffit_          = triDecayVar.BsMass;
+		bmmgRootTree_->BsEta_beffit_        = triDecayVar.BsEta;
+		bmmgRootTree_->BsPhi_beffit_        = triDecayVar.BsPhi;
+		bmmgRootTree_->BsPt_beffit_         = triDecayVar.BsPt;
+		bmmgRootTree_->HadronMass_fromVertexFit_ = triDecayVar.fittedBmass;
+		/*TetraObjectVertex tetradcObservables;
 		auto tetraDecayVar = tetradcObservables.TetraObjectVertexObservables(*muons, *conversions, theBField, nominalMuonMass, nominalElectronMass);
 		std::cout<< " the mass of the tetraobject vertex : "<< tetraDecayVar.mass << "\n";
-		
+		*/
 		edm::Handle<std::vector<reco::Photon>> photon;
 		iEvent.getByToken(PhotonTagTok, photon);
 		bmmgRootTree_->photonMultiplicity_ = photon->size();
