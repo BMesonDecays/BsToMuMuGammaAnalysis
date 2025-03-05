@@ -42,6 +42,7 @@ TetraObjectVertex::DecayChainVariables TetraObjectVertex::TetraObjectVertexObser
                         }
                         reco::TransientTrack muonTT1 = reco::TransientTrack(muTrack1, &bField);
                         reco::TransientTrack muonTT2 = reco::TransientTrack(muTrack2, &bField);
+                        KalmanVertexFitter kvf(true);
                         std::vector<reco::TransientTrack> ttrk_muons = {muonTT1, muonTT2};
                         TransientVertex tv = kvf.vertex(ttrk_muons);
             
@@ -138,6 +139,7 @@ TetraObjectVertex::DecayChainVariables TetraObjectVertex::TetraObjectVertexObser
 					reco::TransientTrack(*conv1.userData<reco::Track>("track0"), &bField),
 					reco::TransientTrack(*conv1.userData<reco::Track>("track1"), &bField)
 				};
+        
 				for (const auto& conv2 : conversions) {
 					if (&conv1 == &conv2) continue;  // Ensure conv1 and conv2 are distinct
 					std::vector<reco::TransientTrack> tttrk_electrons_pair = tttrk_electrons;  // Copy base tracks
@@ -146,7 +148,7 @@ TetraObjectVertex::DecayChainVariables TetraObjectVertex::TetraObjectVertexObser
 					KinematicConstrainedFit BCandFitter;
 					bool fitSuccess = BCandFitter.TetraObjectVertexFit(ttrk_muons, nominalMuonMass, tttrk_electrons_pair, nominalElectronMass);
 					if (!fitSuccess) continue;
-					dcv.mass = BCandFitter.getBhadronMass();
+					dcv.fittedBmass = BCandFitter.getBhadronMass();
 				}
 			}
 		}

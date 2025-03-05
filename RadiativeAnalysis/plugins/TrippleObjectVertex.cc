@@ -137,6 +137,21 @@ TrippleObjectVertex::DecayChainVariables TrippleObjectVertex::TrippleObjectVerte
       }
      
       dcv.diMuon_mu2PixelHits = pixhits2;
+      Mu1.SetPtEtaPhiM( mu1.pt(), mu1.eta(), mu1.phi(), MuMass);
+      Mu2.SetPtEtaPhiM( mu2.pt(), mu2.eta(), mu2.phi(), MuMass);
+      dcv.muonpairdr = Mu1.DeltaR(Mu2) ;
+      dcv.mu1trkbsxy  = mu1.innerTrack()->dxy(bsAndVtxInfo.position);
+      dcv.mu1trkbsz   = mu1.innerTrack()->dz(bsAndVtxInfo.position);
+      dcv.mu2trkbsxy  = mu2.innerTrack()->dxy(bsAndVtxInfo.position);
+      dcv.mu2trkbsz   = mu2.innerTrack()->dz(bsAndVtxInfo.position);
+      dcv.mu1pixelhits = mu1.innerTrack()->hitPattern().pixelLayersWithMeasurement() ;
+      dcv.mu2pixelhits = mu2.innerTrack()->hitPattern().pixelLayersWithMeasurement() ;
+      if( mu1.innerTrack()->quality(reco::TrackBase::highPurity) )	{dcv.mu1innertrkhq = 1 ;}
+      if( muon::isGoodMuon(mu1, muon::TMOneStationTight) )	{ dcv.mu1isgood= 1 ;}
+      if( mu2.innerTrack()->quality(reco::TrackBase::highPurity) )	{dcv.mu2innertrkhq = 1 ;}
+      if( muon::isGoodMuon(mu2, muon::TMOneStationTight) )	{ dcv.mu2isgood= 1 ;}
+     
+        
             for (const auto& conv : conversions) {
                 const reco::Track eletk0 = *conv.userData<reco::Track>("track0");
                 const reco::Track eletk1 = *conv.userData<reco::Track>("track1");
@@ -152,7 +167,7 @@ TrippleObjectVertex::DecayChainVariables TrippleObjectVertex::TrippleObjectVerte
                 BCand = eleTrack1 + eleTrack2 + muonTrack1 + muonTrack2;
                 MassLimits m_lim;
                 if (BCand.M() < m_lim.BsMassCutLower || BCand.M() > m_lim.BsMassCutUpper) continue;
-                std::cout<<"mass B: "<<BCand.M()<<"\n";
+                //std::cout<<"mass B: "<<BCand.M()<<"\n";
        	  		/*BCand.addDaughter(mu1);
        	  		BCand.addDaughter(mu2);
        	  	    BCand.addDaughter(eletk0);
@@ -160,17 +175,56 @@ TrippleObjectVertex::DecayChainVariables TrippleObjectVertex::TrippleObjectVerte
        	  		AddFourMomenta add4mom;
        	  		add4mom.set(BCand);*/
                
-       	  		
-                
+       	  		std::vector<reco::TransientTrack> t_tracks;
+                t_tracks.push_back(muonTT1);
+                t_tracks.push_back(muonTT2);
+                t_tracks.push_back(tttrk_electrons[0]);
+                t_tracks.push_back(tttrk_electrons[1]);
+                KalmanVertexFitter kvfbs(true);
+                TransientVertex kvfbsvertex = kvfbs.vertex(t_tracks);
+                //std::cout<< " the vertex position : "<< kvfbsvertex.position().x() << "\t"<< kvfbsvertex.position().y() << "\t"<< kvfbsvertex.position().z() << "\n";
+                reco::Vertex vertexbskalman = kvfbsvertex;
+                if (!kvfbsvertex.isValid()) continue;
+                GlobalError gigibs=kvfbsvertex.positionError();
+                double vtxprob_Bs = TMath::Prob(vertexbskalman.chi2(),(int)vertexbskalman.ndof());
+                if (vtxprob_Bs < 1e-5) continue;
+                dcv.BsVtxProb = vtxprob_Bs;
+                //std::cout<<"vtxprob_Bs: "<<vtxprob_Bs<<"\n";
                 KinematicConstrainedFit BCandFitter;
                 bool fitSuccess = BCandFitter.TrippleObjectVertexFit(ttrk_muons, nominalMuonMass, tttrk_electrons, nominalElectronMass);
                 if (!fitSuccess) continue;
-		        std::cout<<"print the fit sucess : "<< fitSuccess<< "\n";
+		        //std::cout<<"print the fit sucess : "<< fitSuccess<< "\n";
                 dcv.fittedBmass = BCandFitter.getBhadronMass();
                 dcv.BsMass = BCand.M();
                 dcv.BsPt   = BCand.Pt();
                 dcv.BsEta  = BCand.Eta();
                 dcv.BsPhi  = BCand.Phi();
+                RefCountedKinematicParticle bs = BCandFitter.getBhardon();
+	  		    RefCountedKinematicVertex bVertex = BCandFitter.getVertex();
+	  		    AlgebraicVector7 b_par = bs->currentState().kinematicParameters().vector();
+                GlobalVector Bsvec(b_par[3], b_par[4], b_par[5]);
+                //std::cout<<"Vertex position after the fit  "<< Bsvec.x() << "\t"<< Bsvec.y() << "\t"<< Bsvec.z() << "\n";
+                reco::Vertex recVtxs;
+                std::cout << " the PV multiplicity returen in the TBV class : " << bsAndVtxInfo.VtxIndex<< "\n";
+                reco::Vertex PVvtxHightestPt;//:wq = recVtxs[bsAndVtxInfo.VtxIndex];
+                /*Need input to solve the problem of multiple primary vertex*/
+                std::cout<<"Primary vertex HightestPt"<<PVvtxHightestPt.x()<< "\t"<<PVvtxHightestPt.y()<< "\t"<<PVvtxHightestPt.z() <<"\n";
+                
+                dcv.BsCt3D = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*Bsvec.x()+
+                (kvfbsvertex.position().y()-PVvtxHightestPt.y())*Bsvec.y()+
+                (kvfbsvertex.position().z()-PVvtxHightestPt.z())*Bsvec.z())/
+                (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y()+Bsvec.z()*Bsvec.z());
+                std::cout << " the decay time 3D : " << dcv.BsCt3D << "\n";
+                dcv.BsCt2D = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*Bsvec.x()+
+                (kvfbsvertex.position().y()-PVvtxHightestPt.y())*Bsvec.y())/
+                (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y());
+                std::cout << " the decay time 2D : " << dcv.BsCt3D << "\n";
+                dcv.BsCt2DBS = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-bsAndVtxInfo.bs_x)*Bsvec.x()+
+                (kvfbsvertex.position().y()-bsAndVtxInfo.bs_y)*Bsvec.y())/
+                (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y());
+                std::cout << " the decay time 2D BS : " << dcv.BsCt3D << "\n";
+
+
 	    }
 	}
     }

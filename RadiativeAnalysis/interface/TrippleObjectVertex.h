@@ -51,7 +51,20 @@ class TrippleObjectVertex{
 		int mu2trkMuon = -9999;
 		double max_Dr1 = -9999;
 		double max_Dr2 = -9999;
-		
+		double muonpairdr = -9999;
+		double mu1trkbsxy = -9999;
+		double mu1trkbsz = -9999;
+		double mu2trkbsxy = -9999;
+		double mu2trkbsz = -9999;
+		int mu1pixelhits = -9999;
+		int mu2pixelhits = -9999;
+		int mu1trackerhits = -9999;
+		int mu2trackerhits = -9999;
+		int mu1isgood = -9999;
+		int mu2isgood = -9999;
+		int mu1innertrkhq = -9999;
+		int mu2innertrkhq = -9999;
+
 
 		double dimuonMass = -9999;
 		double dimuonEta = -9999;
@@ -76,6 +89,10 @@ class TrippleObjectVertex{
 		double BsPt = -9999;
 		double BsEta = -9999;
 		double BsPhi = -9999;
+		double BsVtxProb = -9999;
+		double BsCt3D = -9999;
+		double BsCt2D = -9999;
+		double BsCt2DBS = -9999;
 		
 		
 	
@@ -86,9 +103,12 @@ class TrippleObjectVertex{
 		static constexpr double BsMassCutUpper   = 6.0;
 		static constexpr double BdMassCutLower   = 4.5;
 		static constexpr double BdMassCutUpper   = 6.0; 
+		static constexpr double BsPDGMass = 5.36677;
 		  
                
     };
+	double MuMass =  0.1056583715;
+	TLorentzVector Mu1, Mu2 ;
 
 	DecayChainVariables TrippleObjectVertexObservables(const std::vector<reco::Muon>& muons, 
 			const pat::CompositeCandidateCollection& conversions,

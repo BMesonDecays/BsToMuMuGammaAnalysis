@@ -72,6 +72,19 @@ class RadiativeRootTree {
 		double mu2Pz_beffit_;
 		double mu2Eta_beffit_;
 		double mu2Phi_beffit_;
+		double MuonPairDR_;
+		double Mu1TrkBSDxy_;
+		double Mu1TrkBSDz_;
+		double Mu2TrkBSDxy_;
+		double Mu2TrkBSDz_;
+		int Mu1PixelHits_ ;
+		int Mu1TrackerHits_;
+		int Mu1isGood_ ;
+		int Mu1InnerTrkHighQuality_ ;  
+		int Mu2PixelHits_ ;
+		int Mu2TrackerHits_ ;
+		int Mu2isGood_ ;
+		int Mu2InnerTrkHighQuality_ ;
 
 		
 		double DiMuonM_beffit_;
@@ -94,11 +107,44 @@ class RadiativeRootTree {
 		int    DiMuon_mu2Cat_alone_;
 		int    DiMuon_mu1nPixHits_alone_;
 		int    DiMuon_mu2nPixHits_alone_;
+
+
+
 		double BsM_beffit_;
 		double BsEta_beffit_;
 		double BsPhi_beffit_;
 		double BsPt_beffit_;
 		double Bs_vtxProb_;
+		double BsCt_;
+        double BsCt3D_;
+  double BsCt2D_;
+  double BsCt2DBS_;
+  double BdCt2DBS_;
+  double BdCt2DMC_;
+  double BdCt3DMC_;
+  double BsCtMPV_;
+  double BsCt3Drefit_;
+  double BsCt2Drefit_;
+  double BsCtMPVrefit_;
+  double BsCtErr_;
+  double BsCtErr3D_;
+  double BsCtErr2D_;
+  double BsCtErr2DBS_;
+  double BsCtErr2DClosestZ_;
+  double BdCtErr2DBS_;
+  double BsCtErr2D2_;
+  double BsCtErrMPV_;
+  double BsCtErr3Drefit_;
+  double BsCtErr2Drefit_;
+  double BsCtErrMPVrefit_;
+  double BsCtErr2DBSOld_;
+  double BsCt2DBSOld_;
+
+  double BsCtErr2DClosestZOld_;
+  double BsCt2DPVClosestZOld_;
+  double BsCtErr2DOld_;
+  double BsCt2DOld_;
+
 		double HadronMass_fromVertexFit_;
 
 

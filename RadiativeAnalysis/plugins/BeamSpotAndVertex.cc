@@ -7,15 +7,26 @@ BeamSpotAndVertex::BeamSpotAndVertex(){}
 BeamSpotAndVertex::BSAndVtxVariables BeamSpotAndVertex::BSAndVtxObservables(const reco::BeamSpot& beamSpot,
                         const std::vector<reco::Vertex>& vertex){
     BSAndVtxVariables bsvtxv;
-    int VtxIndex = -99;
+    
     for(size_t i=0; i<9;++i){bsvtxv.pv_covariance[i] = -9999;} 
     const reco::Vertex &recVtxs_track = vertex.front();
     bsvtxv.pv_ntracks = recVtxs_track.nTracks();
     bsvtxv.pv_multiplicity = vertex.size();
     NSelectedVertices = 0;
+	size_t VtxIndex_maxPt = 0;
+	double maxSumPt = -1.0;
     for (size_t iVtx = 0; iVtx < vertex.size(); ++iVtx) {
-		VtxIndex = iVtx;
+		
 		const reco::Vertex& vtx = vertex[iVtx];
+		double sumpT = 0.0;
+		for (const auto& track : vtx.tracks()) {
+			sumpT += track->pt();
+		}
+		if (sumpT > maxSumPt) {
+			maxSumPt = sumpT;
+			VtxIndex_maxPt = iVtx;
+		}
+		bsvtxv.VtxIndex = VtxIndex_maxPt;
 		int iteratorCov =0;
 		for(int i = 0; i < 3 ; ++i){
 			for(int j =0; j< 3; ++j){
@@ -23,6 +34,7 @@ BeamSpotAndVertex::BSAndVtxVariables BeamSpotAndVertex::BSAndVtxObservables(cons
 
 			}
 		}
+		std::cout << " size of the vertex : " << bsvtxv.VtxIndex << "\n";
 		bsvtxv.pv_ndof = vtx.ndof();
 		bsvtxv.pv_rho = vtx.position().Rho();
 		if(!vtx.isValid())continue;
@@ -48,8 +60,8 @@ BeamSpotAndVertex::BSAndVtxVariables BeamSpotAndVertex::BSAndVtxObservables(cons
 			 }*/
     }
     bsvtxv.pv_cutmultiplicity = NSelectedVertices;
-    const reco::Vertex &RecVtx = vertex[VtxIndex];
-    if(VtxIndex !=-99) {
+    const reco::Vertex &RecVtx = vertex[bsvtxv.VtxIndex];
+    if(bsvtxv.VtxIndex !=-99) {
 	        bsvtxv.ispv     = 1;
 		bsvtxv.pv_x     = RecVtx.x();
 		bsvtxv.pv_y     = RecVtx.y();
@@ -80,6 +92,7 @@ BeamSpotAndVertex::BSAndVtxVariables BeamSpotAndVertex::BSAndVtxObservables(cons
 	    bsvtxv.bs_dydz = beamSpot.dydz();
 	    bsvtxv.bs_sigmaZ = beamSpot.sigmaZ();
 	    bsvtxv.bs_dsigmaZ = beamSpot.sigmaZ0Error();
+		bsvtxv.position = beamSpot.position();
     
     
     return bsvtxv;

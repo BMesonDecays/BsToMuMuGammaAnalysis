@@ -64,6 +64,19 @@ void RadiativeRootTree::createTree(const std::string filename)
   bmmgTree_->Branch("mu2Phi_beffit", &mu2Phi_beffit_,"mu2Phi_beffit/D");
   bmmgTree_->Branch("mu1SoftID", &mu1SoftID_,"mu1SoftID/I");
   bmmgTree_->Branch("mu2SoftID", &mu2SoftID_,"mu2SoftID/I");
+  bmmgTree_->Branch("MuonPairDR", &MuonPairDR_,"MuonPairDR/D");
+  bmmgTree_->Branch("Mu1TrkBSDxy", &Mu1TrkBSDxy_,"Mu1TrkBSDxy/D");
+  bmmgTree_->Branch("Mu1TrkBSDz", &Mu1TrkBSDz_,"Mu1TrkBSDz/D");
+  bmmgTree_->Branch("Mu2TrkBSDxy", &Mu2TrkBSDxy_,"Mu2TrkBSDxy/D");
+  bmmgTree_->Branch("Mu2TrkBSDz", &Mu2TrkBSDz_,"Mu2TrkBSDz/D");
+  bmmgTree_->Branch("Mu1PixelHits", &Mu1PixelHits_,"Mu1PixelHits/I");
+  bmmgTree_->Branch("Mu1TrackerHits", &Mu1TrackerHits_,"Mu1TrackerHits/I");
+  bmmgTree_->Branch("Mu1isGood", &Mu1isGood_,"Mu1isGood/I");
+  bmmgTree_->Branch("Mu1InnerTrkHighQuality", &Mu1InnerTrkHighQuality_,"Mu1InnerTrkHighQuality/I");
+  bmmgTree_->Branch("Mu2PixelHits", &Mu2PixelHits_,"Mu2PixelHits/I");
+  bmmgTree_->Branch("Mu2TrackerHits", &Mu2TrackerHits_,"Mu2TrackerHits/I");
+  bmmgTree_->Branch("Mu2isGood", &Mu2isGood_,"Mu2isGood/I");
+  bmmgTree_->Branch("Mu2InnerTrkHighQuality", &Mu2InnerTrkHighQuality_,"Mu2InnerTrkHighQuality/I");
   bmmgTree_->Branch("DiMuonM_beffit", &DiMuonM_beffit_,"DiMuonM_beffit/D");
   bmmgTree_->Branch("DiMuonEta_beffit", &DiMuonEta_beffit_,"DiMuonEta_beffit/D");
   bmmgTree_->Branch("DiMuonPhi_beffit", &DiMuonPhi_beffit_,"DiMuonPhi_beffit/D");
@@ -87,7 +100,33 @@ void RadiativeRootTree::createTree(const std::string filename)
   bmmgTree_->Branch("BsPhi_beffit", &BsPhi_beffit_,"BsPhi_beffit/D");
   bmmgTree_->Branch("BsPt_beffit", &BsPt_beffit_,"BsPt_beffit/D");
   bmmgTree_->Branch("Bs_vtxProb", &Bs_vtxProb_,"Bs_vtxProb/D");
+  bmmgTree_->Branch("BsCt3D", &BsCt3D_,"BsCt3D/D");
+  bmmgTree_->Branch("BsCt2D", &BsCt2D_,"BsCt2D/D");
+  bmmgTree_->Branch("BsCt2DBS", &BsCt2DBS_,"BsCt2DBS/D");
+  bmmgTree_->Branch("BdCt2DBS", &BdCt2DBS_,"BdCt2DBS/D");
+  bmmgTree_->Branch("BsCtMPV", &BsCtMPV_,"BsCtMPV/D");
+  bmmgTree_->Branch("BsCt3Drefit", &BsCt3Drefit_,"BsCt3Drefit/D");
+  bmmgTree_->Branch("BsCt2Drefit", &BsCt2Drefit_,"BsCt2Drefit/D");
+  bmmgTree_->Branch("BsCtMPVrefit", &BsCtMPVrefit_,"BsCtMPVrefit/D");
+  bmmgTree_->Branch("BsCtErr", &BsCtErr_,"BsCtErr/D");
+  bmmgTree_->Branch("BsCtErr3D", &BsCtErr3D_,"BsCtErr3D/D");
+  bmmgTree_->Branch("BsCtErr2D", &BsCtErr2D_,"BsCtErr2D/D");
+  bmmgTree_->Branch("BsCtErr2DBS", &BsCtErr2DBS_,"BsCtErr2DBS/D");
+  bmmgTree_->Branch("BsCtErr2DClosestZ", &BsCtErr2DClosestZ_,"BsCtErr2DClosestZ/D");
+  bmmgTree_->Branch("BdCtErr2DBS", &BdCtErr2DBS_,"BdCtErr2DBS/D");
+  bmmgTree_->Branch("BsCtErr2D2", &BsCtErr2D2_,"BsCtErr2D2/D");
+  bmmgTree_->Branch("BsCtErrMPV", &BsCtErrMPV_,"BsCtErrMPV/D");
+  bmmgTree_->Branch("BsCtErr3Drefit", &BsCtErr3Drefit_,"BsCtErr3Drefit/D");
+  bmmgTree_->Branch("BsCtErr2Drefit", &BsCtErr2Drefit_,"BsCtErr2Drefit/D");
+  bmmgTree_->Branch("BsCtErrMPVrefit", &BsCtErrMPVrefit_,"BsCtErrMPVrefit/D");
+  bmmgTree_->Branch("BsCtErr2DBSOld", &BsCtErr2DBSOld_,"BsCtErr2DBSOld/D"); 
+  bmmgTree_->Branch("BsCtErr2DClosestZOld", &BsCtErr2DClosestZOld_,"BsCtErr2DClosestZOld/D");
+  bmmgTree_->Branch("BsCt2DPVClosestZOld", &BsCt2DPVClosestZOld_,"BsCt2DPVClosestZOld/D");
+  bmmgTree_->Branch("BsCtErr2DOld", &BsCtErr2DOld_,"BsCtErr2DOld/D");
+  bmmgTree_->Branch("BsCt2DOld", &BsCt2DOld_,"BsCt2DOld/D");
   bmmgTree_->Branch("HadronMass_fromVertexFit", &HadronMass_fromVertexFit_,"HadronMass_fromVertexFit/D");
+
+
   bmmgTree_->Branch("photonMultiplicity", &photonMultiplicity_,"photonMultiplicity/I");
   bmmgTree_->Branch("photonPt",&photonPt_,"photonPt/D");
   bmmgTree_->Branch("photonEta",&photonEta_,"photonEta/D");
@@ -224,6 +263,19 @@ void RadiativeRootTree::resetEntries()
 	mu2Phi_beffit_ = -9999999;
 	mu1SoftID_ = -9999999;
 	mu2SoftID_ = -9999999;
+  MuonPairDR_ = -9999999;
+  Mu1TrkBSDxy_ = -9999999;
+  Mu1TrkBSDz_ = -9999999;
+  Mu2TrkBSDxy_ = -9999999;
+  Mu2TrkBSDz_ = -9999999;
+  Mu1PixelHits_ = -9999999;
+  Mu1TrackerHits_ = -9999999;
+  Mu1isGood_ = -9999999;
+  Mu1InnerTrkHighQuality_ = -9999999;
+  Mu2PixelHits_ = -9999999;
+  Mu2TrackerHits_ = -9999999;
+  Mu2isGood_ = -9999999;
+  Mu2InnerTrkHighQuality_ = -9999999;
 	DiMuonM_beffit_ = -9999999;
 	DiMuonEta_beffit_ = -9999999;
 	DiMuonPhi_beffit_ = -9999999;
@@ -240,7 +292,38 @@ void RadiativeRootTree::resetEntries()
   DiMuon_LxyOverPt_ = -9999999;
   DiMuon_mu1Cat_alone_ = -9999999;
   DiMuon_mu2Cat_alone_ = -9999999;
+  BsM_beffit_ = -9999999;
+	BsEta_beffit_ = -9999999;
+	BsPhi_beffit_ = -9999999;
+	BsPt_beffit_ = -9999999;
+	Bs_vtxProb_ = -9999999;
   HadronMass_fromVertexFit_ = -9999999;
+  BsCt3D_ = -9999999;
+  BsCt2D_ = -9999999;
+  BsCt2DBS_ = -9999999;
+  BdCt2DBS_ = -9999999;
+  BsCtMPV_ = -9999999;
+  BsCt3Drefit_ = -9999999;
+  BsCt2Drefit_ = -9999999;
+  BsCtMPVrefit_ = -9999999;
+  BsCtErr_ = -9999999;
+  BsCtErr3D_ = -9999999;
+  BsCtErr2D_ = -9999999;
+  BsCtErr2DBS_ = -9999999;
+  BsCtErr2DClosestZ_ = -9999999;
+  BdCtErr2DBS_ = -9999999;
+  BsCtErr2D2_ = -9999999;
+  BsCtErrMPV_ = -9999999;
+  BsCtErr3Drefit_ = -9999999;
+  BsCtErr2Drefit_ = -9999999;
+  BsCtErrMPVrefit_ = -9999999;
+  BsCtErr2DBSOld_ = -9999999;
+  BsCtErr2DClosestZOld_ = -9999999;
+  BsCt2DPVClosestZOld_ = -9999999;
+  BsCtErr2DOld_ = -9999999;
+  BsCt2DOld_ = -9999999;
+
+
 	photonMultiplicity_ = -9999999;
 	photonPt_           = -9999999;
 	photonEta_          = -9999999;
@@ -291,11 +374,7 @@ void RadiativeRootTree::resetEntries()
 	EtaPrimePhi_alone_      = -9999999;
 	EtaPrimePt_alone_       = -9999999;
 	
-	BsM_beffit_ = -9999999;
-	BsEta_beffit_ = -9999999;
-	BsPhi_beffit_ = -9999999;
-	BsPt_beffit_ = -9999999;
-	Bs_vtxProb_ = -9999999;
+	
 	electronMultiplicity_   = -9999999;
   pfCandMultiplicity_     = -9999999;
 	JpsiGenLxy_             = -9999999;
@@ -413,6 +492,19 @@ void RadiativeRootTree::setBranchAddresses(){
   bmmgTree_->SetBranchAddress("mu2Phi_beffit", &mu2Phi_beffit_);
   bmmgTree_->SetBranchAddress("mu1SoftID", &mu1SoftID_);
   bmmgTree_->SetBranchAddress("mu2SoftID", &mu2SoftID_);
+  bmmgTree_->SetBranchAddress("MuonPairDR", &MuonPairDR_);
+  bmmgTree_->SetBranchAddress("Mu1TrkBSDxy", &Mu1TrkBSDxy_);
+  bmmgTree_->SetBranchAddress("Mu1TrkBSDz", &Mu1TrkBSDz_);
+  bmmgTree_->SetBranchAddress("Mu2TrkBSDxy", &Mu2TrkBSDxy_);
+  bmmgTree_->SetBranchAddress("Mu2TrkBSDz", &Mu2TrkBSDz_);
+  bmmgTree_->SetBranchAddress("Mu1PixelHits", &Mu1PixelHits_);
+  bmmgTree_->SetBranchAddress("Mu1TrackerHits", &Mu1TrackerHits_);
+  bmmgTree_->SetBranchAddress("Mu1isGood", &Mu1isGood_);
+  bmmgTree_->SetBranchAddress("Mu1InnerTrkHighQuality", &Mu1InnerTrkHighQuality_);
+  bmmgTree_->SetBranchAddress("Mu2PixelHits", &Mu2PixelHits_);
+  bmmgTree_->SetBranchAddress("Mu2TrackerHits", &Mu2TrackerHits_);\
+  bmmgTree_->SetBranchAddress("Mu2isGood", &Mu2isGood_);
+  bmmgTree_->SetBranchAddress("Mu2InnerTrkHighQuality", &Mu2InnerTrkHighQuality_);
   bmmgTree_->SetBranchAddress("DiMuonM_beffit", &DiMuonM_beffit_);
   bmmgTree_->SetBranchAddress("DiMuonEta_beffit", &DiMuonEta_beffit_);
   bmmgTree_->SetBranchAddress("DiMuonPhi_beffit", &DiMuonPhi_beffit_);
@@ -428,7 +520,37 @@ void RadiativeRootTree::setBranchAddresses(){
   bmmgTree_->SetBranchAddress("DiMuon_LxyOverPt", &DiMuon_LxyOverPt_);
   bmmgTree_->SetBranchAddress("DiMuon_mu1Cat_alone", &DiMuon_mu1Cat_alone_);
   bmmgTree_->SetBranchAddress("DiMuon_mu2Cat_alone", &DiMuon_mu2Cat_alone_);
+  bmmgTree_->SetBranchAddress("BsM_beffit", &BsM_beffit_);
+  bmmgTree_->SetBranchAddress("BsEta_beffit", &BsEta_beffit_);
+  bmmgTree_->SetBranchAddress("BsPhi_beffit", &BsPhi_beffit_);
+  bmmgTree_->SetBranchAddress("BsPt_beffit", &BsPt_beffit_);
   bmmgTree_->SetBranchAddress("HadronMass_fromVertexFit", &HadronMass_fromVertexFit_);
+  bmmgTree_->SetBranchAddress("Bs_vtxProb", &Bs_vtxProb_);
+  bmmgTree_->SetBranchAddress("BsCt3D", &BsCt3D_);
+  bmmgTree_->SetBranchAddress("BsCt2D", &BsCt2D_);
+  bmmgTree_->SetBranchAddress("BsCt2DBS", &BsCt2DBS_);
+  bmmgTree_->SetBranchAddress("BdCt2DBS", &BdCt2DBS_);
+  bmmgTree_->SetBranchAddress("BsCtMPV", &BsCtMPV_);
+  bmmgTree_->SetBranchAddress("BsCt3Drefit", &BsCt3Drefit_);
+  bmmgTree_->SetBranchAddress("BsCt2Drefit", &BsCt2Drefit_);
+  bmmgTree_->SetBranchAddress("BsCtMPVrefit", &BsCtMPVrefit_);
+  bmmgTree_->SetBranchAddress("BsCtErr", &BsCtErr_);
+  bmmgTree_->SetBranchAddress("BsCtErr3D", &BsCtErr3D_);
+  bmmgTree_->SetBranchAddress("BsCtErr2D", &BsCtErr2D_);
+  bmmgTree_->SetBranchAddress("BsCtErr2DBS", &BsCtErr2DBS_);
+  bmmgTree_->SetBranchAddress("BsCtErr2DClosestZ", &BsCtErr2DClosestZ_);
+  bmmgTree_->SetBranchAddress("BdCtErr2DBS", &BdCtErr2DBS_);
+  bmmgTree_->SetBranchAddress("BsCtErr2D2", &BsCtErr2D2_);
+  bmmgTree_->SetBranchAddress("BsCtErrMPV", &BsCtErrMPV_);
+  bmmgTree_->SetBranchAddress("BsCtErr3Drefit", &BsCtErr3Drefit_);
+  bmmgTree_->SetBranchAddress("BsCtErr2Drefit", &BsCtErr2Drefit_);
+  bmmgTree_->SetBranchAddress("BsCtErrMPVrefit", &BsCtErrMPVrefit_);
+  bmmgTree_->SetBranchAddress("BsCtErr2DBSOld", &BsCtErr2DBSOld_);
+  bmmgTree_->SetBranchAddress("BsCtErr2DClosestZOld", &BsCtErr2DClosestZOld_);
+  bmmgTree_->SetBranchAddress("BsCt2DPVClosestZOld", &BsCt2DPVClosestZOld_);
+  bmmgTree_->SetBranchAddress("BsCtErr2DOld", &BsCtErr2DOld_);
+  bmmgTree_->SetBranchAddress("BsCt2DOld", &BsCt2DOld_);
+
   bmmgTree_->SetBranchAddress("photonMultiplicity", &photonMultiplicity_ );
   bmmgTree_->SetBranchAddress("photonPt", &photonPt_ );
   bmmgTree_->SetBranchAddress("photonEta", &photonEta_ );
@@ -481,11 +603,6 @@ void RadiativeRootTree::setBranchAddresses(){
 
   
   
-  bmmgTree_->SetBranchAddress("BsM_beffit", &BsM_beffit_);
-  bmmgTree_->SetBranchAddress("BsEta_beffit", &BsEta_beffit_);
-  bmmgTree_->SetBranchAddress("BsPhi_beffit", &BsPhi_beffit_);
-  bmmgTree_->SetBranchAddress("BsPt_beffit", &BsPt_beffit_);
-
 
 
   
