@@ -141,7 +141,7 @@ private:
   //edm::InputTag pfCandTag;
   //edm::EDGetTokenT<edm::View<pat::PackedCandidate>> pfCandTagTok;
   edm::InputTag trackTag;
-  edm::EDGetTokenT<edm::View<reco::Track>> trackTagTok;
+  edm::EDGetTokenT<std::vector<reco::Track>> trackTagTok;
   edm::InputTag IsoTrackTag;
   edm::EDGetTokenT<edm::View<pat::IsolatedTrack>> IsoTrackTagTok;
   edm::InputTag convertedPhotonsTag;

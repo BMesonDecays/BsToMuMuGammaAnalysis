@@ -12,6 +12,7 @@
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/BeamSpotAndVertex.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/RecoPhotons.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/GlobalIncludes.h"
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/ReferenceModeratorVertex.h"
 
 
 
@@ -61,9 +62,9 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig):
 		triggerobjTok                     = consumes<edm::View<pat::TriggerObjectStandAlone>>(triggerobj);
 	}
 	//pfCandTag                         = iConfig.getParameter<edm::InputTag>("pfCandTag");
-        //pfCandTagTok                      = consumes<edm::View<pat::PackedCandidate>>(pfCandTag);
+    //pfCandTagTok                      = consumes<edm::View<pat::PackedCandidate>>(pfCandTag);
 	trackTag                          = iConfig.getParameter<edm::InputTag>("pfCandTag");
-	trackTagTok                       = consumes<edm::View<reco::Track>>(trackTag);
+	trackTagTok                       = consumes<std::vector<reco::Track>>(trackTag);
 	if(isMINIAOD_){
 		IsoTrackTag                       = iConfig.getParameter<edm::InputTag>("IsoTrackTag");
 		IsoTrackTagTok                    = consumes<edm::View<pat::IsolatedTrack>>(IsoTrackTag);
@@ -267,15 +268,23 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 
 
         
-	//edm::Handle<View<pat::PackedCandidate>> pfCands;
-	//iEvent.getByToken(pfCandTagTok, pfCands);
-	edm::Handle<std::vector<reco::Muon>> muons;
+	    //edm::Handle<View<pat::PackedCandidate>> pfCands;
+	    //iEvent.getByToken(pfCandTagTok, pfCands);
+	    edm::Handle<std::vector<reco::Muon>> muons;
         iEvent.getByToken(MuonTagTok, muons);
 		edm::Handle<std::vector<pat::CompositeCandidate>> convPhotons;
         iEvent.getByToken(convertedPhotonsTagTok, convPhotons);
+		edm::Handle<std::vector<reco::Track>> tracks;
+		iEvent.getByToken(trackTagTok, tracks);
+
+	    ReferenceModeratorVertex refmodvtxObservables;
+		auto refmodvtxVar = refmodvtxObservables.ReferenceModeratorVertexObservables(*muons, *tracks, bsandvtxVar, theBField, 
+			nominalMuonMass, nominalKaonMass);
+		std::cout<<"the dimuon mass : "<< refmodvtxVar.dimuonMass<< "\n";
         const pat::CompositeCandidateCollection * conversions = convPhotons.product();
 		TrippleObjectVertex  tripvtxObservables;
-		auto triDecayVar = tripvtxObservables.TrippleObjectVertexObservables(*muons, *conversions, bsandvtxVar, theBField, nominalMuonMass, nominalElectronMass);
+		auto triDecayVar = tripvtxObservables.TrippleObjectVertexObservables(*muons, *conversions, bsandvtxVar, theBField, 
+			nominalMuonMass, nominalElectronMass);
 		bmmgRootTree_->DiMuonM_beffit_ = triDecayVar.dimuonMass;
 		bmmgRootTree_->DiMuonEta_beffit_ = triDecayVar.dimuonEta;
 		bmmgRootTree_->DiMuonPhi_beffit_ = triDecayVar.dimuonPhi;
@@ -377,71 +386,17 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 
 
 
-	/*for(size_t iPhoton =0 ; iPhoton < photon->size() ; ++iPhoton){
-		
-		//const pat::Photon& ipatPhoton = (*photon)[iPhoton];
-		const auto ipatPhoton = (*photon)[iPhoton];
-		if (excludedPhotons.find(iPhoton) != excludedPhotons.end()) continue;
-		bool photonExcluded = false;
 
-		for(size_t jPhoton = iPhoton+1; jPhoton < photon->size() ; ++jPhoton){
-      
-			//const pat::Photon& jpatPhoton = (*photon)[jPhoton];
-			const auto jpatPhoton = (*photon)[jPhoton];
-			const reco::Photon::ShowerShape& jShowerShape = jpatPhoton.full5x5_showerShapeVariables();
-
-			pat::CompositeCandidate DiGammaCandidate;
+	/*pat::CompositeCandidate DiGammaCandidate;
 			DiGammaCandidate.addDaughter(ipatPhoton);
 			DiGammaCandidate.addDaughter(jpatPhoton);
 			AddFourMomenta addP4;
-			addP4.set(DiGammaCandidate);
+			addP4.set(DiGammaCandidate);*/
+
+	
 
 
-			if ( abs(DiGammaCandidate.mass() - nominalPiZeroMass ) <  PionZeroMassWindowNoFit_ ){
-
-				excludedPhotons.insert(iPhoton);
-				excludedPhotons.insert(jPhoton);
-				photonExcluded = true;
-				bmmgRootTree_->PiZeroM_alone_        = DiGammaCandidate.mass();
-				bmmgRootTree_->PiZeroEta_alone_      = DiGammaCandidate.eta();
-				bmmgRootTree_->PiZeroPhi_alone_      = DiGammaCandidate.phi();
-				bmmgRootTree_->PiZeroPt_alone_       = DiGammaCandidate.pt();
-			}
-			else if (abs(DiGammaCandidate.mass() - nominalEtaMesonMass ) < EtaMesonMassWindowNoFit_){
-
-				excludedPhotons.insert(iPhoton);
-				excludedPhotons.insert(jPhoton);
-				photonExcluded = true;
-				bmmgRootTree_->EtaMesonM_alone_   = DiGammaCandidate.mass();
-				bmmgRootTree_->EtaMesonEta_alone_ = DiGammaCandidate.eta();
-				bmmgRootTree_->EtaMesonPhi_alone_ = DiGammaCandidate.phi();
-				bmmgRootTree_->EtaMesonPt_alone_  = DiGammaCandidate.pt();
-			}
-			else if (abs(DiGammaCandidate.mass() - nominalEtaPrimeMass ) < EtaPrimeMassWindowNoFit_){
-
-                                excludedPhotons.insert(iPhoton);
-                                excludedPhotons.insert(jPhoton);
-                                photonExcluded = true;
-                                bmmgRootTree_->EtaPrimeM_alone_   = DiGammaCandidate.mass();
-                                bmmgRootTree_->EtaPrimeEta_alone_ = DiGammaCandidate.eta();
-                                bmmgRootTree_->EtaPrimePhi_alone_ = DiGammaCandidate.phi();
-                                bmmgRootTree_->EtaPrimePt_alone_  = DiGammaCandidate.pt();
-			}
-			if (photonExcluded) break; // Exit inner loop if current photon is excluded
- 		}
-		        if (photonExcluded) continue;
-
-              photoncounter_++;
-
-        }//photon loop ends 
-
-*/
-
-
-
-
-/*
-			//BsToPhi(KK)Gamma - need corresponding MC sample,run on data if the MC is not available
+			/*BsToPhi(KK)Gamma - need corresponding MC sample,run on data if the MC is not available
 		        for (size_t k=0; k< pfCands->size(); ++k){
 				const pat::PackedCandidate & track1 = (*pfCands)[k];
 				if (track1.charge()<0)continue;
