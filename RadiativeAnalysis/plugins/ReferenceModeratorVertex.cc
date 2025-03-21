@@ -40,7 +40,7 @@ using namespace pat;
 
 
 ReferenceModeratorVertex::ReferenceModeratorVertex(){}
-ReferenceModeratorVertex::DecayChainVariables ReferenceModeratorVertex::ReferenceModeratorVertexObservables(const std::vector<reco::Muon>& muons, 
+DecayChainVariables ReferenceModeratorVertex::ReferenceModeratorVertexObservables(const std::vector<reco::Muon>& muons, 
     const std::vector<reco::Track>& tracks,
     const BeamSpotAndVertex::BSAndVtxVariables& bsAndVtxInfo,
     const MagneticField& bField,
@@ -245,24 +245,24 @@ ReferenceModeratorVertex::DecayChainVariables ReferenceModeratorVertex::Referenc
                 GlobalVector Bsvec(b_par[3], b_par[4], b_par[5]);
                 std::cout<<"Vertex position after the fit- BsTojpsiPhicase  "<< Bsvec.x() << "\t"<< Bsvec.y() << "\t"<< Bsvec.z() << "\n";
                 reco::Vertex recVtxs;
-                std::cout << " the PV multiplicity returen in the TBV class BsTojpsiPhicase: " << bsAndVtxInfo.VtxIndex<< "\n";
+                //std::cout << " the PV multiplicity returen in the TBV class BsTojpsiPhicase: " << bsAndVtxInfo.VtxIndex<< "\n";
                 reco::Vertex PVvtxHightestPt;//:wq = recVtxs[bsAndVtxInfo.VtxIndex];
                 /*Need input to solve the problem of multiple primary vertex*/
-                std::cout<<"Primary vertex HightestPt BsTojpsiPhicase"<<PVvtxHightestPt.x()<< "\t"<<PVvtxHightestPt.y()<< "\t"<<PVvtxHightestPt.z() <<"\n";
+                //std::cout<<"Primary vertex HightestPt BsTojpsiPhicase"<<PVvtxHightestPt.x()<< "\t"<<PVvtxHightestPt.y()<< "\t"<<PVvtxHightestPt.z() <<"\n";
                 
                 dcv.BsCt3D = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*Bsvec.x()+
                 (kvfbsvertex.position().y()-PVvtxHightestPt.y())*Bsvec.y()+
                 (kvfbsvertex.position().z()-PVvtxHightestPt.z())*Bsvec.z())/
                 (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y()+Bsvec.z()*Bsvec.z());
-                std::cout << " the decay time 3D BsTojpsiPhicase: " << dcv.BsCt3D << "\n";
+                //std::cout << " the decay time 3D BsTojpsiPhicase: " << dcv.BsCt3D << "\n";
                 dcv.BsCt2D = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*Bsvec.x()+
                 (kvfbsvertex.position().y()-PVvtxHightestPt.y())*Bsvec.y())/
                 (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y());
-                std::cout << " the decay time 2D BsTojpsiPhicase : " << dcv.BsCt3D << "\n";
+                //std::cout << " the decay time 2D BsTojpsiPhicase : " << dcv.BsCt3D << "\n";
                 dcv.BsCt2DBS = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-bsAndVtxInfo.bs_x)*Bsvec.x()+
                 (kvfbsvertex.position().y()-bsAndVtxInfo.bs_y)*Bsvec.y())/
                 (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y());
-                std::cout << " the decay time 2D BS BsTojpsiPhicase : " << dcv.BsCt3D << "\n";
+                //std::cout << " the decay time 2D BS BsTojpsiPhicase : " << dcv.BsCt3D << "\n";
 
 
 

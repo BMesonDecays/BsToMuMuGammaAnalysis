@@ -4,7 +4,8 @@
 
 
 TrippleObjectVertex::TrippleObjectVertex(){}
-TrippleObjectVertex::DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
+DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
+    //removing the qualifier TrippleObjectVertex fron the defintion of DecayChainVariables since it is not anymore a member of such class
     const std::vector<reco::Muon>& muons,
     const pat::CompositeCandidateCollection& conversions,
     const BeamSpotAndVertex::BSAndVtxVariables& bsAndVtxInfo,

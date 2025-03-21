@@ -274,17 +274,25 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
         iEvent.getByToken(MuonTagTok, muons);
 		edm::Handle<std::vector<pat::CompositeCandidate>> convPhotons;
         iEvent.getByToken(convertedPhotonsTagTok, convPhotons);
+		const pat::CompositeCandidateCollection * conversions = convPhotons.product();
 		edm::Handle<std::vector<reco::Track>> tracks;
 		iEvent.getByToken(trackTagTok, tracks);
 
-	    ReferenceModeratorVertex refmodvtxObservables;
-		auto refmodvtxVar = refmodvtxObservables.ReferenceModeratorVertexObservables(*muons, *tracks, bsandvtxVar, theBField, 
-			nominalMuonMass, nominalKaonMass);
-		std::cout<<"the dimuon mass : "<< refmodvtxVar.dimuonMass<< "\n";
-        const pat::CompositeCandidateCollection * conversions = convPhotons.product();
+
+		
 		TrippleObjectVertex  tripvtxObservables;
 		auto triDecayVar = tripvtxObservables.TrippleObjectVertexObservables(*muons, *conversions, bsandvtxVar, theBField, 
 			nominalMuonMass, nominalElectronMass);
+		/*TetraObjectVertex tetradcObservables;
+		auto tetraDecayVar = tetradcObservables.TetraObjectVertexObservables(*muons, *conversions, theBField, nominalMuonMass, nominalElectronMass);
+		std::cout<< " the mass of the tetraobject vertex : "<< tetraDecayVar.mass << "\n";
+		*/
+	    ReferenceModeratorVertex refmodvtxObservables;
+		auto refmodvtxVar = refmodvtxObservables.ReferenceModeratorVertexObservables(*muons, *tracks, bsandvtxVar, theBField, 
+			nominalMuonMass, nominalKaonMass);
+		std::cout<<"the dimuon mass from bs to jpsiphi ======================== : "<< refmodvtxVar.dimuonMass<< "\n";
+        
+		
 		bmmgRootTree_->DiMuonM_beffit_ = triDecayVar.dimuonMass;
 		bmmgRootTree_->DiMuonEta_beffit_ = triDecayVar.dimuonEta;
 		bmmgRootTree_->DiMuonPhi_beffit_ = triDecayVar.dimuonPhi;
@@ -332,10 +340,7 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 		bmmgRootTree_->BsCt3D_              = triDecayVar.BsCt3D;
 		bmmgRootTree_->BsCt2D_    	        = triDecayVar.BsCt2D;
 		bmmgRootTree_->BsCt2DBS_    	    = triDecayVar.BsCt2DBS;
-		/*TetraObjectVertex tetradcObservables;
-		auto tetraDecayVar = tetradcObservables.TetraObjectVertexObservables(*muons, *conversions, theBField, nominalMuonMass, nominalElectronMass);
-		std::cout<< " the mass of the tetraobject vertex : "<< tetraDecayVar.mass << "\n";
-		*/
+		
 		edm::Handle<std::vector<reco::Photon>> photon;
 		iEvent.getByToken(PhotonTagTok, photon);
 		bmmgRootTree_->photonMultiplicity_ = photon->size();

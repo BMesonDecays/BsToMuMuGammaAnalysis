@@ -4,7 +4,7 @@
 
 
 TetraObjectVertex::TetraObjectVertex(){}
-TetraObjectVertex::DecayChainVariables TetraObjectVertex::TetraObjectVertexObservables(
+DecayChainVariables TetraObjectVertex::TetraObjectVertexObservables(
         const std::vector<reco::Muon>& muons,
         const pat::CompositeCandidateCollection& conversions,
         const BeamSpotAndVertex::BSAndVtxVariables& bsAndVtxInfo,
