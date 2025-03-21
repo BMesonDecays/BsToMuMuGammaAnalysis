@@ -13,6 +13,9 @@
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/RecoPhotons.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/GlobalIncludes.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/ReferenceModeratorVertex.h"
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/DecayChainVariables.h"
+
+
 
 
 
@@ -277,69 +280,78 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 		const pat::CompositeCandidateCollection * conversions = convPhotons.product();
 		edm::Handle<std::vector<reco::Track>> tracks;
 		iEvent.getByToken(trackTagTok, tracks);
+		DecayChainVariables decayVariables;
+		std::cout<< " print the size of the corresponding objects employed to use in the following classes : " << muons->size() <<"\t" 
+		<< convPhotons->size() << "\t" << tracks->size()<< "\n";
 
+		if(muons->size()==2 && convPhotons->size() ==1){
+			TrippleObjectVertex  tripvtxObservables;
+			decayVariables = tripvtxObservables.TrippleObjectVertexObservables(*muons, *conversions, bsandvtxVar, theBField, nominalMuonMass, nominalElectronMass);
+			bmmgRootTree_->vertexTypeFlag_ = 1;
 
-		
-		TrippleObjectVertex  tripvtxObservables;
-		auto triDecayVar = tripvtxObservables.TrippleObjectVertexObservables(*muons, *conversions, bsandvtxVar, theBField, 
-			nominalMuonMass, nominalElectronMass);
-		/*TetraObjectVertex tetradcObservables;
-		auto tetraDecayVar = tetradcObservables.TetraObjectVertexObservables(*muons, *conversions, theBField, nominalMuonMass, nominalElectronMass);
-		std::cout<< " the mass of the tetraobject vertex : "<< tetraDecayVar.mass << "\n";
-		*/
-	    ReferenceModeratorVertex refmodvtxObservables;
-		auto refmodvtxVar = refmodvtxObservables.ReferenceModeratorVertexObservables(*muons, *tracks, bsandvtxVar, theBField, 
+		}
+		if(muons->size()==2 && convPhotons->size() ==2){
+			TetraObjectVertex tetradcObservables;
+			decayVariables = tetradcObservables.TetraObjectVertexObservables(*muons, *conversions,bsandvtxVar,theBField, nominalMuonMass, nominalElectronMass);
+			bmmgRootTree_->vertexTypeFlag_ = 2;
+		}
+
+		if(muons->size()==2 && tracks->size()>=2){
+			ReferenceModeratorVertex refmodvtxObservables;
+			decayVariables = refmodvtxObservables.ReferenceModeratorVertexObservables(*muons, *tracks, bsandvtxVar, theBField, 
 			nominalMuonMass, nominalKaonMass);
-		std::cout<<"the dimuon mass from bs to jpsiphi ======================== : "<< refmodvtxVar.dimuonMass<< "\n";
+			bmmgRootTree_->vertexTypeFlag_ = 3;
+		}
+		
         
 		
-		bmmgRootTree_->DiMuonM_beffit_ = triDecayVar.dimuonMass;
-		bmmgRootTree_->DiMuonEta_beffit_ = triDecayVar.dimuonEta;
-		bmmgRootTree_->DiMuonPhi_beffit_ = triDecayVar.dimuonPhi;
-		bmmgRootTree_->DiMuonPt_beffit_ = triDecayVar.dimuonPt;
-		bmmgRootTree_->DiMuon_ResonanceType_ = triDecayVar.resonanceFlag;
-		bmmgRootTree_->DiMuon_vtxProb_       = triDecayVar.dimuonvtxprob;
-		bmmgRootTree_->DiMuon_CosineAlpha_   = triDecayVar.opening_angle;
-		bmmgRootTree_->DiMuon_DCA_           = triDecayVar.mumudca;
-		bmmgRootTree_->DiMuon_Chi2pv_KVFvtx_ = triDecayVar.dimuonchi2;
+		bmmgRootTree_->DiMuonM_beffit_       = decayVariables.dimuonMass;
+		bmmgRootTree_->DiMuonEta_beffit_     = decayVariables.dimuonEta;
+		bmmgRootTree_->DiMuonPhi_beffit_     = decayVariables.dimuonPhi;
+		bmmgRootTree_->DiMuonPt_beffit_      = decayVariables.dimuonPt;
+		bmmgRootTree_->DiMuon_ResonanceType_ = decayVariables.resonanceFlag;
+		bmmgRootTree_->DiMuon_vtxProb_       = decayVariables.dimuonvtxprob;
+		bmmgRootTree_->DiMuon_CosineAlpha_   = decayVariables.opening_angle;
+		bmmgRootTree_->DiMuon_DCA_           = decayVariables.mumudca;
+		bmmgRootTree_->DiMuon_Chi2pv_KVFvtx_ = decayVariables.dimuonchi2;
 		//bmmgRootTree_->DiMuon_Mahalanobis_   = triDecayVar.mahalanobis;
-		bmmgRootTree_->DiMuon_Lxy_           = triDecayVar.dimuonlxy;
-		bmmgRootTree_->DiMuon_Lxyerr_        = triDecayVar.dimuonlxyerr;
-		bmmgRootTree_->DiMuon_LxyOverPt_     = triDecayVar.dimuonlxyOverPt;
-		bmmgRootTree_->mu1Pt_beffit_         = triDecayVar.mu1pt;
-		bmmgRootTree_->mu1Pz_beffit_         = triDecayVar.mu1pz;
-		bmmgRootTree_->mu1Eta_beffit_        = triDecayVar.mu1eta;
-		bmmgRootTree_->mu1Phi_beffit_        = triDecayVar.mu1phi;
-		bmmgRootTree_->mu2Phi_beffit_        = triDecayVar.mu2phi;
-		bmmgRootTree_->mu2Pt_beffit_         = triDecayVar.mu2pt;
-		bmmgRootTree_->mu2Pz_beffit_         = triDecayVar.mu2pz;
-		bmmgRootTree_->mu2Eta_beffit_        = triDecayVar.mu2eta;
-		bmmgRootTree_->MuonPairDR_           = triDecayVar.muonpairdr;
-		bmmgRootTree_->Mu1TrkBSDxy_          = triDecayVar.mu1trkbsxy;
-		bmmgRootTree_->Mu1TrkBSDz_           = triDecayVar.mu1trkbsz;
-		bmmgRootTree_->Mu2TrkBSDxy_          = triDecayVar.mu2trkbsxy;
-		bmmgRootTree_->Mu2TrkBSDz_           = triDecayVar.mu2trkbsz;
-		bmmgRootTree_->Mu1PixelHits_         = triDecayVar.mu1pixelhits;
-		bmmgRootTree_->Mu1TrackerHits_       = triDecayVar.mu1trackerhits;
-		bmmgRootTree_->Mu1isGood_            = triDecayVar.mu1isgood;
-		bmmgRootTree_->Mu1InnerTrkHighQuality_ = triDecayVar.mu1innertrkhq;
-		bmmgRootTree_->Mu2PixelHits_         = triDecayVar.mu2pixelhits;
-		bmmgRootTree_->Mu2TrackerHits_       = triDecayVar.mu2trackerhits;
-		bmmgRootTree_->Mu2isGood_            = triDecayVar.mu2isgood;
-		bmmgRootTree_->Mu2InnerTrkHighQuality_ = triDecayVar.mu2innertrkhq;
-		bmmgRootTree_->DiMuon_mu1Cat_alone_  = triDecayVar.diMuon_mu1Cat;
-		bmmgRootTree_->DiMuon_mu2Cat_alone_  = triDecayVar.diMuon_mu2Cat;
-		bmmgRootTree_->DiMuon_mu1nPixHits_alone_ = triDecayVar.diMuon_mu1PixelHits;
-		bmmgRootTree_->DiMuon_mu2nPixHits_alone_ = triDecayVar.diMuon_mu2PixelHits;
-		bmmgRootTree_->BsM_beffit_          = triDecayVar.BsMass;
-		bmmgRootTree_->BsEta_beffit_        = triDecayVar.BsEta;
-		bmmgRootTree_->BsPhi_beffit_        = triDecayVar.BsPhi;
-		bmmgRootTree_->BsPt_beffit_         = triDecayVar.BsPt;
-		bmmgRootTree_->HadronMass_fromVertexFit_ = triDecayVar.fittedBmass;
-		bmmgRootTree_->Bs_vtxProb_          = triDecayVar.BsVtxProb;
-		bmmgRootTree_->BsCt3D_              = triDecayVar.BsCt3D;
-		bmmgRootTree_->BsCt2D_    	        = triDecayVar.BsCt2D;
-		bmmgRootTree_->BsCt2DBS_    	    = triDecayVar.BsCt2DBS;
+		bmmgRootTree_->DiMuon_Lxy_           = decayVariables.dimuonlxy;
+		bmmgRootTree_->DiMuon_Lxyerr_        = decayVariables.dimuonlxyerr;
+		bmmgRootTree_->DiMuon_LxyOverPt_     = decayVariables.dimuonlxyOverPt;
+		bmmgRootTree_->mu1Pt_beffit_         = decayVariables.mu1pt;
+		bmmgRootTree_->mu1Pz_beffit_         = decayVariables.mu1pz;
+		bmmgRootTree_->mu1Eta_beffit_        = decayVariables.mu1eta;
+		bmmgRootTree_->mu1Phi_beffit_        = decayVariables.mu1phi;
+		bmmgRootTree_->mu2Phi_beffit_        = decayVariables.mu2phi;
+		bmmgRootTree_->mu2Pt_beffit_         = decayVariables.mu2pt;
+		bmmgRootTree_->mu2Pz_beffit_         = decayVariables.mu2pz;
+		bmmgRootTree_->mu2Eta_beffit_        = decayVariables.mu2eta;
+		bmmgRootTree_->MuonPairDR_           = decayVariables.muonpairdr;
+		bmmgRootTree_->Mu1TrkBSDxy_          = decayVariables.mu1trkbsxy;
+		bmmgRootTree_->Mu1TrkBSDz_           = decayVariables.mu1trkbsz;
+		bmmgRootTree_->Mu2TrkBSDxy_          = decayVariables.mu2trkbsxy;
+		bmmgRootTree_->Mu2TrkBSDz_           = decayVariables.mu2trkbsz;
+		bmmgRootTree_->Mu1PixelHits_         = decayVariables.mu1pixelhits;
+		bmmgRootTree_->Mu1TrackerHits_       = decayVariables.mu1trackerhits;
+		bmmgRootTree_->Mu1isGood_            = decayVariables.mu1isgood;
+		bmmgRootTree_->Mu1InnerTrkHighQuality_ = decayVariables.mu1innertrkhq;
+		bmmgRootTree_->Mu2PixelHits_         = decayVariables.mu2pixelhits;
+		bmmgRootTree_->Mu2TrackerHits_       = decayVariables.mu2trackerhits;
+		bmmgRootTree_->Mu2isGood_            = decayVariables.mu2isgood;
+		bmmgRootTree_->Mu2InnerTrkHighQuality_ = decayVariables.mu2innertrkhq;
+		bmmgRootTree_->DiMuon_mu1Cat_alone_  = decayVariables.diMuon_mu1Cat;
+		bmmgRootTree_->DiMuon_mu2Cat_alone_  = decayVariables.diMuon_mu2Cat;
+		bmmgRootTree_->DiMuon_mu1nPixHits_alone_ = decayVariables.diMuon_mu1PixelHits;
+		bmmgRootTree_->DiMuon_mu2nPixHits_alone_ = decayVariables.diMuon_mu2PixelHits;
+		bmmgRootTree_->BsM_beffit_          = decayVariables.BsMass;
+		bmmgRootTree_->BsEta_beffit_        = decayVariables.BsEta;
+		bmmgRootTree_->BsPhi_beffit_        = decayVariables.BsPhi;
+		bmmgRootTree_->BsPt_beffit_         = decayVariables.BsPt;
+		bmmgRootTree_->HadronMass_fromVertexFit_ = decayVariables.fittedBmass;
+		bmmgRootTree_->Bs_vtxProb_          = decayVariables.BsVtxProb;
+		bmmgRootTree_->BsCt3D_              = decayVariables.BsCt3D;
+		bmmgRootTree_->BsCt2D_    	        = decayVariables.BsCt2D;
+		bmmgRootTree_->BsCt2DBS_    	    = decayVariables.BsCt2DBS;
 		
 		edm::Handle<std::vector<reco::Photon>> photon;
 		iEvent.getByToken(PhotonTagTok, photon);

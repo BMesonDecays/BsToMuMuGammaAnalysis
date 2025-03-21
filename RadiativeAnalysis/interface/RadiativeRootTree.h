@@ -146,6 +146,7 @@ class RadiativeRootTree {
   double BsCt2DOld_;
 
 		double HadronMass_fromVertexFit_;
+		int vertexTypeFlag_;
 
 
 		int photonMultiplicity_;

@@ -243,7 +243,7 @@ DecayChainVariables ReferenceModeratorVertex::ReferenceModeratorVertexObservable
 	  		    RefCountedKinematicVertex bVertex = BCandFitter.getVertex();
 	  		    AlgebraicVector7 b_par = bs->currentState().kinematicParameters().vector();
                 GlobalVector Bsvec(b_par[3], b_par[4], b_par[5]);
-                std::cout<<"Vertex position after the fit- BsTojpsiPhicase  "<< Bsvec.x() << "\t"<< Bsvec.y() << "\t"<< Bsvec.z() << "\n";
+                //std::cout<<"Vertex position after the fit- BsTojpsiPhicase  "<< Bsvec.x() << "\t"<< Bsvec.y() << "\t"<< Bsvec.z() << "\n";
                 reco::Vertex recVtxs;
                 //std::cout << " the PV multiplicity returen in the TBV class BsTojpsiPhicase: " << bsAndVtxInfo.VtxIndex<< "\n";
                 reco::Vertex PVvtxHightestPt;//:wq = recVtxs[bsAndVtxInfo.VtxIndex];

@@ -126,7 +126,8 @@ void RadiativeRootTree::createTree(const std::string filename)
   bmmgTree_->Branch("BsCt2DOld", &BsCt2DOld_,"BsCt2DOld/D");
   bmmgTree_->Branch("HadronMass_fromVertexFit", &HadronMass_fromVertexFit_,"HadronMass_fromVertexFit/D");
 
-
+  
+  bmmgTree_->Branch("vertexTypeFlag", &vertexTypeFlag_,"vertexTypeFlag/I");
   bmmgTree_->Branch("photonMultiplicity", &photonMultiplicity_,"photonMultiplicity/I");
   bmmgTree_->Branch("photonPt",&photonPt_,"photonPt/D");
   bmmgTree_->Branch("photonEta",&photonEta_,"photonEta/D");
@@ -324,6 +325,7 @@ void RadiativeRootTree::resetEntries()
   BsCt2DOld_ = -9999999;
 
 
+  vertexTypeFlag_     = -9999999;
 	photonMultiplicity_ = -9999999;
 	photonPt_           = -9999999;
 	photonEta_          = -9999999;
@@ -551,6 +553,9 @@ void RadiativeRootTree::setBranchAddresses(){
   bmmgTree_->SetBranchAddress("BsCtErr2DOld", &BsCtErr2DOld_);
   bmmgTree_->SetBranchAddress("BsCt2DOld", &BsCt2DOld_);
 
+
+
+  bmmgTree_->SetBranchAddress("vertexTypeFlag_", &vertexTypeFlag_ );
   bmmgTree_->SetBranchAddress("photonMultiplicity", &photonMultiplicity_ );
   bmmgTree_->SetBranchAddress("photonPt", &photonPt_ );
   bmmgTree_->SetBranchAddress("photonEta", &photonEta_ );
