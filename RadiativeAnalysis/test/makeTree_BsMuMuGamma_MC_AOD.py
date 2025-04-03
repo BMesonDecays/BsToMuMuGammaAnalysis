@@ -80,7 +80,7 @@ fileList4 = glob.glob(prefixPath4+'/*.root')
 
 fileList =  fileList1 + fileList2 + fileList3 + fileList4
 random.shuffle(fileList)
-fileList_mix = ['file:'+aFile for aFile in fileList4]
+fileList_mix = ['file:'+aFile for aFile in fileList1]
 process.source.fileNames = fileList_mix
 
 from Configuration.AlCa.GlobalTag import GlobalTag

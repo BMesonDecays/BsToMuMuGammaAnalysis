@@ -352,7 +352,22 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 		bmmgRootTree_->BsCt3D_              = decayVariables.BsCt3D;
 		bmmgRootTree_->BsCt2D_    	        = decayVariables.BsCt2D;
 		bmmgRootTree_->BsCt2DBS_    	    = decayVariables.BsCt2DBS;
+	
+		/* Task reminder here */
+		//1. for soft MVA we need L1 info in the samples , this will exploit composite candidate instead regional muon candidates + muons 
+		//2. Ecal  Lazy tools covarinace matrix from photon/or ecal rechits for kinematic fit - this must go to photon class 
+		//3. The mock decay vertex from Ecal RecHit time 
+		//4. Helicity and angle between production plane and decay plane 
+		//5. Photon BDT ID 
+
 		
+
+
+
+
+
+
+
 		edm::Handle<std::vector<reco::Photon>> photon;
 		iEvent.getByToken(PhotonTagTok, photon);
 		bmmgRootTree_->photonMultiplicity_ = photon->size();
