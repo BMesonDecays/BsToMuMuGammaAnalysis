@@ -58,10 +58,12 @@ void RadiativeRootTree::createTree(const std::string filename)
   bmmgTree_->Branch("mu1Pz_beffit", &mu1Pz_beffit_,"mu1Pz_beffit/D");
   bmmgTree_->Branch("mu1Eta_beffit", &mu1Eta_beffit_,"mu1Eta_beffit/D");
   bmmgTree_->Branch("mu1Phi_beffit", &mu1Phi_beffit_,"mu1Phi_beffit/D");
+  bmmgTree_->Branch("mu1Energy_beffit", &mu1Energy_beffit_,"mu1Energy_beffit/D");
   bmmgTree_->Branch("mu2Pt_beffit", &mu2Pt_beffit_,"mu2Pt_beffit/D");
   bmmgTree_->Branch("mu2Pz_beffit", &mu2Pz_beffit_,"mu2Pz_beffit/D");
   bmmgTree_->Branch("mu2Eta_beffit", &mu2Eta_beffit_,"mu2Eta_beffit/D");
   bmmgTree_->Branch("mu2Phi_beffit", &mu2Phi_beffit_,"mu2Phi_beffit/D");
+  bmmgTree_->Branch("mu2Energy_beffit", &mu2Energy_beffit_,"mu2Energy_beffit/D");
   bmmgTree_->Branch("mu1SoftID", &mu1SoftID_,"mu1SoftID/I");
   bmmgTree_->Branch("mu2SoftID", &mu2SoftID_,"mu2SoftID/I");
   bmmgTree_->Branch("MuonPairDR", &MuonPairDR_,"MuonPairDR/D");
@@ -177,9 +179,9 @@ void RadiativeRootTree::createTree(const std::string filename)
   bmmgTree_->Branch("EtaPrimeEta_alone", &EtaPrimeEta_alone_, "EtaPrimeEta_alone/D");
   bmmgTree_->Branch("EtaPrimePhi_alone", &EtaPrimePhi_alone_, "EtaPrimePhi_alone/D");
   bmmgTree_->Branch("EtaPrimePt_alone", &EtaPrimePt_alone_, "EtaPrimePt_alone/D");
-  
-  
- 
+  bmmgTree_->Branch("Bsmass_recommg", &Bsmass_recommg_, "Bsmass_recommg/D");
+  bmmgTree_->Branch("Bshelicity_recommg", &Bshelicity_recommg_, "Bshelicity_recommg/D");
+  bmmgTree_->Branch("Bscoplanarity_recommg", &Bscoplanarity_recommg_, "Bscoplanarity_recommg/D");
   
   bmmgTree_->Branch("electronMultiplicity",&electronMultiplicity_,"electronMultiplicity/D");
   bmmgTree_->Branch("pfCandMultiplicity",&pfCandMultiplicity_,"pfCandMultiplicity/D");
@@ -188,6 +190,8 @@ void RadiativeRootTree::createTree(const std::string filename)
   bmmgTree_->Branch("cospsi",&cospsi_,"cospsi/D");
   bmmgTree_->Branch("AngleBsDecayLength",&AngleBsDecayLength_,"AngleBsDecayLength/D");
 
+  
+  
   bmmgTree_->Branch("JpsiGenPVz_",&JpsiGenPVz_,"JpsiGenPVz/D");
   bmmgTree_->Branch("JpsiGenPVy_",&JpsiGenPVy_,"JpsiGenPVy/D");
   bmmgTree_->Branch("JpsiGenPVx_",&JpsiGenPVx_,"JpsiGenPVx/D");
@@ -258,10 +262,12 @@ void RadiativeRootTree::resetEntries()
 	mu1Pz_beffit_ = -9999999;
 	mu1Eta_beffit_ = -9999999;
 	mu1Phi_beffit_ = -9999999;
+  mu1Energy_beffit_ = -9999999;
 	mu2Pt_beffit_ = -9999999;
 	mu2Pz_beffit_ = -9999999;
 	mu2Eta_beffit_ = -9999999;
 	mu2Phi_beffit_ = -9999999;
+  mu2Energy_beffit_ = -9999999;
 	mu1SoftID_ = -9999999;
 	mu2SoftID_ = -9999999;
   MuonPairDR_ = -9999999;
@@ -376,6 +382,11 @@ void RadiativeRootTree::resetEntries()
 	EtaPrimePhi_alone_      = -9999999;
 	EtaPrimePt_alone_       = -9999999;
 	
+
+
+  Bsmass_recommg_                = -9999999;
+  Bshelicity_recommg_            = -9999999;
+	Bscoplanarity_recommg_         = -9999999;
 	
 	electronMultiplicity_   = -9999999;
   pfCandMultiplicity_     = -9999999;
@@ -488,10 +499,12 @@ void RadiativeRootTree::setBranchAddresses(){
   bmmgTree_->SetBranchAddress("mu1Pz_beffit", &mu1Pz_beffit_);
   bmmgTree_->SetBranchAddress("mu1Eta_beffit", &mu1Eta_beffit_);
   bmmgTree_->SetBranchAddress("mu1Phi_beffit", &mu1Phi_beffit_);
+  bmmgTree_->SetBranchAddress("mu1Energy_beffit", &mu1Energy_beffit_);
   bmmgTree_->SetBranchAddress("mu2Pt_beffit", &mu2Pt_beffit_);
   bmmgTree_->SetBranchAddress("mu2Pz_beffit", &mu2Pz_beffit_);
   bmmgTree_->SetBranchAddress("mu2Eta_beffit", &mu2Eta_beffit_);
   bmmgTree_->SetBranchAddress("mu2Phi_beffit", &mu2Phi_beffit_);
+  bmmgTree_->SetBranchAddress("mu2Energy_beffit", &mu2Energy_beffit_);
   bmmgTree_->SetBranchAddress("mu1SoftID", &mu1SoftID_);
   bmmgTree_->SetBranchAddress("mu2SoftID", &mu2SoftID_);
   bmmgTree_->SetBranchAddress("MuonPairDR", &MuonPairDR_);
@@ -606,9 +619,9 @@ void RadiativeRootTree::setBranchAddresses(){
   bmmgTree_->SetBranchAddress("EtaPrimePhi_alone", &EtaPrimePhi_alone_);
   bmmgTree_->SetBranchAddress("EtaPrimePt_alone",  &EtaPrimePt_alone_);
 
-  
-  
-
+  bmmgTree_->SetBranchAddress("Bsmass_recommg",  &Bsmass_recommg_);
+  bmmgTree_->SetBranchAddress("Bshelicity_recommg",  &Bshelicity_recommg_);
+  bmmgTree_->SetBranchAddress("Bscoplanarity_recommg",  &Bscoplanarity_recommg_);
 
   
   bmmgTree_->SetBranchAddress("electronMultiplicity", &electronMultiplicity_);

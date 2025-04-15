@@ -15,6 +15,7 @@ options.register("nEvents", 5000, VarParsing.multiplicity.singleton, VarParsing.
 options.parseArguments()
 
 process = cms.Process("MUMUGamma")
+
 process.load("Configuration.StandardSequences.MagneticField_cff")
 process.load("Configuration.StandardSequences.Reconstruction_cff")
 process.load('Configuration.Geometry.GeometryRecoDB_cff')
@@ -24,7 +25,20 @@ process.load('FWCore.MessageService.MessageLogger_cfi')
 process.load('Configuration.EventContent.EventContent_cff')
 process.load('SimGeneral.MixingModule.mixNoPU_cfi')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
+from Configuration.AlCa.GlobalTag import GlobalTag
+#process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_mc_FULL','')
+process.GlobalTag = GlobalTag(process.GlobalTag, '124X_mcRun3_2022_realistic_v12','')
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
+#process.load("Geometry.CaloEventSetup.CaloGeometry_cfi")
+#process.load("Configuration.Geometry.GeometryECALHCAL_cff")
+#process.load("Geometry.CaloEventSetup.CaloTopology_cfi")
+#process.load("Geometry.CaloEventSetup.EcalTrigTowerConstituents_cfi")
+#process.ZdcHardcodeGeometryEP = cms.ESPrefer("ZdcGeometryFromDBEP")
+#process.es_prefer_HcalGeometry = cms.ESPrefer("HcalHardcodeGeometryEP", "")
+#process.es_prefer_CastorGeometry = cms.ESPrefer("CastorGeometryFromDBEP", "")  # Add this
+#process.es_prefer_CaloTowerGeometry = cms.ESPrefer("CaloTowerGeometryFromDBEP", "")
+#process.es_prefer_EcalBarrelGeometry = cms.ESPrefer("EcalBarrelGeometryFromDBEP", "")
+
 
 import HeavyFlavorAnalysis.Onia2MuMu.OniaPhotonConversionProducer_cfi
 process.oniaPhotonCandidates = HeavyFlavorAnalysis.Onia2MuMu.OniaPhotonConversionProducer_cfi.PhotonCandidates.clone()
@@ -83,9 +97,8 @@ random.shuffle(fileList)
 fileList_mix = ['file:'+aFile for aFile in fileList1]
 process.source.fileNames = fileList_mix
 
-from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_mc_FULL','')
-#process.GlobalTag = GlobalTag(process.GlobalTag, '130X_dataRun3_HLT_v2','')
+
+
 #--PatOverlap, mu/ele--#
 process.load("PhysicsTools.PatAlgos.cleaningLayer1.genericTrackCleaner_cfi")
 process.cleanPatTracks.checkOverlaps.muons.requireNoOverlaps     = cms.bool(False)
@@ -122,7 +135,9 @@ process.electronMatch.checkCharge = cms.bool(True)
 process.electronMatch.resolveAmbiguities = cms.bool(True)
 process.electronMatch.resolveByMatchQuality = cms.bool(True)
 
-
+process.CaloGeometryBuilder = cms.ESProducer("CaloGeometryBuilder",
+    SelectedCalos = cms.vstring("HCAL", "EcalBarrel", "EcalEndcap")
+)
 #-- ANALYZER TAGS AND PARAMETERS --#
 
 process.bmmgVertexAnalysis = cms.EDAnalyzer("RadiativeAnalysis",
@@ -141,6 +156,8 @@ process.bmmgVertexAnalysis = cms.EDAnalyzer("RadiativeAnalysis",
                                           primaryvertex                 = cms.InputTag("offlinePrimaryVertices"),
                                           triggerbits                   = cms.InputTag("TriggerResults",'',"HLT"),
                                           pfCandTag                     = cms.InputTag("generalTracks"),
+                                          pfSupcluster                  = cms.InputTag("particleFlowSuperClusterECAL","particleFlowSuperClusterECALBarrel"),
+                                          ecalrechit                    = cms.InputTag("reducedEcalRecHitsEB"),
                                           convertedPhotons              = cms.InputTag("oniaPhotonCandidates","conversions"),
                                           #IsoTrackTag                   = cms.InputTag("isolatedTracks"),
                                           StoreDeDxInfo                 = cms.bool(True),
@@ -218,7 +235,11 @@ process.primaryVertexFilter = cms.EDFilter("GoodVertexFilter",
 #process.pat = cms.Path(process.patDefaultSequence)
 #print(process.pat)
 
+process.SimpleMemoryCheck = cms.Service("SimpleMemoryCheck", ignoreTotal = cms.untracked.int32(1))
+process.dumpES = cms.EDAnalyzer("PrintEventSetupContent")
+process.espath = cms.Path(process.dumpES)
+
 #process.ntup = cms.Path(process.allPiTracks * process.allKTracks * process.kTracks * process.piTracks * process.bVertexAnalysis )
 process.ntup = cms.Path(process.oniaPhotonCandidates*process.bmmgVertexAnalysis )
 #process.filter = cms.Path(process.noScraping)
-process.schedule = cms.Schedule(process.ntup)
+process.schedule = cms.Schedule(process.ntup,process.espath)

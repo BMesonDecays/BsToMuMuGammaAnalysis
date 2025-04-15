@@ -8,6 +8,7 @@
 #include <TChain.h>
 #include <vector>
 
+
 class RadiativeRootTree {
 	public: 
 		RadiativeRootTree();
@@ -68,10 +69,12 @@ class RadiativeRootTree {
 		double mu1Pz_beffit_;
 		double mu1Eta_beffit_;
 		double mu1Phi_beffit_;
+		double mu1Energy_beffit_;
 		double mu2Pt_beffit_;
 		double mu2Pz_beffit_;
 		double mu2Eta_beffit_;
 		double mu2Phi_beffit_;
+		double mu2Energy_beffit_;
 		double MuonPairDR_;
 		double Mu1TrkBSDxy_;
 		double Mu1TrkBSDz_;
@@ -199,7 +202,9 @@ class RadiativeRootTree {
 		double EtaPrimePhi_alone_;
 		double EtaPrimePt_alone_;
 
-		
+		double Bsmass_recommg_;
+		double Bshelicity_recommg_;
+		double Bscoplanarity_recommg_;
 		
 
 		
@@ -223,6 +228,7 @@ class RadiativeRootTree {
 		 double PVcovariance_[9];
 		 TFile* bmmgFile_;
 		 TTree* bmmgTree_;
+		 
 };
 #endif
 

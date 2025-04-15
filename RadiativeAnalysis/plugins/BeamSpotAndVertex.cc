@@ -34,7 +34,7 @@ BeamSpotAndVertex::BSAndVtxVariables BeamSpotAndVertex::BSAndVtxObservables(cons
 
 			}
 		}
-		std::cout << " size of the vertex : " << bsvtxv.VtxIndex << "\n";
+		//std::cout << " size of the vertex : " << bsvtxv.VtxIndex << "\n";
 		bsvtxv.pv_ndof = vtx.ndof();
 		bsvtxv.pv_rho = vtx.position().Rho();
 		if(!vtx.isValid())continue;

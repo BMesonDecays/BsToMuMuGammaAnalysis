@@ -11,7 +11,7 @@
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/TetraObjectVertex.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/BeamSpotAndVertex.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/RecoPhotons.h"
-#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/GlobalIncludes.h"
+
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/ReferenceModeratorVertex.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/DecayChainVariables.h"
 
@@ -64,6 +64,11 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig):
 		triggerobj                        = iConfig.getParameter<edm::InputTag>("triggerobj");
 		triggerobjTok                     = consumes<edm::View<pat::TriggerObjectStandAlone>>(triggerobj);
 	}
+	pfSupcluster                   = iConfig.getParameter<edm::InputTag>("pfSupcluster");
+	pfSupclusterTok                = consumes<std::vector<reco::SuperCluster>>(pfSupcluster);
+	ecalrechit                     = iConfig.getParameter<edm::InputTag>("ecalrechit");
+	ecalrechitTok                  = consumes<EcalRecHitCollection>(ecalrechit);
+	
 	//pfCandTag                         = iConfig.getParameter<edm::InputTag>("pfCandTag");
     //pfCandTagTok                      = consumes<edm::View<pat::PackedCandidate>>(pfCandTag);
 	trackTag                          = iConfig.getParameter<edm::InputTag>("pfCandTag");
@@ -76,6 +81,8 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig):
 	convertedPhotonsTagTok            = consumes<std::vector<pat::CompositeCandidate>>(convertedPhotonsTag);
 	trackBuilderTok                   = esConsumes(edm::ESInputTag("", "TransientTrackBuilder"));
 	theBFieldTok                      = esConsumes<MagneticField, IdealMagneticFieldRecord>();
+	caloGeomTok                       = esConsumes<CaloGeometry, CaloGeometryRecord>();
+
 
 	StoreDeDxInfo_                    = iConfig.getParameter<bool>("StoreDeDxInfo");
 	PionZeroMassWindowNoFit_          = iConfig.getParameter<double>("PionZeroMassWindowNoFit");
@@ -195,6 +202,8 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
         //iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder",theB);
         //const auto& trackBuilder = iSetup.getData(trackBuilderTok);
        	const auto& theBField    = iSetup.getData(theBFieldTok);
+		const auto& caloGeom = iSetup.getData(caloGeomTok);
+
         	
 	int nBs=0;
 	edm::Handle<edm::View<reco::GenParticle> > genParticles;
@@ -322,10 +331,12 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 		bmmgRootTree_->mu1Pz_beffit_         = decayVariables.mu1pz;
 		bmmgRootTree_->mu1Eta_beffit_        = decayVariables.mu1eta;
 		bmmgRootTree_->mu1Phi_beffit_        = decayVariables.mu1phi;
+		bmmgRootTree_->mu1Energy_beffit_     = decayVariables.mu1energy;
 		bmmgRootTree_->mu2Phi_beffit_        = decayVariables.mu2phi;
 		bmmgRootTree_->mu2Pt_beffit_         = decayVariables.mu2pt;
 		bmmgRootTree_->mu2Pz_beffit_         = decayVariables.mu2pz;
 		bmmgRootTree_->mu2Eta_beffit_        = decayVariables.mu2eta;
+		bmmgRootTree_->mu2Energy_beffit_     = decayVariables.mu2energy;
 		bmmgRootTree_->MuonPairDR_           = decayVariables.muonpairdr;
 		bmmgRootTree_->Mu1TrkBSDxy_          = decayVariables.mu1trkbsxy;
 		bmmgRootTree_->Mu1TrkBSDz_           = decayVariables.mu1trkbsz;
@@ -334,37 +345,131 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 		bmmgRootTree_->Mu1PixelHits_         = decayVariables.mu1pixelhits;
 		bmmgRootTree_->Mu1TrackerHits_       = decayVariables.mu1trackerhits;
 		bmmgRootTree_->Mu1isGood_            = decayVariables.mu1isgood;
-		bmmgRootTree_->Mu1InnerTrkHighQuality_ = decayVariables.mu1innertrkhq;
-		bmmgRootTree_->Mu2PixelHits_         = decayVariables.mu2pixelhits;
-		bmmgRootTree_->Mu2TrackerHits_       = decayVariables.mu2trackerhits;
-		bmmgRootTree_->Mu2isGood_            = decayVariables.mu2isgood;
-		bmmgRootTree_->Mu2InnerTrkHighQuality_ = decayVariables.mu2innertrkhq;
-		bmmgRootTree_->DiMuon_mu1Cat_alone_  = decayVariables.diMuon_mu1Cat;
-		bmmgRootTree_->DiMuon_mu2Cat_alone_  = decayVariables.diMuon_mu2Cat;
+		bmmgRootTree_->Mu1InnerTrkHighQuality_   = decayVariables.mu1innertrkhq;
+		bmmgRootTree_->Mu2PixelHits_             = decayVariables.mu2pixelhits;
+		bmmgRootTree_->Mu2TrackerHits_           = decayVariables.mu2trackerhits;
+		bmmgRootTree_->Mu2isGood_                = decayVariables.mu2isgood;
+		bmmgRootTree_->Mu2InnerTrkHighQuality_   = decayVariables.mu2innertrkhq;
+		bmmgRootTree_->DiMuon_mu1Cat_alone_      = decayVariables.diMuon_mu1Cat;
+		bmmgRootTree_->DiMuon_mu2Cat_alone_      = decayVariables.diMuon_mu2Cat;
 		bmmgRootTree_->DiMuon_mu1nPixHits_alone_ = decayVariables.diMuon_mu1PixelHits;
 		bmmgRootTree_->DiMuon_mu2nPixHits_alone_ = decayVariables.diMuon_mu2PixelHits;
-		bmmgRootTree_->BsM_beffit_          = decayVariables.BsMass;
-		bmmgRootTree_->BsEta_beffit_        = decayVariables.BsEta;
-		bmmgRootTree_->BsPhi_beffit_        = decayVariables.BsPhi;
-		bmmgRootTree_->BsPt_beffit_         = decayVariables.BsPt;
+		bmmgRootTree_->BsM_beffit_               = decayVariables.BsMass;
+		bmmgRootTree_->BsEta_beffit_             = decayVariables.BsEta;
+		bmmgRootTree_->BsPhi_beffit_             = decayVariables.BsPhi;
+		bmmgRootTree_->BsPt_beffit_              = decayVariables.BsPt;
 		bmmgRootTree_->HadronMass_fromVertexFit_ = decayVariables.fittedBmass;
-		bmmgRootTree_->Bs_vtxProb_          = decayVariables.BsVtxProb;
-		bmmgRootTree_->BsCt3D_              = decayVariables.BsCt3D;
-		bmmgRootTree_->BsCt2D_    	        = decayVariables.BsCt2D;
-		bmmgRootTree_->BsCt2DBS_    	    = decayVariables.BsCt2DBS;
+		bmmgRootTree_->Bs_vtxProb_               = decayVariables.BsVtxProb;
+		bmmgRootTree_->BsCt3D_                   = decayVariables.BsCt3D;
+		bmmgRootTree_->BsCt2D_    	             = decayVariables.BsCt2D;
+		bmmgRootTree_->BsCt2DBS_    	         = decayVariables.BsCt2DBS;
 	
-		/* Task reminder here */
+		  /*Task reminder here*/
 		//1. for soft MVA we need L1 info in the samples , this will exploit composite candidate instead regional muon candidates + muons 
 		//2. Ecal  Lazy tools covarinace matrix from photon/or ecal rechits for kinematic fit - this must go to photon class 
 		//3. The mock decay vertex from Ecal RecHit time 
 		//4. Helicity and angle between production plane and decay plane 
 		//5. Photon BDT ID 
 
-		
+		std::cout<< "the dimuon mass : "<< decayVariables.dimuonMass << "\n";
+		std::cout<< " the energy of the muon 1 and muon 2 : "<< decayVariables.mu1energy << "\t"<< decayVariables.mu2energy<< "\n";
+
+       
 
 
 
+	   //particle flow supercluster ECAL - This only does exists in AOD ???
+	   edm::Handle<std::vector<reco::SuperCluster>> supercluster;
+	   iEvent.getByToken(pfSupclusterTok, supercluster);
+	   edm::Handle<EcalRecHitCollection> ecalRecHits;
+	   iEvent.getByToken(ecalrechitTok, ecalRecHits);
+	   std::cout<< " super cluster multiplicity : "<< supercluster->size()<< "\n";
+	   SCRecHitAccumulator scraccumulator;
+	   SCRecHitAccumulator::SCAndRecHitVariables screchitvars = scraccumulator.SCAndRecHitObservables(*supercluster,*ecalRecHits, bsandvtxVar,caloGeom);
+	   std::cout << " eta width : ----------------"<< screchitvars 
 
+	   /*for(reco::CaloClusterPtrVector::const_iterator clstr = supercluster->clustersBegin(); clstr !=supercluster->clusterEnd(); ++clstr){
+		std::cout<< " Eta and phi width : "<< (*clstr)->etaWidth() << "\t" << (*clstr)->phiWidth() << "\n";
+	   }*/
+
+	   for (const auto& sc : *supercluster) {  // Loop through SuperClusters
+		std::cout << "SuperCluster eta and phi width: ----------------------------------------------- " 
+				  << sc.etaWidth() << "\t" << sc.phiWidth() << "\n";
+		for (auto clstr = sc.clustersBegin(); clstr != sc.clustersEnd(); ++clstr) {
+			const reco::CaloCluster* cluster = clstr->get();
+			std::cout << "  Cluster energy: " << cluster->energy() << "\n";
+		}
+	}
+	  
+	   if (ecalRecHits.isValid()) {
+		for (EcalRecHitCollection::const_iterator hit = ecalRecHits->begin(); hit != ecalRecHits->end(); ++hit) {
+			
+			DetId detid = hit->id();
+			float energy = hit->energy();
+			float time = hit->time();
+			uint32_t rawid = detid.rawId();  // raw 32-bit value
+			int subdet = detid.subdetId();   // subdetector-ECAL barrel
+			int det = detid.det();           // DetId::Ecal
+			EBDetId ebid(detid);
+			int ieta = ebid.ieta();
+			int iphi = ebid.iphi();
+			std::cout<< "Outputs related to the ECalRechits SuperCluster ----------------------------"<< "\n";
+			std::cout << "  EcalRecHit: energy = " << energy << ", time = " << time <<"\n";
+			std::cout << "  EcalRecHit at (ieta, iphi): (" << ieta << ", " << iphi << ")\n";
+			std::cout << "  Raw ID     : " << rawid << "\n";
+			std::cout << "  Det        : " << det << " (should be " << DetId::Ecal << " for ECAL)\n";
+			std::cout << "  Subdet     : " << subdet << " (should be " << EcalBarrel << " for EB)\n";
+			std::cout << "  Energy     : " << hit->energy() << " GeV\n";
+			std::cout << "  Time       : " << hit->time() << " ns\n";
+			const GlobalPoint& position = caloGeom.getPosition(detid);
+			float x = position.x();
+			float y = position.y();
+			float z = position.z();
+			std::cout << "RecHit position: x=" << x << ", y=" << y << ", z=" << z <<"\n";
+
+			if (hit->checkFlag(EcalRecHit::kWeird)) {
+				edm::LogInfo("EcalRecHit") << "Weird hit detected!";
+			}
+			std::vector<int> flags = {EcalRecHit::kOutOfTime, EcalRecHit::kPoorCalib};
+			if (hit->checkFlags(flags)) {
+				edm::LogInfo("EcalRecHit") << "Problematic hit with multiple possible issues.";
+			}
+			uint32_t mask = 0x1 << EcalRecHit::kPoorReco; // just an example bitmask
+			if (hit->checkFlagMask(mask)) {
+				edm::LogInfo("EcalRecHit") << "Flag mask matched.";
+			}
+	
+		}
+	} else {
+		edm::LogWarning("EcalRecHit") << "EcalRecHitCollection not valid!";
+	}
+
+        
+
+/*for (const auto& sc : *supercluster) {
+    for (auto clstr = sc.clustersBegin(); clstr != sc.clustersEnd(); ++clstr) {
+        const reco::CaloCluster* cluster = clstr->get();
+        const std::vector<std::pair<DetId, float>>& hitsAndFractions = cluster->hitsAndFractions();
+        for (const auto& hitPair : hitsAndFractions) {
+            DetId detid = hitPair.first;
+            // Find the corresponding RecHit in ecalRecHits
+            for (const auto& hit : *ecalRecHits) {
+                if (hit.id() == detid) {
+                    const GlobalPoint& position = caloGeom.getPosition(detid);
+                    ROOT::Math::XYZVector hit_pos(position.x(), position.y(), position.z());
+                    ROOT::Math::XYZVector delta = hit_pos - pv_pos;
+                    float distance = delta.R();
+                    float tof = distance / c_light;
+                    float corrected_time = hit.time() - tof;
+                    std::cout << "  SuperCluster-associated RecHit:\n";
+                    std::cout << "    Distance PV to RecHit: " << distance << " cm\n";
+                    std::cout << "    Photon TOF: " << tof << " ns\n";
+                    std::cout << "    Corrected time: " << corrected_time << " ns\n";
+                }
+            }
+        }
+    }
+}*/
 
 
 
@@ -380,11 +485,28 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 				excludedPhotons.insert(iPhoton);
 				continue;
 			}
+
 		const RecoPhotons::PhotonVariables& leadingPhoton = photonVar[0]; //leading photon
 		bmmgRootTree_->photonPt_ = leadingPhoton.pt;
 		bmmgRootTree_->photonEta_ = leadingPhoton.eta;
 		bmmgRootTree_->photonPhi_ = leadingPhoton.phi;
 		bmmgRootTree_->photonEnergy_ = leadingPhoton.energy;
+		muonleg1.SetPtEtaPhiE(decayVariables.mu1pt, decayVariables.mu1eta, decayVariables.mu1phi, decayVariables.mu1energy);
+		muonleg2.SetPtEtaPhiE(decayVariables.mu2pt, decayVariables.mu2eta, decayVariables.mu2phi, decayVariables.mu2energy);
+		photonleg.SetPtEtaPhiE(leadingPhoton.pt, leadingPhoton.eta, leadingPhoton.phi, leadingPhoton.energy);
+		bsleg = muonleg1 + muonleg2 + photonleg; 
+		if (bsleg.M() < BsLowerMassCutBeforeFit_ || bsleg.M() > BsUpperMassCutBeforeFit_) continue;
+		bmmgRootTree_->Bsmass_recommg_ = bsleg.M();
+		//std::cout<< " Bs Mass ::   "<< bsleg.M()<< "\n";
+		pgamma.SetPtEtaPhi(leadingPhoton.pt, leadingPhoton.eta, leadingPhoton.phi);
+		pbs.SetPtEtaPhi(bsleg.Pt(), bsleg.Eta(), bsleg.Phi());
+		bmmgRootTree_->Bshelicity_recommg_ = pgamma.Dot(pbs)/((pgamma.Mag())*(pbs.Mag()));
+		mu1vec.SetPtEtaPhi(decayVariables.mu1pt, decayVariables.mu1eta, decayVariables.mu1phi);
+		mu2vec.SetPtEtaPhi(decayVariables.mu2pt, decayVariables.mu2eta, decayVariables.mu2phi);
+		TVector3 normal1 = mu1vec.Cross(mu2vec);
+		TVector3 normal2 = pgamma.Cross(pbs);
+		bmmgRootTree_->Bscoplanarity_recommg_ = TMath::ACos(TMath::Min(1.0, TMath::Max(-1.0, normal1.Dot(normal2)/((normal1.Mag())*(normal2.Mag()))))) ;
+
 		bmmgRootTree_->photonET_ = leadingPhoton.et;
 		bmmgRootTree_->photonSSSigmaiEtaiEta_ = leadingPhoton.sigmaIEtaIEta;
 		bmmgRootTree_->photonSSSigmaiEtaiPhi_ = leadingPhoton.sigmaIEtaIPhi;

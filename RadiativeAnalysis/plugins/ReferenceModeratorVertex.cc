@@ -134,13 +134,13 @@ DecayChainVariables ReferenceModeratorVertex::ReferenceModeratorVertexObservable
                 //std::cout<< "LXYOverPt: "<<dcv.dimuonlxyOverPt<<"\n";
            }
             //std::cout<<"LXYerror: "<<dcv.dimuonlxyerr<<"\t"<<"LXY: "<<dcv.dimuonlxy<<"\n";
-		if (mu1.charge() == -1) {
-			dcv.mu1pt = mu1.pt();dcv.mu1pz = mu1.pz();dcv.mu1eta = mu1.eta();dcv.mu1phi = mu1.phi();	
-			dcv.mu2phi = mu2.phi();dcv.mu2pt = mu2.pt();dcv.mu2pz = mu2.pz();dcv.mu2eta = mu2.eta();
-		}else {
-			dcv.mu2pt = mu1.pt();dcv.mu2pz = mu1.pz();dcv.mu2eta = mu1.eta();dcv.mu2phi = mu1.phi();
-			dcv.mu1phi = mu2.phi();dcv.mu1pt = mu2.pt();dcv.mu1pz = mu2.pz();dcv.mu1eta = mu2.eta();
-		}
+            if (mu1.charge() == -1) {
+              dcv.mu1pt = mu1.pt();dcv.mu1pz = mu1.pz();dcv.mu1eta = mu1.eta();dcv.mu1phi = mu1.phi(); dcv.mu1energy = mu1.energy();	
+              dcv.mu2phi = mu2.phi();dcv.mu2pt = mu2.pt();dcv.mu2pz = mu2.pz();dcv.mu2eta = mu2.eta(); dcv.mu2energy = mu2.energy();
+            }else {
+              dcv.mu2pt = mu1.pt();dcv.mu2pz = mu1.pz();dcv.mu2eta = mu1.eta();dcv.mu2phi = mu1.phi(); dcv.mu2energy = mu1.energy();
+              dcv.mu1phi = mu2.phi();dcv.mu1pt = mu2.pt();dcv.mu1pz = mu2.pz();dcv.mu1eta = mu2.eta(); dcv.mu1energy = mu2.energy();
+            }
 		//std::cout << "mu1pt: " << dcv.mu1pt << ", "<< "mu1pz: " << dcv.mu1pz << ", "<< "mu1eta: " << dcv.mu1eta << ", "<< "mu1phi: " << dcv.mu1phi <<"\n";
         if (mu1.isTrackerMuon() && !mu1.isGlobalMuon())       dcv.diMuon_mu1Cat = 1;
         else if (!mu1.isTrackerMuon() && mu1.isGlobalMuon())  dcv.diMuon_mu1Cat = 2;
@@ -200,8 +200,8 @@ DecayChainVariables ReferenceModeratorVertex::ReferenceModeratorVertexObservable
               if (trk2.pt() < 0.7 ) continue;
               if (trk2.numberOfValidHits() < 1)continue;
               double DeltaRKaon2Dimuon = deltaR(resonanceResult.eta, resonanceResult.phi, trk2.eta(), trk2.phi());
-              std::cout<< "DeltaRKaon2Dimuon : "<<DeltaRKaon2Dimuon<<"\n";
-              std::cout<<" pt, eta and phi of the track2 :"<<trk2.pt()<<"\t"<<trk2.eta()<<"\t"<<trk2.phi()<<"\n";
+              //std::cout<< "DeltaRKaon2Dimuon : "<<DeltaRKaon2Dimuon<<"\n";
+              //std::cout<<" pt, eta and phi of the track2 :"<<trk2.pt()<<"\t"<<trk2.eta()<<"\t"<<trk2.phi()<<"\n";
               if (DeltaRKaon2Dimuon > 2.2) continue;
               //pat::CompositeCandidate phiCand;
               //phiCand.addDaughter(trk1);
