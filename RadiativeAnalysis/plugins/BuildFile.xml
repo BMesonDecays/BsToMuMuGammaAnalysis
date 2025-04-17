@@ -9,6 +9,7 @@
 <use   name="RecoVertex/KinematicFitPrimitives"/>
 <use   name="RecoVertex/KalmanVertexFit"/>
 <use   name="RecoVertex/PrimaryVertexProducer"/>
+<use   name="RecoEcal/EgammaCoreTools"/>
 <use   name="SimTracker/TrackAssociation"/>
 <use   name="clhep"/>
 <use   name="boost"/>

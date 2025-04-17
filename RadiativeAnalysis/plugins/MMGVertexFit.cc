@@ -14,21 +14,20 @@
 
 
 
-void MMGVertexFit::fit(const std::vector<reco::Muon>& muons, 
+std::vector<double> MMGVertexFit::fit(const std::vector<reco::Muon>& muons, 
     const std::vector<reco::Photon>& photons,
-    const EcalRecHitCollection& recHits,
-    const EcalClusterLazyTools lazyTools,
-    const MagneticField& field,
+    const EcalClusterLazyTools& lazyTools,
     const std::vector<reco::Vertex>& primaryVertices,
-    const TransientTrackBuilder* theB)
+    const TransientTrackBuilder* TTBuilder)
     {
+        std::vector<double> mass;
         // kinematic particle creation
         std::vector<RefCountedKinematicParticle> muonKinematicParticles;
         for(const auto& recoMu : muons)
         {
             reco::TrackRef muTrack = recoMu.track();
             if(!muTrack) continue;
-            reco::TransientTrack muonTT = reco::TransientTrack(muTrack, &field);
+            reco::TransientTrack muonTT = TTBuilder->build(muTrack);
 
             const ParticleMass muon_mass(0.105658);
             float muon_sigma = 1E-6;
@@ -50,7 +49,7 @@ void MMGVertexFit::fit(const std::vector<reco::Muon>& muons,
           const ParticleMass photon_mass(0.);
           float photon_sigma = 1E-6;
       
-          FreeTrajectoryState fts(vtx, p3, ch, &field);
+          FreeTrajectoryState fts(vtx, p3, ch, TTBuilder->field());
       
           TMatrixD cov(lazyTools.covariancesXYZ(*recoPho.superCluster()));
           TMatrixD* covPtr(new TMatrixD(cov));
@@ -63,7 +62,7 @@ void MMGVertexFit::fit(const std::vector<reco::Muon>& muons,
           CartesianTrajectoryError photonErr(photonCov);
           fts.setCartesianError(photonErr);
       
-          reco::TransientTrack phoTT = theB->build(fts);
+          reco::TransientTrack phoTT = TTBuilder->build(fts);
           KinematicParticleFactoryFromTransientTrack pFactory;
           photonKinematicParticles.push_back(pFactory.particle(phoTT, photon_mass, float(0), float(0), photon_sigma, recoPhoPtr, covPtr));
         }
@@ -104,9 +103,11 @@ void MMGVertexFit::fit(const std::vector<reco::Muon>& muons,
                     RefCountedKinematicVertex fitVertexPointing = vertexFitTree->currentDecayVertex();
                     if (!fitVertexPointing->vertexIsValid()) continue;
 
-                    GlobalPoint fittedGlobalPointPointing = fitVertexPointing->position();
+                    // GlobalPoint fittedGlobalPointPointing = fitVertexPointing->position();
+                    mass.push_back(fitParticlePointing->currentState().mass());
 
                 }
             }
         }
+        return mass;
     }

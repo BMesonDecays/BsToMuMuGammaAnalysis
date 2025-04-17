@@ -19,13 +19,11 @@ class MMGVertexFit
         MMGVertexFit(){};
         ~MMGVertexFit(){}
 
-        void fit(const std::vector<reco::Muon>& muons, 
+        std::vector<double> fit(const std::vector<reco::Muon>& muons, 
             const std::vector<reco::Photon>& photons,
-            const EcalRecHitCollection& recHits,
-            const EcalClusterLazyTools lazyTools,
-            const MagneticField& field,
+            const EcalClusterLazyTools& lazyTools,
             const std::vector<reco::Vertex>& primaryVertices,
-            const TransientTrackBuilder* theB);
+            const TransientTrackBuilder* TTBuilder);
     
 };
 
