@@ -147,9 +147,40 @@ class RadiativeRootTree {
   double BsCt2DPVClosestZOld_;
   double BsCtErr2DOld_;
   double BsCt2DOld_;
+  double HadronMass_fromVertexFit_;
+  int vertexTypeFlag_;
 
-		double HadronMass_fromVertexFit_;
-		int vertexTypeFlag_;
+
+  //Ecal variables
+  double PFECal_SC_Eta_;
+  double PFECal_SC_Phi_;
+  double PFECal_SC_EtaWidth_;
+  double PFECal_SC_PhiWidth_;
+  double PFECal_SC_ClusterEnergy_;
+  uint32_t PFECAL_RecHit_RawId_;
+  int PFECAL_RecHit_Subdet_;
+  double PFECAL_RecHit_Energy_;
+  double PFECAL_RecHit_Time_;
+  double PFECAL_RecHit_X_;
+  double PFECAL_RecHit_Y_;
+  double PFECAL_RecHit_Z_;
+  double PFECAL_RecHit_PVDistance_;
+  double PFECAL_RecHit_TOF_;
+  double PFECAL_RecHit_CorrectedTime_;
+
+  // Flags for problematic RecHits
+  bool PFECAL_RecHit_IsWeird_;
+  bool PFECAL_RecHit_IsProblematic_;
+  bool PFECAL_RecHit_PoorReco_;
+  int PFECAL_RecHit_EB_ieta_;
+  int PFECAL_RecHit_EB_iphi_;
+  double PFECAL_RecHit_EE_ix_;
+  double PFECAL_RecHit_EE_iy_;
+  double PFECAL_RecHit_EE_zside_;
+
+
+  
+
 
 
 		int photonMultiplicity_;

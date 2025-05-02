@@ -11,6 +11,7 @@
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/TetraObjectVertex.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/BeamSpotAndVertex.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/RecoPhotons.h"
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/SCRecHitAccumulator.h"
 
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/ReferenceModeratorVertex.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/DecayChainVariables.h"
@@ -290,9 +291,7 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 		edm::Handle<std::vector<reco::Track>> tracks;
 		iEvent.getByToken(trackTagTok, tracks);
 		DecayChainVariables decayVariables;
-		std::cout<< " print the size of the corresponding objects employed to use in the following classes : " << muons->size() <<"\t" 
-		<< convPhotons->size() << "\t" << tracks->size()<< "\n";
-
+		
 		if(muons->size()==2 && convPhotons->size() ==1){
 			TrippleObjectVertex  tripvtxObservables;
 			decayVariables = tripvtxObservables.TrippleObjectVertexObservables(*muons, *conversions, bsandvtxVar, theBField, nominalMuonMass, nominalElectronMass);
@@ -371,8 +370,6 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 		//4. Helicity and angle between production plane and decay plane 
 		//5. Photon BDT ID 
 
-		std::cout<< "the dimuon mass : "<< decayVariables.dimuonMass << "\n";
-		std::cout<< " the energy of the muon 1 and muon 2 : "<< decayVariables.mu1energy << "\t"<< decayVariables.mu2energy<< "\n";
 
        
 
@@ -383,97 +380,36 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 	   iEvent.getByToken(pfSupclusterTok, supercluster);
 	   edm::Handle<EcalRecHitCollection> ecalRecHits;
 	   iEvent.getByToken(ecalrechitTok, ecalRecHits);
-	   std::cout<< " super cluster multiplicity : "<< supercluster->size()<< "\n";
+	   //std::cout<< " super cluster multiplicity : "<< supercluster->size()<< "\n";
 	   SCRecHitAccumulator scraccumulator;
 	   SCRecHitAccumulator::SCAndRecHitVariables screchitvars = scraccumulator.SCAndRecHitObservables(*supercluster,*ecalRecHits, bsandvtxVar,caloGeom);
-	   std::cout << " eta width : ----------------"<< screchitvars 
-
-	   /*for(reco::CaloClusterPtrVector::const_iterator clstr = supercluster->clustersBegin(); clstr !=supercluster->clusterEnd(); ++clstr){
-		std::cout<< " Eta and phi width : "<< (*clstr)->etaWidth() << "\t" << (*clstr)->phiWidth() << "\n";
-	   }*/
-
-	   for (const auto& sc : *supercluster) {  // Loop through SuperClusters
-		std::cout << "SuperCluster eta and phi width: ----------------------------------------------- " 
-				  << sc.etaWidth() << "\t" << sc.phiWidth() << "\n";
-		for (auto clstr = sc.clustersBegin(); clstr != sc.clustersEnd(); ++clstr) {
-			const reco::CaloCluster* cluster = clstr->get();
-			std::cout << "  Cluster energy: " << cluster->energy() << "\n";
-		}
-	}
-	  
-	   if (ecalRecHits.isValid()) {
-		for (EcalRecHitCollection::const_iterator hit = ecalRecHits->begin(); hit != ecalRecHits->end(); ++hit) {
-			
-			DetId detid = hit->id();
-			float energy = hit->energy();
-			float time = hit->time();
-			uint32_t rawid = detid.rawId();  // raw 32-bit value
-			int subdet = detid.subdetId();   // subdetector-ECAL barrel
-			int det = detid.det();           // DetId::Ecal
-			EBDetId ebid(detid);
-			int ieta = ebid.ieta();
-			int iphi = ebid.iphi();
-			std::cout<< "Outputs related to the ECalRechits SuperCluster ----------------------------"<< "\n";
-			std::cout << "  EcalRecHit: energy = " << energy << ", time = " << time <<"\n";
-			std::cout << "  EcalRecHit at (ieta, iphi): (" << ieta << ", " << iphi << ")\n";
-			std::cout << "  Raw ID     : " << rawid << "\n";
-			std::cout << "  Det        : " << det << " (should be " << DetId::Ecal << " for ECAL)\n";
-			std::cout << "  Subdet     : " << subdet << " (should be " << EcalBarrel << " for EB)\n";
-			std::cout << "  Energy     : " << hit->energy() << " GeV\n";
-			std::cout << "  Time       : " << hit->time() << " ns\n";
-			const GlobalPoint& position = caloGeom.getPosition(detid);
-			float x = position.x();
-			float y = position.y();
-			float z = position.z();
-			std::cout << "RecHit position: x=" << x << ", y=" << y << ", z=" << z <<"\n";
-
-			if (hit->checkFlag(EcalRecHit::kWeird)) {
-				edm::LogInfo("EcalRecHit") << "Weird hit detected!";
-			}
-			std::vector<int> flags = {EcalRecHit::kOutOfTime, EcalRecHit::kPoorCalib};
-			if (hit->checkFlags(flags)) {
-				edm::LogInfo("EcalRecHit") << "Problematic hit with multiple possible issues.";
-			}
-			uint32_t mask = 0x1 << EcalRecHit::kPoorReco; // just an example bitmask
-			if (hit->checkFlagMask(mask)) {
-				edm::LogInfo("EcalRecHit") << "Flag mask matched.";
-			}
-	
-		}
-	} else {
-		edm::LogWarning("EcalRecHit") << "EcalRecHitCollection not valid!";
-	}
-
-        
-
-/*for (const auto& sc : *supercluster) {
-    for (auto clstr = sc.clustersBegin(); clstr != sc.clustersEnd(); ++clstr) {
-        const reco::CaloCluster* cluster = clstr->get();
-        const std::vector<std::pair<DetId, float>>& hitsAndFractions = cluster->hitsAndFractions();
-        for (const auto& hitPair : hitsAndFractions) {
-            DetId detid = hitPair.first;
-            // Find the corresponding RecHit in ecalRecHits
-            for (const auto& hit : *ecalRecHits) {
-                if (hit.id() == detid) {
-                    const GlobalPoint& position = caloGeom.getPosition(detid);
-                    ROOT::Math::XYZVector hit_pos(position.x(), position.y(), position.z());
-                    ROOT::Math::XYZVector delta = hit_pos - pv_pos;
-                    float distance = delta.R();
-                    float tof = distance / c_light;
-                    float corrected_time = hit.time() - tof;
-                    std::cout << "  SuperCluster-associated RecHit:\n";
-                    std::cout << "    Distance PV to RecHit: " << distance << " cm\n";
-                    std::cout << "    Photon TOF: " << tof << " ns\n";
-                    std::cout << "    Corrected time: " << corrected_time << " ns\n";
-                }
-            }
-        }
-    }
-}*/
-
-
-
-		edm::Handle<std::vector<reco::Photon>> photon;
+	   bmmgRootTree_->PFECal_SC_Eta_                = screchitvars.sc_eta;
+	   bmmgRootTree_->PFECal_SC_Phi_                = screchitvars.sc_phi;
+	   bmmgRootTree_->PFECal_SC_EtaWidth_           = screchitvars.sc_eta_width;
+	   bmmgRootTree_->PFECal_SC_PhiWidth_           = screchitvars.sc_phi_width;
+	   bmmgRootTree_->PFECal_SC_ClusterEnergy_      = screchitvars.cluster_energy;
+	   bmmgRootTree_->PFECAL_RecHit_RawId_          = screchitvars.rechit_rawid;
+	   bmmgRootTree_->PFECAL_RecHit_Subdet_         = screchitvars.rechit_subdet;
+	   bmmgRootTree_->PFECAL_RecHit_Energy_         = screchitvars.rechit_energy;
+	   bmmgRootTree_->PFECAL_RecHit_Time_           = screchitvars.rechit_time;
+	   bmmgRootTree_->PFECAL_RecHit_X_              = screchitvars.rechit_x;
+	   bmmgRootTree_->PFECAL_RecHit_Y_              = screchitvars.rechit_y;
+	   bmmgRootTree_->PFECAL_RecHit_Z_              = screchitvars.rechit_z;
+	   bmmgRootTree_->PFECAL_RecHit_PVDistance_     = screchitvars.rechit_pv_distance;
+	   bmmgRootTree_->PFECAL_RecHit_TOF_            = screchitvars.rechit_tof;
+	   bmmgRootTree_->PFECAL_RecHit_CorrectedTime_  = screchitvars.rechit_corrected_time;
+	   bmmgRootTree_->PFECAL_RecHit_IsWeird_        = screchitvars.rechit_is_weird;
+	   bmmgRootTree_->PFECAL_RecHit_IsProblematic_  = screchitvars.rechit_is_problematic;
+	   bmmgRootTree_->PFECAL_RecHit_PoorReco_       = screchitvars.rechit_poor_reco;
+	   bmmgRootTree_->PFECAL_RecHit_EB_ieta_        = screchitvars.rechit_EB_ieta;
+	   bmmgRootTree_->PFECAL_RecHit_EB_iphi_        = screchitvars.rechit_EB_iphi;	
+	   bmmgRootTree_->PFECAL_RecHit_EE_ix_          = screchitvars.rechit_EE_ix;
+	   bmmgRootTree_->PFECAL_RecHit_EE_iy_          = screchitvars.rechit_EE_iy;
+	   bmmgRootTree_->PFECAL_RecHit_EE_zside_      = screchitvars.rechit_EE_zside;
+	   
+	 
+	 
+	   edm::Handle<std::vector<reco::Photon>> photon;
 		iEvent.getByToken(PhotonTagTok, photon);
 		bmmgRootTree_->photonMultiplicity_ = photon->size();
 		RecoPhotons recoPhotonObserbles;

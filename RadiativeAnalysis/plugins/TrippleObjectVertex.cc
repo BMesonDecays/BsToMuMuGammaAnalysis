@@ -13,7 +13,7 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
     const double nominalMuonMass,
     const double nominalElectronMass){
         
-        bool verbose = true;
+        bool verbose = false;
         DecayChainVariables dcv;
         
         for (size_t i = 0; i < muons.size(); ++i) {
@@ -108,8 +108,8 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
 			dcv.mu2pt = mu1.pt();dcv.mu2pz = mu1.pz();dcv.mu2eta = mu1.eta();dcv.mu2phi = mu1.phi(); dcv.mu2energy = mu1.energy();
 			dcv.mu1phi = mu2.phi();dcv.mu1pt = mu2.pt();dcv.mu1pz = mu2.pz();dcv.mu1eta = mu2.eta(); dcv.mu1energy = mu2.energy();
 		}
-        std::cout<< " muon1 enenrgy : "<< dcv.mu1energy << "\n";
-        std::cout<< " muon2 enenrgy : "<< dcv.mu2energy << "\n";
+        //std::cout<< " muon1 enenrgy : "<< dcv.mu1energy << "\n";
+        //std::cout<< " muon2 enenrgy : "<< dcv.mu2energy << "\n";
 		//std::cout << "mu1pt: " << dcv.mu1pt << ", "<< "mu1pz: " << dcv.mu1pz << ", "<< "mu1eta: " << dcv.mu1eta << ", "<< "mu1phi: " << dcv.mu1phi <<"\n";
         if (mu1.isTrackerMuon() && !mu1.isGlobalMuon())       dcv.diMuon_mu1Cat = 1;
         else if (!mu1.isTrackerMuon() && mu1.isGlobalMuon())  dcv.diMuon_mu1Cat = 2;

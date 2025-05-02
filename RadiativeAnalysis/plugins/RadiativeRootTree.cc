@@ -127,9 +127,36 @@ void RadiativeRootTree::createTree(const std::string filename)
   bmmgTree_->Branch("BsCtErr2DOld", &BsCtErr2DOld_,"BsCtErr2DOld/D");
   bmmgTree_->Branch("BsCt2DOld", &BsCt2DOld_,"BsCt2DOld/D");
   bmmgTree_->Branch("HadronMass_fromVertexFit", &HadronMass_fromVertexFit_,"HadronMass_fromVertexFit/D");
-
-  
   bmmgTree_->Branch("vertexTypeFlag", &vertexTypeFlag_,"vertexTypeFlag/I");
+  bmmgTree_->Branch("PFECal_SC_Eta", &PFECal_SC_Eta_,"PFECal_SC_Eta/D");
+  bmmgTree_->Branch("PFECal_SC_Phi", &PFECal_SC_Phi_,"PFECal_SC_Phi/D");
+  bmmgTree_->Branch("PFECal_SC_EtaWidth", &PFECal_SC_EtaWidth_,"PFECal_SC_EtaWidth/D");
+  bmmgTree_->Branch("PFECal_SC_PhiWidth", &PFECal_SC_PhiWidth_,"PFECal_SC_PhiWidth/D");
+  bmmgTree_->Branch("PFECal_SC_ClusterEnergy", &PFECal_SC_ClusterEnergy_,"PFECal_SC_ClusterEnergy/D");
+  bmmgTree_->Branch("PFECAL_RecHit_RawId", &PFECAL_RecHit_RawId_,"PFECAL_RecHit_RawId/i");
+  bmmgTree_->Branch("PFECAL_RecHit_Subdet", &PFECAL_RecHit_Subdet_,"PFECAL_RecHit_Subdet/I");
+  bmmgTree_->Branch("PFECAL_RecHit_Energy", &PFECAL_RecHit_Energy_,"PFECAL_RecHit_Energy/D");
+  bmmgTree_->Branch("PFECAL_RecHit_Time", &PFECAL_RecHit_Time_,"PFECAL_RecHit_Time/D");
+  bmmgTree_->Branch("PFECAL_RecHit_X", &PFECAL_RecHit_X_,"PFECAL_RecHit_X/D");
+  bmmgTree_->Branch("PFECAL_RecHit_Y", &PFECAL_RecHit_Y_,"PFECAL_RecHit_Y/D");
+  bmmgTree_->Branch("PFECAL_RecHit_Z", &PFECAL_RecHit_Z_,"PFECAL_RecHit_Z/D");
+  bmmgTree_->Branch("PFECAL_RecHit_PVDistance", &PFECAL_RecHit_PVDistance_,"PFECAL_RecHit_PVDistance/D");
+  bmmgTree_->Branch("PFECAL_RecHit_TOF", &PFECAL_RecHit_TOF_,"PFECAL_RecHit_TOF/D");
+  bmmgTree_->Branch("PFECAL_RecHit_CorrectedTime", &PFECAL_RecHit_CorrectedTime_,"PFECAL_RecHit_CorrectedTime/D");
+  bmmgTree_->Branch("PFECAL_RecHit_IsWeird", &PFECAL_RecHit_IsWeird_,"PFECAL_RecHit_IsWeird/O");
+  bmmgTree_->Branch("PFECAL_RecHit_IsProblematic", &PFECAL_RecHit_IsProblematic_,"PFECAL_RecHit_IsProblematic/O");
+  bmmgTree_->Branch("PFECAL_RecHit_PoorReco", &PFECAL_RecHit_PoorReco_,"PFECAL_RecHit_PoorReco/O");
+  bmmgTree_->Branch("PFECAL_RecHit_EB_ieta", &PFECAL_RecHit_EB_ieta_,"PFECAL_RecHit_EB_ieta/I");
+  bmmgTree_->Branch("PFECAL_RecHit_EB_iphi", &PFECAL_RecHit_EB_iphi_,"PFECAL_RecHit_EB_iphi/I");
+  bmmgTree_->Branch("PFECAL_RecHit_EE_ix", &PFECAL_RecHit_EE_ix_,"PFECAL_RecHit_EE_ix/D");
+  bmmgTree_->Branch("PFECAL_RecHit_EE_iy", &PFECAL_RecHit_EE_iy_,"PFECAL_RecHit_EE_iy/D");
+  bmmgTree_->Branch("PFECAL_RecHit_EE_zside", &PFECAL_RecHit_EE_zside_,"PFECAL_RecHit_EE_zside/D");
+
+
+
+
+ 
+
   bmmgTree_->Branch("photonMultiplicity", &photonMultiplicity_,"photonMultiplicity/I");
   bmmgTree_->Branch("photonPt",&photonPt_,"photonPt/D");
   bmmgTree_->Branch("photonEta",&photonEta_,"photonEta/D");
@@ -329,9 +356,36 @@ void RadiativeRootTree::resetEntries()
   BsCt2DPVClosestZOld_ = -9999999;
   BsCtErr2DOld_ = -9999999;
   BsCt2DOld_ = -9999999;
-
-
   vertexTypeFlag_     = -9999999;
+
+  PFECal_SC_Eta_ = -9999999;
+  PFECal_SC_Phi_ = -9999999;
+  PFECal_SC_EtaWidth_ = -9999999;
+  PFECal_SC_PhiWidth_ = -9999999;
+  PFECal_SC_ClusterEnergy_ = -9999999;
+  PFECAL_RecHit_RawId_ = -9999999;
+  PFECAL_RecHit_Subdet_ = -9999999;
+  PFECAL_RecHit_Energy_ = -9999999;
+  PFECAL_RecHit_Time_ = -9999999;
+  PFECAL_RecHit_X_ = -9999999;
+  PFECAL_RecHit_Y_ = -9999999;
+  PFECAL_RecHit_Z_ = -9999999;
+  PFECAL_RecHit_PVDistance_ = -9999999;
+  PFECAL_RecHit_TOF_ = -9999999;
+  PFECAL_RecHit_CorrectedTime_ = -9999999;
+  PFECAL_RecHit_IsWeird_ = -9999999;
+  PFECAL_RecHit_IsProblematic_ = -9999999;
+  PFECAL_RecHit_PoorReco_ = -9999999;
+  PFECAL_RecHit_EB_ieta_ = -9999999;
+  PFECAL_RecHit_EB_iphi_ = -9999999;
+  PFECAL_RecHit_EE_ix_ = -9999999;
+  PFECAL_RecHit_EE_iy_ = -9999999;
+  PFECAL_RecHit_EE_zside_ = -9999999;
+
+  
+
+
+
 	photonMultiplicity_ = -9999999;
 	photonPt_           = -9999999;
 	photonEta_          = -9999999;
@@ -565,10 +619,32 @@ void RadiativeRootTree::setBranchAddresses(){
   bmmgTree_->SetBranchAddress("BsCt2DPVClosestZOld", &BsCt2DPVClosestZOld_);
   bmmgTree_->SetBranchAddress("BsCtErr2DOld", &BsCtErr2DOld_);
   bmmgTree_->SetBranchAddress("BsCt2DOld", &BsCt2DOld_);
-
-
-
   bmmgTree_->SetBranchAddress("vertexTypeFlag_", &vertexTypeFlag_ );
+
+  bmmgTree_->SetBranchAddress("PFECal_SC_Eta", &PFECal_SC_Eta_);
+  bmmgTree_->SetBranchAddress("PFECal_SC_Phi", &PFECal_SC_Phi_);
+  bmmgTree_->SetBranchAddress("PFECal_SC_EtaWidth", &PFECal_SC_EtaWidth_);
+  bmmgTree_->SetBranchAddress("PFECal_SC_PhiWidth", &PFECal_SC_PhiWidth_);
+  bmmgTree_->SetBranchAddress("PFECal_SC_ClusterEnergy", &PFECal_SC_ClusterEnergy_);
+  bmmgTree_->SetBranchAddress("PFECAL_RecHit_RawId", &PFECAL_RecHit_RawId_);
+  bmmgTree_->SetBranchAddress("PFECAL_RecHit_Subdet", &PFECAL_RecHit_Subdet_);
+  bmmgTree_->SetBranchAddress("PFECAL_RecHit_Energy", &PFECAL_RecHit_Energy_);
+  bmmgTree_->SetBranchAddress("PFECAL_RecHit_Time", &PFECAL_RecHit_Time_);
+  bmmgTree_->SetBranchAddress("PFECAL_RecHit_X", &PFECAL_RecHit_X_);
+  bmmgTree_->SetBranchAddress("PFECAL_RecHit_Y", &PFECAL_RecHit_Y_);
+  bmmgTree_->SetBranchAddress("PFECAL_RecHit_Z", &PFECAL_RecHit_Z_);
+  bmmgTree_->SetBranchAddress("PFECAL_RecHit_PVDistance", &PFECAL_RecHit_PVDistance_);
+  bmmgTree_->SetBranchAddress("PFECAL_RecHit_TOF", &PFECAL_RecHit_TOF_);
+  bmmgTree_->SetBranchAddress("PFECAL_RecHit_CorrectedTime", &PFECAL_RecHit_CorrectedTime_);
+  bmmgTree_->SetBranchAddress("PFECAL_RecHit_IsWeird", &PFECAL_RecHit_IsWeird_);
+  bmmgTree_->SetBranchAddress("PFECAL_RecHit_IsProblematic", &PFECAL_RecHit_IsProblematic_);
+  bmmgTree_->SetBranchAddress("PFECAL_RecHit_PoorReco", &PFECAL_RecHit_PoorReco_);
+  bmmgTree_->SetBranchAddress("PFECAL_RecHit_EB_ieta", &PFECAL_RecHit_EB_ieta_);
+  bmmgTree_->SetBranchAddress("PFECAL_RecHit_EB_iphi", &PFECAL_RecHit_EB_iphi_);
+  bmmgTree_->SetBranchAddress("PFECAL_RecHit_EE_ix", &PFECAL_RecHit_EE_ix_);
+  bmmgTree_->SetBranchAddress("PFECAL_RecHit_EE_iy", &PFECAL_RecHit_EE_iy_);
+  bmmgTree_->SetBranchAddress("PFECAL_RecHit_EE_zside", &PFECAL_RecHit_EE_zside_);
+
   bmmgTree_->SetBranchAddress("photonMultiplicity", &photonMultiplicity_ );
   bmmgTree_->SetBranchAddress("photonPt", &photonPt_ );
   bmmgTree_->SetBranchAddress("photonEta", &photonEta_ );
@@ -623,7 +699,6 @@ void RadiativeRootTree::setBranchAddresses(){
   bmmgTree_->SetBranchAddress("Bshelicity_recommg",  &Bshelicity_recommg_);
   bmmgTree_->SetBranchAddress("Bscoplanarity_recommg",  &Bscoplanarity_recommg_);
 
-  
   bmmgTree_->SetBranchAddress("electronMultiplicity", &electronMultiplicity_);
   bmmgTree_->SetBranchAddress("pfCandMultiplicity", &pfCandMultiplicity_);
 
