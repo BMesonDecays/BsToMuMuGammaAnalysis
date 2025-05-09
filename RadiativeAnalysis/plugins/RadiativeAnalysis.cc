@@ -101,7 +101,6 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig):
 	BsUpperMassCutBeforeFit_          = iConfig.getParameter<double>("BsUpperMassCutBeforeFit");
 	BsLowerMassCutAfterFit_           = iConfig.getParameter<double>("BsLowerMassCutAfterFit");
 	BsUpperMassCutAfterFit_           = iConfig.getParameter<double>("BsUpperMassCutAfterFit");
-	PionZeroPDGMass_                  = iConfig.getParameter<double>("PionZeroPDGMass");
 	BdPDGMass_                        = iConfig.getParameter<double>("BdPDGMass");
 	BpPDGMass_                        = iConfig.getParameter<double>("BpPDGMass");
 	BsPDGMass_                        = iConfig.getParameter<double>("BsPDGMass");
@@ -406,72 +405,121 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 	   bmmgRootTree_->PFECAL_RecHit_EE_ix_          = screchitvars.rechit_EE_ix;
 	   bmmgRootTree_->PFECAL_RecHit_EE_iy_          = screchitvars.rechit_EE_iy;
 	   bmmgRootTree_->PFECAL_RecHit_EE_zside_      = screchitvars.rechit_EE_zside;
-	   
-	 
-	 
+
+
+	   muonleg1.SetPtEtaPhiE(decayVariables.mu1pt, decayVariables.mu1eta, decayVariables.mu1phi, decayVariables.mu1energy);
+	   muonleg2.SetPtEtaPhiE(decayVariables.mu2pt, decayVariables.mu2eta, decayVariables.mu2phi, decayVariables.mu2energy);
+	   mu1vec.SetPtEtaPhi(decayVariables.mu1pt, decayVariables.mu1eta, decayVariables.mu1phi);
+	   mu2vec.SetPtEtaPhi(decayVariables.mu2pt, decayVariables.mu2eta, decayVariables.mu2phi);
+
 	   edm::Handle<std::vector<reco::Photon>> photon;
-		iEvent.getByToken(PhotonTagTok, photon);
-		bmmgRootTree_->photonMultiplicity_ = photon->size();
-		RecoPhotons recoPhotonObserbles;
-		std::vector<RecoPhotons::PhotonVariables> photonVar = recoPhotonObserbles.PhotonObservables(*photon);
+	   iEvent.getByToken(PhotonTagTok, photon);
+	   bmmgRootTree_->photonMultiplicity_ = photon->size();
+	   RecoPhotons recoPhotonObserbles;
+	   std::vector<RecoPhotons::PhotonVariables> photonVar = recoPhotonObserbles.PhotonObservables(*photon);
 		if (!photonVar.empty()) {
 		for (size_t iPhoton = 0; iPhoton < photonVar.size(); ++iPhoton) {
+			std::cout << "size of photon collection : " << photonVar.size() << "\n";
 			const auto& ipatPhoton = (*photon)[iPhoton];
 			if (ipatPhoton.pt() > 50.0 || !ipatPhoton.isEB()) {
 				excludedPhotons.insert(iPhoton);
-				continue;
 			}
+		}
+			if (photonVar.size() - excludedPhotons.size() < 1) {
+				return;
+			}
+			// Store photon kinematics (up to 2 photons)
+			for (size_t iPhoton = 0; iPhoton < photonVar.size(); ++iPhoton) {
+				if (excludedPhotons.count(iPhoton)) continue;
+				bmmgRootTree_->photonPt_[iPhoton] = photonVar[iPhoton].pt;
+				bmmgRootTree_->photonEta_[iPhoton] = photonVar[iPhoton].eta;
+				bmmgRootTree_->photonPhi_[iPhoton] = photonVar[iPhoton].phi;
+				bmmgRootTree_->photonEnergy_[iPhoton] = photonVar[iPhoton].energy;
+				bmmgRootTree_->photonET_[iPhoton] = photonVar[iPhoton].et;
+				bmmgRootTree_->photonSSSigmaiEtaiEta_[iPhoton] = photonVar[iPhoton].sigmaIEtaIEta;
+				bmmgRootTree_->photonSSSigmaiEtaiPhi_[iPhoton] = photonVar[iPhoton].sigmaIEtaIPhi;
+				bmmgRootTree_->photonSSSigmaiPhiiPhi_[iPhoton] = photonVar[iPhoton].sigmaIPhiIPhi;
+				bmmgRootTree_->photonSCEnergy_[iPhoton] = photonVar[iPhoton].scEnergy;
+				bmmgRootTree_->photonSCRawEnergy_[iPhoton] = photonVar[iPhoton].scRawEnergy;
+				bmmgRootTree_->photonSCR9_[iPhoton] = photonVar[iPhoton].r9;
+				bmmgRootTree_->photonSCHadTowOverEm_[iPhoton] = photonVar[iPhoton].hadTowOverEm;
+				bmmgRootTree_->photonSShcalDepth1OverEcal_[iPhoton] = photonVar[iPhoton].hcalDepth1OverEcal;
+				bmmgRootTree_->photonSShcalDepth2OverEcal_[iPhoton] = photonVar[iPhoton].hcalDepth2OverEcal;
+				bmmgRootTree_->photonSShcalDepth1OverEcalBc_[iPhoton] = photonVar[iPhoton].hcalDepth1OverEcalBc;
+				bmmgRootTree_->photonSShcalDepth2OverEcalBc_[iPhoton] = photonVar[iPhoton].hcalDepth2OverEcalBc;
+				/*std::fill(std::begin(bmmgRootTree_->photonSShcalOverEcal_), std::end(bmmgRootTree_->photonSShcalOverEcal_), 0.f);
+				std::fill(std::begin(bmmgRootTree_->photonSShcalOverEcalBc_), std::end(bmmgRootTree_->photonSShcalOverEcalBc_), 0.f);
+				for (size_t k = 0; k < photonVar[iPhoton].hcalOverEcal.size(); ++k) {
+					bmmgRootTree_->photonSShcalOverEcal_[k][iPhoton] = photonVar[iPhoton].hcalOverEcal[k];
+				}
+				for (size_t k = 0; k < photonVar[iPhoton].hcalOverEcalBc.size(); ++k) {
+					bmmgRootTree_->photonSShcalOverEcalBc_[k][iPhoton] = photonVar[iPhoton].hcalOverEcalBc[k];
+				}*/
+				for (size_t k = 0; k < photonVar[iPhoton].hcalOverEcal.size(); ++k) {
+					bmmgRootTree_->photonSShcalOverEcal_[k][iPhoton] = static_cast<double>(photonVar[iPhoton].hcalOverEcal[k]);
+				}
+				for (size_t k = 0; k < photonVar[iPhoton].hcalOverEcalBc.size(); ++k) {
+					bmmgRootTree_->photonSShcalOverEcalBc_[k][iPhoton] = static_cast<double>(photonVar[iPhoton].hcalOverEcalBc[k]);
+				}
+				bmmgRootTree_->photonSSmaxEnergyXtal_[iPhoton] = photonVar[iPhoton].maxEnergyXtal;
+				bmmgRootTree_->photonSSeffSigmaRR_[iPhoton] = photonVar[iPhoton].effSigmaRR;
+				bmmgRootTree_->photonSCEta_[iPhoton] = photonVar[iPhoton].scEta;
+				bmmgRootTree_->photonSCPhi_[iPhoton] = photonVar[iPhoton].scPhi;
+				bmmgRootTree_->photonSCEtaWidth_[iPhoton] = photonVar[iPhoton].scEtaWidth;
+				bmmgRootTree_->photonSCPhiWidth_[iPhoton] = photonVar[iPhoton].scPhiWidth;
+				bmmgRootTree_->photonSCBrem_[iPhoton] = photonVar[iPhoton].scPhiWidth / photonVar[iPhoton].scEtaWidth;
+				photonleg1.SetPtEtaPhiE(photonVar[iPhoton].pt, photonVar[iPhoton].eta, photonVar[iPhoton].phi, photonVar[iPhoton].energy);
+				TLorentzVector bsleg = muonleg1 + muonleg2 + photonleg1;
+				if (bsleg.M() < BsLowerMassCutBeforeFit_ || bsleg.M() > BsUpperMassCutBeforeFit_) continue;
+				bmmgRootTree_->Bsmass_recommg_ = bsleg.M();
+				pgamma.SetPtEtaPhi(photonVar[iPhoton].pt, photonVar[iPhoton].eta, photonVar[iPhoton].phi);
+				pbs.SetPtEtaPhi(bsleg.Pt(), bsleg.Eta(), bsleg.Phi());
+				float helicity = pgamma.Dot(pbs) / (pgamma.Mag() * pbs.Mag());
+				TVector3 normal1 = mu1vec.Cross(mu2vec);
+				TVector3 normal2 = pgamma.Cross(pbs);
+				double cosPhi = normal1.Dot(normal2) / (normal1.Mag() * normal2.Mag());
+				float coplanarity = TMath::ACos(TMath::Min(1.0, TMath::Max(-1.0, cosPhi)));
+				bmmgRootTree_->Bshelicity_recommg_ = helicity;
+				bmmgRootTree_->Bscoplanarity_recommg_ = coplanarity;
+				bmmgRootTree_->isFourBody_ = 0;
+			}//Photon loop for three body through photon kinematics are saved irrespective of their multiplicity 
+			if (photonVar.size() - excludedPhotons.size() >= 2) {
+				for (size_t iPhoton = 0; iPhoton < photonVar.size(); ++iPhoton) {
+					if (excludedPhotons.count(iPhoton)) continue;
+					for (size_t jPhoton = iPhoton + 1; jPhoton < photonVar.size(); ++jPhoton) {
+						if (excludedPhotons.count(jPhoton)) continue;   
+						photonleg1.SetPtEtaPhiE(photonVar[iPhoton].pt, photonVar[iPhoton].eta, photonVar[iPhoton].phi, photonVar[iPhoton].energy);
+						photonleg2.SetPtEtaPhiE(photonVar[jPhoton].pt, photonVar[jPhoton].eta, photonVar[jPhoton].phi, photonVar[jPhoton].energy);
+						TLorentzVector digamma = photonleg1 + photonleg2;
+						bool isPi0 = std::abs(digamma.M() - PionZeroPDGMass_) < PionZeroMassWindowNoFit_;
+						bool isEta    = std::abs(digamma.M() - EtaMesonPDGMass_) < EtaMesonMassWindowNoFit_ ;
+						bool isEtaPrime = std::abs(digamma.M() - EtaPrimePDGMass_) < EtaPrimeMassWindowNoFit_ ;
+						if (!(isPi0 || isEta || isEtaPrime)) continue;
+						bmmgRootTree_->DiGammaM_alone_ = digamma.M();
+						bmmgRootTree_->DiGammaEta_alone_ = digamma.Eta();
+						bmmgRootTree_->DiGammaPhi_alone_ = digamma.Phi();
+						bmmgRootTree_->DiGammaPt_alone_ = digamma.Pt();
+						TLorentzVector bsleg = muonleg1 + muonleg2 + photonleg1 + photonleg2;
+                        if (bsleg.M() < BsLowerMassCutBeforeFit_ || bsleg.M() > BsUpperMassCutBeforeFit_) continue;
+						pdigamma.SetPtEtaPhi(digamma.Pt(), digamma.Eta(), digamma.Phi());
+						pbs.SetPtEtaPhi(bsleg.Pt(), bsleg.Eta(), bsleg.Phi());
+						float helicity = pdigamma.Dot(pbs) / (pdigamma.Mag() * pbs.Mag());
+						TVector3 normal1 = mu1vec.Cross(mu2vec);
+                        TVector3 normal2 = pdigamma.Cross(pbs);
+                        double cosPhi = normal1.Dot(normal2) / (normal1.Mag() * normal2.Mag());
+						float coplanarity = TMath::ACos(TMath::Min(1.0, TMath::Max(-1.0, cosPhi)));
+						bmmgRootTree_->isFourBody_ = 1;
+						bmmgRootTree_->Bsmass_recommg_ = bsleg.M();
+						bmmgRootTree_->Bshelicity_recommg_ = helicity;
+						bmmgRootTree_->Bscoplanarity_recommg_ = coplanarity;
 
-		const RecoPhotons::PhotonVariables& leadingPhoton = photonVar[0]; //leading photon
-		bmmgRootTree_->photonPt_ = leadingPhoton.pt;
-		bmmgRootTree_->photonEta_ = leadingPhoton.eta;
-		bmmgRootTree_->photonPhi_ = leadingPhoton.phi;
-		bmmgRootTree_->photonEnergy_ = leadingPhoton.energy;
-		muonleg1.SetPtEtaPhiE(decayVariables.mu1pt, decayVariables.mu1eta, decayVariables.mu1phi, decayVariables.mu1energy);
-		muonleg2.SetPtEtaPhiE(decayVariables.mu2pt, decayVariables.mu2eta, decayVariables.mu2phi, decayVariables.mu2energy);
-		photonleg.SetPtEtaPhiE(leadingPhoton.pt, leadingPhoton.eta, leadingPhoton.phi, leadingPhoton.energy);
-		bsleg = muonleg1 + muonleg2 + photonleg; 
-		if (bsleg.M() < BsLowerMassCutBeforeFit_ || bsleg.M() > BsUpperMassCutBeforeFit_) continue;
-		bmmgRootTree_->Bsmass_recommg_ = bsleg.M();
-		//std::cout<< " Bs Mass ::   "<< bsleg.M()<< "\n";
-		pgamma.SetPtEtaPhi(leadingPhoton.pt, leadingPhoton.eta, leadingPhoton.phi);
-		pbs.SetPtEtaPhi(bsleg.Pt(), bsleg.Eta(), bsleg.Phi());
-		bmmgRootTree_->Bshelicity_recommg_ = pgamma.Dot(pbs)/((pgamma.Mag())*(pbs.Mag()));
-		mu1vec.SetPtEtaPhi(decayVariables.mu1pt, decayVariables.mu1eta, decayVariables.mu1phi);
-		mu2vec.SetPtEtaPhi(decayVariables.mu2pt, decayVariables.mu2eta, decayVariables.mu2phi);
-		TVector3 normal1 = mu1vec.Cross(mu2vec);
-		TVector3 normal2 = pgamma.Cross(pbs);
-		bmmgRootTree_->Bscoplanarity_recommg_ = TMath::ACos(TMath::Min(1.0, TMath::Max(-1.0, normal1.Dot(normal2)/((normal1.Mag())*(normal2.Mag()))))) ;
+					}//second photon loop
+				}//first photon loop
+				
+			}//size of the photon should at least 2 
 
-		bmmgRootTree_->photonET_ = leadingPhoton.et;
-		bmmgRootTree_->photonSSSigmaiEtaiEta_ = leadingPhoton.sigmaIEtaIEta;
-		bmmgRootTree_->photonSSSigmaiEtaiPhi_ = leadingPhoton.sigmaIEtaIPhi;
-		bmmgRootTree_->photonSSSigmaiPhiiPhi_ = leadingPhoton.sigmaIPhiIPhi;
-		bmmgRootTree_->photonSCEnergy_ = leadingPhoton.scEnergy;
-		bmmgRootTree_->photonSCRawEnergy_ = leadingPhoton.scRawEnergy;
-		bmmgRootTree_->photonSCR9_ = leadingPhoton.r9;
-		bmmgRootTree_->photonSCHadTowOverEm_ = leadingPhoton.hadTowOverEm;
-		bmmgRootTree_->photonSShcalDepth1OverEcal_ = leadingPhoton.hcalDepth1OverEcal;
-		bmmgRootTree_->photonSShcalDepth2OverEcal_ = leadingPhoton.hcalDepth2OverEcal;
-		bmmgRootTree_->photonSShcalDepth1OverEcalBc_ = leadingPhoton.hcalDepth1OverEcalBc;
-		bmmgRootTree_->photonSShcalDepth2OverEcalBc_ = leadingPhoton.hcalDepth2OverEcalBc;
-		std::fill(std::begin(bmmgRootTree_->photonSShcalOverEcal_), std::end(bmmgRootTree_->photonSShcalOverEcal_), 0.f);
-		std::fill(std::begin(bmmgRootTree_->photonSShcalOverEcalBc_), std::end(bmmgRootTree_->photonSShcalOverEcalBc_), 0.f);
-		for (size_t k = 0; k < leadingPhoton.hcalOverEcal.size(); ++k) {
-			bmmgRootTree_->photonSShcalOverEcal_[k] = leadingPhoton.hcalOverEcal[k];
-		}
-		for (size_t k = 0; k < leadingPhoton.hcalOverEcalBc.size(); ++k) {
-			bmmgRootTree_->photonSShcalOverEcalBc_[k] = leadingPhoton.hcalOverEcalBc[k];
-		}
-		bmmgRootTree_->photonSSmaxEnergyXtal_ = leadingPhoton.maxEnergyXtal;
-		bmmgRootTree_->photonSSeffSigmaRR_ = leadingPhoton.effSigmaRR;
-		bmmgRootTree_->photonSCEta_ = leadingPhoton.scEta;
-		bmmgRootTree_->photonSCPhi_ = leadingPhoton.scPhi;
-		bmmgRootTree_->photonSCEtaWidth_ = leadingPhoton.scEtaWidth;
-		bmmgRootTree_->photonSCPhiWidth_ = leadingPhoton.scPhiWidth;
-		bmmgRootTree_->photonSCBrem_ = leadingPhoton.scPhiWidth / leadingPhoton.scEtaWidth;
-		}
-	}
+
+	}//Photon empty 
 
 
 

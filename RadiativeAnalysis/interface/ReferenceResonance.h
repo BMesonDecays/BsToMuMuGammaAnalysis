@@ -33,22 +33,22 @@ class ReferenceResonance{
         ~ReferenceResonance(){}
 	public:
     struct ResonanceDetails {
-    double mass = -9999;
+        double mass = -9999;
 	double eta  = -9999;
 	double phi  = -9999;
 	double pt   = -9999;
-    double px   = -9999;
-    double py   = -9999;
-    int resonanceFlag = -9999;
-    bool isValid = false;
+        double px   = -9999;
+        double py   = -9999;
+        int resonanceFlag = -9999;
+         bool isValid = false;
     };
     enum ResonanceFlag {
-    None = 0,
-    Jpsi = 1,
-    Phi = 2,
-    KStar = 3,
-    NonResonant = 4
-   };
+	    None = 0,
+	    Jpsi = 1,
+	    Phi = 2,
+	    KStar = 3,
+	    NonResonant = 4
+    };
 
     
     struct Constants {
@@ -66,7 +66,7 @@ class ReferenceResonance{
         static constexpr double JpsiWindow_PDG         = 0.31;
         static constexpr double PhiWindow_PDG          = 0.03;
         static constexpr double nonResonantWindow_PDG  = 0.0;
-        static constexpr double KStar0Window_PDG       = 0.02;
+        static constexpr double KStar0Window_PDG       = 0.2;
         static constexpr double EtaWindow_PDG          = 0.017;
         static constexpr double EtaPrimeWindow_PDG     = 0.230;
         static constexpr double Pi0Window_PDG          = 0.0005;

@@ -223,9 +223,9 @@ private:
   double PtSumVertex = 0.0;
   std::set<size_t> excludedPhotons;
   TLorentzVector muonleg1 , muonleg2;
-	TLorentzVector photonleg;
+	TLorentzVector photonleg1, photonleg2;
   TLorentzVector bsleg;
-  TVector3 pgamma, pbs;
+  TVector3 pgamma, pbs, pdigamma;
   TVector3 mu1vec, mu2vec;
 };
 #endif
