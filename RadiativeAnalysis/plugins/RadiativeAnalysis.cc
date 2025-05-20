@@ -11,7 +11,8 @@
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/TetraObjectVertex.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/BeamSpotAndVertex.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/RecoPhotons.h"
-#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/GlobalIncludes.h"
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/SCRecHitAccumulator.h"
+
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/ReferenceModeratorVertex.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/DecayChainVariables.h"
 
@@ -64,6 +65,11 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig):
 		triggerobj                        = iConfig.getParameter<edm::InputTag>("triggerobj");
 		triggerobjTok                     = consumes<edm::View<pat::TriggerObjectStandAlone>>(triggerobj);
 	}
+	pfSupcluster                   = iConfig.getParameter<edm::InputTag>("pfSupcluster");
+	pfSupclusterTok                = consumes<std::vector<reco::SuperCluster>>(pfSupcluster);
+	ecalrechit                     = iConfig.getParameter<edm::InputTag>("ecalrechit");
+	ecalrechitTok                  = consumes<EcalRecHitCollection>(ecalrechit);
+	
 	//pfCandTag                         = iConfig.getParameter<edm::InputTag>("pfCandTag");
     //pfCandTagTok                      = consumes<edm::View<pat::PackedCandidate>>(pfCandTag);
 	trackTag                          = iConfig.getParameter<edm::InputTag>("pfCandTag");
@@ -76,6 +82,8 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig):
 	convertedPhotonsTagTok            = consumes<std::vector<pat::CompositeCandidate>>(convertedPhotonsTag);
 	trackBuilderTok                   = esConsumes(edm::ESInputTag("", "TransientTrackBuilder"));
 	theBFieldTok                      = esConsumes<MagneticField, IdealMagneticFieldRecord>();
+	caloGeomTok                       = esConsumes<CaloGeometry, CaloGeometryRecord>();
+
 
 	StoreDeDxInfo_                    = iConfig.getParameter<bool>("StoreDeDxInfo");
 	PionZeroMassWindowNoFit_          = iConfig.getParameter<double>("PionZeroMassWindowNoFit");
@@ -93,7 +101,6 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig):
 	BsUpperMassCutBeforeFit_          = iConfig.getParameter<double>("BsUpperMassCutBeforeFit");
 	BsLowerMassCutAfterFit_           = iConfig.getParameter<double>("BsLowerMassCutAfterFit");
 	BsUpperMassCutAfterFit_           = iConfig.getParameter<double>("BsUpperMassCutAfterFit");
-	PionZeroPDGMass_                  = iConfig.getParameter<double>("PionZeroPDGMass");
 	BdPDGMass_                        = iConfig.getParameter<double>("BdPDGMass");
 	BpPDGMass_                        = iConfig.getParameter<double>("BpPDGMass");
 	BsPDGMass_                        = iConfig.getParameter<double>("BsPDGMass");
@@ -195,6 +202,8 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
         //iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder",theB);
         //const auto& trackBuilder = iSetup.getData(trackBuilderTok);
        	const auto& theBField    = iSetup.getData(theBFieldTok);
+		const auto& caloGeom = iSetup.getData(caloGeomTok);
+
         	
 	int nBs=0;
 	edm::Handle<edm::View<reco::GenParticle> > genParticles;
@@ -281,9 +290,7 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 		edm::Handle<std::vector<reco::Track>> tracks;
 		iEvent.getByToken(trackTagTok, tracks);
 		DecayChainVariables decayVariables;
-		std::cout<< " print the size of the corresponding objects employed to use in the following classes : " << muons->size() <<"\t" 
-		<< convPhotons->size() << "\t" << tracks->size()<< "\n";
-
+		
 		if(muons->size()==2 && convPhotons->size() ==1){
 			TrippleObjectVertex  tripvtxObservables;
 			decayVariables = tripvtxObservables.TrippleObjectVertexObservables(*muons, *conversions, bsandvtxVar, theBField, nominalMuonMass, nominalElectronMass);
@@ -322,10 +329,12 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 		bmmgRootTree_->mu1Pz_beffit_         = decayVariables.mu1pz;
 		bmmgRootTree_->mu1Eta_beffit_        = decayVariables.mu1eta;
 		bmmgRootTree_->mu1Phi_beffit_        = decayVariables.mu1phi;
+		bmmgRootTree_->mu1Energy_beffit_     = decayVariables.mu1energy;
 		bmmgRootTree_->mu2Phi_beffit_        = decayVariables.mu2phi;
 		bmmgRootTree_->mu2Pt_beffit_         = decayVariables.mu2pt;
 		bmmgRootTree_->mu2Pz_beffit_         = decayVariables.mu2pz;
 		bmmgRootTree_->mu2Eta_beffit_        = decayVariables.mu2eta;
+		bmmgRootTree_->mu2Energy_beffit_     = decayVariables.mu2energy;
 		bmmgRootTree_->MuonPairDR_           = decayVariables.muonpairdr;
 		bmmgRootTree_->Mu1TrkBSDxy_          = decayVariables.mu1trkbsxy;
 		bmmgRootTree_->Mu1TrkBSDz_           = decayVariables.mu1trkbsz;
@@ -334,86 +343,183 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 		bmmgRootTree_->Mu1PixelHits_         = decayVariables.mu1pixelhits;
 		bmmgRootTree_->Mu1TrackerHits_       = decayVariables.mu1trackerhits;
 		bmmgRootTree_->Mu1isGood_            = decayVariables.mu1isgood;
-		bmmgRootTree_->Mu1InnerTrkHighQuality_ = decayVariables.mu1innertrkhq;
-		bmmgRootTree_->Mu2PixelHits_         = decayVariables.mu2pixelhits;
-		bmmgRootTree_->Mu2TrackerHits_       = decayVariables.mu2trackerhits;
-		bmmgRootTree_->Mu2isGood_            = decayVariables.mu2isgood;
-		bmmgRootTree_->Mu2InnerTrkHighQuality_ = decayVariables.mu2innertrkhq;
-		bmmgRootTree_->DiMuon_mu1Cat_alone_  = decayVariables.diMuon_mu1Cat;
-		bmmgRootTree_->DiMuon_mu2Cat_alone_  = decayVariables.diMuon_mu2Cat;
+		bmmgRootTree_->Mu1InnerTrkHighQuality_   = decayVariables.mu1innertrkhq;
+		bmmgRootTree_->Mu2PixelHits_             = decayVariables.mu2pixelhits;
+		bmmgRootTree_->Mu2TrackerHits_           = decayVariables.mu2trackerhits;
+		bmmgRootTree_->Mu2isGood_                = decayVariables.mu2isgood;
+		bmmgRootTree_->Mu2InnerTrkHighQuality_   = decayVariables.mu2innertrkhq;
+		bmmgRootTree_->DiMuon_mu1Cat_alone_      = decayVariables.diMuon_mu1Cat;
+		bmmgRootTree_->DiMuon_mu2Cat_alone_      = decayVariables.diMuon_mu2Cat;
 		bmmgRootTree_->DiMuon_mu1nPixHits_alone_ = decayVariables.diMuon_mu1PixelHits;
 		bmmgRootTree_->DiMuon_mu2nPixHits_alone_ = decayVariables.diMuon_mu2PixelHits;
-		bmmgRootTree_->BsM_beffit_          = decayVariables.BsMass;
-		bmmgRootTree_->BsEta_beffit_        = decayVariables.BsEta;
-		bmmgRootTree_->BsPhi_beffit_        = decayVariables.BsPhi;
-		bmmgRootTree_->BsPt_beffit_         = decayVariables.BsPt;
+		bmmgRootTree_->BsM_beffit_               = decayVariables.BsMass;
+		bmmgRootTree_->BsEta_beffit_             = decayVariables.BsEta;
+		bmmgRootTree_->BsPhi_beffit_             = decayVariables.BsPhi;
+		bmmgRootTree_->BsPt_beffit_              = decayVariables.BsPt;
 		bmmgRootTree_->HadronMass_fromVertexFit_ = decayVariables.fittedBmass;
-		bmmgRootTree_->Bs_vtxProb_          = decayVariables.BsVtxProb;
-		bmmgRootTree_->BsCt3D_              = decayVariables.BsCt3D;
-		bmmgRootTree_->BsCt2D_    	        = decayVariables.BsCt2D;
-		bmmgRootTree_->BsCt2DBS_    	    = decayVariables.BsCt2DBS;
+		bmmgRootTree_->Bs_vtxProb_               = decayVariables.BsVtxProb;
+		bmmgRootTree_->BsCt3D_                   = decayVariables.BsCt3D;
+		bmmgRootTree_->BsCt2D_    	             = decayVariables.BsCt2D;
+		bmmgRootTree_->BsCt2DBS_    	         = decayVariables.BsCt2DBS;
 	
-		/* Task reminder here */
+		  /*Task reminder here*/
 		//1. for soft MVA we need L1 info in the samples , this will exploit composite candidate instead regional muon candidates + muons 
 		//2. Ecal  Lazy tools covarinace matrix from photon/or ecal rechits for kinematic fit - this must go to photon class 
 		//3. The mock decay vertex from Ecal RecHit time 
 		//4. Helicity and angle between production plane and decay plane 
 		//5. Photon BDT ID 
 
-		
+
+       
 
 
 
+	   //particle flow supercluster ECAL - This only does exists in AOD ???
+	   edm::Handle<std::vector<reco::SuperCluster>> supercluster;
+	   iEvent.getByToken(pfSupclusterTok, supercluster);
+	   edm::Handle<EcalRecHitCollection> ecalRecHits;
+	   iEvent.getByToken(ecalrechitTok, ecalRecHits);
+	   //std::cout<< " super cluster multiplicity : "<< supercluster->size()<< "\n";
+	   SCRecHitAccumulator scraccumulator;
+	   SCRecHitAccumulator::SCAndRecHitVariables screchitvars = scraccumulator.SCAndRecHitObservables(*supercluster,*ecalRecHits, bsandvtxVar,caloGeom);
+	   bmmgRootTree_->PFECal_SC_Eta_                = screchitvars.sc_eta;
+	   bmmgRootTree_->PFECal_SC_Phi_                = screchitvars.sc_phi;
+	   bmmgRootTree_->PFECal_SC_EtaWidth_           = screchitvars.sc_eta_width;
+	   bmmgRootTree_->PFECal_SC_PhiWidth_           = screchitvars.sc_phi_width;
+	   bmmgRootTree_->PFECal_SC_ClusterEnergy_      = screchitvars.cluster_energy;
+	   bmmgRootTree_->PFECAL_RecHit_RawId_          = screchitvars.rechit_rawid;
+	   bmmgRootTree_->PFECAL_RecHit_Subdet_         = screchitvars.rechit_subdet;
+	   bmmgRootTree_->PFECAL_RecHit_Energy_         = screchitvars.rechit_energy;
+	   bmmgRootTree_->PFECAL_RecHit_Time_           = screchitvars.rechit_time;
+	   bmmgRootTree_->PFECAL_RecHit_X_              = screchitvars.rechit_x;
+	   bmmgRootTree_->PFECAL_RecHit_Y_              = screchitvars.rechit_y;
+	   bmmgRootTree_->PFECAL_RecHit_Z_              = screchitvars.rechit_z;
+	   bmmgRootTree_->PFECAL_RecHit_PVDistance_     = screchitvars.rechit_pv_distance;
+	   bmmgRootTree_->PFECAL_RecHit_TOF_            = screchitvars.rechit_tof;
+	   bmmgRootTree_->PFECAL_RecHit_CorrectedTime_  = screchitvars.rechit_corrected_time;
+	   bmmgRootTree_->PFECAL_RecHit_IsWeird_        = screchitvars.rechit_is_weird;
+	   bmmgRootTree_->PFECAL_RecHit_IsProblematic_  = screchitvars.rechit_is_problematic;
+	   bmmgRootTree_->PFECAL_RecHit_PoorReco_       = screchitvars.rechit_poor_reco;
+	   bmmgRootTree_->PFECAL_RecHit_EB_ieta_        = screchitvars.rechit_EB_ieta;
+	   bmmgRootTree_->PFECAL_RecHit_EB_iphi_        = screchitvars.rechit_EB_iphi;	
+	   bmmgRootTree_->PFECAL_RecHit_EE_ix_          = screchitvars.rechit_EE_ix;
+	   bmmgRootTree_->PFECAL_RecHit_EE_iy_          = screchitvars.rechit_EE_iy;
+	   bmmgRootTree_->PFECAL_RecHit_EE_zside_      = screchitvars.rechit_EE_zside;
 
 
+	   muonleg1.SetPtEtaPhiE(decayVariables.mu1pt, decayVariables.mu1eta, decayVariables.mu1phi, decayVariables.mu1energy);
+	   muonleg2.SetPtEtaPhiE(decayVariables.mu2pt, decayVariables.mu2eta, decayVariables.mu2phi, decayVariables.mu2energy);
+	   mu1vec.SetPtEtaPhi(decayVariables.mu1pt, decayVariables.mu1eta, decayVariables.mu1phi);
+	   mu2vec.SetPtEtaPhi(decayVariables.mu2pt, decayVariables.mu2eta, decayVariables.mu2phi);
 
-
-		edm::Handle<std::vector<reco::Photon>> photon;
-		iEvent.getByToken(PhotonTagTok, photon);
-		bmmgRootTree_->photonMultiplicity_ = photon->size();
-		RecoPhotons recoPhotonObserbles;
-		std::vector<RecoPhotons::PhotonVariables> photonVar = recoPhotonObserbles.PhotonObservables(*photon);
+	   edm::Handle<std::vector<reco::Photon>> photon;
+	   iEvent.getByToken(PhotonTagTok, photon);
+	   bmmgRootTree_->photonMultiplicity_ = photon->size();
+	   RecoPhotons recoPhotonObserbles;
+	   std::vector<RecoPhotons::PhotonVariables> photonVar = recoPhotonObserbles.PhotonObservables(*photon);
 		if (!photonVar.empty()) {
 		for (size_t iPhoton = 0; iPhoton < photonVar.size(); ++iPhoton) {
+			std::cout << "size of photon collection : " << photonVar.size() << "\n";
 			const auto& ipatPhoton = (*photon)[iPhoton];
 			if (ipatPhoton.pt() > 50.0 || !ipatPhoton.isEB()) {
 				excludedPhotons.insert(iPhoton);
-				continue;
 			}
-		const RecoPhotons::PhotonVariables& leadingPhoton = photonVar[0]; //leading photon
-		bmmgRootTree_->photonPt_ = leadingPhoton.pt;
-		bmmgRootTree_->photonEta_ = leadingPhoton.eta;
-		bmmgRootTree_->photonPhi_ = leadingPhoton.phi;
-		bmmgRootTree_->photonEnergy_ = leadingPhoton.energy;
-		bmmgRootTree_->photonET_ = leadingPhoton.et;
-		bmmgRootTree_->photonSSSigmaiEtaiEta_ = leadingPhoton.sigmaIEtaIEta;
-		bmmgRootTree_->photonSSSigmaiEtaiPhi_ = leadingPhoton.sigmaIEtaIPhi;
-		bmmgRootTree_->photonSSSigmaiPhiiPhi_ = leadingPhoton.sigmaIPhiIPhi;
-		bmmgRootTree_->photonSCEnergy_ = leadingPhoton.scEnergy;
-		bmmgRootTree_->photonSCRawEnergy_ = leadingPhoton.scRawEnergy;
-		bmmgRootTree_->photonSCR9_ = leadingPhoton.r9;
-		bmmgRootTree_->photonSCHadTowOverEm_ = leadingPhoton.hadTowOverEm;
-		bmmgRootTree_->photonSShcalDepth1OverEcal_ = leadingPhoton.hcalDepth1OverEcal;
-		bmmgRootTree_->photonSShcalDepth2OverEcal_ = leadingPhoton.hcalDepth2OverEcal;
-		bmmgRootTree_->photonSShcalDepth1OverEcalBc_ = leadingPhoton.hcalDepth1OverEcalBc;
-		bmmgRootTree_->photonSShcalDepth2OverEcalBc_ = leadingPhoton.hcalDepth2OverEcalBc;
-		std::fill(std::begin(bmmgRootTree_->photonSShcalOverEcal_), std::end(bmmgRootTree_->photonSShcalOverEcal_), 0.f);
-		std::fill(std::begin(bmmgRootTree_->photonSShcalOverEcalBc_), std::end(bmmgRootTree_->photonSShcalOverEcalBc_), 0.f);
-		for (size_t k = 0; k < leadingPhoton.hcalOverEcal.size(); ++k) {
-			bmmgRootTree_->photonSShcalOverEcal_[k] = leadingPhoton.hcalOverEcal[k];
 		}
-		for (size_t k = 0; k < leadingPhoton.hcalOverEcalBc.size(); ++k) {
-			bmmgRootTree_->photonSShcalOverEcalBc_[k] = leadingPhoton.hcalOverEcalBc[k];
-		}
-		bmmgRootTree_->photonSSmaxEnergyXtal_ = leadingPhoton.maxEnergyXtal;
-		bmmgRootTree_->photonSSeffSigmaRR_ = leadingPhoton.effSigmaRR;
-		bmmgRootTree_->photonSCEta_ = leadingPhoton.scEta;
-		bmmgRootTree_->photonSCPhi_ = leadingPhoton.scPhi;
-		bmmgRootTree_->photonSCEtaWidth_ = leadingPhoton.scEtaWidth;
-		bmmgRootTree_->photonSCPhiWidth_ = leadingPhoton.scPhiWidth;
-		bmmgRootTree_->photonSCBrem_ = leadingPhoton.scPhiWidth / leadingPhoton.scEtaWidth;
-		}
-	}
+			if (photonVar.size() - excludedPhotons.size() < 1) {
+				return;
+			}
+			// Store photon kinematics (up to 2 photons)
+			for (size_t iPhoton = 0; iPhoton < photonVar.size(); ++iPhoton) {
+				if (excludedPhotons.count(iPhoton)) continue;
+				bmmgRootTree_->photonPt_[iPhoton] = photonVar[iPhoton].pt;
+				bmmgRootTree_->photonEta_[iPhoton] = photonVar[iPhoton].eta;
+				bmmgRootTree_->photonPhi_[iPhoton] = photonVar[iPhoton].phi;
+				bmmgRootTree_->photonEnergy_[iPhoton] = photonVar[iPhoton].energy;
+				bmmgRootTree_->photonET_[iPhoton] = photonVar[iPhoton].et;
+				bmmgRootTree_->photonSSSigmaiEtaiEta_[iPhoton] = photonVar[iPhoton].sigmaIEtaIEta;
+				bmmgRootTree_->photonSSSigmaiEtaiPhi_[iPhoton] = photonVar[iPhoton].sigmaIEtaIPhi;
+				bmmgRootTree_->photonSSSigmaiPhiiPhi_[iPhoton] = photonVar[iPhoton].sigmaIPhiIPhi;
+				bmmgRootTree_->photonSCEnergy_[iPhoton] = photonVar[iPhoton].scEnergy;
+				bmmgRootTree_->photonSCRawEnergy_[iPhoton] = photonVar[iPhoton].scRawEnergy;
+				bmmgRootTree_->photonSCR9_[iPhoton] = photonVar[iPhoton].r9;
+				bmmgRootTree_->photonSCHadTowOverEm_[iPhoton] = photonVar[iPhoton].hadTowOverEm;
+				bmmgRootTree_->photonSShcalDepth1OverEcal_[iPhoton] = photonVar[iPhoton].hcalDepth1OverEcal;
+				bmmgRootTree_->photonSShcalDepth2OverEcal_[iPhoton] = photonVar[iPhoton].hcalDepth2OverEcal;
+				bmmgRootTree_->photonSShcalDepth1OverEcalBc_[iPhoton] = photonVar[iPhoton].hcalDepth1OverEcalBc;
+				bmmgRootTree_->photonSShcalDepth2OverEcalBc_[iPhoton] = photonVar[iPhoton].hcalDepth2OverEcalBc;
+				/*std::fill(std::begin(bmmgRootTree_->photonSShcalOverEcal_), std::end(bmmgRootTree_->photonSShcalOverEcal_), 0.f);
+				std::fill(std::begin(bmmgRootTree_->photonSShcalOverEcalBc_), std::end(bmmgRootTree_->photonSShcalOverEcalBc_), 0.f);
+				for (size_t k = 0; k < photonVar[iPhoton].hcalOverEcal.size(); ++k) {
+					bmmgRootTree_->photonSShcalOverEcal_[k][iPhoton] = photonVar[iPhoton].hcalOverEcal[k];
+				}
+				for (size_t k = 0; k < photonVar[iPhoton].hcalOverEcalBc.size(); ++k) {
+					bmmgRootTree_->photonSShcalOverEcalBc_[k][iPhoton] = photonVar[iPhoton].hcalOverEcalBc[k];
+				}*/
+				for (size_t k = 0; k < photonVar[iPhoton].hcalOverEcal.size(); ++k) {
+					bmmgRootTree_->photonSShcalOverEcal_[k][iPhoton] = static_cast<double>(photonVar[iPhoton].hcalOverEcal[k]);
+				}
+				for (size_t k = 0; k < photonVar[iPhoton].hcalOverEcalBc.size(); ++k) {
+					bmmgRootTree_->photonSShcalOverEcalBc_[k][iPhoton] = static_cast<double>(photonVar[iPhoton].hcalOverEcalBc[k]);
+				}
+				bmmgRootTree_->photonSSmaxEnergyXtal_[iPhoton] = photonVar[iPhoton].maxEnergyXtal;
+				bmmgRootTree_->photonSSeffSigmaRR_[iPhoton] = photonVar[iPhoton].effSigmaRR;
+				bmmgRootTree_->photonSCEta_[iPhoton] = photonVar[iPhoton].scEta;
+				bmmgRootTree_->photonSCPhi_[iPhoton] = photonVar[iPhoton].scPhi;
+				bmmgRootTree_->photonSCEtaWidth_[iPhoton] = photonVar[iPhoton].scEtaWidth;
+				bmmgRootTree_->photonSCPhiWidth_[iPhoton] = photonVar[iPhoton].scPhiWidth;
+				bmmgRootTree_->photonSCBrem_[iPhoton] = photonVar[iPhoton].scPhiWidth / photonVar[iPhoton].scEtaWidth;
+				photonleg1.SetPtEtaPhiE(photonVar[iPhoton].pt, photonVar[iPhoton].eta, photonVar[iPhoton].phi, photonVar[iPhoton].energy);
+				TLorentzVector bsleg = muonleg1 + muonleg2 + photonleg1;
+				if (bsleg.M() < BsLowerMassCutBeforeFit_ || bsleg.M() > BsUpperMassCutBeforeFit_) continue;
+				bmmgRootTree_->Bsmass_recommg_ = bsleg.M();
+				pgamma.SetPtEtaPhi(photonVar[iPhoton].pt, photonVar[iPhoton].eta, photonVar[iPhoton].phi);
+				pbs.SetPtEtaPhi(bsleg.Pt(), bsleg.Eta(), bsleg.Phi());
+				float helicity = pgamma.Dot(pbs) / (pgamma.Mag() * pbs.Mag());
+				TVector3 normal1 = mu1vec.Cross(mu2vec);
+				TVector3 normal2 = pgamma.Cross(pbs);
+				double cosPhi = normal1.Dot(normal2) / (normal1.Mag() * normal2.Mag());
+				float coplanarity = TMath::ACos(TMath::Min(1.0, TMath::Max(-1.0, cosPhi)));
+				bmmgRootTree_->Bshelicity_recommg_ = helicity;
+				bmmgRootTree_->Bscoplanarity_recommg_ = coplanarity;
+				bmmgRootTree_->isFourBody_ = 0;
+			}//Photon loop for three body through photon kinematics are saved irrespective of their multiplicity 
+			if (photonVar.size() - excludedPhotons.size() >= 2) {
+				for (size_t iPhoton = 0; iPhoton < photonVar.size(); ++iPhoton) {
+					if (excludedPhotons.count(iPhoton)) continue;
+					for (size_t jPhoton = iPhoton + 1; jPhoton < photonVar.size(); ++jPhoton) {
+						if (excludedPhotons.count(jPhoton)) continue;   
+						photonleg1.SetPtEtaPhiE(photonVar[iPhoton].pt, photonVar[iPhoton].eta, photonVar[iPhoton].phi, photonVar[iPhoton].energy);
+						photonleg2.SetPtEtaPhiE(photonVar[jPhoton].pt, photonVar[jPhoton].eta, photonVar[jPhoton].phi, photonVar[jPhoton].energy);
+						TLorentzVector digamma = photonleg1 + photonleg2;
+						bool isPi0 = std::abs(digamma.M() - PionZeroPDGMass_) < PionZeroMassWindowNoFit_;
+						bool isEta    = std::abs(digamma.M() - EtaMesonPDGMass_) < EtaMesonMassWindowNoFit_ ;
+						bool isEtaPrime = std::abs(digamma.M() - EtaPrimePDGMass_) < EtaPrimeMassWindowNoFit_ ;
+						if (!(isPi0 || isEta || isEtaPrime)) continue;
+						bmmgRootTree_->DiGammaM_alone_ = digamma.M();
+						bmmgRootTree_->DiGammaEta_alone_ = digamma.Eta();
+						bmmgRootTree_->DiGammaPhi_alone_ = digamma.Phi();
+						bmmgRootTree_->DiGammaPt_alone_ = digamma.Pt();
+						TLorentzVector bsleg = muonleg1 + muonleg2 + photonleg1 + photonleg2;
+                        if (bsleg.M() < BsLowerMassCutBeforeFit_ || bsleg.M() > BsUpperMassCutBeforeFit_) continue;
+						pdigamma.SetPtEtaPhi(digamma.Pt(), digamma.Eta(), digamma.Phi());
+						pbs.SetPtEtaPhi(bsleg.Pt(), bsleg.Eta(), bsleg.Phi());
+						float helicity = pdigamma.Dot(pbs) / (pdigamma.Mag() * pbs.Mag());
+						TVector3 normal1 = mu1vec.Cross(mu2vec);
+                        TVector3 normal2 = pdigamma.Cross(pbs);
+                        double cosPhi = normal1.Dot(normal2) / (normal1.Mag() * normal2.Mag());
+						float coplanarity = TMath::ACos(TMath::Min(1.0, TMath::Max(-1.0, cosPhi)));
+						bmmgRootTree_->isFourBody_ = 1;
+						bmmgRootTree_->Bsmass_recommg_ = bsleg.M();
+						bmmgRootTree_->Bshelicity_recommg_ = helicity;
+						bmmgRootTree_->Bscoplanarity_recommg_ = coplanarity;
+
+					}//second photon loop
+				}//first photon loop
+				
+			}//size of the photon should at least 2 
+
+
+	}//Photon empty 
 
 
 

@@ -8,6 +8,7 @@
 #include <TChain.h>
 #include <vector>
 
+
 class RadiativeRootTree {
 	public: 
 		RadiativeRootTree();
@@ -68,10 +69,12 @@ class RadiativeRootTree {
 		double mu1Pz_beffit_;
 		double mu1Eta_beffit_;
 		double mu1Phi_beffit_;
+		double mu1Energy_beffit_;
 		double mu2Pt_beffit_;
 		double mu2Pz_beffit_;
 		double mu2Eta_beffit_;
 		double mu2Phi_beffit_;
+		double mu2Energy_beffit_;
 		double MuonPairDR_;
 		double Mu1TrkBSDxy_;
 		double Mu1TrkBSDz_;
@@ -144,62 +147,89 @@ class RadiativeRootTree {
   double BsCt2DPVClosestZOld_;
   double BsCtErr2DOld_;
   double BsCt2DOld_;
+  double HadronMass_fromVertexFit_;
+  int vertexTypeFlag_;
 
-		double HadronMass_fromVertexFit_;
-		int vertexTypeFlag_;
+
+  //Ecal variables
+  double PFECal_SC_Eta_;
+  double PFECal_SC_Phi_;
+  double PFECal_SC_EtaWidth_;
+  double PFECal_SC_PhiWidth_;
+  double PFECal_SC_ClusterEnergy_;
+  uint32_t PFECAL_RecHit_RawId_;
+  int PFECAL_RecHit_Subdet_;
+  double PFECAL_RecHit_Energy_;
+  double PFECAL_RecHit_Time_;
+  double PFECAL_RecHit_X_;
+  double PFECAL_RecHit_Y_;
+  double PFECAL_RecHit_Z_;
+  double PFECAL_RecHit_PVDistance_;
+  double PFECAL_RecHit_TOF_;
+  double PFECAL_RecHit_CorrectedTime_;
+
+  // Flags for problematic RecHits
+  bool PFECAL_RecHit_IsWeird_;
+  bool PFECAL_RecHit_IsProblematic_;
+  bool PFECAL_RecHit_PoorReco_;
+  int PFECAL_RecHit_EB_ieta_;
+  int PFECAL_RecHit_EB_iphi_;
+  double PFECAL_RecHit_EE_ix_;
+  double PFECAL_RecHit_EE_iy_;
+  double PFECAL_RecHit_EE_zside_;
+
+
+  
+
 
 
 		int photonMultiplicity_;
-		double photonPt_;
-		double photonEta_;
-		double photonPhi_;
-		double photonEnergy_;
-		double photonET_;
-		double photonTrkIso_;
-		double photonEcalIso_;
-		double photonHcalIso_;
-		double photonCaloIso_;
-		double photonSSSigmaiEtaiEta_;
-		double photonSSSigmaiEtaiPhi_;
-		double photonSSSigmaiPhiiPhi_;
-		double photonSSSigmaEtaEta_;
-		double photonSSe1x5_;
-		double photonSSe2x5_;
-		double photonSSe3x3_;
-		double photonSSe5x5_;
-		double photonSShcalDepth1OverEcal_;
-		double photonSShcalDepth2OverEcal_;
-		double photonSShcalDepth1OverEcalBc_;
-		double photonSShcalDepth2OverEcalBc_;
-		double photonSShcalOverEcal_[7];
-		double photonSShcalOverEcalBc_[7];
-		double photonSSmaxEnergyXtal_;
-		double photonSSeffSigmaRR_;
-		double photonSCEnergy_;
-		double photonSCRawEnergy_;
-		double photonSCPreShowerEP1_;
-		double photonSCPreShowerEP2_;
-		double photonSCEta_;
-		double photonSCPhi_;
-		double photonSCEtaWidth_;
-		double photonSCPhiWidth_;
-		double photonSCBrem_;
-		double photonSCR9_;
-		double photonSCHadTowOverEm_;
-		double PiZeroM_alone_;
-		double PiZeroEta_alone_;
-		double PiZeroPhi_alone_;
-		double PiZeroPt_alone_;
-		double EtaMesonM_alone_;
-		double EtaMesonEta_alone_;
-		double EtaMesonPhi_alone_;
-		double EtaMesonPt_alone_;
-		double EtaPrimeM_alone_;
-		double EtaPrimeEta_alone_;
-		double EtaPrimePhi_alone_;
-		double EtaPrimePt_alone_;
-
+		int isFourBody_;
+		double photonPt_[2];
+		double photonEta_[2];
+		double photonPhi_[2];
+		double photonEnergy_[2];
+		double photonET_[2];
+		double photonTrkIso_[2];
+		double photonEcalIso_[2];
+		double photonHcalIso_[2];
+		double photonCaloIso_[2];
+		double photonSSSigmaiEtaiEta_[2];
+		double photonSSSigmaiEtaiPhi_[2];
+		double photonSSSigmaiPhiiPhi_[2];
+		double photonSSSigmaEtaEta_[2];
+		double photonSSe1x5_[2];
+		double photonSSe2x5_[2];
+		double photonSSe3x3_[2];
+		double photonSSe5x5_[2];
+		double photonSShcalDepth1OverEcal_[2];
+		double photonSShcalDepth2OverEcal_[2];
+		double photonSShcalDepth1OverEcalBc_[2];
+		double photonSShcalDepth2OverEcalBc_[2];
+		double photonSShcalOverEcal_[7][2];
+		double photonSShcalOverEcalBc_[7][2];
+		double photonSSmaxEnergyXtal_[2];
+		double photonSSeffSigmaRR_[2];
+		double photonSCEnergy_[2];
+		double photonSCRawEnergy_[2];
+		double photonSCPreShowerEP1_[2];
+		double photonSCPreShowerEP2_[2];
+		double photonSCEta_[2];
+		double photonSCPhi_[2];
+		double photonSCEtaWidth_[2];
+		double photonSCPhiWidth_[2];
+		double photonSCBrem_[2];
+		double photonSCR9_[2];
+		double photonSCHadTowOverEm_[2];
+		double DiGammaM_alone_;
+		double DiGammaEta_alone_;
+		double DiGammaPhi_alone_;
+		double DiGammaPt_alone_;
 		
+
+		double Bsmass_recommg_;
+		double Bshelicity_recommg_;
+		double Bscoplanarity_recommg_;
 		
 
 		
@@ -223,6 +253,7 @@ class RadiativeRootTree {
 		 double PVcovariance_[9];
 		 TFile* bmmgFile_;
 		 TTree* bmmgTree_;
+		 
 };
 #endif
 

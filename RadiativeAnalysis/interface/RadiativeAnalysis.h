@@ -2,6 +2,8 @@
 #define BsToMuMuGammaAnalysis_RadiativeAnalysis_RadiativeAnalysis_h
 
 
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/GlobalIncludes.h"
+
 #include <memory>
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/one/EDAnalyzer.h"
@@ -58,6 +60,7 @@
 #include "FWCore/Framework/interface/ConsumesCollector.h"
 #include "DataFormats/PatCandidates/interface/TriggerObjectStandAlone.h"
 #include "DataFormats/PatCandidates/interface/PackedTriggerPrescales.h"
+#include <TLorentzVector.h>
 
 //#include "HLTrigger/HLTcore/interface/HLTPrescaleProvider.h"
 
@@ -138,6 +141,12 @@ private:
   edm::EDGetTokenT<pat::PackedTriggerPrescales> prescaleTok;
   edm::InputTag triggerobj;
   edm::EDGetTokenT<edm::View<pat::TriggerObjectStandAlone>> triggerobjTok;
+  edm::InputTag pfSupcluster; 
+  edm::EDGetTokenT<std::vector<reco::SuperCluster>>pfSupclusterTok; 
+  edm::InputTag ecalrechit; 
+  edm::EDGetTokenT<EcalRecHitCollection> ecalrechitTok;
+
+
   //edm::InputTag pfCandTag;
   //edm::EDGetTokenT<edm::View<pat::PackedCandidate>> pfCandTagTok;
   edm::InputTag trackTag;
@@ -148,6 +157,8 @@ private:
   edm::EDGetTokenT<std::vector<pat::CompositeCandidate>> convertedPhotonsTagTok;
   edm::ESGetToken<TransientTrackBuilder, TransientTrackRecord> trackBuilderTok;
   edm::ESGetToken<MagneticField, IdealMagneticFieldRecord> theBFieldTok;
+  edm::ESGetToken<CaloGeometry, CaloGeometryRecord> caloGeomTok;
+
   bool StoreDeDxInfo_;
   bool verbose_;
   bool TestVerbose_;
@@ -211,5 +222,10 @@ private:
   int    NSelectedVertices;
   double PtSumVertex = 0.0;
   std::set<size_t> excludedPhotons;
+  TLorentzVector muonleg1 , muonleg2;
+	TLorentzVector photonleg1, photonleg2;
+  TLorentzVector bsleg;
+  TVector3 pgamma, pbs, pdigamma;
+  TVector3 mu1vec, mu2vec;
 };
 #endif

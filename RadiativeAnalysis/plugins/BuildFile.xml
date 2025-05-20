@@ -24,4 +24,6 @@
 <use   name="CommonTools/CandUtils"/>
 <use   name="DataFormats/EgammaCandidates"/>
 <use   name="TrackingTools/PatternTools"/>
+<use   name="DataFormats/EgammaReco"/>
+<use   name="DataFormats/EcalRecHit"/>
 <flags EDM_PLUGIN="1"/>

@@ -1,0 +1,75 @@
+#ifndef BsToMuMuGammaAnalysis_RadiativeAnalysis_SCRecHitAccumulator_h
+#define BsToMuMuGammaAnalysis_RadiativeAnalysis_SCRecHitAccumulator_h
+
+
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/BeamSpotAndVertex.h"
+
+#include <memory>
+#include <cstddef>
+#include <cfloat>
+#include <string>
+#include <iostream>
+#include <vector>
+#include <functional>
+
+//Root 
+#include <TMath.h>
+#include "TLorentzVector.h"
+#include "TVector3.h"
+#include "TVector.h"
+#include "TLorentzRotation.h"
+#include "Math/Vector4D.h"
+
+#include "DataFormats/EcalDetId/interface/EBDetId.h"
+#include "DataFormats/EcalDetId/interface/EEDetId.h"
+#include "DataFormats/EcalRecHit/interface/EcalRecHitCollections.h"
+#include "DataFormats/EgammaReco/interface/SuperCluster.h"
+#include "DataFormats/VertexReco/interface/VertexFwd.h"
+#include "Geometry/CaloGeometry/interface/CaloGeometry.h"
+#include "Math/Vector3D.h"
+
+class SCRecHitAccumulator{
+    public:
+    SCRecHitAccumulator();
+        ~SCRecHitAccumulator(){}
+	public:
+
+    struct SCAndRecHitVariables {
+        double sc_eta                     = -9999;
+        double sc_phi                     = -9999;
+        double sc_energy                  = -9999;
+        double sc_eta_width               = -9999;
+        double sc_phi_width               = -9999;
+        double cluster_energy             = -9999;// Per SuperCluster
+        // RecHit variables (associated with SuperClusters)
+        uint32_t rechit_rawid            = -9999; // Per SuperCluster
+        int      rechit_subdet           = -9999;     // EcalBarrel or EcalEndcap
+        double rechit_energy              = -9999;
+        double rechit_time                = -9999;
+        double rechit_x                   = -9999;
+        double rechit_y                   = -9999;
+        double rechit_z                   = -9999;
+        double rechit_pv_distance         = -9999;
+        double rechit_tof                 = -9999;
+        double rechit_corrected_time      = -9999;
+        // Flags for problematic RecHits
+        bool rechit_is_weird              = false;
+        bool rechit_is_problematic        = false;
+        bool rechit_poor_reco             = false;
+        int rechit_EB_ieta             = -9999;
+        int rechit_EB_iphi             = -9999;
+        double rechit_EE_ix               = -9999;
+        double rechit_EE_iy               = -9999;
+        double rechit_EE_zside           = -9999;
+    };
+
+    SCAndRecHitVariables SCAndRecHitObservables(const std::vector<reco::SuperCluster>& superclusters,
+                                           const EcalRecHitCollection& recHits,
+                                           const BeamSpotAndVertex::BSAndVtxVariables& bsAndVtxInfo,
+                                           const CaloGeometry& caloGeom);
+
+private:
+    const float c_light_ = 29.9792458; // cm/ns
+};
+
+#endif
