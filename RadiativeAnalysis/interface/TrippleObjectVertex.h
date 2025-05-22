@@ -23,7 +23,9 @@
 #include "MagneticField/Engine/interface/MagneticField.h"
 #include "MuonAnalysis/MuonAssociators/interface/PropagateToMuon.h"
 #include "CommonTools/CandUtils/interface/AddFourMomenta.h"
-
+#include "DataFormats/EgammaCandidates/interface/Photon.h"
+#include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
+#include "DataFormats/EcalRecHit/interface/EcalRecHitCollections.h"
 
 
 #include <memory>
@@ -56,6 +58,8 @@ class TrippleObjectVertex{
 	TLorentzVector Mu1, Mu2 ;
 
 	DecayChainVariables TrippleObjectVertexObservables(const std::vector<reco::Muon>& muons, 
+		    const std::vector<reco::Photon>& photons,
+            const EcalClusterLazyTools& lazyTools,
 			const pat::CompositeCandidateCollection& conversions,
 			const BeamSpotAndVertex::BSAndVtxVariables& bsAndVtxInfo,
 			const MagneticField& bField,

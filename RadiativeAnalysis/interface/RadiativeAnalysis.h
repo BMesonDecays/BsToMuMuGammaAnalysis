@@ -143,9 +143,10 @@ private:
   edm::EDGetTokenT<edm::View<pat::TriggerObjectStandAlone>> triggerobjTok;
   edm::InputTag pfSupcluster; 
   edm::EDGetTokenT<std::vector<reco::SuperCluster>>pfSupclusterTok; 
-  edm::InputTag ecalrechit; 
-  edm::EDGetTokenT<EcalRecHitCollection> ecalrechitTok;
-
+  edm::InputTag ecalrechitEB; 
+  edm::EDGetTokenT<EcalRecHitCollection> ecalrechitEBTok;
+  edm::InputTag ecalrechitEE; 
+  edm::EDGetTokenT<EcalRecHitCollection> ecalrechitEETok;
 
   //edm::InputTag pfCandTag;
   //edm::EDGetTokenT<edm::View<pat::PackedCandidate>> pfCandTagTok;
@@ -158,6 +159,8 @@ private:
   edm::ESGetToken<TransientTrackBuilder, TransientTrackRecord> trackBuilderTok;
   edm::ESGetToken<MagneticField, IdealMagneticFieldRecord> theBFieldTok;
   edm::ESGetToken<CaloGeometry, CaloGeometryRecord> caloGeomTok;
+  unique_ptr<EcalClusterLazyToolsBase::ESGetTokens> iSetupGetTok;
+  
 
   bool StoreDeDxInfo_;
   bool verbose_;

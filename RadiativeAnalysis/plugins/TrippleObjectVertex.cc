@@ -7,6 +7,8 @@ TrippleObjectVertex::TrippleObjectVertex(){}
 DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
     //removing the qualifier TrippleObjectVertex fron the defintion of DecayChainVariables since it is not anymore a member of such class
     const std::vector<reco::Muon>& muons,
+    const std::vector<reco::Photon>& photons,
+    const EcalClusterLazyTools& lazyTools,
     const pat::CompositeCandidateCollection& conversions,
     const BeamSpotAndVertex::BSAndVtxVariables& bsAndVtxInfo,
     const MagneticField& bField,
@@ -194,7 +196,7 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
                 dcv.BsVtxProb = vtxprob_Bs;
                 //std::cout<<"vtxprob_Bs: "<<vtxprob_Bs<<"\n";
                 KinematicConstrainedFit BCandFitter;
-                bool fitSuccess = BCandFitter.TrippleObjectVertexFit(ttrk_muons, nominalMuonMass, tttrk_electrons, nominalElectronMass);
+                bool fitSuccess = BCandFitter.TrippleObjectVertexFitConvertedPhoton(ttrk_muons, nominalMuonMass, tttrk_electrons, nominalElectronMass);
                 if (!fitSuccess) continue;
 		        //std::cout<<"print the fit sucess : "<< fitSuccess<< "\n";
                 dcv.fittedBmass = BCandFitter.getBhadronMass();

@@ -67,9 +67,11 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig):
 	}
 	pfSupcluster                   = iConfig.getParameter<edm::InputTag>("pfSupcluster");
 	pfSupclusterTok                = consumes<std::vector<reco::SuperCluster>>(pfSupcluster);
-	ecalrechit                     = iConfig.getParameter<edm::InputTag>("ecalrechit");
-	ecalrechitTok                  = consumes<EcalRecHitCollection>(ecalrechit);
-	
+	ecalrechitEB                   = iConfig.getParameter<edm::InputTag>("ecalrechit");
+	ecalrechitEBTok                = consumes<EcalRecHitCollection>(ecalrechitEB);
+	ecalrechitEE                   = iConfig.getParameter<edm::InputTag>("ecalrechit");
+	ecalrechitEETok                = consumes<EcalRecHitCollection>(ecalrechitEE);
+
 	//pfCandTag                         = iConfig.getParameter<edm::InputTag>("pfCandTag");
     //pfCandTagTok                      = consumes<edm::View<pat::PackedCandidate>>(pfCandTag);
 	trackTag                          = iConfig.getParameter<edm::InputTag>("pfCandTag");
@@ -83,6 +85,7 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig):
 	trackBuilderTok                   = esConsumes(edm::ESInputTag("", "TransientTrackBuilder"));
 	theBFieldTok                      = esConsumes<MagneticField, IdealMagneticFieldRecord>();
 	caloGeomTok                       = esConsumes<CaloGeometry, CaloGeometryRecord>();
+	iSetupGetTok                      = make_unique<EcalClusterLazyToolsBase::ESGetTokens>(consumesCollector());
 
 
 	StoreDeDxInfo_                    = iConfig.getParameter<bool>("StoreDeDxInfo");
@@ -161,12 +164,48 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 				bmmgRootTree_->PUinteraction_ = numInteraction;
 				bmmgRootTree_->PUTrueinteraction_ = numTrueInteraction;
 			}	
-	excludedPhotons.clear();	
+	excludedPhotons.clear();
+	int nBs=0;
+	edm::Handle<edm::View<reco::GenParticle> > genParticles;
+	if(isMCstudy_)
+              {
+                     iEvent.getByToken(genParticlesTok, genParticles);
+                     //std::cout<<"genparticles:   "<<genParticles->size()<<"\n";
+		     for( size_t i = 0; i < genParticles->size(); ++ i ) {
+		     const reco::GenParticle & genBsCand = (*genParticles)[ i ];
+		     if(abs(genBsCand.pdgId())/100==5){
+			     //std::cout<< " B Cand PDGID : "<< genBsCand.pdgId()<< "\n";
+			     //if(abs(genBsCand.pdgId()) == 531)nBs++;			     
+		     }
+		     }
+		     
+		     //std::cout<<" number of BsCandidates : "<<  nBs << "\n";
+                     fillMCInfo(genParticles);
+               }
 	
+	const auto& theBField    = iSetup.getData(theBFieldTok);
+	const auto& caloGeom     = iSetup.getData(caloGeomTok);
+	const auto& lazyTools    = EcalClusterLazyTools(iEvent, iSetupGetTok->get(iSetup), ecalrechitEBTok, ecalrechitEETok);
 	edm::Handle<reco::BeamSpot> vertexBeamSpot ;
 	iEvent.getByToken(vertexBeamSpotTok,vertexBeamSpot);
 	edm::Handle<std::vector<reco::Vertex>> recVtxs;
-        iEvent.getByToken(primaryvertexTok, recVtxs);
+
+	edm::Handle<std::vector<reco::Muon>> muons;
+    iEvent.getByToken(MuonTagTok, muons);
+	edm::Handle<std::vector<pat::CompositeCandidate>> convPhotons;
+    iEvent.getByToken(convertedPhotonsTagTok, convPhotons);
+	const pat::CompositeCandidateCollection * conversions = convPhotons.product();
+	edm::Handle<std::vector<reco::Track>> tracks;
+	iEvent.getByToken(trackTagTok, tracks);
+	//particle flow supercluster ECAL - This only does exists in AOD ???
+	edm::Handle<std::vector<reco::SuperCluster>> supercluster;
+	iEvent.getByToken(pfSupclusterTok, supercluster);
+	edm::Handle<EcalRecHitCollection> ecalRecHits;
+	iEvent.getByToken(ecalrechitEBTok, ecalRecHits);
+	//std::cout<< " super cluster multiplicity : "<< supercluster->size()<< "\n";
+	edm::Handle<std::vector<reco::Photon>> photon;
+    iEvent.getByToken(PhotonTagTok, photon);
+    iEvent.getByToken(primaryvertexTok, recVtxs);
 	if (!vertexBeamSpot.isValid() || recVtxs->empty()) {return;}
 
 	BeamSpotAndVertex bsandvtxObservables;
@@ -198,34 +237,12 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	}*/
 
 
-	//edm::ESHandle<TransientTrackBuilder> theB;
+	    //edm::ESHandle<TransientTrackBuilder> theB;
         //iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder",theB);
         //const auto& trackBuilder = iSetup.getData(trackBuilderTok);
-       	const auto& theBField    = iSetup.getData(theBFieldTok);
-		const auto& caloGeom = iSetup.getData(caloGeomTok);
+       	
 
-        	
-	int nBs=0;
-	edm::Handle<edm::View<reco::GenParticle> > genParticles;
-	if(isMCstudy_)
-              {
-                     iEvent.getByToken(genParticlesTok, genParticles);
-                     //std::cout<<"genparticles:   "<<genParticles->size()<<"\n";
-		     for( size_t i = 0; i < genParticles->size(); ++ i ) {
-		     const reco::GenParticle & genBsCand = (*genParticles)[ i ];
-		     if(abs(genBsCand.pdgId())/100==5){
-			     //std::cout<< " B Cand PDGID : "<< genBsCand.pdgId()<< "\n";
-			     //if(abs(genBsCand.pdgId()) == 531)nBs++;			     
-		     }
-		     }
-		     
-		     //std::cout<<" number of BsCandidates : "<<  nBs << "\n";
-                     fillMCInfo(genParticles);
-               }
-
-
-
-	 edm::Handle<edm::TriggerResults> hltbits;
+     edm::Handle<edm::TriggerResults> hltbits;
 	 iEvent.getByToken(triggerbitsTok, hltbits);
 	 std::vector<std::string> triggersOfInterest = {
                 "HLT_DoubleMu4_3_Bs",
@@ -282,18 +299,11 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
         
 	    //edm::Handle<View<pat::PackedCandidate>> pfCands;
 	    //iEvent.getByToken(pfCandTagTok, pfCands);
-	    edm::Handle<std::vector<reco::Muon>> muons;
-        iEvent.getByToken(MuonTagTok, muons);
-		edm::Handle<std::vector<pat::CompositeCandidate>> convPhotons;
-        iEvent.getByToken(convertedPhotonsTagTok, convPhotons);
-		const pat::CompositeCandidateCollection * conversions = convPhotons.product();
-		edm::Handle<std::vector<reco::Track>> tracks;
-		iEvent.getByToken(trackTagTok, tracks);
+	   
 		DecayChainVariables decayVariables;
-		
 		if(muons->size()==2 && convPhotons->size() ==1){
 			TrippleObjectVertex  tripvtxObservables;
-			decayVariables = tripvtxObservables.TrippleObjectVertexObservables(*muons, *conversions, bsandvtxVar, theBField, nominalMuonMass, nominalElectronMass);
+			decayVariables = tripvtxObservables.TrippleObjectVertexObservables(*muons, *photon, lazyTools, *conversions, bsandvtxVar, theBField, nominalMuonMass, nominalElectronMass);
 			bmmgRootTree_->vertexTypeFlag_ = 1;
 
 		}
@@ -374,12 +384,7 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 
 
 
-	   //particle flow supercluster ECAL - This only does exists in AOD ???
-	   edm::Handle<std::vector<reco::SuperCluster>> supercluster;
-	   iEvent.getByToken(pfSupclusterTok, supercluster);
-	   edm::Handle<EcalRecHitCollection> ecalRecHits;
-	   iEvent.getByToken(ecalrechitTok, ecalRecHits);
-	   //std::cout<< " super cluster multiplicity : "<< supercluster->size()<< "\n";
+	   
 	   SCRecHitAccumulator scraccumulator;
 	   SCRecHitAccumulator::SCAndRecHitVariables screchitvars = scraccumulator.SCAndRecHitObservables(*supercluster,*ecalRecHits, bsandvtxVar,caloGeom);
 	   bmmgRootTree_->PFECal_SC_Eta_                = screchitvars.sc_eta;
@@ -412,8 +417,7 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 	   mu1vec.SetPtEtaPhi(decayVariables.mu1pt, decayVariables.mu1eta, decayVariables.mu1phi);
 	   mu2vec.SetPtEtaPhi(decayVariables.mu2pt, decayVariables.mu2eta, decayVariables.mu2phi);
 
-	   edm::Handle<std::vector<reco::Photon>> photon;
-	   iEvent.getByToken(PhotonTagTok, photon);
+	   
 	   bmmgRootTree_->photonMultiplicity_ = photon->size();
 	   RecoPhotons recoPhotonObserbles;
 	   std::vector<RecoPhotons::PhotonVariables> photonVar = recoPhotonObserbles.PhotonObservables(*photon);

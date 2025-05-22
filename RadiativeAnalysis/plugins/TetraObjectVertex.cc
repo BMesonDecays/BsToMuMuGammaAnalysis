@@ -146,7 +146,7 @@ DecayChainVariables TetraObjectVertex::TetraObjectVertexObservables(
 					tttrk_electrons_pair.emplace_back(*conv2.userData<reco::Track>("track0"), &bField);
 					tttrk_electrons_pair.emplace_back(*conv2.userData<reco::Track>("track1"), &bField);
 					KinematicConstrainedFit BCandFitter;
-					bool fitSuccess = BCandFitter.TetraObjectVertexFit(ttrk_muons, nominalMuonMass, tttrk_electrons_pair, nominalElectronMass);
+					bool fitSuccess = BCandFitter.TetraObjectVertexFitConvertedPhoton(ttrk_muons, nominalMuonMass, tttrk_electrons_pair, nominalElectronMass);
 					if (!fitSuccess) continue;
 					dcv.fittedBmass = BCandFitter.getBhadronMass();
 				}

@@ -126,7 +126,7 @@ fileList4 = glob.glob(prefixPath4+'/*.root')
 fileList5 = glob.glob(prefixPath5+'/*.root')
 #fileList =  fileList1 + fileList2 + fileList3 + fileList4 + fileList5
 #random.shuffle(fileList)
-fileList_mix = ['file:'+aFile for aFile in fileList5]
+fileList_mix = ['file:'+aFile for aFile in fileList3]
 process.source.fileNames = fileList_mix
 
 
