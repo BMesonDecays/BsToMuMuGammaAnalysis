@@ -233,7 +233,7 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
             
         
             for (size_t i = 0; i < photons.size(); ++i) {
-	    dcv.vertexFitFlag = 2;
+                dcv.vertexFitFlag = 2;
             const reco::Photon& photon = photons[i];
             if (photon.superCluster().isNull()) continue;
             if (photon.superCluster()->energy() < 1.0) continue; // Minimum energy cut for photons
@@ -252,7 +252,7 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
             GlobalVector vertexDirection(photon.px(), photon.py(), photon.pz());
             TrackCharge photon_charge = 0; 
             FreeTrajectoryState photonFTS = FreeTrajectoryState(vertexPostion, vertexDirection, photon_charge, &bField);
-            std::cout<<"Photon FTS: "<<photonFTS.position().x()<<"\t"<<photonFTS.position().y()<<"\t"<<photonFTS.position().z()<<"\n";
+            //std::cout<<"Photon FTS: "<<photonFTS.position().x()<<"\t"<<photonFTS.position().y()<<"\t"<<photonFTS.position().z()<<"\n";
             reco::TransientTrack  transientrackforPhotn = transientTrackBuilder.build(photonFTS);
             std::vector<reco::TransientTrack>  photonTT = {transientrackforPhotn};
             //if (!photonTT[0].isValid()) continue;
@@ -275,7 +275,7 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
             double vtxprob_Bs = TMath::Prob(vertexbskalman.chi2(),(int)vertexbskalman.ndof());
             if (vtxprob_Bs < 1e-5) continue;
             dcv.BsVtxProb = vtxprob_Bs;
-            std::cout<<"RecoPhoton : vtxprob_Bs: "<<vtxprob_Bs<<"\n";
+            //std::cout<<"RecoPhoton : vtxprob_Bs: "<<vtxprob_Bs<<"\n";
             KinematicConstrainedFit BCandFitter;
             bool fitSuccess = BCandFitter.TrippleObjectVertexFitRecoPhoton(ttrk_muons, photonTT, dcv.dimuonMass, 0.001, photons, *covPtr);
             if (!fitSuccess) continue;
@@ -289,7 +289,7 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
             RefCountedKinematicVertex bVertex = BCandFitter.getVertex();
             AlgebraicVector7 b_par = bs->currentState().kinematicParameters().vector();
             GlobalVector Bsvec(b_par[3], b_par[4], b_par[5]);
-            std::cout<<"Vertex position after the fit  "<< Bsvec.x() << "\t"<< Bsvec.y() << "\t"<< Bsvec.z() << "\n";
+            //std::cout<<"Vertex position after the fit  "<< Bsvec.x() << "\t"<< Bsvec.y() << "\t"<< Bsvec.z() << "\n";
             reco::Vertex recVtxs;
             //std::cout << " the PV multiplicity returen in the TBV class : " << bsAndVtxInfo.VtxIndex<< "\n";
             reco::Vertex PVvtxHightestPt;//:wq = recVtxs[bsAndVtxInfo.VtxIndex];
@@ -307,7 +307,7 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
             dcv.BsCt2DBS = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-bsAndVtxInfo.bs_x)*Bsvec.x()+
             (kvfbsvertex.position().y()-bsAndVtxInfo.bs_y)*Bsvec.y())/
             (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y());  
-            std::cout << " the decay time 2D BS : " << dcv.BsCt3D << "\n";
+            //std::cout << " the decay time 2D BS : " << dcv.BsCt3D << "\n";
             }//end of reco photon loop 
         
 

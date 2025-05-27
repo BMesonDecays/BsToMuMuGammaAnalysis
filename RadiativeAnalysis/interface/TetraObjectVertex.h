@@ -40,6 +40,12 @@
 #include "MagneticField/Engine/interface/MagneticField.h"
 #include "MuonAnalysis/MuonAssociators/interface/PropagateToMuon.h"
 #include "MagneticField/Records/interface/IdealMagneticFieldRecord.h"
+#include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
+#include "DataFormats/EcalRecHit/interface/EcalRecHitCollections.h"
+#include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
+#include "TrackingTools/Records/interface/TransientTrackRecord.h"
+#include "RecoEcal/EgammaCoreTools/interface/EcalClusterTools.h"
+#include "DataFormats/Math/interface/deltaR.h"
 
 
 class TetraObjectVertex{
@@ -52,20 +58,23 @@ class TetraObjectVertex{
             static constexpr double BsMassCutLower   = 4.5; 
             static constexpr double BsMassCutUpper   = 6.0;
             static constexpr double BdMassCutLower   = 4.5;
-            static constexpr double BdMassCutUpper   = 6.0; 
+            static constexpr double BdMassCutUpper   = 6.0;
+            static constexpr double BsPDGMass = 5.36677; 
               
                    
         };
 
         DecayChainVariables TetraObjectVertexObservables(const std::vector<reco::Muon>& muons, 
+		    const std::vector<reco::Photon>& photons,
+            const EcalClusterLazyTools& lazyTools,
 			const pat::CompositeCandidateCollection& conversions,
 			const BeamSpotAndVertex::BSAndVtxVariables& bsAndVtxInfo,
 			const MagneticField& bField,
 			const double nominalMuonMass,
-			const double nominalElectronMass);
+			const double nominalElectronMass, 
+		 	const TransientTrackBuilder& transientTrackBuilder);
 
 };
-
 
 
 #endif

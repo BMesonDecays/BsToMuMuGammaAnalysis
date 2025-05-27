@@ -5,12 +5,15 @@
 
 TetraObjectVertex::TetraObjectVertex(){}
 DecayChainVariables TetraObjectVertex::TetraObjectVertexObservables(
-        const std::vector<reco::Muon>& muons,
-        const pat::CompositeCandidateCollection& conversions,
-        const BeamSpotAndVertex::BSAndVtxVariables& bsAndVtxInfo,
-        const MagneticField& bField,
-        const double nominalMuonMass,
-        const double nominalElectronMass){
+        const std::vector<reco::Muon>& muons, 
+		    const std::vector<reco::Photon>& photons,
+        const EcalClusterLazyTools& lazyTools,
+			const pat::CompositeCandidateCollection& conversions,
+			const BeamSpotAndVertex::BSAndVtxVariables& bsAndVtxInfo,
+			const MagneticField& bField,
+			const double nominalMuonMass,
+			const double nominalElectronMass, 
+		 	const TransientTrackBuilder& transientTrackBuilder){
                 bool verbose = true;
                 DecayChainVariables dcv;
 
@@ -135,6 +138,7 @@ DecayChainVariables TetraObjectVertex::TetraObjectVertexObservables(
       }
       dcv.diMuon_mu2PixelHits = pixhits2;
 			for (const auto& conv1 : conversions) {
+        dcv.vertexFitFlag = 3;
 				std::vector<reco::TransientTrack> tttrk_electrons = {
 					reco::TransientTrack(*conv1.userData<reco::Track>("track0"), &bField),
 					reco::TransientTrack(*conv1.userData<reco::Track>("track1"), &bField)
@@ -145,44 +149,176 @@ DecayChainVariables TetraObjectVertex::TetraObjectVertexObservables(
 					std::vector<reco::TransientTrack> tttrk_electrons_pair = tttrk_electrons;  // Copy base tracks
 					tttrk_electrons_pair.emplace_back(*conv2.userData<reco::Track>("track0"), &bField);
 					tttrk_electrons_pair.emplace_back(*conv2.userData<reco::Track>("track1"), &bField);
+          std::vector<reco::TransientTrack> t_tracks;
+                t_tracks.push_back(muonTT1);
+                t_tracks.push_back(muonTT2);
+                t_tracks.push_back(tttrk_electrons[0]);
+                t_tracks.push_back(tttrk_electrons[1]);
+                t_tracks.push_back(tttrk_electrons_pair[0]);
+                t_tracks.push_back(tttrk_electrons_pair[1]);
+                //std::cout << " the size of the t_tracks : " << t_tracks.size() << "\n";
+                KalmanVertexFitter kvfbs(true);
+                TransientVertex kvfbsvertex = kvfbs.vertex(t_tracks);
+                //std::cout<< " the vertex position : "<< kvfbsvertex.position().x() << "\t"<< kvfbsvertex.position().y() << "\t"<< kvfbsvertex.position().z() << "\n";
+                reco::Vertex vertexbskalman = kvfbsvertex;
+                if (!kvfbsvertex.isValid()) continue;
+                GlobalError gigibs=kvfbsvertex.positionError();
+                double vtxprob_Bs = TMath::Prob(vertexbskalman.chi2(),(int)vertexbskalman.ndof());
+                if (vtxprob_Bs < 1e-5) continue;
+                dcv.BsVtxProb = vtxprob_Bs;
 					KinematicConstrainedFit BCandFitter;
 					bool fitSuccess = BCandFitter.TetraObjectVertexFitConvertedPhoton(ttrk_muons, nominalMuonMass, tttrk_electrons_pair, nominalElectronMass);
 					if (!fitSuccess) continue;
 					dcv.fittedBmass = BCandFitter.getBhadronMass();
-				}
-			}
-		}
-    }
-/*			for (pat::CompositeCandidateCollection::const_iterator conv1 = conversions->begin(); conv1!= conversions->end(); ++conv1){
+          RefCountedKinematicParticle bs = BCandFitter.getBhardon();
+	  		  RefCountedKinematicVertex bVertex = BCandFitter.getVertex();
+	  		  AlgebraicVector7 b_par = bs->currentState().kinematicParameters().vector();
+                GlobalVector Bsvec(b_par[3], b_par[4], b_par[5]);
+                //std::cout<<"Vertex position after the fit  "<< Bsvec.x() << "\t"<< Bsvec.y() << "\t"<< Bsvec.z() << "\n";
+                reco::Vertex recVtxs;
+                //std::cout << " the PV multiplicity returen in the TBV class : " << bsAndVtxInfo.VtxIndex<< "\n";
+                reco::Vertex PVvtxHightestPt;//:wq = recVtxs[bsAndVtxInfo.VtxIndex];
+                /*Need input to solve the problem of multiple primary vertex*/
+                //std::cout<<"Primary vertex HightestPt"<<PVvtxHightestPt.x()<< "\t"<<PVvtxHightestPt.y()<< "\t"<<PVvtxHightestPt.z() <<"\n";
+                MassLimits m_lim;
+                dcv.BsCt3D = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*Bsvec.x()+
+                (kvfbsvertex.position().y()-PVvtxHightestPt.y())*Bsvec.y()+
+                (kvfbsvertex.position().z()-PVvtxHightestPt.z())*Bsvec.z())/
+                (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y()+Bsvec.z()*Bsvec.z());
+                //std::cout << " the decay time 3D : " << dcv.BsCt3D << "\n";
+                dcv.BsCt2D = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*Bsvec.x()+
+                (kvfbsvertex.position().y()-PVvtxHightestPt.y())*Bsvec.y())/
+                (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y());
+                //std::cout << " the decay time 2D : " << dcv.BsCt3D << "\n";
+                dcv.BsCt2DBS = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-bsAndVtxInfo.bs_x)*Bsvec.x()+
+                (kvfbsvertex.position().y()-bsAndVtxInfo.bs_y)*Bsvec.y())/
+                (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y());
+                //std::cout << " the decay time 2D BS : " << dcv.BsCt3D << "\n";
+				}//converted photon loop 1 end 
+			}// converted photon loop 2 end
+     
 
-                                std::vector<reco::TransientTrack> tttrk_electrons;
-                                const reco::Track eletk0=*conv1->userData<reco::Track>("track0");
-                                const reco::Track eletk1=*conv1->userData<reco::Track>("track1");
-                                reco::TrackCollection convTracks1;
-                                convTracks1.push_back(eletk0);
-                                convTracks1.push_back(eletk1);
-                                reco::TransientTrack electronTT1(convTracks1[0], &bField );
-                                reco::TransientTrack electronTT2(convTracks1[1], &bField );
-                                tttrk_electrons.push_back(electronTT1);
-                                tttrk_electrons.push_back(electronTT2);
-                        for (pat::CompositeCandidateCollection::const_iterator conv2 = conv1 + 1; conv2 != conversions->end(); ++conv2) {
-                                const reco::Track eletk2=*conv2->userData<reco::Track>("track0");
-                                const reco::Track eletk3=*conv2->userData<reco::Track>("track1");
-                                //std::cout<< " the track output 2 and 3 : "<< eletk2.pt() << "\t"<< eletk3.pt() << "\t" <<eletk2.eta() << "\t"<< eletk3.eta()<< "\n";
-                                reco::TrackCollection convTracks2;
-                                convTracks2.push_back(eletk2);
-                                convTracks2.push_back(eletk3);
-                                reco::TransientTrack electronTT3(convTracks2[0], &bField );
-                                reco::TransientTrack electronTT4(convTracks2[1], &bField );
-                                tttrk_electrons.push_back(electronTT3);
-                                tttrk_electrons.push_back(electronTT4);
-                                KinematicConstrainedFit BCandFitter;
-                                bool fitSuccess = BCandFitter.TetraObjectVertexFit(tttrk_muons,nominalMuonMass,tttrk_electrons,nominalElectronMass);
-                                if(fitSuccess != 1) continue;
-                                dcv.mass = BCandFitter.getBhadronMass();
-			}
-			}
-		}
-    }*/
+// Double photon loop
+for (size_t i = 0; i < photons.size(); ++i) {
+    const reco::Photon& photon1 = photons[i];
+    if (photon1.superCluster().isNull()) continue;
+    if (photon1.superCluster()->energy() < 1.0) continue;
+    if (photon1.isEB() && photon1.superCluster()->eta() < -2.5) continue;
+    if (photon1.isEE() && photon1.superCluster()->eta() > 2.5) continue;
+
+    for (size_t j = i + 1; j < photons.size(); ++j) {
+        const reco::Photon& photon2 = photons[j];
+        if (photon2.superCluster().isNull()) continue;
+        if (photon2.superCluster()->energy() < 1.0) continue;
+        if (photon2.isEB() && photon2.superCluster()->eta() < -2.5) continue;
+        if (photon2.isEE() && photon2.superCluster()->eta() > 2.5) continue;
+
+        dcv.vertexFitFlag = 4;  // flag for 2-photon case
+
+        TLorentzVector photonvec1, photonvec2, muonTrack1, muonTrack2, BCand;
+        photonvec1.SetPtEtaPhiE(photon1.pt(), photon1.eta(), photon1.phi(), photon1.energy());
+        photonvec2.SetPtEtaPhiE(photon2.pt(), photon2.eta(), photon2.phi(), photon2.energy());
+        muonTrack1.SetPtEtaPhiE(mu1.pt(), mu1.eta(), mu1.phi(), mu1.energy());
+        muonTrack2.SetPtEtaPhiE(mu2.pt(), mu2.eta(), mu2.phi(), mu2.energy());
+
+        BCand = photonvec1 + photonvec2 + muonTrack1 + muonTrack2;
+
+        MassLimits m_lim;
+        if (BCand.M() < m_lim.BsMassCutLower || BCand.M() > m_lim.BsMassCutUpper) continue;
+
+        // ΔR between each photon and the dimuon system
+        TLorentzVector dimuon = muonTrack1 + muonTrack2;
+        dcv.DeltaRPhoton1Dimuon = deltaR(dimuon.Eta(), dimuon.Phi(), photon1.eta(), photon1.phi());
+        dcv.DeltaRPhoton2Dimuon = deltaR(dimuon.Eta(), dimuon.Phi(), photon2.eta(), photon2.phi());
+        dcv.DeltaRPhoton1Photon2 = deltaR(photon1.eta(), photon1.phi(), photon2.eta(), photon2.phi());
+        std::cout << "Double Photon: DeltaRPhoton1Dimuon: " << dcv.DeltaRPhoton1Dimuon 
+                  << ", DeltaRPhoton2Dimuon: " << dcv.DeltaRPhoton2Dimuon 
+                  << ", DeltaRPhoton1Photon2: " << dcv.DeltaRPhoton1Photon2 << "\n";
+
+        std::vector<reco::TransientTrack> ttrk_photons;
+        //TMatrixD* covPtr = nullptr;
+        std::vector<std::unique_ptr<TMatrixD>> covPtrs;
+
+        for (const auto& photon : {photon1, photon2}) {
+            GlobalPoint vertexPostion(bsAndVtxInfo.pv_x, bsAndVtxInfo.pv_y, bsAndVtxInfo.pv_z);
+            GlobalVector vertexDirection(photon.px(), photon.py(), photon.pz());
+            TrackCharge photon_charge = 0; 
+            FreeTrajectoryState photonFTS(vertexPostion, vertexDirection, photon_charge, &bField);
+
+            // Optional debugging
+            std::cout << "Photon FTS: " 
+            << photonFTS.position().x() 
+            << "\t"<< photonFTS.position().y() 
+            << "\t" << photonFTS.position().z() <<"\n";
+
+            reco::TransientTrack transientrackforPhoton = transientTrackBuilder.build(photonFTS);
+
+            // Photon covariance and error
+            TMatrixD cov(lazyTools.covariancesXYZ(*photon.superCluster()));
+            covPtrs.push_back(std::make_unique<TMatrixD>(cov));
+            //covPtr = new TMatrixD(cov);
+            AlgebraicSymMatrix66 photonCov{ROOT::Math::SMatrixIdentity()};
+            AlgebraicVector6 diagonal(1., 1., 1., 1., 1., 1.);
+            photonCov.SetDiagonal(diagonal);
+            CartesianTrajectoryError photonErr(photonCov);
+            photonFTS.setCartesianError(photonErr);
+
+            ttrk_photons.push_back(transientrackforPhoton);
+        }
+
+        // Append muons
+        ttrk_photons.push_back(muonTT1);
+        ttrk_photons.push_back(muonTT2);
+
+        KalmanVertexFitter kvfbs(true);
+        TransientVertex kvfbsvertex = kvfbs.vertex(ttrk_photons);
+        if (!kvfbsvertex.isValid()) continue;
+
+        reco::Vertex vertexbskalman = kvfbsvertex;
+        double vtxprob_Bs = TMath::Prob(vertexbskalman.chi2(), (int)vertexbskalman.ndof());
+        if (vtxprob_Bs < 1e-5) continue;
+
+        dcv.BsVtxProb = vtxprob_Bs;
+        std::cout << "Double Photon: vtxprob_Bs: " << vtxprob_Bs << "\n";
+
+        KinematicConstrainedFit BCandFitter;
+        bool fitSuccess = BCandFitter.TetraObjectVertexFitRecoPhoton(ttrk_muons, ttrk_photons, dcv.dimuonMass, 0.001, photons, *covPtrs);
+        if (!fitSuccess) continue;
+
+        dcv.fittedBmass = BCandFitter.getBhadronMass();
+        dcv.BsMass = BCand.M();
+        dcv.BsPt   = BCand.Pt();
+        dcv.BsEta  = BCand.Eta();
+        dcv.BsPhi  = BCand.Phi();
+
+        RefCountedKinematicParticle bs = BCandFitter.getBhardon();
+        RefCountedKinematicVertex bVertex = BCandFitter.getVertex();
+        AlgebraicVector7 b_par = bs->currentState().kinematicParameters().vector();
+        GlobalVector Bsvec(b_par[3], b_par[4], b_par[5]);
+
+        // 3D and 2D decay length using PV and BS
+        reco::Vertex PVvtxHightestPt;
+        dcv.BsCt3D = m_lim.BsPDGMass * ((kvfbsvertex.position().x() - PVvtxHightestPt.x()) * Bsvec.x() +
+                                        (kvfbsvertex.position().y() - PVvtxHightestPt.y()) * Bsvec.y() +
+                                        (kvfbsvertex.position().z() - PVvtxHightestPt.z()) * Bsvec.z()) /
+                                        Bsvec.mag2();
+
+        dcv.BsCt2D = m_lim.BsPDGMass * ((kvfbsvertex.position().x() - PVvtxHightestPt.x()) * Bsvec.x() +
+                                        (kvfbsvertex.position().y() - PVvtxHightestPt.y()) * Bsvec.y()) /
+                                        (Bsvec.x()*Bsvec.x() + Bsvec.y()*Bsvec.y());
+
+        dcv.BsCt2DBS = m_lim.BsPDGMass * ((kvfbsvertex.position().x() - bsAndVtxInfo.bs_x) * Bsvec.x() +
+                                          (kvfbsvertex.position().y() - bsAndVtxInfo.bs_y) * Bsvec.y()) /
+                                          (Bsvec.x()*Bsvec.x() + Bsvec.y()*Bsvec.y());
+
+        std::cout << "Double photon decay time 2D BS: " << dcv.BsCt2DBS << "\n";
+    }//reco gamma 2
+}//reco gamma 1
+
+
+
+
+}//end of muon loop 1
+}//end of muon loop 2
     return dcv;
 }

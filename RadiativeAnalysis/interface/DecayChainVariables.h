@@ -54,6 +54,9 @@ struct DecayChainVariables {
     double BsCt2D = -9999;
     double BsCt2DBS = -9999;
     int    vertexFitFlag = -9999;
+    double DeltaRPhoton1Dimuon = -9999;
+    double DeltaRPhoton2Dimuon = -9999;
+    double DeltaRPhoton1Photon2 = -9999;
 };
 
 #endif

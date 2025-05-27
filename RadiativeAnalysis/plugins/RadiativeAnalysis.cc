@@ -322,11 +322,14 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 			TetraObjectVertex tetradcObservables;
 			decayVariables = tetradcObservables.TetraObjectVertexObservables(
 				*muons, 
-				*conversions,
-				bsandvtxVar,
+				*photon, 
+				lazyTools, 
+				*conversions, 
+				bsandvtxVar, 
 				theBField, 
 				nominalMuonMass, 
-				nominalElectronMass);
+				nominalElectronMass, 
+				trackBuilder);
 			bmmgRootTree_->vertexTypeFlag_ = 2;
 		}
 

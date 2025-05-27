@@ -27,7 +27,6 @@
 <use   name="DataFormats/EcalRecHit"/>
 <use   name="CondFormats/EcalObjects"/>
 <use   name="Geometry/CaloTopology"/>
-<use   name="RecoLocalCalo/EcalTrigPrimAlgos"/>
 <use   name="CalibCalorimetry/EcalLaserCorrection"/>
 <use   name="RecoEcal/EgammaCoreTools"/>
 <flags EDM_PLUGIN="1"/>
