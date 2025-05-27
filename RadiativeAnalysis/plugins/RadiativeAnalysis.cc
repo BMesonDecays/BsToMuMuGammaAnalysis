@@ -86,6 +86,7 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig):
 	theBFieldTok                      = esConsumes<MagneticField, IdealMagneticFieldRecord>();
 	caloGeomTok                       = esConsumes<CaloGeometry, CaloGeometryRecord>();
 	iSetupGetTok                      = make_unique<EcalClusterLazyToolsBase::ESGetTokens>(consumesCollector());
+	
 
 
 	StoreDeDxInfo_                    = iConfig.getParameter<bool>("StoreDeDxInfo");
@@ -183,9 +184,10 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
                      fillMCInfo(genParticles);
                }
 	
-	const auto& theBField    = iSetup.getData(theBFieldTok);
-	const auto& caloGeom     = iSetup.getData(caloGeomTok);
-	const auto& lazyTools    = EcalClusterLazyTools(iEvent, iSetupGetTok->get(iSetup), ecalrechitEBTok, ecalrechitEETok);
+	const auto& theBField             = iSetup.getData(theBFieldTok);
+	const auto& caloGeom              = iSetup.getData(caloGeomTok);
+	const auto& lazyTools             = EcalClusterLazyTools(iEvent, iSetupGetTok->get(iSetup), ecalrechitEBTok, ecalrechitEETok);
+	const auto& trackBuilder          = iSetup.getData(trackBuilderTok);
 	edm::Handle<reco::BeamSpot> vertexBeamSpot ;
 	iEvent.getByToken(vertexBeamSpotTok,vertexBeamSpot);
 	edm::Handle<std::vector<reco::Vertex>> recVtxs;
@@ -303,13 +305,28 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 		DecayChainVariables decayVariables;
 		if(muons->size()==2 && convPhotons->size() ==1){
 			TrippleObjectVertex  tripvtxObservables;
-			decayVariables = tripvtxObservables.TrippleObjectVertexObservables(*muons, *photon, lazyTools, *conversions, bsandvtxVar, theBField, nominalMuonMass, nominalElectronMass);
+			decayVariables = tripvtxObservables.TrippleObjectVertexObservables(
+				*muons, 
+				*photon, 
+				lazyTools, 
+				*conversions, 
+				bsandvtxVar, 
+				theBField, 
+				nominalMuonMass, 
+				nominalElectronMass, 
+				trackBuilder);
 			bmmgRootTree_->vertexTypeFlag_ = 1;
 
 		}
 		if(muons->size()==2 && convPhotons->size() ==2){
 			TetraObjectVertex tetradcObservables;
-			decayVariables = tetradcObservables.TetraObjectVertexObservables(*muons, *conversions,bsandvtxVar,theBField, nominalMuonMass, nominalElectronMass);
+			decayVariables = tetradcObservables.TetraObjectVertexObservables(
+				*muons, 
+				*conversions,
+				bsandvtxVar,
+				theBField, 
+				nominalMuonMass, 
+				nominalElectronMass);
 			bmmgRootTree_->vertexTypeFlag_ = 2;
 		}
 

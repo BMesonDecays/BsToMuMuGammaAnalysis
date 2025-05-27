@@ -34,13 +34,13 @@ class ReferenceResonance{
 	public:
     struct ResonanceDetails {
         double mass = -9999;
-	double eta  = -9999;
-	double phi  = -9999;
-	double pt   = -9999;
+        double eta  = -9999;
+        double phi  = -9999;
+        double pt   = -9999;
         double px   = -9999;
         double py   = -9999;
         int resonanceFlag = -9999;
-         bool isValid = false;
+        bool isValid = false;
     };
     enum ResonanceFlag {
 	    None = 0,
@@ -96,7 +96,7 @@ private:
     //template <typename T1, typename T2>
     //static double calculateMassFromComponents(const T1& p1, const T2& p2);
 
-    static double calculateMassFromComponents(const pat::CompositeCandidateCollection& conv1, const pat::CompositeCandidateCollection& conv2);
+      static double calculateMassFromComponents(const pat::CompositeCandidateCollection& conv1, const pat::CompositeCandidateCollection& conv2);
 };
 
 #endif

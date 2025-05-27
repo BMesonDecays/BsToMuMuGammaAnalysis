@@ -26,6 +26,9 @@
 #include "DataFormats/EgammaCandidates/interface/Photon.h"
 #include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
 #include "DataFormats/EcalRecHit/interface/EcalRecHitCollections.h"
+#include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
+#include "TrackingTools/Records/interface/TransientTrackRecord.h"
+#include "RecoEcal/EgammaCoreTools/interface/EcalClusterTools.h"
 
 
 #include <memory>
@@ -64,7 +67,8 @@ class TrippleObjectVertex{
 			const BeamSpotAndVertex::BSAndVtxVariables& bsAndVtxInfo,
 			const MagneticField& bField,
 			const double nominalMuonMass,
-			const double nominalElectronMass);
+			const double nominalElectronMass, 
+		 	const TransientTrackBuilder& transientTrackBuilder);
       
 };
 

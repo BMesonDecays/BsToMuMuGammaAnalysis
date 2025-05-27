@@ -53,6 +53,7 @@ struct DecayChainVariables {
     double BsCt3D = -9999;
     double BsCt2D = -9999;
     double BsCt2DBS = -9999;
+    int    vertexFitFlag = -9999;
 };
 
 #endif
