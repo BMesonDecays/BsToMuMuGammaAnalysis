@@ -234,7 +234,7 @@ DecayChainVariables ReferenceModeratorVertex::ReferenceModeratorVertexObservable
               KinematicConstrainedFit BCandFitter;
               bool fitSuccess = BCandFitter.BsToJpsiPhiFit(t_tracks, nominalMuonMass, nominalKaonMass, nominalKaonMass);
               if (!fitSuccess) continue;
-              dcv.fittedBmass = BCandFitter.getBhadronMass();
+              dcv.fittedBmassConvertedPhoton = BCandFitter.getBhadronMass();
                 dcv.BsMass = BCand.M();
                 dcv.BsPt   = BCand.Pt();
                 dcv.BsEta  = BCand.Eta();

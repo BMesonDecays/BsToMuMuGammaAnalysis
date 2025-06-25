@@ -147,7 +147,8 @@ class RadiativeRootTree {
   double BsCt2DPVClosestZOld_;
   double BsCtErr2DOld_;
   double BsCt2DOld_;
-  double HadronMass_fromVertexFit_;
+  double HadronMass_fromVertexFitConPhoton_;
+  double HadronMass_fromVertexFitRecoPhoton_;
   int vertexTypeFlag_;
 
 

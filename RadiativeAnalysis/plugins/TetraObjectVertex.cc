@@ -169,7 +169,7 @@ DecayChainVariables TetraObjectVertex::TetraObjectVertexObservables(
 					KinematicConstrainedFit BCandFitter;
 					bool fitSuccess = BCandFitter.TetraObjectVertexFitConvertedPhoton(ttrk_muons, nominalMuonMass, tttrk_electrons_pair, nominalElectronMass);
 					if (!fitSuccess) continue;
-					dcv.fittedBmass = BCandFitter.getBhadronMass();
+					dcv.fittedBmassConvertedPhoton = BCandFitter.getBhadronMass();
           RefCountedKinematicParticle bs = BCandFitter.getBhardon();
 	  		  RefCountedKinematicVertex bVertex = BCandFitter.getVertex();
 	  		  AlgebraicVector7 b_par = bs->currentState().kinematicParameters().vector();
@@ -237,7 +237,8 @@ for (size_t i = 0; i < photons.size(); ++i) {
 
         std::vector<reco::TransientTrack> ttrk_photons;
         //TMatrixD* covPtr = nullptr;
-        std::vector<std::unique_ptr<TMatrixD>> covPtrs;
+        //std::vector<std::unique_ptr<TMatrixD>> covPtrs;
+        std::vector<TMatrixD> covPtrs;
 
         for (const auto& photon : {photon1, photon2}) {
             GlobalPoint vertexPostion(bsAndVtxInfo.pv_x, bsAndVtxInfo.pv_y, bsAndVtxInfo.pv_z);
@@ -255,7 +256,8 @@ for (size_t i = 0; i < photons.size(); ++i) {
 
             // Photon covariance and error
             TMatrixD cov(lazyTools.covariancesXYZ(*photon.superCluster()));
-            covPtrs.push_back(std::make_unique<TMatrixD>(cov));
+            //covPtrs.push_back(std::make_unique<TMatrixD>(cov));
+            covPtrs.push_back(cov); // Store the covariance matrix for each photon
             //covPtr = new TMatrixD(cov);
             AlgebraicSymMatrix66 photonCov{ROOT::Math::SMatrixIdentity()};
             AlgebraicVector6 diagonal(1., 1., 1., 1., 1., 1.);
@@ -282,10 +284,10 @@ for (size_t i = 0; i < photons.size(); ++i) {
         std::cout << "Double Photon: vtxprob_Bs: " << vtxprob_Bs << "\n";
 
         KinematicConstrainedFit BCandFitter;
-        bool fitSuccess = BCandFitter.TetraObjectVertexFitRecoPhoton(ttrk_muons, ttrk_photons, dcv.dimuonMass, 0.001, photons, *covPtrs);
+        bool fitSuccess = BCandFitter.TetraObjectVertexFitRecoPhoton(ttrk_muons, ttrk_photons, dcv.dimuonMass, 0.001, {photon1, photon2}, covPtrs);
         if (!fitSuccess) continue;
 
-        dcv.fittedBmass = BCandFitter.getBhadronMass();
+        dcv.fittedBmassRecoPhoton = BCandFitter.getBhadronMass();
         dcv.BsMass = BCand.M();
         dcv.BsPt   = BCand.Pt();
         dcv.BsEta  = BCand.Eta();

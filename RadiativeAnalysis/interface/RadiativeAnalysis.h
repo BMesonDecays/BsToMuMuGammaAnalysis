@@ -121,6 +121,8 @@ private:
   edm::EDGetTokenT<edm::View<pat::Jet>> JetTagTok;
   edm::InputTag PhotonTag;
   edm::EDGetTokenT<std::vector<reco::Photon>> PhotonTagTok;
+  edm::InputTag PFCandTag;
+  edm::EDGetTokenT<std::vector<reco::PFCandidate>> PFCandTagTok;
   edm::InputTag OOTPhotonTag;
   edm::EDGetTokenT<edm::View<pat::Photon>> OOTPhotonTagTok;
   edm::InputTag ElectronTag;

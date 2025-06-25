@@ -2,7 +2,8 @@
 #define BsToMuMuGammaAnalysis_RadiativeAnalysis_DecayChainVariables_h
 
 struct DecayChainVariables {
-    double fittedBmass = -9999;
+    double fittedBmassRecoPhoton = -9999;
+    double fittedBmassConvertedPhoton = -9999;
     int mu1softid = -9999;
     int mu2softid = -9999;
     int mu1tightid = -9999;

@@ -126,7 +126,8 @@ void RadiativeRootTree::createTree(const std::string filename)
   bmmgTree_->Branch("BsCt2DPVClosestZOld", &BsCt2DPVClosestZOld_,"BsCt2DPVClosestZOld/D");
   bmmgTree_->Branch("BsCtErr2DOld", &BsCtErr2DOld_,"BsCtErr2DOld/D");
   bmmgTree_->Branch("BsCt2DOld", &BsCt2DOld_,"BsCt2DOld/D");
-  bmmgTree_->Branch("HadronMass_fromVertexFit", &HadronMass_fromVertexFit_,"HadronMass_fromVertexFit/D");
+  bmmgTree_->Branch("HadronMass_fromVertexFitConPhoton", &HadronMass_fromVertexFitConPhoton_,"HadronMass_fromVertexFitConPhoton/D");
+  bmmgTree_->Branch("HadronMass_fromVertexFitRecoPhoton", &HadronMass_fromVertexFitRecoPhoton_,"HadronMass_fromVertexFitRecoPhoton/D");
   bmmgTree_->Branch("vertexTypeFlag", &vertexTypeFlag_,"vertexTypeFlag/I");
   bmmgTree_->Branch("PFECal_SC_Eta", &PFECal_SC_Eta_,"PFECal_SC_Eta/D");
   bmmgTree_->Branch("PFECal_SC_Phi", &PFECal_SC_Phi_,"PFECal_SC_Phi/D");
@@ -326,7 +327,8 @@ void RadiativeRootTree::resetEntries()
 	BsPhi_beffit_ = -9999999;
 	BsPt_beffit_ = -9999999;
 	Bs_vtxProb_ = -9999999;
-  HadronMass_fromVertexFit_ = -9999999;
+  HadronMass_fromVertexFitConPhoton_ = -9999999;
+  HadronMass_fromVertexFitRecoPhoton_ = -9999999;
   BsCt3D_ = -9999999;
   BsCt2D_ = -9999999;
   BsCt2DBS_ = -9999999;
@@ -585,7 +587,8 @@ void RadiativeRootTree::setBranchAddresses(){
   bmmgTree_->SetBranchAddress("BsEta_beffit", &BsEta_beffit_);
   bmmgTree_->SetBranchAddress("BsPhi_beffit", &BsPhi_beffit_);
   bmmgTree_->SetBranchAddress("BsPt_beffit", &BsPt_beffit_);
-  bmmgTree_->SetBranchAddress("HadronMass_fromVertexFit", &HadronMass_fromVertexFit_);
+  bmmgTree_->SetBranchAddress("HadronMass_fromVertexFitConPhoton", &HadronMass_fromVertexFitConPhoton_);
+  bmmgTree_->SetBranchAddress("HadronMass_fromVertexFitRecoPhoton", &HadronMass_fromVertexFitRecoPhoton_);
   bmmgTree_->SetBranchAddress("Bs_vtxProb", &Bs_vtxProb_);
   bmmgTree_->SetBranchAddress("BsCt3D", &BsCt3D_);
   bmmgTree_->SetBranchAddress("BsCt2D", &BsCt2D_);

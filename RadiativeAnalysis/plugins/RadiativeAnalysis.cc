@@ -11,6 +11,7 @@
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/TetraObjectVertex.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/BeamSpotAndVertex.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/RecoPhotons.h"
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/ParticleFlowCandidate.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/SCRecHitAccumulator.h"
 
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/ReferenceModeratorVertex.h"
@@ -42,6 +43,9 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig):
 	JetTagTok                         = consumes<edm::View<pat::Jet>>(JetTag);
 	PhotonTag                         = iConfig.getParameter<edm::InputTag>("PhotonTag");
 	PhotonTagTok                      = consumes<std::vector<reco::Photon>>(PhotonTag);
+	PFCandTag                         = iConfig.getParameter<edm::InputTag>("PFCandTag");
+	PFCandTagTok                      = consumes<std::vector<reco::PFCandidate>>(PFCandTag);
+	//PFCandTagTok                      = consumes<edm::View
 	OOTPhotonTag                      = iConfig.getParameter<edm::InputTag>("OOTPhotonTag");
 	OOTPhotonTagTok                   = consumes<edm::View<pat::Photon>>(OOTPhotonTag);
 	ElectronTag                       = iConfig.getParameter<edm::InputTag>("ElectronTag");
@@ -146,6 +150,8 @@ void RadiativeAnalysis::endJob() {
 void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 
 	event_counter_++;
+	excludedPhotons.clear();
+	int nBs=0;
 	bmmgRootTree_->resetEntries();
 	bmmgRootTree_->runNumber_   = iEvent.id().run();
 	bmmgRootTree_->eventNumber_ = (unsigned int)iEvent.id().event();
@@ -165,8 +171,7 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 				bmmgRootTree_->PUinteraction_ = numInteraction;
 				bmmgRootTree_->PUTrueinteraction_ = numTrueInteraction;
 			}	
-	excludedPhotons.clear();
-	int nBs=0;
+	
 	edm::Handle<edm::View<reco::GenParticle> > genParticles;
 	if(isMCstudy_)
               {
@@ -191,7 +196,8 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	edm::Handle<reco::BeamSpot> vertexBeamSpot ;
 	iEvent.getByToken(vertexBeamSpotTok,vertexBeamSpot);
 	edm::Handle<std::vector<reco::Vertex>> recVtxs;
-
+	iEvent.getByToken(primaryvertexTok, recVtxs);
+	if (!vertexBeamSpot.isValid() || recVtxs->empty()) {return;}
 	edm::Handle<std::vector<reco::Muon>> muons;
     iEvent.getByToken(MuonTagTok, muons);
 	edm::Handle<std::vector<pat::CompositeCandidate>> convPhotons;
@@ -207,8 +213,9 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	//std::cout<< " super cluster multiplicity : "<< supercluster->size()<< "\n";
 	edm::Handle<std::vector<reco::Photon>> photon;
     iEvent.getByToken(PhotonTagTok, photon);
-    iEvent.getByToken(primaryvertexTok, recVtxs);
-	if (!vertexBeamSpot.isValid() || recVtxs->empty()) {return;}
+	edm::Handle<std::vector<reco::PFCandidate>> pfCandidates;
+	iEvent.getByToken(PFCandTagTok, pfCandidates);
+    
 
 	BeamSpotAndVertex bsandvtxObservables;
 	auto bsandvtxVar = bsandvtxObservables.BSAndVtxObservables(*vertexBeamSpot, *recVtxs);
@@ -386,7 +393,8 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 		bmmgRootTree_->BsEta_beffit_             = decayVariables.BsEta;
 		bmmgRootTree_->BsPhi_beffit_             = decayVariables.BsPhi;
 		bmmgRootTree_->BsPt_beffit_              = decayVariables.BsPt;
-		bmmgRootTree_->HadronMass_fromVertexFit_ = decayVariables.fittedBmass;
+		bmmgRootTree_->HadronMass_fromVertexFitConPhoton_  = decayVariables.fittedBmassConvertedPhoton;
+		bmmgRootTree_->HadronMass_fromVertexFitRecoPhoton_ = decayVariables.fittedBmassRecoPhoton;
 		bmmgRootTree_->Bs_vtxProb_               = decayVariables.BsVtxProb;
 		bmmgRootTree_->BsCt3D_                   = decayVariables.BsCt3D;
 		bmmgRootTree_->BsCt2D_    	             = decayVariables.BsCt2D;
@@ -429,7 +437,7 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 	   bmmgRootTree_->PFECAL_RecHit_EB_iphi_        = screchitvars.rechit_EB_iphi;	
 	   bmmgRootTree_->PFECAL_RecHit_EE_ix_          = screchitvars.rechit_EE_ix;
 	   bmmgRootTree_->PFECAL_RecHit_EE_iy_          = screchitvars.rechit_EE_iy;
-	   bmmgRootTree_->PFECAL_RecHit_EE_zside_      = screchitvars.rechit_EE_zside;
+	   bmmgRootTree_->PFECAL_RecHit_EE_zside_       = screchitvars.rechit_EE_zside;
 
 
 	   muonleg1.SetPtEtaPhiE(decayVariables.mu1pt, decayVariables.mu1eta, decayVariables.mu1phi, decayVariables.mu1energy);
@@ -443,7 +451,7 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 	   std::vector<RecoPhotons::PhotonVariables> photonVar = recoPhotonObserbles.PhotonObservables(*photon);
 		if (!photonVar.empty()) {
 		for (size_t iPhoton = 0; iPhoton < photonVar.size(); ++iPhoton) {
-			std::cout << "size of photon collection : " << photonVar.size() << "\n";
+			//std::cout << "size of photon collection : " << photonVar.size() << "\n";
 			const auto& ipatPhoton = (*photon)[iPhoton];
 			if (ipatPhoton.pt() > 50.0 || !ipatPhoton.isEB()) {
 				excludedPhotons.insert(iPhoton);
@@ -496,6 +504,7 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 				TLorentzVector bsleg = muonleg1 + muonleg2 + photonleg1;
 				if (bsleg.M() < BsLowerMassCutBeforeFit_ || bsleg.M() > BsUpperMassCutBeforeFit_) continue;
 				bmmgRootTree_->Bsmass_recommg_ = bsleg.M();
+				std::cout<< " ----------------bs mass from photon l1 reco photon -------------------------------"<< bsleg.M() << "\n";
 				pgamma.SetPtEtaPhi(photonVar[iPhoton].pt, photonVar[iPhoton].eta, photonVar[iPhoton].phi);
 				pbs.SetPtEtaPhi(bsleg.Pt(), bsleg.Eta(), bsleg.Phi());
 				float helicity = pgamma.Dot(pbs) / (pgamma.Mag() * pbs.Mag());
@@ -545,206 +554,27 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 
 	}//Photon empty 
 
-
-
-
-
-	/*pat::CompositeCandidate DiGammaCandidate;
-			DiGammaCandidate.addDaughter(ipatPhoton);
-			DiGammaCandidate.addDaughter(jpatPhoton);
-			AddFourMomenta addP4;
-			addP4.set(DiGammaCandidate);*/
-
-	
-
-
-			/*BsToPhi(KK)Gamma - need corresponding MC sample,run on data if the MC is not available
-		        for (size_t k=0; k< pfCands->size(); ++k){
-				const pat::PackedCandidate & track1 = (*pfCands)[k];
-				if (track1.charge()<0)continue;
-				if (track1.pt() < KaonTrackPtCut_) continue;
-				if (track1.numberOfHits() < 5)continue;
-				if(!track1.trackHighPurity()) continue;
-				const reco::Track &  pseudotrkkp = (*pfCands)[k].pseudoTrack();
-				if (pseudotrkkp.charge()<0) continue;
-				TransientTrack KPTT = trackBuilder.build(&pseudotrkkp);
-				TrajectoryStateClosestToPoint KPTS = KPTT.impactPointTSCP();
-				if(!KPTS.isValid())continue;
-				if (!track1.clone()->hasTrackDetails())continue;
-				pat::PackedCandidate *trackkp = track1.clone();
-				for (size_t l=k+1; l< pfCands->size(); ++l){
-					const pat::PackedCandidate & track2 = (*pfCands)[l];
-					if ( !track2.hasTrackDetails() )continue;
-					if (track2.charge()>0) continue;
-					if (track2.pt() < KaonTrackPtCut_) continue;
-					if ( track2.numberOfHits()<5) continue;
-					if(!track2.trackHighPurity()) continue;
-					const reco::Track &  pseudotrkkm = (*pfCands)[l].pseudoTrack();
-					if (pseudotrkkm.charge()>0) continue;
-					TransientTrack KMTT = trackBuilder.build(&pseudotrkkm);
-					TrajectoryStateClosestToPoint KMTS = KMTT.impactPointTSCP();
-					if(!KMTS.isValid())continue;
-					if (KPTS.isValid() && KMTS.isValid()) {
-						ClosestApproachInRPhi cAppK;
-						cAppK.calculate(KPTS.theState(), KMTS.theState());
-						KKDCA = cAppK.distance();
-					}
-					if(KKDCA > 0.5)continue;
-					if (!track2.clone()->hasTrackDetails())continue;
-					pat::PackedCandidate *trackkm = track2.clone();
-					pat::CompositeCandidate phiCand;
-					trackkp->setMass(kaonmass);
-                                        phiCand.addDaughter(*trackkp);
-                                        trackkm->setMass(kaonmass);
-                                        phiCand.addDaughter(*trackkm);
-					AddFourMomenta p4phi;
-					p4phi.set(phiCand);
-					if (abs(phiCand.mass()- nominalPhiMass) > PhiMassWindowBeforeFit_) continue;
-					
-
-					pat::CompositeCandidate phigammaCand;
-					trackkp->setMass(kaonmass);
-					phigammaCand.addDaughter(*trackkp);
-					trackkm->setMass(kaonmass);
-					phigammaCand.addDaughter(*trackkm);
-					phigammaCand.addDaughter(ipatPhoton);
-					AddFourMomenta p4phigamma;
-					p4phigamma.set(phigammaCand);
-					if (phigammaCand.mass() < BsLowerMassCutBeforeFit_ || phigammaCand.mass() > BsUpperMassCutBeforeFit_) continue;
-
-					std::cout<< " could we take out the value of the bs mass  : kind of phi gamma candidate : " << phigammaCand.mass()<< "\n";
-					vector<TransientTrack> phi_transienttrk;
-					phi_transienttrk.push_back(trackBuilder.build(&pseudotrkkp));//pseudotrkkm
-					phi_transienttrk.push_back(trackBuilder.build(&pseudotrkkm));
-					KalmanVertexFitter kvfphi;
-					TransientVertex tvphi = kvfphi.vertex(phi_transienttrk);
-					if (!tvphi.isValid()) continue;
-					GlobalError gigi=tvphi.positionError();
-					//This would be the bs vertex since there will be no transient tracks for photons But I am not sure if this is the correct way to do it 
-					Vertex kalmanvertex_phi = tvphi;
-					double vtxProb_Phi = TMath::Prob(kalmanvertex_phi.chi2(),(int)kalmanvertex_phi.ndof());
-					if (vtxProb_Phi < 1e-4) continue;
-					
-
-					bmmgRootTree_->K1Pt_beffit_   = track1.pt();
-					bmmgRootTree_->K1Pz_beffit_   = track1.pz();
-					bmmgRootTree_->K1Eta_beffit_  = track1.eta();
-					bmmgRootTree_->K1Phi_beffit_  = track1.phi();
-					bmmgRootTree_->K2Pt_beffit_   = track2.pt();
-					bmmgRootTree_->K2Pz_beffit_   = track2.pz();
-					bmmgRootTree_->K2Eta_beffit_  = track2.eta();
-					bmmgRootTree_->K2Phi_beffit_  = track2.phi();
-					bmmgRootTree_->PhiM_beffit_   = phiCand.mass();
-					bmmgRootTree_->PhiEta_beffit_ = phiCand.eta();
-					bmmgRootTree_->PhiPhi_beffit_ = phiCand.phi();
-					bmmgRootTree_->PhiPt_beffit_  = phiCand.pt();
-
-					KinematicConstrainedFit Kfitter;
-					bool fitSuccess = Kfitter.dobsphikkgFit(phi_transienttrk, nominalKaonMass, nominalKaonMass);
-					std::cout<< " the fit success : "<< fitSuccess << "\n";
-					if(fitSuccess != 1) continue;
-
-					math::XYZVector      pperp(track1.px() + track2.px(), track1.py() + track2.py(), 0.);
-					reco::Vertex::Point  vpoint = kalmanvertex_phi.position();
-					double chi2_pv_kalmanvtx = (PVx - vpoint.x()) * (PVx - vpoint.x()) / (PVx * PVx) +
-					(PVy - vpoint.y()) * (PVy - vpoint.y()) / (PVy * PVy) +
-					(PVz - vpoint.z()) * (PVz - vpoint.z()) / (PVz * PVz);
-					AlgebraicVector3 predefinedPV(PVx, PVy, PVz);
-					AlgebraicVector3 recoVtx( vpoint.x(), vpoint.y(), vpoint.z());
-					AlgebraicVector3 diff = predefinedPV - recoVtx;
-					TVectorD diffVector(3);
-					diffVector[0] = diff[0];
-					diffVector[1] = diff[1];
-					diffVector[2] = diff[2];
-					TMatrixD covarianceMatrix(3, 3);
-   					covarianceMatrix(0,0) = gigi.cxx();
-					covarianceMatrix(0,1) = 0.0;
-					covarianceMatrix(0,2) = 0.0;
-					covarianceMatrix(1,0) = gigi.cyx();
-					covarianceMatrix(1,1) = gigi.cyy();
-					covarianceMatrix(1,2) = 0.0;
-   					covarianceMatrix(2,0) = gigi.czx();
-  					covarianceMatrix(2,1) = gigi.czy();
-					covarianceMatrix(2,2) = gigi.czz();
-					//TMatrixD diffMatrix(3, 1);  // Column vector
-					//diffMatrix(0, 0) = diff[0];
-					//diffMatrix(1, 0) = diff[1];
-					//diffMatrix(2, 0) = diff[2];
-					TMatrixD invCovarianceMatrix = covarianceMatrix.Invert();
-					//TMatrixD result = diffMatrix.T() * invCovarianceMatrix * diffMatrix;
-					double mahalanobisDistanceSquared = diffVector * (invCovarianceMatrix * diffVector);
-					double mahalanobisDistance = std::sqrt(mahalanobisDistanceSquared);
-					if (mahalanobisDistance > 5.0) continue;
-					GlobalPoint secondaryVertex (vpoint.x(), vpoint.y(), vpoint.z());
-					GlobalPoint displacementFromBeamspot( -1*((BSx -  secondaryVertex.x()) +
-					  (secondaryVertex.z() - BSz) * BSdxdz),-1*((BSy - secondaryVertex.y())+  (secondaryVertex.z() - BSz) * BSdydz), 0);
-					reco::Vertex::Point vperp(displacementFromBeamspot.x(),displacementFromBeamspot.y(),0.);
-					double cosAlpha = vperp.Dot(pperp)/(vperp.R()*pperp.R());
-
-
-					
-					
-					
-					
-					//RefCountedKinematicParticle bs = Kfitter.getParticle();
-					//RefCountedKinematicVertex bVertex = Kfitter.getVertex();
-					//AlgebraicVector7 b_par = bs->currentState().kinematicParameters().vector();
-					//AlgebraicSymMatrix77 bs_er = bs->currentState().kinematicParametersError().matrix();
-					//GlobalError vertexPositionError  = tvphi.positionError();
-					//std::cout<< " the global position error : "<< vertexPositionError << "\n";
-					bmmgRootTree_->BsPhiGammaM_beffit_   = phigammaCand.mass() ;
-					bmmgRootTree_->BsPhiGammaEta_beffit_ = phigammaCand.eta();
-					bmmgRootTree_->BsPhiGammaPhi_beffit_ = phigammaCand.phi();
-					bmmgRootTree_->BsPhiGammaPt_beffit_  = phigammaCand.pt();
-					bmmgRootTree_->BsPhiGamma_vtxProb_   = vtxProb_Phi;
-					bmmgRootTree_->BsPhiGamma_CosineAlpha_          = cosAlpha;
-					bmmgRootTree_->BsPhiGamma_KKDCA_                = KKDCA;
-					bmmgRootTree_->BsPhiGamma_Mahalanobis_          = mahalanobisDistance;
-					bmmgRootTree_->BsPhiGamma_Chi2pv_KVFvtx_        = chi2_pv_kalmanvtx;
-					bmmgRootTree_->BsPhiGamma_Mahalanobis_          = mahalanobisDistance;
-
-
-					RefCountedKinematicTree reftree = Kfitter.getTree();
-					vector< RefCountedKinematicParticle > bs_children = reftree->finalStateParticles();
-					AlgebraicVector7 bs_par1 = bs_children[0]->currentState().kinematicParameters().vector();
-					AlgebraicVector7 bs_par2 = bs_children[1]->currentState().kinematicParameters().vector();
-					double pt1 = sqrt(bs_par1[3]*bs_par1[3]+bs_par1[4]*bs_par1[4]);
-					double pt2 = sqrt(bs_par2[3]*bs_par2[3]+bs_par2[4]*bs_par2[4]);
-					std::cout<< " the pt1 and pt2 : "<< pt1 << "\t" << pt2 << "\n";
-					bmmgRootTree_->K1Pt_beffit_   = pt1;
-					bmmgRootTree_->K2Pt_beffit_   = pt2;
-					TLorentzVector pK1;
-					double en1 = sqrt(bs_par1[3]*bs_par1[3]+bs_par1[4]*bs_par1[4]+bs_par1[5]*bs_par1[5]+bs_par1[6]*bs_par1[6]);
-					pK1.SetPxPyPzE(bs_par1[3],bs_par1[4],bs_par1[5],en1);
-					TLorentzVector pK2;
-					double en2 = sqrt(bs_par2[3]*bs_par2[3]+bs_par2[4]*bs_par2[4]+bs_par2[5]*bs_par2[5]+bs_par2[6]*bs_par2[6]);
-					pK2.SetPxPyPzE(bs_par2[3],bs_par2[4],bs_par2[5],en2);
-					TLorentzVector pPhi = pK1 + pK2;
-					bmmgRootTree_->BsPhiGamma_PhiM_fit_   = pPhi.M();
-					std::cout << " the phi mass : " << pPhi.M() << "\n";
+	ParticleFlowCandidate  pfCandVariables;
+	std::vector<ParticleFlowCandidate::PFCandidateVariables> pfCandVars = pfCandVariables.PFCandObservables(*pfCandidates);
+	if (!pfCandVars.empty()) {
+		for (size_t iPFCand = 0; iPFCand < pfCandVars.size(); ++iPFCand) {
+			const auto& pfCand = (*pfCandidates)[iPFCand];
+			if (pfCand.pt() < 0.5) continue; // Skip low momentum candidates
 			
+			if (pfCandVars.empty()) continue;
+			std::cout<<"========================================================================="<<"\n";
+			std::cout << "PFCandidate pt: " << pfCandVars[iPFCand].pt << ", eta: \n"
+			          << pfCandVars[iPFCand].eta << ", phi: " << pfCandVars[iPFCand].phi << "\n"
+					  << "PFCandidate energy: " << pfCandVars[iPFCand].energy << ", charge: " << pfCandVars[iPFCand].charge << "\n"
+					  << "PFCandidate time: " << pfCandVars[iPFCand].time << ", mass: " << pfCandVars[iPFCand].mass << "\n"
+					  << "PFCandidate ecalEnergy: " << pfCandVars[iPFCand].ecalEnergy << ", rawEcalEnergy: " << pfCandVars[iPFCand].rawEcalEnergy << "\n"
+					  << "PFCandidate hcalEnergy: " << pfCandVars[iPFCand].hcalEnergy << ", rawHcalEnergy: " << pfCandVars[iPFCand].rawHcalEnergy << "\n"
+					  << "PFCandidate hoEnergy: " << pfCandVars[iPFCand].hoEnergy << ", rawHoEnergy: " << pfCandVars[iPFCand].rawHoEnergy << "\n";
+		 std::cout<<" ========================================================================="<<"\n";
+		}// PFCandidate loop
+	}// PFCandidate empty
 
-					
-					
-					
-					
-
-				}
-			}//End of the BsToPhi(KK)Gamma loop 
-
-*/
-
-
-
-
-
-
-	
-
-
-
-
-bmmgRootTree_->fill();
+	bmmgRootTree_->fill();
 }
 
 GlobalVector RadiativeAnalysis::flightDirection(const reco::Vertex &pv, reco::Vertex &sv){

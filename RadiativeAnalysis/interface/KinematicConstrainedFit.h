@@ -65,7 +65,7 @@ class KinematicConstrainedFit{
 			const  double mass1, const double  mass2);
 		bool TrippleObjectVertexFitConvertedPhoton(
 			std::vector<reco::TransientTrack> muonTT, const double muonMass, 
-			std::vector<reco::TransientTrack> electronTT, const double eleMass);
+			std::vector<reco::TransientTrack> electronTT, const double eleMass, bool verbose = true);
 		bool TetraObjectVertexFitConvertedPhoton(
 			std::vector<reco::TransientTrack> muonTT, const double muonMass, 
 			std::vector<reco::TransientTrack> electronTT, const double eleMass);
@@ -77,10 +77,10 @@ class KinematicConstrainedFit{
 			TMatrixD& photonCovMatrix);
 		bool TetraObjectVertexFitRecoPhoton(
 			std::vector<reco::TransientTrack> muonTT,
-			std::vector<reco::TransientTrack> photonTT,
-			const double DiMuonMass, const double DiMuonSigma,
+			std::vector<reco::TransientTrack>photonTT,
+			const double DiMuonMass, const double DiMuonSigma, 
 			const std::vector<reco::Photon>& photons,
-			TMatrixD& photonCovMatrix);
+			std::vector<TMatrixD>&  photonCovMatrix);
 
 		double getBhadronProb() {return vtxprob_Bhadron;}
 		double getBhadronMass() {return mass_Bhadron;}
