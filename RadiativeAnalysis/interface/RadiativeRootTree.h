@@ -222,6 +222,59 @@ class RadiativeRootTree {
 		double photonSCBrem_[2];
 		double photonSCR9_[2];
 		double photonSCHadTowOverEm_[2];
+		
+		
+		//Particle flow candiates (photons)
+		double pfCandPt_[2];
+		double pfCandEta_[2];
+		double pfCandPhi_[2];
+		double pfCandEnergy_[2];
+		double pfCandET_[2];
+		double pfCandMass_[2];
+		int    pfCandCharge_[2];
+		double pfCandEcalEnergy_[2];
+		double pfCandRawEcalEnergy_[2];
+		double pfCandHcalEnergy_[2];
+		double pfCandRawHcalEnergy_[2];
+		double pfCandHoEnergy_[2];
+		double pfCandRawHoEnergy_[2];
+		double pfCandTime_[2];
+		double pfCandTrkIso_[2];
+		double pfCandEcalIso_[2];
+		double pfCandHcalIso_[2];
+		double pfCandCaloIso_[2];
+
+		double pfCandRefPhotonPt_[2];
+		double pfCandRefPhotonEta_[2];
+		double pfCandRefPhotonPhi_[2];
+		double pfCandRefPhotonEnergy_[2];
+		double pfCandRefPhotonET_[2];
+		double pfCandRefPhotonSigmaIEtaIEta_[2];
+		double pfCandRefPhotonSigmaIEtaIPhi_[2];
+		double pfCandRefPhotonSigmaIPhiIPhi_[2];
+		double pfCandRefPhotonSigmaEtaEta_[2];
+		double pfCandRefPhotonE1x5_[2];
+		double pfCandRefPhotonE2x5_[2];
+		double pfCandRefPhotonE3x3_[2];
+		double pfCandRefPhotonE5x5_[2];
+		double pfCandRefPhotonHcalDepth1OverEcal_[2];
+		double pfCandRefPhotonHcalDepth2OverEcal_[2];
+		double pfCandRefPhotonHcalDepth1OverEcalBc_[2];
+		double pfCandRefPhotonHcalDepth2OverEcalBc_[2];
+		double pfCandRefPhotonScEnergy_[2];
+		double pfCandRefPhotonScRawEnergy_[2];
+		double pfCandRefPhotonScEta_[2];
+		double pfCandRefPhotonScPhi_[2];
+		double pfCandRefPhotonScEtaWidth_[2];
+		double pfCandRefPhotonScPhiWidth_[2];
+		double pfCandRefPhotonScBrem_[2];
+		double pfCandRefPhotonR9_[2];
+		double pfCandRefPhotonHadTowOverEm_[2];
+		double pfCandRefPhotonMaxEnergyXtal_[2];
+		double pfCandRefPhotonEffSigmaRR_[2];
+		double pfCandRefPhotonHcalOverEcal_[7][2];
+		double pfCandRefPhotonHcalOverEcalBc_[7][2];
+
 		double DiGammaM_alone_;
 		double DiGammaEta_alone_;
 		double DiGammaPhi_alone_;

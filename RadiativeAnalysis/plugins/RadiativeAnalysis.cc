@@ -562,21 +562,69 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 			if (pfCand.pt() < 0.5) continue; // Skip low momentum candidates
 			
 			if (pfCandVars.empty()) continue;
-			std::cout<<"========================================================================="<<"\n";
-			std::cout << "PFCandidate pt: " << pfCandVars[iPFCand].pt << ", eta: \n"
-			          << pfCandVars[iPFCand].eta << ", phi: " << pfCandVars[iPFCand].phi << "\n"
-					  << "PFCandidate energy: " << pfCandVars[iPFCand].energy << ", charge: " << pfCandVars[iPFCand].charge << "\n"
-					  << "PFCandidate time: " << pfCandVars[iPFCand].time << ", mass: " << pfCandVars[iPFCand].mass << "\n"
-					  << "PFCandidate ecalEnergy: " << pfCandVars[iPFCand].ecalEnergy << ", rawEcalEnergy: " << pfCandVars[iPFCand].rawEcalEnergy << "\n"
-					  << "PFCandidate hcalEnergy: " << pfCandVars[iPFCand].hcalEnergy << ", rawHcalEnergy: " << pfCandVars[iPFCand].rawHcalEnergy << "\n"
-					  << "PFCandidate hoEnergy: " << pfCandVars[iPFCand].hoEnergy << ", rawHoEnergy: " << pfCandVars[iPFCand].rawHoEnergy << "\n";
-		 std::cout<<" ========================================================================="<<"\n";
+
+			if (pfCandVars[iPFCand].pt < 1.0) continue; // Skip low momentum candidates
+			bmmgRootTree_->pfCandPt_[iPFCand] = pfCandVars[iPFCand].pt;
+			bmmgRootTree_->pfCandEta_[iPFCand] = pfCandVars[iPFCand].eta;
+			bmmgRootTree_->pfCandPhi_[iPFCand] = pfCandVars[iPFCand].phi;
+			bmmgRootTree_->pfCandEnergy_[iPFCand] = pfCandVars[iPFCand].energy;
+			//bmmgRootTree_->pfCandET_[iPFCand] = pfCandVars[iPFCand].et;
+			bmmgRootTree_->pfCandMass_[iPFCand] = pfCandVars[iPFCand].mass;
+			bmmgRootTree_->pfCandCharge_[iPFCand] = pfCandVars[iPFCand].charge;
+			bmmgRootTree_->pfCandEcalEnergy_[iPFCand] = pfCandVars[iPFCand].ecalEnergy;
+			bmmgRootTree_->pfCandRawEcalEnergy_[iPFCand] = pfCandVars[iPFCand].rawEcalEnergy;
+			bmmgRootTree_->pfCandHcalEnergy_[iPFCand] = pfCandVars[iPFCand].hcalEnergy;
+			bmmgRootTree_->pfCandRawHcalEnergy_[iPFCand] = pfCandVars[iPFCand].rawHcalEnergy;
+			bmmgRootTree_->pfCandHoEnergy_[iPFCand] = pfCandVars[iPFCand].hoEnergy;
+			bmmgRootTree_->pfCandRawHoEnergy_[iPFCand] = pfCandVars[iPFCand].rawHoEnergy;
+			bmmgRootTree_->pfCandTime_[iPFCand] = pfCandVars[iPFCand].time;
+			//bmmgRootTree_->pfCandTrkIso_[iPFCand] = pfCandVars[iPFCand].trkIso;
+			//bmmgRootTree_->pfCandEcalIso_[iPFCand] = pfCandVars[iPFCand].ecalIso;
+			//bmmgRootTree_->pfCandHcalIso_[iPFCand] = pfCandVars[iPFCand].hcalIso;
+			//bmmgRootTree_->pfCandCaloIso_[iPFCand] = pfCandVars[iPFCand].caloIso;
+			bmmgRootTree_->pfCandRefPhotonPt_[iPFCand] = pfCandVars[iPFCand].refphotonpt;
+			bmmgRootTree_->pfCandRefPhotonEta_[iPFCand] = pfCandVars[iPFCand].refphotoneta;
+			bmmgRootTree_->pfCandRefPhotonPhi_[iPFCand] = pfCandVars[iPFCand].refphotonphi;
+			bmmgRootTree_->pfCandRefPhotonEnergy_[iPFCand] = pfCandVars[iPFCand].refphotonenergy;
+			bmmgRootTree_->pfCandRefPhotonET_[iPFCand] = pfCandVars[iPFCand].refphotonet;
+			bmmgRootTree_->pfCandRefPhotonSigmaIEtaIEta_[iPFCand] = pfCandVars[iPFCand].refphotonsigmaIEtaIEta;
+			bmmgRootTree_->pfCandRefPhotonSigmaIEtaIPhi_[iPFCand] = pfCandVars[iPFCand].refphotonsigmaIEtaIPhi;
+			bmmgRootTree_->pfCandRefPhotonSigmaIPhiIPhi_[iPFCand] = pfCandVars[iPFCand].refphotonsigmaIPhiIPhi;
+			bmmgRootTree_->pfCandRefPhotonSigmaEtaEta_[iPFCand] = pfCandVars[iPFCand].refphotonsigmaEtaEta;
+			bmmgRootTree_->pfCandRefPhotonE1x5_[iPFCand] = pfCandVars[iPFCand].refphotone1x5;
+			bmmgRootTree_->pfCandRefPhotonE2x5_[iPFCand] = pfCandVars[iPFCand].refphotone2x5;
+			bmmgRootTree_->pfCandRefPhotonE3x3_[iPFCand] = pfCandVars[iPFCand].refphotone3x3;
+			bmmgRootTree_->pfCandRefPhotonE5x5_[iPFCand] = pfCandVars[iPFCand].refphotone5x5;
+			bmmgRootTree_->pfCandRefPhotonHcalDepth1OverEcal_[iPFCand] = pfCandVars[iPFCand].refphotonhcalDepth1OverEcal;
+			bmmgRootTree_->pfCandRefPhotonHcalDepth2OverEcal_[iPFCand] = pfCandVars[iPFCand].refphotonhcalDepth2OverEcal;
+			bmmgRootTree_->pfCandRefPhotonHcalDepth1OverEcalBc_[iPFCand] = pfCandVars[iPFCand].refphotonhcalDepth1OverEcalBc;
+			bmmgRootTree_->pfCandRefPhotonHcalDepth2OverEcalBc_[iPFCand] = pfCandVars[iPFCand].refphotonhcalDepth2OverEcalBc;
+			bmmgRootTree_->pfCandRefPhotonScEnergy_[iPFCand] = pfCandVars[iPFCand].refphotonscEnergy;
+			bmmgRootTree_->pfCandRefPhotonScRawEnergy_[iPFCand] = pfCandVars[iPFCand].refphotonscRawEnergy;
+			bmmgRootTree_->pfCandRefPhotonScEta_[iPFCand] = pfCandVars[iPFCand].refphotonscEta;
+			bmmgRootTree_->pfCandRefPhotonScPhi_[iPFCand] = pfCandVars[iPFCand].refphotonscPhi;
+			bmmgRootTree_->pfCandRefPhotonScEtaWidth_[iPFCand] = pfCandVars[iPFCand].refphotonscEtaWidth;
+			bmmgRootTree_->pfCandRefPhotonScPhiWidth_[iPFCand] = pfCandVars[iPFCand].refphotonscPhiWidth;
+			bmmgRootTree_->pfCandRefPhotonScBrem_[iPFCand] = pfCandVars[iPFCand].refphotonscBrem;
+			bmmgRootTree_->pfCandRefPhotonR9_[iPFCand] = pfCandVars[iPFCand].refphotonr9;
+			bmmgRootTree_->pfCandRefPhotonHadTowOverEm_[iPFCand] = pfCandVars[iPFCand].refphotonhadTowOverEm;
+			bmmgRootTree_->pfCandRefPhotonMaxEnergyXtal_[iPFCand] = pfCandVars[iPFCand].refphotonmaxEnergyXtal;
+			bmmgRootTree_->pfCandRefPhotonEffSigmaRR_[iPFCand] = pfCandVars[iPFCand].refphotoneffSigmaRR;
+			for (size_t k = 0; k < pfCandVars[iPFCand].refphotonhcalOverEcal.size(); ++k) {
+				bmmgRootTree_->pfCandRefPhotonHcalOverEcal_[k][iPFCand] = static_cast<double>(pfCandVars[iPFCand].refphotonhcalOverEcal[k]);
+			}
+			for (size_t k = 0; k < pfCandVars[iPFCand].refphotonhcalOverEcalBc.size(); ++k) {
+				bmmgRootTree_->pfCandRefPhotonHcalOverEcalBc_[k][iPFCand] = static_cast<double>(pfCandVars[iPFCand].refphotonhcalOverEcalBc[k]);
+			}
+
 		}// PFCandidate loop
 	}// PFCandidate empty
 
 	bmmgRootTree_->fill();
 }
-
+//////////////////////////////////////////////////////////////
+////////// Helper Functions///////////////////////////////////
+//////////////////////////////////////////////////////////////
 GlobalVector RadiativeAnalysis::flightDirection(const reco::Vertex &pv, reco::Vertex &sv){
   GlobalVector res(sv.position().X() - pv.position().X(),
                     sv.position().Y() - pv.position().Y(),
