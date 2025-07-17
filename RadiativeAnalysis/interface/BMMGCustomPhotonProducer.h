@@ -59,6 +59,12 @@
 #include "CondFormats/EcalObjects/interface/EcalChannelStatus.h"
 #include "CondFormats/DataRecord/interface/EcalChannelStatusRcd.h"
 
+#include "Geometry/CaloGeometry/interface/CaloCellGeometry.h"
+#include "Geometry/CaloGeometry/interface/CaloSubdetectorGeometry.h"
+#include "Geometry/CaloTopology/interface/CaloTopology.h"
+#include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
+#include "DataFormats/EcalRecHit/interface/EcalRecHitCollections.h"
+
 
 class BMMGCustomPhotonProducer : public edm::stream::EDProducer<> {
 public:
@@ -103,6 +109,8 @@ private:
   edm::EDGetTokenT<EcalRecHitCollection> eeRecHitsToken_;
   edm::EDGetTokenT<HBHERecHitCollection> hbheRecHitsToken_;
   edm::EDGetTokenT<CaloTowerCollection> caloTowersToken_;
+  edm::ESGetToken<CaloGeometry, CaloGeometryRecord> caloGeomToken_;
+  edm::ESGetToken<CaloTopology, CaloTopologyRecord> caloTopoToken_;
   
   double minPt_;
   double maxEta_;

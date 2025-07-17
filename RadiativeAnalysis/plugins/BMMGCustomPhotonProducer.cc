@@ -27,7 +27,9 @@ BMMGCustomPhotonProducer::BMMGCustomPhotonProducer(const edm::ParameterSet& iCon
   eeRecHitsToken_       = consumes<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("eeRecHits"));
   hbheRecHitsToken_     = consumes<HBHERecHitCollection>(iConfig.getParameter<edm::InputTag>("hbheRecHits"));
   caloTowersToken_      = consumes<CaloTowerCollection>(iConfig.getParameter<edm::InputTag>("caloTowers"));
-  
+  caloGeomToken_        = esConsumes<CaloGeometry, CaloGeometryRecord>();
+  caloTopoToken_        = esConsumes<CaloTopology, CaloTopologyRecord>();
+
   // Configuration parameters
   minPt_ = iConfig.getParameter<double>("minPt");
   maxEta_ = iConfig.getParameter<double>("maxEta");
@@ -73,16 +75,14 @@ void BMMGCustomPhotonProducer::produce(edm::Event& iEvent, const edm::EventSetup
   
   Handle<CaloTowerCollection> caloTowers;
   iEvent.getByToken(caloTowersToken_, caloTowers);
-  
-  //  geometry and topology
-  ESHandle<CaloGeometry> geometryHandle;
-  iSetup.get<CaloGeometryRecord>().get(geometryHandle);
-  const CaloGeometry& geometry = *geometryHandle;
-  
-  ESHandle<CaloTopology> topologyHandle;
-  iSetup.get<CaloTopologyRecord>().get(topologyHandle);
-  const CaloTopology& topology = *topologyHandle;
-  
+
+  const auto& caloGeom              = iSetup.getData(caloGeomToken_);
+  const auto& caloTopo              = iSetup.getData(caloTopoToken_);
+
+  // ESHandle<CaloTopology> topologyHandle;
+  // iSetup.get<CaloTopologyRecord>().get(topologyHandle);
+  // const CaloTopology& topology = *topologyHandle;
+
   //  output collection
   std::unique_ptr<reco::PhotonCollection> photons(new reco::PhotonCollection());
   
@@ -96,15 +96,15 @@ void BMMGCustomPhotonProducer::produce(edm::Event& iEvent, const edm::EventSetup
       math::XYZPoint caloposition = calculateCaloPosition(sc);
       reco::Photon::ShowerShape showerShape;
       if (calculateShowerShapes_) {
-        showerShape = calculateShowerShape(sc, *ebRecHits, *eeRecHits, geometry, topology);
+        showerShape = calculateShowerShape(sc, *ebRecHits, *eeRecHits, caloGeom, caloTopo);
       }
       reco::Photon::IsolationVariables isolationVars;
       if (calculateIsolation_) {
-        isolationVars = calculateIsolation(sc, *hbheRecHits, *caloTowers, geometry);
+        isolationVars = calculateIsolation(sc, *hbheRecHits, *caloTowers, caloGeom);
       }
-      double hoe = calculateHoE(sc, *caloTowers, geometry);
+      double hoe = calculateHoE(sc, *caloTowers, caloGeom);
       reco::Photon::MIPVariables mipVars = calculateMIPVariables(sc);
-      reco::Photon::FiducialFlags fiducialFlags = calculateFiducialFlags(sc, geometry);
+      reco::Photon::FiducialFlags fiducialFlags = calculateFiducialFlags(sc, caloGeom);
       double energy = sc.energy();
       double eta = sc.eta();
       double phi = sc.phi();
@@ -114,12 +114,12 @@ void BMMGCustomPhotonProducer::produce(edm::Event& iEvent, const edm::EventSetup
       
       reco::SuperClusterRef scRef(ebSuperClusters, i);
       reco::Photon photon(
-          reco::Photon::LorentzVector(p4.x(), p4.y(), p4.z(), p4.t()),
-          caloposition,
-          scRef,
-          vtx
+          reco::Photon::Point(0, 0, 0),  // vertex position
+          scRef,                          // SuperCluster ref
+          caloposition,                   // position in ECAL
+          reco::Photon::LorentzVector(p4) // momentum
       );
-      
+
       photon.setShowerShapeVariables(showerShape);
       photon.setIsolationVariables(isolationVars);
       photon.setHadronicOverEm(hoe);
@@ -142,19 +142,19 @@ void BMMGCustomPhotonProducer::produce(edm::Event& iEvent, const edm::EventSetup
       
       reco::Photon::ShowerShape showerShape;
       if (calculateShowerShapes_) {
-        showerShape = calculateShowerShape(sc, *ebRecHits, *eeRecHits, geometry, topology);
+        showerShape = calculateShowerShape(sc, *ebRecHits, *eeRecHits, caloGeom, caloTopo);
       }
       
       reco::Photon::IsolationVariables isolationVars;
       if (calculateIsolation_) {
-        isolationVars = calculateIsolation(sc, *hbheRecHits, *caloTowers, geometry);
+        isolationVars = calculateIsolation(sc, *hbheRecHits, *caloTowers, caloGeom);
       }
       
-      double hoe = calculateHoE(sc, *caloTowers, geometry);
+      double hoe = calculateHoE(sc, *caloTowers, caloGeom);
       
       reco::Photon::MIPVariables mipVars = calculateMIPVariables(sc);
       
-      reco::Photon::FiducialFlags fiducialFlags = calculateFiducialFlags(sc, geometry);
+      reco::Photon::FiducialFlags fiducialFlags = calculateFiducialFlags(sc, caloGeom);
       
       double energy = sc.energy();
       double eta = sc.eta();
@@ -164,12 +164,11 @@ void BMMGCustomPhotonProducer::produce(edm::Event& iEvent, const edm::EventSetup
       math::XYZTLorentzVector p4(pt * cos(phi), pt * sin(phi), pt * sinh(eta), energy);
       
       reco::SuperClusterRef scRef(eeSuperClusters, i);
-      
       reco::Photon photon(
-          reco::Photon::LorentzVector(p4.x(), p4.y(), p4.z(), p4.t()),
-          caloposition,
-          scRef,
-          vtx
+          reco::Photon::Point(0, 0, 0),  // vertex position
+          scRef,                          // SuperCluster ref
+          caloposition,                   // position in ECAL
+          reco::Photon::LorentzVector(p4) // momentum
       );
       
       photon.setShowerShapeVariables(showerShape);
@@ -357,7 +356,7 @@ void BMMGCustomPhotonProducer::beginStream(edm::StreamID) {
   // Nothing to do here for now
 }
 
-// ------------ method called once each stream after processing all runs, lumis and events  ------------
+// ------------ method called once each stream after processing all runs, lumis or events  ------------
 void BMMGCustomPhotonProducer::endStream() {
   // Nothing to do here for now
 }
