@@ -142,7 +142,7 @@ void MMGVertexFitExample::beginJob()
 {
   //create a histogram
 
-  hBsMass = new TH1D("hBsMass", "hBsMass", 50, 3, 7);
+  hBsMass = new TH1D("hBsMass", "hBsMass", 100, 5, 6);
 
   cout << "HERE MMGVertexFitExample::beginJob()" << endl;
 }

@@ -45,10 +45,10 @@ print('Number of files: ', len(files))
 
 # input files (up to 255 files accepted)
 
-# process.source = cms.Source('PoolSource', fileNames =cms.untracked.vstring("file:") )
-process.source = cms.Source('PoolSource', fileNames =cms.untracked.vstring(files) )
+process.source = cms.Source('PoolSource', fileNames =cms.untracked.vstring("file:/eos/user/s/sslawins/condor_output/BsToMuMuGamma_filtered.root") )
+# process.source = cms.Source('PoolSource', fileNames =cms.untracked.vstring(files) )
 process.source.skipEvents = cms.untracked.uint32(0)
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10000))
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1))
 
 process.load("TrackingTools/TransientTrack/TransientTrackBuilder_cfi")
 
