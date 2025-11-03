@@ -47,3 +47,21 @@ git clone https://github.com/mumuhamm/GeneratorInterface-EvtGenInterface.git Gen
 ### Satements :  
 Comming soon
 
+### Setup for vertex fitting with photons:
+```
+scram project CMSSW_14_1_1
+cd CMSSW_14_1_1/src
+cmsenv
+git cms-init
+git remote add -f https://github.com/sslawins/cmssw.git
+git checkout photonKinematicFit
+git cms-addpkg RecoVertex/KinematicFit
+git cms-addpkg RecoVertex/KinematicFitPrimitives
+git cms-addpkg RecoEcal/EgammaCoreTools
+scram b -j8
+
+git clone https://github.com/mumuhamm/BsToMuMuGammaAnalysis.git
+cd BsToMuMuGammaAnalysis/RadiativeAnalysis
+git checkout sslawins_v2
+scram b -j8
+```
