@@ -218,8 +218,17 @@ process.bmmgVertexAnalysis = cms.EDAnalyzer("RadiativeAnalysis",
                                           EtaMesonPDGMass               = cms.double(0.5478),
                                           EtaPrimePDGMass               = cms.double(0.9577),
                                           PsiPDGMass                    = cms.double(3.6860),
-                                          outputFile                    = cms.untracked.string(options.outputFile),                                          
+                                          outputFile                    = cms.untracked.string(options.outputFile),
+                                          xgboost_models = cms.vstring(),
+                                          xgboost_variable_names = cms.vstring(),                                        
 )
+
+xgboost_models = [
+    ('Run2022-20231030-1731-Event0', 'run3muonmva'),
+]
+for entry in xgboost_models:
+    process.bmmgVertexAnalysis.xgboost_models.append(entry[0]),
+    process.bmmgVertexAnalysis.xgboost_variable_names.append(entry[1])
 
 process.load("MuonAnalysis.MuonAssociators.patMuonsWithTrigger_cff")
 import PhysicsTools.PatAlgos.producersLayer1.muonProducer_cfi
