@@ -309,6 +309,13 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 			nominalMuonMass, nominalKaonMass);
 			bmmgRootTree_->vertexTypeFlag_ = 3;
 		}
+
+		if(muons->size()==2){
+			MuonMVAID muonMVAIDProducer(theConfig_);
+			vector<float> muonMVAIDs = muonMVAIDProducer.produce(*muons);
+			bmmgRootTree_->mu1MVAScore_ = muonMVAIDs[0];
+			bmmgRootTree_->mu2MVAScore_ = muonMVAIDs[1];
+		}
 		
         
 		

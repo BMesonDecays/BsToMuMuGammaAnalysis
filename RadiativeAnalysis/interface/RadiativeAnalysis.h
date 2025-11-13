@@ -61,6 +61,7 @@
 #include "DataFormats/PatCandidates/interface/TriggerObjectStandAlone.h"
 #include "DataFormats/PatCandidates/interface/PackedTriggerPrescales.h"
 #include <TLorentzVector.h>
+#include "BsToMuMuGammaAnalysis/run3mvaid/interface/MuonMVAID.h"
 
 //#include "HLTrigger/HLTcore/interface/HLTPrescaleProvider.h"
 

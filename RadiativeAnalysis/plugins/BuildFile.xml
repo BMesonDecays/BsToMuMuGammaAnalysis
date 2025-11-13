@@ -14,6 +14,7 @@
 <use   name="clhep"/>
 <use   name="boost"/>
 <use   name="root"/>
+<use   name="BsToMuMuGammaAnalysis/run3mvaid"/>
 <use   name="DataFormats/Math"/>
 <use   name="DataFormats/TrackReco"/>
 <use   name="DataFormats/MuonReco"/>

@@ -79,6 +79,8 @@ void RadiativeRootTree::createTree(const std::string filename)
   bmmgTree_->Branch("Mu2TrackerHits", &Mu2TrackerHits_,"Mu2TrackerHits/I");
   bmmgTree_->Branch("Mu2isGood", &Mu2isGood_,"Mu2isGood/I");
   bmmgTree_->Branch("Mu2InnerTrkHighQuality", &Mu2InnerTrkHighQuality_,"Mu2InnerTrkHighQuality/I");
+  bmmgTree_->Branch("mu1MVAScore", &mu1MVAScore_,"mu1MVAScore/D");
+  bmmgTree_->Branch("mu2MVAScore", &mu2MVAScore_,"mu2MVAScore/D");
   bmmgTree_->Branch("DiMuonM_beffit", &DiMuonM_beffit_,"DiMuonM_beffit/D");
   bmmgTree_->Branch("DiMuonEta_beffit", &DiMuonEta_beffit_,"DiMuonEta_beffit/D");
   bmmgTree_->Branch("DiMuonPhi_beffit", &DiMuonPhi_beffit_,"DiMuonPhi_beffit/D");
@@ -305,6 +307,8 @@ void RadiativeRootTree::resetEntries()
   Mu2TrackerHits_ = -9999999;
   Mu2isGood_ = -9999999;
   Mu2InnerTrkHighQuality_ = -9999999;
+  mu1MVAScore_ = -9999999;
+  mu2MVAScore_ = -9999999;
 	DiMuonM_beffit_ = -9999999;
 	DiMuonEta_beffit_ = -9999999;
 	DiMuonPhi_beffit_ = -9999999;
@@ -566,6 +570,8 @@ void RadiativeRootTree::setBranchAddresses(){
   bmmgTree_->SetBranchAddress("Mu2TrackerHits", &Mu2TrackerHits_);
   bmmgTree_->SetBranchAddress("Mu2isGood", &Mu2isGood_);
   bmmgTree_->SetBranchAddress("Mu2InnerTrkHighQuality", &Mu2InnerTrkHighQuality_);
+  bmmgTree_->SetBranchAddress("mu1MVAScore", &mu1MVAScore_);
+  bmmgTree_->SetBranchAddress("mu2MVAScore", &mu2MVAScore_);
   bmmgTree_->SetBranchAddress("DiMuonM_beffit", &DiMuonM_beffit_);
   bmmgTree_->SetBranchAddress("DiMuonEta_beffit", &DiMuonEta_beffit_);
   bmmgTree_->SetBranchAddress("DiMuonPhi_beffit", &DiMuonPhi_beffit_);

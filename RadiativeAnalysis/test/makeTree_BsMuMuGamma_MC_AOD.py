@@ -11,7 +11,7 @@ import glob
 
 options = VarParsing("analysis")
 options.register("nEvents", 5000, VarParsing.multiplicity.singleton, VarParsing.varType.int, "Number of events to process")
-#options.register("outputFile", "default_output.root", VarParsing.multiplicity.singleton, VarParsing.varType.string, "Output file name")
+# options.register("outputFile", "default_output.root", VarParsing.multiplicity.singleton, VarParsing.varType.string, "Output file name")
 options.parseArguments()
 
 process = cms.Process("MUMUGamma")
@@ -68,19 +68,23 @@ else:
 
 
 """
-process.source = cms.Source("PoolSource",
-                            duplicateCheckMode = cms.untracked.string('noDuplicateCheck'),
-                            skipEvents = cms.untracked.uint32(0),
-                            fileNames = cms.untracked.vstring(
-#'root://cms-xrd-global.cern.ch//store/mc/RunIISummer20UL16MiniAODAPVv2/BdToKPi_BMuonFilter_SoftQCDnonD_TuneCP5_13TeV-pythia8-evtgen/MINIAODSIM/BPH_106X_mcRun2_asymptotic_preVFP_v11-v2/2550000/220F4B68-DEFE-334E-9FCD-ECD84A0737DC.root',
-#'root://xrootd-cms.infn.it//store/data/Run2023D/ParkingDoubleMuonLowMass0/MINIAOD/22Sep2023_v1-v1/2550000/0419eec5-0ae4-4732-8f06-6d72dd25a149.root',
-#'root:///eos/user/a/almuhamm/05.PrivateMC/HeavyFlavorProduction/CMSSW_14_0_17/src/PrivateMCProduction/private_BsToMuMuGamma_Run3.root'
-'root:///eos/user/a/almuhamm/MuSampleSharedDirectory/BPAG_AOD/private_BsToJpsiEta_Run3.root'
-#'root:///eos/home-a/almuhamm/05.PrivateMC/HeavyFlavorProduction/CMSSW_12_4_11_patch3/src/PrivateMCProduction/private_BsToMuMuGamma_Run3.root'
-#'root://cms-xrd-global.cern.ch//store/mc/Run3Winter23MiniAOD/BsToMuMuG_MuGFilter_SoftQCDnonD_TuneCP5_13p6TeV_pythia8-evtgen/MINIAODSIM/GTv3Digi_GTv3_MiniGTv3_126X_mcRun3_2023_forPU65_v3-v2/2540000/27f6ecbd-6839-49f9-86e7-b3c957ae1f46.root',
-)
-)
+# process.source = cms.Source("PoolSource",
+#                             duplicateCheckMode = cms.untracked.string('noDuplicateCheck'),
+#                             skipEvents = cms.untracked.uint32(0),
+#                             fileNames = cms.untracked.vstring(
+# #'root://cms-xrd-global.cern.ch//store/mc/RunIISummer20UL16MiniAODAPVv2/BdToKPi_BMuonFilter_SoftQCDnonD_TuneCP5_13TeV-pythia8-evtgen/MINIAODSIM/BPH_106X_mcRun2_asymptotic_preVFP_v11-v2/2550000/220F4B68-DEFE-334E-9FCD-ECD84A0737DC.root',
+# #'root://xrootd-cms.infn.it//store/data/Run2023D/ParkingDoubleMuonLowMass0/MINIAOD/22Sep2023_v1-v1/2550000/0419eec5-0ae4-4732-8f06-6d72dd25a149.root',
+# #'root:///eos/user/a/almuhamm/05.PrivateMC/HeavyFlavorProduction/CMSSW_14_0_17/src/PrivateMCProduction/private_BsToMuMuGamma_Run3.root'
+# 'root:///eos/user/a/almuhamm/MuSampleSharedDirectory/BPAG_AOD/private_BsToJpsiEta_Run3.root'
+# #'root:///eos/home-a/almuhamm/05.PrivateMC/HeavyFlavorProduction/CMSSW_12_4_11_patch3/src/PrivateMCProduction/private_BsToMuMuGamma_Run3.root'
+# #'root://cms-xrd-global.cern.ch//store/mc/Run3Winter23MiniAOD/BsToMuMuG_MuGFilter_SoftQCDnonD_TuneCP5_13p6TeV_pythia8-evtgen/MINIAODSIM/GTv3Digi_GTv3_MiniGTv3_126X_mcRun3_2023_forPU65_v3-v2/2540000/27f6ecbd-6839-49f9-86e7-b3c957ae1f46.root',
+# )
+# )
 
+process.options.numberOfThreads=cms.untracked.uint32(2)
+process.options.numberOfStreams=cms.untracked.uint32(1)
+
+process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring())
 """
 /eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToJpsiEta_MCTunesRun3ECM13p6TeV/BsToJpsiEta_CMSSW_12_4_11_patch3_09_01_2024/250109_235331/0000
 /eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BdToKStarGamma_MCTunesRun3ECM13p6TeV/BdToKStarGamma_CMSSW_12_4_11_patch3_23_12_2024/250113_144624:
@@ -112,22 +116,22 @@ process.source = cms.Source("PoolSource",
 """
 
 
-#prefixPath4 = '/eos/user/a/almuhamm/MuSampleSharedDirectory/BPAG_AOD/mmgamma/0000'
-prefixPath1 ='/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToJpsiGamma_MCTunesRun3ECM13p6TeV/BsToJpsiGamma_CMSSW_12_4_11_patch3_19_01_2025/250119_174005/0001/'
-prefixPath2 ='/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToPhiGamma_MCTunesRun3ECM13p6TeV/BsToPhiGamma_CMSSW_12_4_11_patch3_06_12_2024/241206_105826/0000/'
-prefixPath3 ='/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToKStarGamma_MCTunesRun3ECM13p6TeV/BsToKStarGamma_CMSSW_12_4_11_patch3_02_01_2024/250110_222730/0001/'
-prefixPath4 = '/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToMuMuGamma_MCTunesRun3ECM13p6TeV/BsToMuMuGamma_CMSSW_12_4_11_patch3_14_12_2024/241214_121515/0000'
-#prefixPath ='/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToJpsiPi0_MCTunesRun3ECM13p6TeV/BsToJpsiPi0_CMSSW_12_4_11_patch3_30_11_2024/241209_175957/0000'
-prefixPath5 = '/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToJpsiEta_MCTunesRun3ECM13p6TeV/BsToJpsiEta_CMSSW_12_4_11_patch3_09_01_2024/250109_235331/0000'
-fileList1 = glob.glob(prefixPath1+'/*.root')
-fileList2 = glob.glob(prefixPath2+'/*.root')
-fileList3 = glob.glob(prefixPath3+'/*.root')
-fileList4 = glob.glob(prefixPath4+'/*.root')
-fileList5 = glob.glob(prefixPath5+'/*.root')
-#fileList =  fileList1 + fileList2 + fileList3 + fileList4 + fileList5
-#random.shuffle(fileList)
-fileList_mix = ['file:'+aFile for aFile in fileList5]
-process.source.fileNames = fileList_mix
+# #prefixPath4 = '/eos/user/a/almuhamm/MuSampleSharedDirectory/BPAG_AOD/mmgamma/0000'
+# prefixPath1 ='/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToJpsiGamma_MCTunesRun3ECM13p6TeV/BsToJpsiGamma_CMSSW_12_4_11_patch3_19_01_2025/250119_174005/0001/'
+# prefixPath2 ='/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToPhiGamma_MCTunesRun3ECM13p6TeV/BsToPhiGamma_CMSSW_12_4_11_patch3_06_12_2024/241206_105826/0000/'
+# prefixPath3 ='/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToKStarGamma_MCTunesRun3ECM13p6TeV/BsToKStarGamma_CMSSW_12_4_11_patch3_02_01_2024/250110_222730/0001/'
+# prefixPath4 = '/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToMuMuGamma_MCTunesRun3ECM13p6TeV/BsToMuMuGamma_CMSSW_12_4_11_patch3_14_12_2024/241214_121515/0000'
+# #prefixPath ='/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToJpsiPi0_MCTunesRun3ECM13p6TeV/BsToJpsiPi0_CMSSW_12_4_11_patch3_30_11_2024/241209_175957/0000'
+# prefixPath5 = '/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToJpsiEta_MCTunesRun3ECM13p6TeV/BsToJpsiEta_CMSSW_12_4_11_patch3_09_01_2024/250109_235331/0000'
+# fileList1 = glob.glob(prefixPath1+'/*.root')
+# fileList2 = glob.glob(prefixPath2+'/*.root')
+# fileList3 = glob.glob(prefixPath3+'/*.root')
+# fileList4 = glob.glob(prefixPath4+'/*.root')
+# fileList5 = glob.glob(prefixPath5+'/*.root')
+# #fileList =  fileList1 + fileList2 + fileList3 + fileList4 + fileList5
+# #random.shuffle(fileList)
+# fileList_mix = ['file:'+aFile for aFile in fileList5]
+# process.source.fileNames = fileList_mix
 
 
 
@@ -220,7 +224,7 @@ process.bmmgVertexAnalysis = cms.EDAnalyzer("RadiativeAnalysis",
                                           PsiPDGMass                    = cms.double(3.6860),
                                           outputFile                    = cms.untracked.string(options.outputFile),
                                           xgboost_models = cms.vstring(),
-                                          xgboost_variable_names = cms.vstring(),                                        
+                                          xgboost_variable_names = cms.vstring(),
 )
 
 xgboost_models = [

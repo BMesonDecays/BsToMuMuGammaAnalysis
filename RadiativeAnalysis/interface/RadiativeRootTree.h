@@ -88,6 +88,8 @@ class RadiativeRootTree {
 		int Mu2TrackerHits_ ;
 		int Mu2isGood_ ;
 		int Mu2InnerTrkHighQuality_ ;
+		double mu1MVAScore_;
+		double mu2MVAScore_;
 
 		
 		double DiMuonM_beffit_;
