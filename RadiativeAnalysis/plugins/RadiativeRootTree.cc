@@ -128,7 +128,8 @@ void RadiativeRootTree::createTree(const std::string filename)
   bmmgTree_->Branch("BsCt2DPVClosestZOld", &BsCt2DPVClosestZOld_,"BsCt2DPVClosestZOld/D");
   bmmgTree_->Branch("BsCtErr2DOld", &BsCtErr2DOld_,"BsCtErr2DOld/D");
   bmmgTree_->Branch("BsCt2DOld", &BsCt2DOld_,"BsCt2DOld/D");
-  bmmgTree_->Branch("HadronMass_fromVertexFit", &HadronMass_fromVertexFit_,"HadronMass_fromVertexFit/D");
+  bmmgTree_->Branch("HadronMass_fromVertexFitConPhoton", &HadronMass_fromVertexFitConPhoton_,"HadronMass_fromVertexFitConPhoton/D");
+  bmmgTree_->Branch("HadronMass_fromVertexFitRecoPhoton", &HadronMass_fromVertexFitRecoPhoton_,"HadronMass_fromVertexFitRecoPhoton/D");
   bmmgTree_->Branch("vertexTypeFlag", &vertexTypeFlag_,"vertexTypeFlag/I");
   bmmgTree_->Branch("PFECal_SC_Eta", &PFECal_SC_Eta_,"PFECal_SC_Eta/D");
   bmmgTree_->Branch("PFECal_SC_Phi", &PFECal_SC_Phi_,"PFECal_SC_Phi/D");
@@ -153,11 +154,6 @@ void RadiativeRootTree::createTree(const std::string filename)
   bmmgTree_->Branch("PFECAL_RecHit_EE_ix", &PFECAL_RecHit_EE_ix_,"PFECAL_RecHit_EE_ix/D");
   bmmgTree_->Branch("PFECAL_RecHit_EE_iy", &PFECAL_RecHit_EE_iy_,"PFECAL_RecHit_EE_iy/D");
   bmmgTree_->Branch("PFECAL_RecHit_EE_zside", &PFECAL_RecHit_EE_zside_,"PFECAL_RecHit_EE_zside/D");
-
-
-
-
- 
 
   bmmgTree_->Branch("photonMultiplicity", &photonMultiplicity_,"photonMultiplicity/I"); 
   bmmgTree_->Branch("isFourBody",&isFourBody_,"isFourBody/I");
@@ -198,6 +194,60 @@ void RadiativeRootTree::createTree(const std::string filename)
   bmmgTree_->Branch("photonSCR9",&photonSCR9_,"photonSCR9[2]/D");
   bmmgTree_->Branch("photonSCHadTowOverEm",&photonSCHadTowOverEm_,"photonSCHadTowOverEm[2]/D");
 
+
+  bmmgTree_->Branch("pfCandMultiplicity",&pfCandMultiplicity_,"pfCandMultiplicity/I");
+  bmmgTree_->Branch("pfCandPt",pfCandPt_,"pfCandPt[2]/D");
+  bmmgTree_->Branch("pfCandEta",pfCandEta_,"pfCandEta[2]/D");
+  bmmgTree_->Branch("pfCandPhi",pfCandPhi_,"pfCandPhi[2]/D");
+  bmmgTree_->Branch("pfCandEnergy",pfCandEnergy_,"pfCandEnergy[2]/D");
+  bmmgTree_->Branch("pfCandET",pfCandET_,"pfCandET[2]/D");
+  bmmgTree_->Branch("pfCandMass",pfCandMass_,"pfCandMass[2]/D");
+  bmmgTree_->Branch("pfCandCharge",pfCandCharge_,"pfCandCharge[2]/I");
+  bmmgTree_->Branch("pfCandEcalEnergy",pfCandEcalEnergy_,"pfCandEcalEnergy[2]/D"); 
+  bmmgTree_->Branch("pfCandRawEcalEnergy",pfCandRawEcalEnergy_,"pfCandRawEcalEnergy[2]/D");
+  bmmgTree_->Branch("pfCandHcalEnergy",pfCandHcalEnergy_,"pfCandHcalEnergy[2]/D");
+  bmmgTree_->Branch("pfCandRawHcalEnergy",pfCandRawHcalEnergy_,"pfCandRawHcalEnergy[2]/D");
+  bmmgTree_->Branch("pfCandHoEnergy",pfCandHoEnergy_,"pfCandHoEnergy[2]/D");
+  bmmgTree_->Branch("pfCandRawHoEnergy",pfCandRawHoEnergy_,"pfCandRawHoEnergy[2]/D");
+  bmmgTree_->Branch("pfCandTime",pfCandTime_,"pfCandTime[2]/D");
+  bmmgTree_->Branch("pfCandTrkIso",pfCandTrkIso_,"pfCandTrkIso[2]/D");
+  bmmgTree_->Branch("pfCandEcalIso",pfCandEcalIso_,"pfCandEcalIso[2]/D");
+  bmmgTree_->Branch("pfCandHcalIso",pfCandHcalIso_,"pfCandHcalIso[2]/D");
+  bmmgTree_->Branch("pfCandCaloIso",pfCandCaloIso_,"pfCandCaloIso[2]/D");
+  bmmgTree_->Branch("pfCandRefPhotonPt",pfCandRefPhotonPt_,"pfCandRefPhotonPt[2]/D");
+  bmmgTree_->Branch("pfCandRefPhotonEta",pfCandRefPhotonEta_,"pfCandRefPhotonEta[2]/D");
+  bmmgTree_->Branch("pfCandRefPhotonPhi",pfCandRefPhotonPhi_,"pfCandRefPhotonPhi[2]/D");
+  bmmgTree_->Branch("pfCandRefPhotonEnergy",pfCandRefPhotonEnergy_,"pfCandRefPhotonEnergy[2]/D");
+  bmmgTree_->Branch("pfCandRefPhotonET",pfCandRefPhotonET_,"pfCandRefPhotonET[2]/D");
+  bmmgTree_->Branch("pfCandRefPhotonSigmaIEtaIEta",pfCandRefPhotonSigmaIEtaIEta_,"pfCandRefPhotonSigmaIEtaIEta[2]/D");
+  bmmgTree_->Branch("pfCandRefPhotonSigmaIEtaIPhi",pfCandRefPhotonSigmaIEtaIPhi_,"pfCandRefPhotonSigmaIEtaIPhi[2]/D");
+  bmmgTree_->Branch("pfCandRefPhotonSigmaIPhiIPhi",pfCandRefPhotonSigmaIPhiIPhi_,"pfCandRefPhotonSigmaIPhiIPhi[2]/D");
+  bmmgTree_->Branch("pfCandRefPhotonSigmaEtaEta",pfCandRefPhotonSigmaEtaEta_,"pfCandRefPhotonSigmaEtaEta[2]/D");
+  bmmgTree_->Branch("pfCandRefPhotonE1x5",pfCandRefPhotonE1x5_,"pfCandRefPhotonE1x5[2]/D");
+  bmmgTree_->Branch("pfCandRefPhotonE2x5",pfCandRefPhotonE2x5_,"pfCandRefPhotonE2x5[2]/D");
+  bmmgTree_->Branch("pfCandRefPhotonE3x3",pfCandRefPhotonE3x3_,"pfCandRefPhotonE3x3[2]/D");
+  bmmgTree_->Branch("pfCandRefPhotonE5x5",pfCandRefPhotonE5x5_,"pfCandRefPhotonE5x5[2]/D");
+  bmmgTree_->Branch("pfCandRefPhotonHcalDepth1OverEcal",pfCandRefPhotonHcalDepth1OverEcal_,"pfCandRefPhotonHcalDepth1OverEcal[2]/D");
+  bmmgTree_->Branch("pfCandRefPhotonHcalDepth2OverEcal",pfCandRefPhotonHcalDepth2OverEcal_,"pfCandRefPhotonHcalDepth2OverEcal[2]/D");
+  bmmgTree_->Branch("pfCandRefPhotonHcalDepth1OverEcalBc",pfCandRefPhotonHcalDepth1OverEcalBc_,"pfCandRefPhotonHcalDepth1OverEcalBc[2]/D");
+  bmmgTree_->Branch("pfCandRefPhotonHcalDepth2OverEcalBc",pfCandRefPhotonHcalDepth2OverEcalBc_,"pfCandRefPhotonHcalDepth2OverEcalBc[2]/D");
+  bmmgTree_->Branch("pfCandRefPhotonScEnergy",pfCandRefPhotonScEnergy_,"pfCandRefPhotonScEnergy[2]/D");
+  bmmgTree_->Branch("pfCandRefPhotonScRawEnergy",pfCandRefPhotonScRawEnergy_,"pfCandRefPhotonScRawEnergy[2]/D");
+  bmmgTree_->Branch("pfCandRefPhotonScEta",pfCandRefPhotonScEta_,"pfCandRefPhotonScEta[2]/D");
+  bmmgTree_->Branch("pfCandRefPhotonScPhi",pfCandRefPhotonScPhi_,"pfCandRefPhotonScPhi[2]/D");
+  bmmgTree_->Branch("pfCandRefPhotonScEnergy",pfCandRefPhotonScEnergy_,"pfCandRefPhotonScEnergy[2]/D");
+  bmmgTree_->Branch("pfCandRefPhotonScRawEnergy",pfCandRefPhotonScRawEnergy_,"pfCandRefPhotonScRawEnergy[2]/D");
+  bmmgTree_->Branch("pfCandRefPhotonScEta",pfCandRefPhotonScEta_,"pfCandRefPhotonScEta[2]/D");
+  bmmgTree_->Branch("pfCandRefPhotonScPhi",pfCandRefPhotonScPhi_,"pfCandRefPhotonScPhi[2]/D");
+  bmmgTree_->Branch("pfCandRefPhotonScEtaWidth",pfCandRefPhotonScEtaWidth_,"pfCandRefPhotonScEtaWidth[2]/D");
+  bmmgTree_->Branch("pfCandRefPhotonScPhiWidth",pfCandRefPhotonScPhiWidth_,"pfCandRefPhotonScPhiWidth[2]/D");
+  bmmgTree_->Branch("pfCandRefPhotonScBrem",pfCandRefPhotonScBrem_,"pfCandRefPhotonScBrem[2]/D");  
+  bmmgTree_->Branch("pfCandRefPhotonR9",pfCandRefPhotonR9_,"pfCandRefPhotonR9[2]/D");
+  bmmgTree_->Branch("pfCandRefPhotonHadTowOverEm",pfCandRefPhotonHadTowOverEm_,"pfCandRefPhotonHadTowOverEm[2]/D");
+  bmmgTree_->Branch("pfCandRefPhotonMaxEnergyXtal",pfCandRefPhotonMaxEnergyXtal_,"pfCandRefPhotonMaxEnergyXtal[2]/D");
+  bmmgTree_->Branch("pfCandRefPhotonEffSigmaRR",pfCandRefPhotonEffSigmaRR_,"pfCandRefPhotonEffSigmaRR[2]/D");  
+  bmmgTree_->Branch("pfCandRefPhotonHcalOverEcal",pfCandRefPhotonHcalOverEcal_,"pfCandRefPhotonHcalOverEcal[7][2]/D");
+  bmmgTree_->Branch("pfCandRefPhotonHcalOverEcalBc",pfCandRefPhotonHcalOverEcalBc_,"pfCandRefPhotonHcalOverEcalBc[7][2]/D");
 
   bmmgTree_->Branch("DiGammaM_alone",&DiGammaM_alone_,"DiGammaM_alone/D");
   bmmgTree_->Branch("DiGammaEta_alone",&DiGammaEta_alone_,"DiGammaEta_alone/D");
@@ -330,7 +380,8 @@ void RadiativeRootTree::resetEntries()
 	BsPhi_beffit_ = -9999999;
 	BsPt_beffit_ = -9999999;
 	Bs_vtxProb_ = -9999999;
-  HadronMass_fromVertexFit_ = -9999999;
+  HadronMass_fromVertexFitConPhoton_ = -9999999;
+  HadronMass_fromVertexFitRecoPhoton_ = -9999999;
   BsCt3D_ = -9999999;
   BsCt2D_ = -9999999;
   BsCt2DBS_ = -9999999;
@@ -425,6 +476,64 @@ void RadiativeRootTree::resetEntries()
 	photonSCR9_[j]             = -9999999;
 	photonSCHadTowOverEm_[j]   = -9999999;
   }
+
+  //Resetting the particle flow candidates
+  pfCandMultiplicity_ = -9999999; 
+  for(size_t j=0; j<2;++j){
+    pfCandPt_[j]                = -9999999;   
+    pfCandEta_[j]               = -9999999;
+    pfCandPhi_[j]               = -9999999;
+    pfCandEnergy_[j]            = -9999999;
+    pfCandET_[j]                = -9999999;
+    pfCandMass_[j]              = -9999999;
+    pfCandCharge_[j]            = -9999999;
+    pfCandEcalEnergy_[j]        = -9999999;                 
+    pfCandRawEcalEnergy_[j]     = -9999999;
+    pfCandHcalEnergy_[j]        = -9999999;
+    pfCandRawHcalEnergy_[j]     = -9999999;
+    pfCandHoEnergy_[j]          = -9999999;
+    pfCandRawHoEnergy_[j]       = -9999999;
+    pfCandTime_[j]              = -9999999;
+    pfCandTrkIso_[j]            = -9999999;
+    pfCandEcalIso_[j]           = -9999999;
+    pfCandHcalIso_[j]           = -9999999;
+    pfCandCaloIso_[j]           = -9999999;       
+    pfCandRefPhotonPt_[j]       = -9999999;
+    pfCandRefPhotonEta_[j]      = -9999999;
+    pfCandRefPhotonPhi_[j]      = -9999999;
+    pfCandRefPhotonEnergy_[j]   = -9999999;
+    pfCandRefPhotonET_[j]       = -9999999;
+    pfCandRefPhotonSigmaIEtaIEta_[j] = -9999999;
+    pfCandRefPhotonSigmaIEtaIPhi_[j] = -9999999;
+    pfCandRefPhotonSigmaIPhiIPhi_[j] = -9999999;
+    pfCandRefPhotonSigmaEtaEta_[j] = -9999999;
+    pfCandRefPhotonE1x5_[j]    = -9999999;
+    pfCandRefPhotonE2x5_[j]    = -9999999;
+    pfCandRefPhotonE3x3_[j]    = -9999999;
+    pfCandRefPhotonE5x5_[j]    = -9999999;
+    pfCandRefPhotonHcalDepth1OverEcal_[j] = -9999999;
+    pfCandRefPhotonHcalDepth2OverEcal_[j] = -9999999;
+    pfCandRefPhotonHcalDepth1OverEcalBc_[j] = -9999999;
+    pfCandRefPhotonHcalDepth2OverEcalBc_[j] = -9999999;
+    pfCandRefPhotonScEnergy_[j] = -9999999;
+    pfCandRefPhotonScRawEnergy_[j] = -9999999;
+    pfCandRefPhotonScEta_[j]    = -9999999;
+    pfCandRefPhotonScPhi_[j]    = -9999999;
+    pfCandRefPhotonScEtaWidth_[j] = -9999999;
+    pfCandRefPhotonScPhiWidth_[j] = -9999999;
+    pfCandRefPhotonScBrem_[j]   = -9999999;
+    pfCandRefPhotonR9_[j]       = -9999999;
+    pfCandRefPhotonHadTowOverEm_[j] = -9999999;
+    pfCandRefPhotonMaxEnergyXtal_[j] = -9999999;
+    pfCandRefPhotonEffSigmaRR_[j] = -9999999;
+    for(size_t i=0; i<7; ++i){
+      pfCandRefPhotonHcalOverEcal_[i][j] = -9999999;
+      pfCandRefPhotonHcalOverEcalBc_[i][j] = -9999999;
+    }
+  }
+
+
+
 
 	DiGammaM_alone_          = -9999999;
 	DiGammaEta_alone_        = -9999999;
@@ -591,7 +700,8 @@ void RadiativeRootTree::setBranchAddresses(){
   bmmgTree_->SetBranchAddress("BsEta_beffit", &BsEta_beffit_);
   bmmgTree_->SetBranchAddress("BsPhi_beffit", &BsPhi_beffit_);
   bmmgTree_->SetBranchAddress("BsPt_beffit", &BsPt_beffit_);
-  bmmgTree_->SetBranchAddress("HadronMass_fromVertexFit", &HadronMass_fromVertexFit_);
+  bmmgTree_->SetBranchAddress("HadronMass_fromVertexFitConPhoton", &HadronMass_fromVertexFitConPhoton_);
+  bmmgTree_->SetBranchAddress("HadronMass_fromVertexFitRecoPhoton", &HadronMass_fromVertexFitRecoPhoton_);
   bmmgTree_->SetBranchAddress("Bs_vtxProb", &Bs_vtxProb_);
   bmmgTree_->SetBranchAddress("BsCt3D", &BsCt3D_);
   bmmgTree_->SetBranchAddress("BsCt2D", &BsCt2D_);
@@ -681,6 +791,59 @@ void RadiativeRootTree::setBranchAddresses(){
   bmmgTree_->SetBranchAddress("photonSCBrem", &photonSCBrem_);
   bmmgTree_->SetBranchAddress("photonSCR9", &photonSCR9_);
   bmmgTree_->SetBranchAddress("photonSCHadTowOverEm", &photonSCHadTowOverEm_);
+  
+  bmmgTree_->SetBranchAddress("pfCandMultiplicity", &pfCandMultiplicity_ );
+  bmmgTree_->SetBranchAddress("pfCandPt", pfCandPt_ );
+  bmmgTree_->SetBranchAddress("pfCandEta", pfCandEta_ );
+  bmmgTree_->SetBranchAddress("pfCandPhi", pfCandPhi_ );
+  bmmgTree_->SetBranchAddress("pfCandEnergy", pfCandEnergy_ );    
+  bmmgTree_->SetBranchAddress("pfCandET", pfCandET_ );
+  bmmgTree_->SetBranchAddress("pfCandMass", pfCandMass_ );
+  bmmgTree_->SetBranchAddress("pfCandCharge", pfCandCharge_ );
+  bmmgTree_->SetBranchAddress("pfCandEcalEnergy", pfCandEcalEnergy_ );
+  bmmgTree_->SetBranchAddress("pfCandRawEcalEnergy", pfCandRawEcalEnergy_ );
+  bmmgTree_->SetBranchAddress("pfCandHcalEnergy", pfCandHcalEnergy_ );  
+  bmmgTree_->SetBranchAddress("pfCandRawHcalEnergy", pfCandRawHcalEnergy_ );
+  bmmgTree_->SetBranchAddress("pfCandHoEnergy", pfCandHoEnergy_ );
+  bmmgTree_->SetBranchAddress("pfCandRawHoEnergy", pfCandRawHoEnergy_ );
+  bmmgTree_->SetBranchAddress("pfCandTime", pfCandTime_ );
+  bmmgTree_->SetBranchAddress("pfCandTrkIso", pfCandTrkIso_ );
+  bmmgTree_->SetBranchAddress("pfCandEcalIso", pfCandEcalIso_ );  
+  bmmgTree_->SetBranchAddress("pfCandHcalIso", pfCandHcalIso_ );
+  bmmgTree_->SetBranchAddress("pfCandCaloIso", pfCandCaloIso_ );
+  bmmgTree_->SetBranchAddress("pfCandRefPhotonPt", pfCandRefPhotonPt_ );
+  bmmgTree_->SetBranchAddress("pfCandRefPhotonEta", pfCandRefPhotonEta_ );
+  bmmgTree_->SetBranchAddress("pfCandRefPhotonPhi", pfCandRefPhotonPhi_ );
+  bmmgTree_->SetBranchAddress("pfCandRefPhotonEnergy", pfCandRefPhotonEnergy_ );  
+  bmmgTree_->SetBranchAddress("pfCandRefPhotonET", pfCandRefPhotonET_ );
+  bmmgTree_->SetBranchAddress("pfCandRefPhotonSigmaIEtaIEta", pfCandRefPhotonSigmaIEtaIEta_ );
+  bmmgTree_->SetBranchAddress("pfCandRefPhotonSigmaIEtaIPhi", pfCandRefPhotonSigmaIEtaIPhi_ );
+  bmmgTree_->SetBranchAddress("pfCandRefPhotonSigmaIPhiIPhi", pfCandRefPhotonSigmaIPhiIPhi_ );
+  bmmgTree_->SetBranchAddress("pfCandRefPhotonSigmaEtaEta", pfCandRefPhotonSigmaEtaEta_ );
+  bmmgTree_->SetBranchAddress("pfCandRefPhotonE1x5", pfCandRefPhotonE1x5_ );
+  bmmgTree_->SetBranchAddress("pfCandRefPhotonE2x5", pfCandRefPhotonE2x5_ );
+  bmmgTree_->SetBranchAddress("pfCandRefPhotonE3x3", pfCandRefPhotonE3x3_ );
+  bmmgTree_->SetBranchAddress("pfCandRefPhotonE5x5", pfCandRefPhotonE5x5_ );
+  bmmgTree_->SetBranchAddress("pfCandRefPhotonHcalDepth1OverEcal", pfCandRefPhotonHcalDepth1OverEcal_ );
+  bmmgTree_->SetBranchAddress("pfCandRefPhotonHcalDepth2OverEcal", pfCandRefPhotonHcalDepth2OverEcal_ );
+  bmmgTree_->SetBranchAddress("pfCandRefPhotonHcalDepth1OverEcalBc", pfCandRefPhotonHcalDepth1OverEcalBc_ );
+  bmmgTree_->SetBranchAddress("pfCandRefPhotonHcalDepth2OverEcalBc", pfCandRefPhotonHcalDepth2OverEcalBc_ );
+  bmmgTree_->SetBranchAddress("pfCandRefPhotonScEnergy", pfCandRefPhotonScEnergy_ );  
+  bmmgTree_->SetBranchAddress("pfCandRefPhotonScRawEnergy", pfCandRefPhotonScRawEnergy_ );
+  bmmgTree_->SetBranchAddress("pfCandRefPhotonScEta", pfCandRefPhotonScEta_ );
+  bmmgTree_->SetBranchAddress("pfCandRefPhotonScPhi", pfCandRefPhotonScPhi_ );
+  bmmgTree_->SetBranchAddress("pfCandRefPhotonScEtaWidth", pfCandRefPhotonScEtaWidth_ );
+  bmmgTree_->SetBranchAddress("pfCandRefPhotonScPhiWidth", pfCandRefPhotonScPhiWidth_ );  
+  bmmgTree_->SetBranchAddress("pfCandRefPhotonScBrem", pfCandRefPhotonScBrem_ );
+  bmmgTree_->SetBranchAddress("pfCandRefPhotonR9", pfCandRefPhotonR9_ );
+  bmmgTree_->SetBranchAddress("pfCandRefPhotonHadTowOverEm", pfCandRefPhotonHadTowOverEm_ );  
+  bmmgTree_->SetBranchAddress("pfCandRefPhotonMaxEnergyXtal", pfCandRefPhotonMaxEnergyXtal_ );
+  bmmgTree_->SetBranchAddress("pfCandRefPhotonEffSigmaRR", pfCandRefPhotonEffSigmaRR_ );
+  bmmgTree_->SetBranchAddress("pfCandRefPhotonHcalOverEcal", pfCandRefPhotonHcalOverEcal_ );
+  bmmgTree_->SetBranchAddress("pfCandRefPhotonHcalOverEcalBc", pfCandRefPhotonHcalOverEcalBc_ );  
+
+
+
   bmmgTree_->SetBranchAddress("DiGammaM_alone",     &DiGammaM_alone_);
   bmmgTree_->SetBranchAddress("DiGammaEta_alone",   &DiGammaEta_alone_);
   bmmgTree_->SetBranchAddress("DiGammaPhi_alone",   &DiGammaPhi_alone_);
@@ -692,8 +855,6 @@ void RadiativeRootTree::setBranchAddresses(){
   bmmgTree_->SetBranchAddress("Bscoplanarity_recommg",  &Bscoplanarity_recommg_);
 
   bmmgTree_->SetBranchAddress("electronMultiplicity", &electronMultiplicity_);
-  bmmgTree_->SetBranchAddress("pfCandMultiplicity", &pfCandMultiplicity_);
-
   bmmgTree_->SetBranchAddress("JpsiGenPVx", &JpsiGenPVx_);
   bmmgTree_->SetBranchAddress("JpsiGenPVy", &JpsiGenPVy_);
   bmmgTree_->SetBranchAddress("JpsiGenPVz", &JpsiGenPVz_);

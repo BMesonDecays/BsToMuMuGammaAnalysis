@@ -16,6 +16,7 @@ options.parseArguments()
 
 process = cms.Process("MUMUGamma")
 
+
 process.load("Configuration.StandardSequences.MagneticField_cff")
 process.load("Configuration.StandardSequences.Reconstruction_cff")
 process.load('Configuration.Geometry.GeometryRecoDB_cff')
@@ -24,6 +25,7 @@ process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
 process.load('FWCore.MessageService.MessageLogger_cfi')
 process.load('Configuration.EventContent.EventContent_cff')
 process.load('SimGeneral.MixingModule.mixNoPU_cfi')
+process.load("TrackingTools.TransientTrack.TransientTrackBuilder_cfi")
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 from Configuration.AlCa.GlobalTag import GlobalTag
 #process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_mc_FULL','')
@@ -113,6 +115,9 @@ process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring())
 0000  0001  0002
 /eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_Pi0ToGammaGamma_Pi0PythiaGun/Pi0ToGammaGamma_CMSSW_12_4_11_patch3_12_12_2024/241212_131944:
 0000  0001  0002  0003  0004
+
+
+cmsRun makeTree_BsMuMuGamma_MC_AOD.py nEvents=30000 outputFile=myBMMGPhiGammaTree.root
 """
 
 
@@ -195,6 +200,7 @@ process.bmmgVertexAnalysis = cms.EDAnalyzer("RadiativeAnalysis",
                                           pfSupcluster                  = cms.InputTag("particleFlowSuperClusterECAL","particleFlowSuperClusterECALBarrel"),
                                           ecalrechit                    = cms.InputTag("reducedEcalRecHitsEB"),
                                           convertedPhotons              = cms.InputTag("oniaPhotonCandidates","conversions"),
+                                          PFCandTag                   = cms.InputTag("particleFlow"),
                                           #IsoTrackTag                   = cms.InputTag("isolatedTracks"),
                                           StoreDeDxInfo                 = cms.bool(True),
                                           PionZeroMassWindowNoFit       = cms.double(0.05),#05),
@@ -288,3 +294,4 @@ process.espath = cms.Path(process.dumpES)
 process.ntup = cms.Path(process.oniaPhotonCandidates*process.bmmgVertexAnalysis )
 #process.filter = cms.Path(process.noScraping)
 process.schedule = cms.Schedule(process.ntup,process.espath)
+

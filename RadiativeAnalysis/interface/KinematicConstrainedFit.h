@@ -39,6 +39,8 @@
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "DataFormats/Common/interface/Handle.h"
 #include "FWCore/Framework/interface/ConsumesCollector.h"
+#include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
+#include "DataFormats/EcalRecHit/interface/EcalRecHitCollections.h"
 #include <memory>
 #include <cstddef>
 #include <cfloat>
@@ -46,6 +48,7 @@
 #include "TLorentzVector.h"
 #include "TVector3.h"
 #include "TVector.h"
+#include "TMatrixD.h"
 #include "TLorentzRotation.h"
 #include <iostream>
 #include <TMath.h>
@@ -54,11 +57,31 @@ class KinematicConstrainedFit{
 	public: 
 		KinematicConstrainedFit();
 		~KinematicConstrainedFit(){}
-		bool doFit(std::vector<reco::TransientTrack> t_tracks, const double muonMass, const  double mass1, const double  mass2);
-		bool BsToJpsiPhiFit(std::vector<reco::TransientTrack> t_tracks, const double muonMass, const  double mass1, const double  mass2);
-		bool TrippleObjectVertexFit(std::vector<reco::TransientTrack> muonTT, const double muonMass, std::vector<reco::TransientTrack> electronTT, const double eleMass);
-		bool TetraObjectVertexFit(std::vector<reco::TransientTrack> muonTT, const double muonMass, std::vector<reco::TransientTrack> electronTT, const double eleMass);
-		
+		bool doFit(
+			std::vector<reco::TransientTrack> t_tracks, const double muonMass, 
+			const  double mass1, const double  mass2);
+		bool BsToJpsiPhiFit(
+			std::vector<reco::TransientTrack> t_tracks, const double muonMass, 
+			const  double mass1, const double  mass2);
+		bool TrippleObjectVertexFitConvertedPhoton(
+			std::vector<reco::TransientTrack> muonTT, const double muonMass, 
+			std::vector<reco::TransientTrack> electronTT, const double eleMass, bool verbose = true);
+		bool TetraObjectVertexFitConvertedPhoton(
+			std::vector<reco::TransientTrack> muonTT, const double muonMass, 
+			std::vector<reco::TransientTrack> electronTT, const double eleMass);
+		bool TrippleObjectVertexFitRecoPhoton(
+			std::vector<reco::TransientTrack> muonTT,
+			std::vector<reco::TransientTrack> photonTT,
+			const double DiMuonMass, const double DiMuonSigma,
+			const std::vector<reco::Photon>& photons,
+			TMatrixD& photonCovMatrix);
+		bool TetraObjectVertexFitRecoPhoton(
+			std::vector<reco::TransientTrack> muonTT,
+			std::vector<reco::TransientTrack>photonTT,
+			const double DiMuonMass, const double DiMuonSigma, 
+			const std::vector<reco::Photon>& photons,
+			std::vector<TMatrixD>&  photonCovMatrix);
+
 		double getBhadronProb() {return vtxprob_Bhadron;}
 		double getBhadronMass() {return mass_Bhadron;}
 		RefCountedKinematicParticle getBhardon()       {return bhadron;}

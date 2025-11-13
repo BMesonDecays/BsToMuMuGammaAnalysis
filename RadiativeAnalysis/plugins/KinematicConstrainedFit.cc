@@ -1,14 +1,4 @@
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/KinematicConstrainedFit.h"
-#include "DataFormats/PatCandidates/interface/CompositeCandidate.h"
-#include "DataFormats/PatCandidates/interface/Photon.h"
-#include "DataFormats/EgammaCandidates/interface/Photon.h"
-#include "RecoVertex/KinematicFitPrimitives/interface/KinematicState.h"
-#include "DataFormats/GeometryVector/interface/GlobalVector.h"
-#include "DataFormats/GeometryVector/interface/GlobalPoint.h"
-#include "TrackingTools/TrajectoryState/interface/FreeTrajectoryState.h"
-#include "MagneticField/Engine/interface/MagneticField.h"
-#include "MuonAnalysis/MuonAssociators/interface/PropagateToMuon.h"
-#include "MagneticField/Records/interface/IdealMagneticFieldRecord.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/ESHandle.h"
@@ -136,65 +126,141 @@ bool KinematicConstrainedFit::BsToJpsiPhiFit(std::vector<reco::TransientTrack> t
   delete jpsi_const;
   return 1;
 }
-/////////////////////////////////////////////
-////////////TripleObjectVertex///////////////
-/////////////////////////////////////////////
-bool KinematicConstrainedFit::TrippleObjectVertexFit(std::vector<reco::TransientTrack> muonTT, const double muonMass, std::vector<reco::TransientTrack> electronTT, const double eleMass){
-        const ParticleMass zero_mass(0);
-	float zero_sigma = 1E-6;
-        float eleSigma = 1E-6;
-	KinematicParticleFactoryFromTransientTrack pFactory;
-	std::vector<RefCountedKinematicParticle> PhotonParticles;
-        PhotonParticles.push_back(pFactory.particle(electronTT[0], eleMass, float(0), float(0), eleSigma));
-        PhotonParticles.push_back(pFactory.particle(electronTT[1], eleMass, float(0), float(0), eleSigma));
-        KinematicParticleVertexFitter photonfitter;
-        RefCountedKinematicTree photonVertexFitTree;
-        photonVertexFitTree = photonfitter.fit(PhotonParticles);
-	if (photonVertexFitTree->isEmpty())return 0;
-        edm::ParameterSet pSet;
-        pSet.addParameter<double>("maxDistance", 3);
-        pSet.addParameter<int>("maxNbrOfIterations", 10000);
-        KinematicParticleVertexFitter Fitter(pSet);
-        photonVertexFitTree = Fitter.fit(PhotonParticles);
-        
-	if (photonVertexFitTree->isEmpty()) return 0;
-	KinematicParticleFitter csFitterPhoton;
-	KinematicConstraint * photon_const = new MassKinematicConstraint(zero_mass, zero_sigma);
-	photonVertexFitTree = csFitterPhoton.fit(photon_const, photonVertexFitTree);
-	if(photonVertexFitTree->isEmpty()){
-		delete photon_const;
-		return 0;
-	}
-	photonVertexFitTree->movePointerToTheTop();
-	RefCountedKinematicParticle fittedPhotonBranch = photonVertexFitTree->currentParticle();
-	float muon_sigma = 0.0000000001;
-	float chi = 0.;
-	float ndf = 0.;
-	std::vector<RefCountedKinematicParticle> allParticlesMu;
-	allParticlesMu.push_back(pFactory.particle (muonTT[0], muonMass, chi, ndf, muon_sigma));
-	allParticlesMu.push_back(pFactory.particle (muonTT[1], muonMass, chi, ndf, muon_sigma));
-        allParticlesMu.push_back(fittedPhotonBranch);
-	myTree_B = Fitter.fit(allParticlesMu);
-	if(myTree_B->isEmpty()) {
-		delete photon_const;
-		return 0;
-	}
-	myTree_B->movePointerToTheTop();
-	bhadron = myTree_B->currentParticle();
-	bVertex = myTree_B->currentDecayVertex();
-	if (!bVertex->vertexIsValid()) {
-		delete photon_const;
-		return 0;
-	}
-	vtxprob_Bhadron = TMath::Prob(bhadron->chiSquared(), (int)bhadron->degreesOfFreedom());
-	mass_Bhadron    = bhadron->currentState().mass();
-	delete photon_const;
-	return 1;
+////////////////////////////////////////////////////////////
+////////////TripleObjectVertexConvertedPhoton///////////////
+////////////////////////////////////////////////////////////
+bool KinematicConstrainedFit::TrippleObjectVertexFitConvertedPhoton(
+    const std::vector<reco::TransientTrack> muonTT, const double muonMass,
+    const std::vector<reco::TransientTrack> electronTT, const double eleMass, bool verbose)
+{
+    const ParticleMass zero_mass = 1e-4f; 
+     float zero_sigma = 1e-4f;
+     float eleSigma = 1e-4f;
+     float muonSigma = 1e-4f;
+     float chi = 1e-4f;
+     float ndf = 1e-4f;
+
+    KinematicParticleFactoryFromTransientTrack pFactory;
+
+    // -- Fit photon from e+e−
+    std::vector<RefCountedKinematicParticle> photonParticles = {
+        pFactory.particle(electronTT[0], eleMass, chi, ndf, eleSigma),
+        pFactory.particle(electronTT[1], eleMass, chi, ndf, eleSigma)
+    };
+    KinematicParticleVertexFitter vertexFitter;
+    RefCountedKinematicTree photonVertexFitTree = vertexFitter.fit(photonParticles);
+    if(!photonVertexFitTree->isValid()) {
+        edm::ParameterSet photonFitParams;
+        photonFitParams.addParameter<double>("maxDistance", 3.0);
+        photonFitParams.addParameter<int>("maxNbrOfIterations", 10000);
+        KinematicParticleVertexFitter vertexFitter2(photonFitParams);
+        photonVertexFitTree = vertexFitter2.fit(photonParticles);
+    }
+    if (!photonVertexFitTree || !photonVertexFitTree->isValid()) {
+        edm::LogInfo("TrippleObjectVertexFit") << "Photon vertex fit after optimization failed.";
+        return false;
+    }
+    KinematicConstraint *photonConstraint = new MassKinematicConstraint(zero_mass, zero_sigma);
+    //photonVertexFitTree->movePointerToTheTop();
+    KinematicParticleFitter csFitterPhoton;
+    photonVertexFitTree = csFitterPhoton.fit(photonConstraint, photonVertexFitTree);
+    if (!photonVertexFitTree || !photonVertexFitTree->isValid()) {
+        edm::LogInfo("TrippleObjectVertexFit") << "Photon mass-constrained fit failed.";
+        return false;
+    }
+    RefCountedKinematicParticle fittedPhoton = photonVertexFitTree->currentParticle();
+    std::cout << "Muon0 p converted photon case = " << muonTT[0].track().p() << "\n";
+    std::cout << "Muon1 p converted photon case = " << muonTT[1].track().p() << "\n";
+    // Combine with muons
+    std::vector<RefCountedKinematicParticle> allParticles = {
+        pFactory.particle(muonTT[0], muonMass, chi, ndf, muonSigma),
+        pFactory.particle(muonTT[1], muonMass, chi, ndf, muonSigma),
+        fittedPhoton
+    };
+    auto fullVertexFitTree = vertexFitter.fit(allParticles);
+    if (!fullVertexFitTree || !fullVertexFitTree->isValid()) {
+        edm::LogInfo("TrippleObjectVertexFit") << "Full vertex fit with muons failed.";
+        return false;
+    }
+    fullVertexFitTree->movePointerToTheTop();
+    bhadron = fullVertexFitTree->currentParticle();
+    bVertex = fullVertexFitTree->currentDecayVertex();
+    if (!bVertex || !bVertex->vertexIsValid()) {
+        edm::LogInfo("TrippleObjectVertexFit") << "B vertex is not valid.";
+        return false;
+    }
+
+    vtxprob_Bhadron = TMath::Prob(bhadron->chiSquared(), static_cast<int>(bhadron->degreesOfFreedom()));
+    mass_Bhadron    = bhadron->currentState().mass();
+
+    return true;
 }
-/////////////////////////////////////////////
-/////////TetraObjectVertex///////////////////
-/////////////////////////////////////////////
-bool KinematicConstrainedFit::TetraObjectVertexFit(std::vector<reco::TransientTrack> muonTT, const double muonMass, std::vector<reco::TransientTrack> electronTT, const double eleMass){
+////////////////////////////////////////////////////////////
+/////////TrippleObjectVertexRecoPhoton//////////////////////
+////////////////////////////////////////////////////////////
+bool KinematicConstrainedFit::TrippleObjectVertexFitRecoPhoton(
+    std::vector<reco::TransientTrack> muonTT,
+    std::vector<reco::TransientTrack>photonTT,
+    const double DiMuonMass, const double DiMuonSigma, 
+    const std::vector<reco::Photon>& photons, 
+    TMatrixD& photonCovMatrix){
+    float muonMass = 0.10565837;
+    float muon_sigma = 0.0000000001;
+    float chi = 0.;
+    float ndf = 0.;
+    const ParticleMass photon_mass(0.);
+    float photon_sigma = 1E-6;
+    if (muonTT.size() < 2 || photons.size() < 1) {
+        edm::LogWarning("TrippleObjectVertexFit") << "Insufficient input tracks.";
+        return false;
+    }
+    KinematicParticleFactoryFromTransientTrack pFactory;
+    std::vector<RefCountedKinematicParticle> allParticlesMu;
+    allParticlesMu.push_back(pFactory.particle (muonTT[0], muonMass, chi, ndf, muon_sigma));
+    allParticlesMu.push_back(pFactory.particle (muonTT[1], muonMass, chi, ndf, muon_sigma));
+    KinematicParticleVertexFitter Fitter;
+    RefCountedKinematicTree dimuonTree = Fitter.fit(allParticlesMu);
+    if (!dimuonTree || !dimuonTree->isValid()) {
+        edm::LogInfo("TrippleObjectVertexFit") << "Dimuon vertex fit failed.";
+        return false;
+    }
+    KinematicParticleFitter constFitter;
+    KinematicConstraint * dimuon_const = new MassKinematicConstraint(DiMuonMass, DiMuonSigma);
+    dimuonTree = constFitter.fit(dimuon_const,dimuonTree);
+    if (!dimuonTree || !dimuonTree->isValid()) {
+        edm::LogInfo("TrippleObjectVertexFit") << "Dimuon vertex fit failed.";
+        return false;
+    }
+    dimuonTree->movePointerToTheTop();
+    RefCountedKinematicParticle dimuon = dimuonTree->currentParticle();
+    std::vector<RefCountedKinematicParticle> photonKinematicParticles;
+    photonKinematicParticles.push_back(pFactory.particle(photonTT[0], photon_mass, float(0), float(0), photon_sigma, &photons[0], &photonCovMatrix));
+    photonKinematicParticles.push_back(dimuon);
+    auto fullVertexFitTree = Fitter.fit(photonKinematicParticles);
+    if (!fullVertexFitTree || !fullVertexFitTree->isValid()) {
+        edm::LogInfo("TrippleObjectVertexFit") << "Full vertex fit with muons failed.";
+        return false;
+    }
+    fullVertexFitTree->movePointerToTheTop();
+
+    bhadron = fullVertexFitTree->currentParticle();
+    bVertex = fullVertexFitTree->currentDecayVertex();
+    if (!bVertex || !bVertex->vertexIsValid()) {
+        edm::LogInfo("TrippleObjectVertexFit") << "B vertex is not valid.";
+        return false;
+    }
+    vtxprob_Bhadron = TMath::Prob(bhadron->chiSquared(), static_cast<int>(bhadron->degreesOfFreedom()));
+    mass_Bhadron    = bhadron->currentState().mass();
+    delete dimuon_const;
+    return true;
+
+}
+////////////////////////////////////////////////////////////
+/////////TetraObjectVertexConvertedPhoton///////////////////
+////////////////////////////////////////////////////////////
+bool KinematicConstrainedFit::TetraObjectVertexFitConvertedPhoton(
+    std::vector<reco::TransientTrack> muonTT, const double muonMass, 
+    std::vector<reco::TransientTrack> electronTT, const double eleMass){
 
 	const ParticleMass zero_mass(0);
     float zero_sigma = 1E-6;
@@ -288,7 +354,71 @@ bool KinematicConstrainedFit::TetraObjectVertexFit(std::vector<reco::TransientTr
         }
         vtxprob_Bhadron = TMath::Prob(bhadron->chiSquared(), (int)bhadron->degreesOfFreedom());
         mass_Bhadron    = bhadron->currentState().mass();
-	delete jpsi_const;
+        delete jpsi_const;
         return 1;
+
+}
+////////////////////////////////////////////////////////////
+/////////TetraObjectVertexRecoPhoton////////////////////////
+/////////////////////////////////////////////////////////////
+bool KinematicConstrainedFit::TetraObjectVertexFitRecoPhoton(
+    std::vector<reco::TransientTrack> muonTT,
+    std::vector<reco::TransientTrack>photonTT,
+    const double DiMuonMass, const double DiMuonSigma, 
+    const std::vector<reco::Photon>& photons,
+    std::vector<TMatrixD>&  photonCovMatrix){
+    //    TMatrixD& photonCovMatrix){
+    float muonMass = 0.10565837;
+    float muon_sigma = 0.0000000001;
+    float chi = 0.;
+    float ndf = 0.;
+    const ParticleMass photon_mass(0.);
+    float photon_sigma = 1E-6;
+    if (muonTT.size() < 2 || photons.size() < 1) {
+        edm::LogWarning("TrippleObjectVertexFit") << "Insufficient input tracks.";
+        return false;
+    }
+    KinematicParticleFactoryFromTransientTrack pFactory;
+    std::vector<RefCountedKinematicParticle> allParticlesMu;
+    allParticlesMu.push_back(pFactory.particle (muonTT[0], muonMass, chi, ndf, muon_sigma));
+    allParticlesMu.push_back(pFactory.particle (muonTT[1], muonMass, chi, ndf, muon_sigma));
+    KinematicParticleVertexFitter Fitter;
+    RefCountedKinematicTree dimuonTree = Fitter.fit(allParticlesMu);
+    if (!dimuonTree || !dimuonTree->isValid()) {
+        edm::LogInfo("TrippleObjectVertexFit") << "Dimuon vertex fit failed.";
+        return false;
+    }
+    KinematicParticleFitter constFitter;
+    KinematicConstraint * dimuon_const = new MassKinematicConstraint(DiMuonMass, DiMuonSigma);
+    dimuonTree = constFitter.fit(dimuon_const,dimuonTree);
+    if (!dimuonTree || !dimuonTree->isValid()) {
+        edm::LogInfo("TrippleObjectVertexFit") << "Dimuon vertex fit failed.";
+        return false;
+    }
+    dimuonTree->movePointerToTheTop();
+    RefCountedKinematicParticle dimuon = dimuonTree->currentParticle();
+    std::vector<RefCountedKinematicParticle> photonKinematicParticles;
+    photonKinematicParticles.push_back(pFactory.particle(photonTT[0], photon_mass, float(0), 
+    float(0), photon_sigma, &photons[0], &photonCovMatrix[0]));
+    photonKinematicParticles.push_back(pFactory.particle(photonTT[1], photon_mass, float(0), 
+    float(0), photon_sigma, &photons[1], &photonCovMatrix[1]));
+    photonKinematicParticles.push_back(dimuon);
+    auto fullVertexFitTree = Fitter.fit(photonKinematicParticles);
+    if (!fullVertexFitTree || !fullVertexFitTree->isValid()) {
+        edm::LogInfo("TrippleObjectVertexFit") << "Full vertex fit with muons failed.";
+        return false;
+    }
+    fullVertexFitTree->movePointerToTheTop();
+
+    bhadron = fullVertexFitTree->currentParticle();
+    bVertex = fullVertexFitTree->currentDecayVertex();
+    if (!bVertex || !bVertex->vertexIsValid()) {
+        edm::LogInfo("TrippleObjectVertexFit") << "B vertex is not valid.";
+        return false;
+    }
+    vtxprob_Bhadron = TMath::Prob(bhadron->chiSquared(), static_cast<int>(bhadron->degreesOfFreedom()));
+    mass_Bhadron    = bhadron->currentState().mass();
+    delete dimuon_const;
+    return true;
 
 }

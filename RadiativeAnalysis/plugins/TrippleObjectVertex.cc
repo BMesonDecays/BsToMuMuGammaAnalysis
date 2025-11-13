@@ -7,13 +7,16 @@ TrippleObjectVertex::TrippleObjectVertex(){}
 DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
     //removing the qualifier TrippleObjectVertex fron the defintion of DecayChainVariables since it is not anymore a member of such class
     const std::vector<reco::Muon>& muons,
+    const std::vector<reco::Photon>& photons,
+    const EcalClusterLazyTools& lazyTools,
     const pat::CompositeCandidateCollection& conversions,
     const BeamSpotAndVertex::BSAndVtxVariables& bsAndVtxInfo,
     const MagneticField& bField,
     const double nominalMuonMass,
-    const double nominalElectronMass){
+    const double nominalElectronMass,
+    const TransientTrackBuilder& transientTrackBuilder) {
         
-        bool verbose = false;
+        bool verbose = true;
         DecayChainVariables dcv;
         
         for (size_t i = 0; i < muons.size(); ++i) {
@@ -153,9 +156,19 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
       if( muon::isGoodMuon(mu1, muon::TMOneStationTight) )	{ dcv.mu1isgood= 1 ;}
       if( mu2.innerTrack()->quality(reco::TrackBase::highPurity) )	{dcv.mu2innertrkhq = 1 ;}
       if( muon::isGoodMuon(mu2, muon::TMOneStationTight) )	{ dcv.mu2isgood= 1 ;}
-     
-        
-            for (const auto& conv : conversions) {
+
+
+
+
+
+
+
+
+
+      
+        for (const auto& conv : conversions) {
+            dcv.vertexFitFlag = 1;
+            std::cout<<" The vertex fit flag is set to 1 for the converted photons : "<<dcv.vertexFitFlag<<"\n";
                 const reco::Track eletk0 = *conv.userData<reco::Track>("track0");
                 const reco::Track eletk1 = *conv.userData<reco::Track>("track1");
                 std::vector<reco::TransientTrack> tttrk_electrons = {
@@ -170,7 +183,7 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
                 BCand = eleTrack1 + eleTrack2 + muonTrack1 + muonTrack2;
                 MassLimits m_lim;
                 if (BCand.M() < m_lim.BsMassCutLower || BCand.M() > m_lim.BsMassCutUpper) continue;
-                //std::cout<<"mass B: "<<BCand.M()<<"\n";
+                std::cout<<"mass B Converted Case-------------------------------------------------------------: "<<BCand.M()<<"\n";
        	  		/*BCand.addDaughter(mu1);
        	  		BCand.addDaughter(mu2);
        	  	    BCand.addDaughter(eletk0);
@@ -185,19 +198,19 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
                 t_tracks.push_back(tttrk_electrons[1]);
                 KalmanVertexFitter kvfbs(true);
                 TransientVertex kvfbsvertex = kvfbs.vertex(t_tracks);
-                //std::cout<< " the vertex position : "<< kvfbsvertex.position().x() << "\t"<< kvfbsvertex.position().y() << "\t"<< kvfbsvertex.position().z() << "\n";
+                
                 reco::Vertex vertexbskalman = kvfbsvertex;
                 if (!kvfbsvertex.isValid()) continue;
                 GlobalError gigibs=kvfbsvertex.positionError();
                 double vtxprob_Bs = TMath::Prob(vertexbskalman.chi2(),(int)vertexbskalman.ndof());
                 if (vtxprob_Bs < 1e-5) continue;
                 dcv.BsVtxProb = vtxprob_Bs;
-                //std::cout<<"vtxprob_Bs: "<<vtxprob_Bs<<"\n";
                 KinematicConstrainedFit BCandFitter;
-                bool fitSuccess = BCandFitter.TrippleObjectVertexFit(ttrk_muons, nominalMuonMass, tttrk_electrons, nominalElectronMass);
+                bool fitSuccess = BCandFitter.TrippleObjectVertexFitConvertedPhoton(ttrk_muons, nominalMuonMass, tttrk_electrons, nominalElectronMass, verbose);
                 if (!fitSuccess) continue;
-		        //std::cout<<"print the fit sucess : "<< fitSuccess<< "\n";
-                dcv.fittedBmass = BCandFitter.getBhadronMass();
+		        std::cout<<"print the fit sucess with converted photons  : "<< fitSuccess<< "\n";
+                dcv.fittedBmassConvertedPhoton = BCandFitter.getBhadronMass();
+                std::cout<<"fitted B mass from vertex -------------------------------------------------: "<<dcv.fittedBmassConvertedPhoton<<"\n";
                 dcv.BsMass = BCand.M();
                 dcv.BsPt   = BCand.Pt();
                 dcv.BsEta  = BCand.Eta();
@@ -206,29 +219,110 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
 	  		    RefCountedKinematicVertex bVertex = BCandFitter.getVertex();
 	  		    AlgebraicVector7 b_par = bs->currentState().kinematicParameters().vector();
                 GlobalVector Bsvec(b_par[3], b_par[4], b_par[5]);
-                //std::cout<<"Vertex position after the fit  "<< Bsvec.x() << "\t"<< Bsvec.y() << "\t"<< Bsvec.z() << "\n";
+                
                 reco::Vertex recVtxs;
-                //std::cout << " the PV multiplicity returen in the TBV class : " << bsAndVtxInfo.VtxIndex<< "\n";
+                
                 reco::Vertex PVvtxHightestPt;//:wq = recVtxs[bsAndVtxInfo.VtxIndex];
                 /*Need input to solve the problem of multiple primary vertex*/
-                //std::cout<<"Primary vertex HightestPt"<<PVvtxHightestPt.x()<< "\t"<<PVvtxHightestPt.y()<< "\t"<<PVvtxHightestPt.z() <<"\n";
+                
                 
                 dcv.BsCt3D = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*Bsvec.x()+
                 (kvfbsvertex.position().y()-PVvtxHightestPt.y())*Bsvec.y()+
                 (kvfbsvertex.position().z()-PVvtxHightestPt.z())*Bsvec.z())/
                 (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y()+Bsvec.z()*Bsvec.z());
-                //std::cout << " the decay time 3D : " << dcv.BsCt3D << "\n";
+                
                 dcv.BsCt2D = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*Bsvec.x()+
                 (kvfbsvertex.position().y()-PVvtxHightestPt.y())*Bsvec.y())/
                 (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y());
-                //std::cout << " the decay time 2D : " << dcv.BsCt3D << "\n";
+                std::cout << " the decay time 2D -------------------------------------------------------------------------: " << dcv.BsCt2D << "\n";
                 dcv.BsCt2DBS = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-bsAndVtxInfo.bs_x)*Bsvec.x()+
                 (kvfbsvertex.position().y()-bsAndVtxInfo.bs_y)*Bsvec.y())/
                 (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y());
-                //std::cout << " the decay time 2D BS : " << dcv.BsCt3D << "\n";
-
-
-	    }
+                
+                }//end of conversion loop
+            
+        
+            for (size_t i = 0; i < photons.size(); ++i) {
+            dcv.vertexFitFlag = 2;
+            std::cout<<" The vertex fit flag is set to 2 for the reco photons : "<<dcv.vertexFitFlag<<"\n";
+            const reco::Photon& photon = photons[i];
+            if (photon.superCluster().isNull()) continue;
+            if (photon.superCluster()->energy() < 1.0) continue; // Minimum energy cut for photons
+            if (photon.isEB() && photon.superCluster()->eta() < -2.5) continue; // Exclude barrel photons with eta < -2.5
+            if (photon.isEE() && photon.superCluster()->eta() > 2.5) continue; // Exclude endcap photons with eta > 2.5
+            TLorentzVector BCand, photonvec, muonTrack1, muonTrack2;
+            photonvec.SetPtEtaPhiE(photon.pt(), photon.eta(), photon.phi(), photon.energy());
+            muonTrack1.SetPtEtaPhiE(mu1.pt(), mu1.eta(), mu1.phi(), mu1.energy());
+            muonTrack2.SetPtEtaPhiE(mu2.pt(), mu2.eta(), mu2.phi(), mu2.energy());
+            BCand = photonvec + muonTrack1 + muonTrack2;
+            MassLimits m_lim;
+            if (BCand.M() < m_lim.BsMassCutLower || BCand.M() > m_lim.BsMassCutUpper) continue;
+            std::cout<<"mass B Reco Photon Case : "<<BCand.M()<<"\n";
+            //std::vector<reco::TransientTrack> ttrk_photons = {reco::TransientTrack(photon.superCluster()->seed().trackRef(), &bField)};
+            GlobalPoint vertexPostion(bsAndVtxInfo.pv_x, bsAndVtxInfo.pv_y, bsAndVtxInfo.pv_z);
+            GlobalVector vertexDirection(photon.px(), photon.py(), photon.pz());
+            TrackCharge photon_charge = 0; 
+            FreeTrajectoryState photonFTS = FreeTrajectoryState(vertexPostion, vertexDirection, photon_charge, &bField);
+            //std::cout<<"Photon FTS: "<<photonFTS.position().x()<<"\t"<<photonFTS.position().y()<<"\t"<<photonFTS.position().z()<<"\n";
+            reco::TransientTrack  transientrackforPhotn = transientTrackBuilder.build(photonFTS);
+            std::vector<reco::TransientTrack>  photonTT = {transientrackforPhotn};
+            //if (!photonTT[0].isValid()) continue;
+            TMatrixD cov(lazyTools.covariancesXYZ(*photon.superCluster()));
+            TMatrixD* covPtr(new TMatrixD(cov));
+            AlgebraicSymMatrix66 photonCov{ROOT::Math::SMatrixIdentity()};
+            AlgebraicVector6 diagonal(1., 1., 1., 1., 1., 1.);
+            photonCov.SetDiagonal(diagonal);
+            CartesianTrajectoryError photonErr(photonCov);
+            photonFTS.setCartesianError(photonErr);
+            std::vector<reco::TransientTrack> t_tracks_RecPhoton;
+            t_tracks_RecPhoton.push_back(transientrackforPhotn);
+            t_tracks_RecPhoton.push_back(muonTT1);
+            t_tracks_RecPhoton.push_back(muonTT2);
+            KalmanVertexFitter kvfbs(true);
+            TransientVertex kvfbsvertex = kvfbs.vertex(t_tracks_RecPhoton);
+            if (!kvfbsvertex.isValid()) continue;
+            reco::Vertex vertexbskalman = kvfbsvertex;
+            GlobalError gigibs=kvfbsvertex.positionError();
+            double vtxprob_Bs = TMath::Prob(vertexbskalman.chi2(),(int)vertexbskalman.ndof());
+            if (vtxprob_Bs < 1e-5) continue;
+            dcv.BsVtxProb = vtxprob_Bs;
+            //std::cout<<"RecoPhoton : vtxprob_Bs: "<<vtxprob_Bs<<"\n";
+            KinematicConstrainedFit BCandFitter;
+            bool fitSuccess = BCandFitter.TrippleObjectVertexFitRecoPhoton(ttrk_muons, photonTT, dcv.dimuonMass, 0.001, photons, *covPtr);
+            if (!fitSuccess) continue;
+            //std::cout<<"print the fit sucess : "<< fitSuccess<< "\n";
+            dcv.fittedBmassRecoPhoton = BCandFitter.getBhadronMass();
+            std::cout<<"fitted B mass reco photon case: "<<dcv.fittedBmassRecoPhoton<<"\n";
+            dcv.BsMass = BCand.M();
+            dcv.BsPt   = BCand.Pt();
+            dcv.BsEta  = BCand.Eta();
+            dcv.BsPhi  = BCand.Phi();
+            RefCountedKinematicParticle bs = BCandFitter.getBhardon();
+            RefCountedKinematicVertex bVertex = BCandFitter.getVertex();
+            AlgebraicVector7 b_par = bs->currentState().kinematicParameters().vector();
+            GlobalVector Bsvec(b_par[3], b_par[4], b_par[5]);
+            //std::cout<<"Vertex position after the fit  "<< Bsvec.x() << "\t"<< Bsvec.y() << "\t"<< Bsvec.z() << "\n";
+            reco::Vertex recVtxs;
+            //std::cout << " the PV multiplicity returen in the TBV class : " << bsAndVtxInfo.VtxIndex<< "\n";
+            reco::Vertex PVvtxHightestPt;//:wq = recVtxs[bsAndVtxInfo.VtxIndex];
+            //Need input to solve the problem of multiple primary vertex
+            //std::cout<<"Primary vertex HightestPt"<<PVvtxHightestPt.x()<< "\t"<<PVvtxHightestPt.y()<< "\t"<<PVvtxHightestPt.z() <<"\n";
+            dcv.BsCt3D = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*Bsvec.x()+
+            (kvfbsvertex.position().y()-PVvtxHightestPt.y())*Bsvec.y()+
+            (kvfbsvertex.position().z()-PVvtxHightestPt.z())*Bsvec.z())/
+            (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y()+Bsvec.z()*Bsvec.z());
+            //std::cout << " the decay time 3D : " << dcv.BsCt3D << "\n";
+            dcv.BsCt2D = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*Bsvec.x()+
+            (kvfbsvertex.position().y()-PVvtxHightestPt.y())*Bsvec.y())/
+            (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y());
+            //std::cout << " the decay time 2D : " << dcv.BsCt3D << "\n";
+            dcv.BsCt2DBS = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-bsAndVtxInfo.bs_x)*Bsvec.x()+
+            (kvfbsvertex.position().y()-bsAndVtxInfo.bs_y)*Bsvec.y())/
+            (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y());  
+            //std::cout << " the decay time 2D BS : " << dcv.BsCt3D << "\n";
+            }//end of reco photon loop 
+        std::cout << " vertex fit flag :"<< dcv.vertexFitFlag << "\n";
+        
 	}
     }
     return dcv;
