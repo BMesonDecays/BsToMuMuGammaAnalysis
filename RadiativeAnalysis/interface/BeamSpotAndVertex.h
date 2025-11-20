@@ -59,7 +59,7 @@ class BeamSpotAndVertex{
 			bool ispv = false;
 			bool isbs = false;
 			reco::BeamSpot::Point position;
-		};;
+		};
 
 	BSAndVtxVariables BSAndVtxObservables(const reco::BeamSpot& beamSpot, 
 			 const std::vector<reco::Vertex>& vertex);
