@@ -8,6 +8,7 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
     //removing the qualifier TrippleObjectVertex fron the defintion of DecayChainVariables since it is not anymore a member of such class
     const std::vector<reco::Muon>& muons,
     const std::vector<reco::Photon>& photons,
+    const std::vector<reco::Vertex>& PVs,
     const EcalClusterLazyTools& lazyTools,
     const pat::CompositeCandidateCollection& conversions,
     const BeamSpotAndVertex::BSAndVtxVariables& bsAndVtxInfo,
@@ -220,10 +221,8 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
 	  		    AlgebraicVector7 b_par = bs->currentState().kinematicParameters().vector();
                 GlobalVector Bsvec(b_par[3], b_par[4], b_par[5]);
                 
-                reco::Vertex recVtxs;
                 
-                reco::Vertex PVvtxHightestPt;//:wq = recVtxs[bsAndVtxInfo.VtxIndex];
-                /*Need input to solve the problem of multiple primary vertex*/
+                reco::Vertex PVvtxHightestPt = PVs[bsAndVtxInfo.VtxIndex];
                 
                 
                 dcv.BsCt3D = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*Bsvec.x()+

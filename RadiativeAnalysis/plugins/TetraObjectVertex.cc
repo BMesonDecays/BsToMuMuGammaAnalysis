@@ -7,6 +7,7 @@ TetraObjectVertex::TetraObjectVertex(){}
 DecayChainVariables TetraObjectVertex::TetraObjectVertexObservables(
         const std::vector<reco::Muon>& muons, 
 		    const std::vector<reco::Photon>& photons,
+        const std::vector<reco::Vertex>& PVs,
         const EcalClusterLazyTools& lazyTools,
 			const pat::CompositeCandidateCollection& conversions,
 			const BeamSpotAndVertex::BSAndVtxVariables& bsAndVtxInfo,
@@ -175,10 +176,8 @@ DecayChainVariables TetraObjectVertex::TetraObjectVertexObservables(
 	  		  AlgebraicVector7 b_par = bs->currentState().kinematicParameters().vector();
                 GlobalVector Bsvec(b_par[3], b_par[4], b_par[5]);
                 //std::cout<<"Vertex position after the fit  "<< Bsvec.x() << "\t"<< Bsvec.y() << "\t"<< Bsvec.z() << "\n";
-                reco::Vertex recVtxs;
                 //std::cout << " the PV multiplicity returen in the TBV class : " << bsAndVtxInfo.VtxIndex<< "\n";
-                reco::Vertex PVvtxHightestPt;//:wq = recVtxs[bsAndVtxInfo.VtxIndex];
-                /*Need input to solve the problem of multiple primary vertex*/
+                reco::Vertex PVvtxHightestPt = PVs[bsAndVtxInfo.VtxIndex];
                 //std::cout<<"Primary vertex HightestPt"<<PVvtxHightestPt.x()<< "\t"<<PVvtxHightestPt.y()<< "\t"<<PVvtxHightestPt.z() <<"\n";
                 MassLimits m_lim;
                 dcv.BsCt3D = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*Bsvec.x()+

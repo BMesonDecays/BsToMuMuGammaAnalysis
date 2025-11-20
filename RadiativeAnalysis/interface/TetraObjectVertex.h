@@ -66,6 +66,7 @@ class TetraObjectVertex{
 
         DecayChainVariables TetraObjectVertexObservables(const std::vector<reco::Muon>& muons, 
 		    const std::vector<reco::Photon>& photons,
+            const std::vector<reco::Vertex>& PVs,
             const EcalClusterLazyTools& lazyTools,
 			const pat::CompositeCandidateCollection& conversions,
 			const BeamSpotAndVertex::BSAndVtxVariables& bsAndVtxInfo,

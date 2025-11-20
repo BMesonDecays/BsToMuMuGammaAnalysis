@@ -314,7 +314,8 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 			TrippleObjectVertex  tripvtxObservables;
 			decayVariables = tripvtxObservables.TrippleObjectVertexObservables(
 				*muons, 
-				*photon, 
+				*photon,
+				*recVtxs,
 				lazyTools, 
 				*conversions, 
 				bsandvtxVar, 
@@ -329,7 +330,8 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 			TetraObjectVertex tetradcObservables;
 			decayVariables = tetradcObservables.TetraObjectVertexObservables(
 				*muons, 
-				*photon, 
+				*photon,
+				*recVtxs,
 				lazyTools, 
 				*conversions, 
 				bsandvtxVar, 
