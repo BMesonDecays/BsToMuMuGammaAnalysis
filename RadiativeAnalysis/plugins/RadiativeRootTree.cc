@@ -64,8 +64,8 @@ void RadiativeRootTree::createTree(const std::string filename)
   bmmgTree_->Branch("mu2Eta_beffit", &mu2Eta_beffit_,"mu2Eta_beffit/D");
   bmmgTree_->Branch("mu2Phi_beffit", &mu2Phi_beffit_,"mu2Phi_beffit/D");
   bmmgTree_->Branch("mu2Energy_beffit", &mu2Energy_beffit_,"mu2Energy_beffit/D");
-  bmmgTree_->Branch("mu1SoftID", &mu1SoftID_,"mu1SoftID/I");
-  bmmgTree_->Branch("mu2SoftID", &mu2SoftID_,"mu2SoftID/I");
+  bmmgTree_->Branch("mu1SoftID", &mu1SoftID_,"mu1SoftID/D");
+  bmmgTree_->Branch("mu2SoftID", &mu2SoftID_,"mu2SoftID/D");
   bmmgTree_->Branch("MuonPairDR", &MuonPairDR_,"MuonPairDR/D");
   bmmgTree_->Branch("Mu1TrkBSDxy", &Mu1TrkBSDxy_,"Mu1TrkBSDxy/D");
   bmmgTree_->Branch("Mu1TrkBSDz", &Mu1TrkBSDz_,"Mu1TrkBSDz/D");
