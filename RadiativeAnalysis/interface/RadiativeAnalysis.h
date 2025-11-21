@@ -107,6 +107,8 @@ private:
   int FindMuonAncestor(const pat::Muon theMu, edm::Handle<edm::View<reco::GenParticle>>& genParticles);
   int LookForMotherStringId(reco::GenParticle theGenP);
   short int LookForMotherString(reco::GenParticle theGenP);
+  bool isSameDecay(const std::vector<int>&, const std::vector<int>&);
+
   const TrackerGeometry* m_tracker;
   bool isMCstudy_;
   bool isMINIAOD_;
@@ -235,5 +237,15 @@ private:
   TLorentzVector bsleg;
   TVector3 pgamma, pbs, pdigamma;
   TVector3 mu1vec, mu2vec;
+
+  std::vector<int> MuMu = {13, -13};
+  std::vector<int> GammaGamma = {22, 22};
+  std::vector<int> MuMuG = {22, 13, -13};
+  std::vector<int> JpsiEta = {443, 221};
+  std::vector<int> JpsiEtaPrime = {443, 331};
+  std::vector<int> JpsiGamma = {443, 22};
+  std::vector<int> JpsiPi0 = {443, 111};
+  std::vector<int> KstGamma = {313, 22};
+  std::vector<int> PhiGamma = {333, 22};
 };
 #endif

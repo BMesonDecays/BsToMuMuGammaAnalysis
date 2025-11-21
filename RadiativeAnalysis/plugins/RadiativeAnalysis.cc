@@ -7,6 +7,7 @@
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/KinematicConstrainedFit.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/RadiativeRootTree.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/RadiativeAnalysis.h"
+#include <random>
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/TrippleObjectVertex.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/TetraObjectVertex.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/BeamSpotAndVertex.h"
@@ -744,7 +745,282 @@ void RadiativeAnalysis::fillMCInfo(edm::Handle<edm::View<reco::GenParticle>>& ge
   const Candidate * Eta = 0; 
   const Candidate * EtaPrime = 0; 
 */
+	  	// resonance flags
+	    // None = 0,
+	    // Jpsi = 1,
+	    // Phi = 2,
+	    // KStar = 3,
+	    // NonResonant = 4
+		// samples:
+		// Bs -> mu mu gamma
+		// Bs -> Jpsi Eta
+		// Bs -> Jpsi Eta'
+		// Bs -> Jpsi gamma
+		// Bs -> Jpsi pi0
+		// Bs -> K* gamma
+		// Bs -> Phi gamma
+		// Bd -> mu mu gamma
+		// Bd -> K* gamma
 
+  // find the gen Bs meson and its decay products
+  reco::GenParticle genBsCand;
+  std::vector<reco::Candidate*> genMuons;
+  std::vector<reco::Candidate*> genPhotons;
+  for( size_t i = 0; i < genParticles->size(); ++ i ) {
+    reco::GenParticle genBsCand = (*genParticles)[ i ];
+    if (abs(genBsCand.pdgId()) == 531)
+    {
+      vector<int> daughters;
+      for(unsigned int i=0; i < genBsCand.numberOfDaughters(); i++)
+      {
+        daughters.push_back(genBsCand.daughter(i)->pdgId());
+      }
+	  // Bs -> mu mu gamma
+      if(isSameDecay(daughters, MuMuG))
+      {
+		bmmgRootTree_->MCresonanceType_ = 4;
+        for(unsigned int i=0; i < genBsCand.numberOfDaughters(); i++)
+        {
+          if(abs(genBsCand.daughter(i)->pdgId()) == 13) genMuons.push_back(genBsCand.daughter(i));
+          if(abs(genBsCand.daughter(i)->pdgId()) == 22) genPhotons.push_back(genBsCand.daughter(i));
+        }
+      }
+
+	  // Bs -> Jpsi Eta
+	  if(isSameDecay(daughters, JpsiEta))
+	  {
+		bmmgRootTree_->MCresonanceType_ = 1;
+		reco::Candidate* Jpsi;
+		reco::Candidate* Eta;
+		for(unsigned int i=0; i < genBsCand.numberOfDaughters(); i++)
+		{
+		  if(abs(genBsCand.daughter(i)->pdgId()) == 443) Jpsi = genBsCand.daughter(i);
+		  if(abs(genBsCand.daughter(i)->pdgId()) == 221) Eta = genBsCand.daughter(i);
+		}
+		std::vector<int> jpsiDaughters;
+		for(unsigned int j=0; j < Jpsi->numberOfDaughters(); j++)
+		{
+		  jpsiDaughters.push_back(Jpsi->daughter(j)->pdgId());
+		}
+		std::vector<int> etaDaughters;
+		for(unsigned int k=0; k < Eta->numberOfDaughters(); k++)
+		{
+		  etaDaughters.push_back(Eta->daughter(k)->pdgId());
+		}
+		if(isSameDecay(jpsiDaughters, MuMu) && isSameDecay(etaDaughters, GammaGamma))
+		{
+		  for(unsigned int i=0; i < Jpsi->numberOfDaughters(); i++)
+		  {
+			if(abs(Jpsi->daughter(i)->pdgId()) == 13) genMuons.push_back(Jpsi->daughter(i));
+		  }
+		  for(unsigned int i=0; i < Eta->numberOfDaughters(); i++)
+		  {
+			if(abs(Eta->daughter(i)->pdgId()) == 22) genPhotons.push_back(Eta->daughter(i));
+		  }
+		}
+	  }
+
+	  // Bs -> Jpsi Eta'
+	  if(isSameDecay(daughters, JpsiEtaPrime))
+	  {
+		bmmgRootTree_->MCresonanceType_ = 1;
+		reco::Candidate* Jpsi;
+		reco::Candidate* EtaP;
+		for(unsigned int i=0; i < genBsCand.numberOfDaughters(); i++)
+		{
+		  if(abs(genBsCand.daughter(i)->pdgId()) == 443) Jpsi = genBsCand.daughter(i);
+		  if(abs(genBsCand.daughter(i)->pdgId()) == 331) EtaP = genBsCand.daughter(i);
+		}
+		std::vector<int> jpsiDaughters;
+		for(unsigned int j=0; j < Jpsi->numberOfDaughters(); j++)
+		{
+		  jpsiDaughters.push_back(Jpsi->daughter(j)->pdgId());
+		}
+		std::vector<int> etaPDaughters;
+		for(unsigned int k=0; k < EtaP->numberOfDaughters(); k++)
+		{
+		  etaPDaughters.push_back(EtaP->daughter(k)->pdgId());
+		}
+		if(isSameDecay(jpsiDaughters, MuMu) && isSameDecay(etaPDaughters, GammaGamma))
+		{
+		  for(unsigned int i=0; i < Jpsi->numberOfDaughters(); i++)
+		  {
+			if(abs(Jpsi->daughter(i)->pdgId()) == 13) genMuons.push_back(Jpsi->daughter(i));
+		  }
+		  for(unsigned int i=0; i < EtaP->numberOfDaughters(); i++)
+		  {
+			if(abs(EtaP->daughter(i)->pdgId()) == 22) genPhotons.push_back(EtaP->daughter(i));
+		  }
+		}
+	  }
+
+	  // Bs -> Jpsi gamma
+	  if(isSameDecay(daughters, JpsiGamma))
+	  {
+		bmmgRootTree_->MCresonanceType_ = 1;
+		reco::Candidate* Jpsi;
+		for(unsigned int i=0; i < genBsCand.numberOfDaughters(); i++)
+		{
+		  if(abs(genBsCand.daughter(i)->pdgId()) == 443) Jpsi = genBsCand.daughter(i);
+		}
+		std::vector<int> jpsiDaughters;
+		for(unsigned int j=0; j < Jpsi->numberOfDaughters(); j++)
+		{
+		  jpsiDaughters.push_back(Jpsi->daughter(j)->pdgId());
+		}
+		if(isSameDecay(jpsiDaughters, MuMu))
+		{
+		  for(unsigned int i=0; i < Jpsi->numberOfDaughters(); i++)
+		  {
+			if(abs(Jpsi->daughter(i)->pdgId()) == 13) genMuons.push_back(Jpsi->daughter(i));
+		  }
+		  for(unsigned int i=0; i < genBsCand.numberOfDaughters(); i++)
+		  {
+			if(abs(genBsCand.daughter(i)->pdgId()) == 22) genPhotons.push_back(genBsCand.daughter(i));
+		  }
+		}
+	  }
+
+	  // Bs -> Jpsi pi0
+	  if(isSameDecay(daughters, JpsiPi0))
+	  {
+		bmmgRootTree_->MCresonanceType_ = 1;
+		reco::Candidate* Jpsi;
+		reco::Candidate* Pi0;
+		for(unsigned int i=0; i < genBsCand.numberOfDaughters(); i++)
+		{
+		  if(abs(genBsCand.daughter(i)->pdgId()) == 443) Jpsi = genBsCand.daughter(i);
+		  if(abs(genBsCand.daughter(i)->pdgId()) == 111) Pi0 = genBsCand.daughter(i);
+		}
+		std::vector<int> jpsiDaughters;
+		for(unsigned int j=0; j < Jpsi->numberOfDaughters(); j++)
+		{
+		  jpsiDaughters.push_back(Jpsi->daughter(j)->pdgId());
+		}
+		std::vector<int> pi0Daughters;
+		for(unsigned int k=0; k < Pi0->numberOfDaughters(); k++)
+		{
+		  pi0Daughters.push_back(Pi0->daughter(k)->pdgId());
+		}
+		if(isSameDecay(jpsiDaughters, MuMu) && isSameDecay(pi0Daughters, GammaGamma))
+		{
+		  for(unsigned int i=0; i < Jpsi->numberOfDaughters(); i++)
+		  {
+			if(abs(Jpsi->daughter(i)->pdgId()) == 13) genMuons.push_back(Jpsi->daughter(i));
+		  }
+		  for(unsigned int i=0; i < Pi0->numberOfDaughters(); i++)
+		  {
+			if(abs(Pi0->daughter(i)->pdgId()) == 22) genPhotons.push_back(Pi0->daughter(i));
+		  }
+		}
+	  }
+
+	  // Bs -> K* gamma
+	  if(isSameDecay(daughters, KstGamma))
+	  {
+		bmmgRootTree_->MCresonanceType_ = 3;
+		reco::Candidate* KStar;
+		for(unsigned int i=0; i < genBsCand.numberOfDaughters(); i++)
+		{
+		  if(abs(genBsCand.daughter(i)->pdgId()) == 313) KStar = genBsCand.daughter(i);
+		}
+		std::vector<int> kstarDaughters;
+		for(unsigned int j=0; j < KStar->numberOfDaughters(); j++)
+		{
+		  kstarDaughters.push_back(KStar->daughter(j)->pdgId());
+		}
+		if(isSameDecay(kstarDaughters, MuMu))
+		{
+		  for(unsigned int i=0; i < KStar->numberOfDaughters(); i++)
+		  {
+			if(abs(KStar->daughter(i)->pdgId()) == 13) genMuons.push_back(KStar->daughter(i));
+		  }
+		  for(unsigned int i=0; i < genBsCand.numberOfDaughters(); i++)
+		  {
+			if(abs(genBsCand.daughter(i)->pdgId()) == 22) genPhotons.push_back(genBsCand.daughter(i));
+		  }
+		}
+	  }
+
+	  // Bs -> Phi gamma
+	  if(isSameDecay(daughters, PhiGamma))
+	  {
+		bmmgRootTree_->MCresonanceType_ = 2;
+		reco::Candidate* Phi;
+		for(unsigned int i=0; i < genBsCand.numberOfDaughters(); i++)
+		{
+		  if(abs(genBsCand.daughter(i)->pdgId()) == 333) Phi = genBsCand.daughter(i);
+		}
+		std::vector<int> phiDaughters;
+		for(unsigned int j=0; j < Phi->numberOfDaughters(); j++)
+		{
+		  phiDaughters.push_back(Phi->daughter(j)->pdgId());
+		}
+		if(isSameDecay(phiDaughters, MuMu))
+		{
+		  for(unsigned int i=0; i < Phi->numberOfDaughters(); i++)
+		  {
+			if(abs(Phi->daughter(i)->pdgId()) == 13) genMuons.push_back(Phi->daughter(i));
+		  }
+		  for(unsigned int i=0; i < genBsCand.numberOfDaughters(); i++)
+		  {
+			if(abs(genBsCand.daughter(i)->pdgId()) == 22) genPhotons.push_back(genBsCand.daughter(i));
+		  }
+		}
+	  }
+
+	}
+	// Bd case
+	if(abs(genBsCand.pdgId()) == 511)
+	{
+	  vector<int> daughters;
+	  for(unsigned int i=0; i < genBsCand.numberOfDaughters(); i++)
+	  {
+		daughters.push_back(genBsCand.daughter(i)->pdgId());
+	  }
+
+	  // Bd -> mu mu gamma
+	  if(isSameDecay(daughters, MuMuG))
+	  {
+		bmmgRootTree_->MCresonanceType_ = 4;
+		for(unsigned int i=0; i < genBsCand.numberOfDaughters(); i++)
+		{
+		  if(abs(genBsCand.daughter(i)->pdgId()) == 13) genMuons.push_back(genBsCand.daughter(i));
+		  if(abs(genBsCand.daughter(i)->pdgId()) == 22) genPhotons.push_back(genBsCand.daughter(i));
+		}
+	  }
+
+	  // Bd -> K* gamma
+	  if(isSameDecay(daughters, KstGamma))
+	  {
+		bmmgRootTree_->MCresonanceType_ = 3;
+		reco::Candidate* KStar;
+		for(unsigned int i=0; i < genBsCand.numberOfDaughters(); i++)
+		{
+		  if(abs(genBsCand.daughter(i)->pdgId()) == 313) KStar = genBsCand.daughter(i);
+		}
+		std::vector<int> kstarDaughters;
+		for(unsigned int j=0; j < KStar->numberOfDaughters(); j++)
+		{
+		  kstarDaughters.push_back(KStar->daughter(j)->pdgId());
+		}	
+		if(isSameDecay(kstarDaughters, MuMu))
+		{
+		  for(unsigned int i=0; i < KStar->numberOfDaughters(); i++)
+		  {
+			if(abs(KStar->daughter(i)->pdgId()) == 13) genMuons.push_back(KStar->daughter(i));
+		  }
+		  for(unsigned int i=0; i < genBsCand.numberOfDaughters(); i++)
+		  {
+			if(abs(genBsCand.daughter(i)->pdgId()) == 22) genPhotons.push_back(genBsCand.daughter(i));
+		  }
+		}
+	  }
+	}	
+
+  }
+///////////////////////////////
+//////////////////////////////
 
   for( size_t i = 0; i < genParticles->size(); ++ i ) {
     const reco::GenParticle & genBsCand = (*genParticles)[ i ];
@@ -802,6 +1078,18 @@ void RadiativeAnalysis::fillDescriptions(edm::ConfigurationDescriptions& descrip
   //edm::ParameterSetDescription desc;
   //desc.addUntracked<edm::InputTag>("tracks", edm::InputTag("ctfWithMaterialTracks"));
   //descriptions.addWithDefaultLabel(desc);
+}
+
+bool RadiativeAnalysis::isSameDecay(const std::vector<int>& dec1, const std::vector<int>& dec2) {
+    
+    if (dec1.size() != dec2.size()) {
+        return false; 
+    }
+
+    std::set<int> dec1Set(dec1.begin(), dec1.end());
+    std::set<int> dec2Set(dec2.begin(), dec2.end());
+
+    return dec1Set == dec2Set;
 }
 
 //define this as a plug-in

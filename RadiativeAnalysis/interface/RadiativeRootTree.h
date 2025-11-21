@@ -307,6 +307,10 @@ class RadiativeRootTree {
 		int JpsiGenNumberOfCandidates_;
 		 //arrays 
 		 double PVcovariance_[9];
+
+		// MC variables
+		 int    MCresonanceType_;
+
 		 TFile* bmmgFile_;
 		 TTree* bmmgTree_;
 		 

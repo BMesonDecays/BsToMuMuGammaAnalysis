@@ -275,6 +275,9 @@ void RadiativeRootTree::createTree(const std::string filename)
   bmmgTree_->Branch("JpsiGenLxyOverPt_",&JpsiGenLxyOverPt_,"JpsiGenLxyOverPt/D");
   bmmgTree_->Branch("JpsiGenNumberOfCandidates_",&JpsiGenNumberOfCandidates_,"JpsiGenNumberOfCandidates/D");
 
+  // MC variables
+  bmmgTree_->Branch("MCresonanceType_",&MCresonanceType_,"MCresonanceType/I");
+
 }
 
 RadiativeRootTree::~RadiativeRootTree()
@@ -559,6 +562,8 @@ void RadiativeRootTree::resetEntries()
 	JpsiGenNumberOfCandidates_ = -9999999;
 
 	for(size_t i=0; i<9;++i){PVcovariance_[i] = -9999999;}
+
+  MCresonanceType_        = -9999999;
 }
 
 void RadiativeRootTree::getDeDx(const double f1, const double f2, const int f3)
@@ -863,6 +868,8 @@ void RadiativeRootTree::setBranchAddresses(){
   bmmgTree_->SetBranchAddress("JpsiGenLxyOld", &JpsiGenLxyOld_);
   bmmgTree_->SetBranchAddress("JpsiGenLxyOverPt", &JpsiGenLxyOverPt_);
   bmmgTree_->SetBranchAddress("JpsiGenNumberOfCandidates", &JpsiGenNumberOfCandidates_);
+
+  bmmgTree_->SetBranchAddress("MCresonanceType", &MCresonanceType_);
 
 }
 
