@@ -763,14 +763,15 @@ void RadiativeAnalysis::fillMCInfo(edm::Handle<edm::View<reco::GenParticle>>& ge
 		// Bd -> K* gamma
 
   // find the gen Bs meson and its decay products
-  reco::GenParticle genBsCand;
-  std::vector<reco::Candidate*> genMuons;
-  std::vector<reco::Candidate*> genPhotons;
+//   reco::GenParticle genBsCand;
+  std::vector<const reco::Candidate*> genMuons;
+  std::vector<const reco::Candidate*> genPhotons;
   for( size_t i = 0; i < genParticles->size(); ++ i ) {
-    reco::GenParticle genBsCand = (*genParticles)[ i ];
+    const reco::GenParticle & genBsCand = (*genParticles)[ i ];
     if (abs(genBsCand.pdgId()) == 531)
     {
-      vector<int> daughters;
+		std::cout << "here1"<< std::endl;
+      std::vector<int> daughters;
       for(unsigned int i=0; i < genBsCand.numberOfDaughters(); i++)
       {
         daughters.push_back(genBsCand.daughter(i)->pdgId());
@@ -790,8 +791,8 @@ void RadiativeAnalysis::fillMCInfo(edm::Handle<edm::View<reco::GenParticle>>& ge
 	  if(isSameDecay(daughters, JpsiEta))
 	  {
 		bmmgRootTree_->MCresonanceType_ = 1;
-		reco::Candidate* Jpsi;
-		reco::Candidate* Eta;
+		const reco::Candidate* Jpsi;
+		const reco::Candidate* Eta;
 		for(unsigned int i=0; i < genBsCand.numberOfDaughters(); i++)
 		{
 		  if(abs(genBsCand.daughter(i)->pdgId()) == 443) Jpsi = genBsCand.daughter(i);
@@ -824,8 +825,8 @@ void RadiativeAnalysis::fillMCInfo(edm::Handle<edm::View<reco::GenParticle>>& ge
 	  if(isSameDecay(daughters, JpsiEtaPrime))
 	  {
 		bmmgRootTree_->MCresonanceType_ = 1;
-		reco::Candidate* Jpsi;
-		reco::Candidate* EtaP;
+		const reco::Candidate* Jpsi;
+		const reco::Candidate* EtaP;
 		for(unsigned int i=0; i < genBsCand.numberOfDaughters(); i++)
 		{
 		  if(abs(genBsCand.daughter(i)->pdgId()) == 443) Jpsi = genBsCand.daughter(i);
@@ -858,7 +859,7 @@ void RadiativeAnalysis::fillMCInfo(edm::Handle<edm::View<reco::GenParticle>>& ge
 	  if(isSameDecay(daughters, JpsiGamma))
 	  {
 		bmmgRootTree_->MCresonanceType_ = 1;
-		reco::Candidate* Jpsi;
+		const reco::Candidate* Jpsi;
 		for(unsigned int i=0; i < genBsCand.numberOfDaughters(); i++)
 		{
 		  if(abs(genBsCand.daughter(i)->pdgId()) == 443) Jpsi = genBsCand.daughter(i);
@@ -885,8 +886,8 @@ void RadiativeAnalysis::fillMCInfo(edm::Handle<edm::View<reco::GenParticle>>& ge
 	  if(isSameDecay(daughters, JpsiPi0))
 	  {
 		bmmgRootTree_->MCresonanceType_ = 1;
-		reco::Candidate* Jpsi;
-		reco::Candidate* Pi0;
+		const reco::Candidate* Jpsi;
+		const reco::Candidate* Pi0;
 		for(unsigned int i=0; i < genBsCand.numberOfDaughters(); i++)
 		{
 		  if(abs(genBsCand.daughter(i)->pdgId()) == 443) Jpsi = genBsCand.daughter(i);
@@ -919,7 +920,7 @@ void RadiativeAnalysis::fillMCInfo(edm::Handle<edm::View<reco::GenParticle>>& ge
 	  if(isSameDecay(daughters, KstGamma))
 	  {
 		bmmgRootTree_->MCresonanceType_ = 3;
-		reco::Candidate* KStar;
+		const reco::Candidate* KStar;
 		for(unsigned int i=0; i < genBsCand.numberOfDaughters(); i++)
 		{
 		  if(abs(genBsCand.daughter(i)->pdgId()) == 313) KStar = genBsCand.daughter(i);
@@ -946,7 +947,7 @@ void RadiativeAnalysis::fillMCInfo(edm::Handle<edm::View<reco::GenParticle>>& ge
 	  if(isSameDecay(daughters, PhiGamma))
 	  {
 		bmmgRootTree_->MCresonanceType_ = 2;
-		reco::Candidate* Phi;
+		const reco::Candidate* Phi;
 		for(unsigned int i=0; i < genBsCand.numberOfDaughters(); i++)
 		{
 		  if(abs(genBsCand.daughter(i)->pdgId()) == 333) Phi = genBsCand.daughter(i);
@@ -994,7 +995,7 @@ void RadiativeAnalysis::fillMCInfo(edm::Handle<edm::View<reco::GenParticle>>& ge
 	  if(isSameDecay(daughters, KstGamma))
 	  {
 		bmmgRootTree_->MCresonanceType_ = 3;
-		reco::Candidate* KStar;
+		const reco::Candidate* KStar;
 		for(unsigned int i=0; i < genBsCand.numberOfDaughters(); i++)
 		{
 		  if(abs(genBsCand.daughter(i)->pdgId()) == 313) KStar = genBsCand.daughter(i);
