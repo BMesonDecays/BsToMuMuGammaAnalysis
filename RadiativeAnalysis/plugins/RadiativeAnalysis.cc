@@ -770,7 +770,6 @@ void RadiativeAnalysis::fillMCInfo(edm::Handle<edm::View<reco::GenParticle>>& ge
     const reco::GenParticle & genBsCand = (*genParticles)[ i ];
     if (abs(genBsCand.pdgId()) == 531)
     {
-		std::cout << "here1"<< std::endl;
       std::vector<int> daughters;
       for(unsigned int i=0; i < genBsCand.numberOfDaughters(); i++)
       {

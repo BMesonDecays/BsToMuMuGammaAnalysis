@@ -276,7 +276,7 @@ void RadiativeRootTree::createTree(const std::string filename)
   bmmgTree_->Branch("JpsiGenNumberOfCandidates_",&JpsiGenNumberOfCandidates_,"JpsiGenNumberOfCandidates/D");
 
   // MC variables
-  bmmgTree_->Branch("MCresonanceType_",&MCresonanceType_,"MCresonanceType/I");
+  bmmgTree_->Branch("MCresonanceType",&MCresonanceType_,"MCresonanceType/I");
 
 }
 
