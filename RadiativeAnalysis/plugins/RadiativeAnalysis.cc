@@ -16,6 +16,7 @@
 
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/ReferenceModeratorVertex.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/DecayChainVariables.h"
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/GenChain.h"
 
 
 
@@ -172,22 +173,7 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 				bmmgRootTree_->PUTrueinteraction_ = numTrueInteraction;
 			}	
 	
-	edm::Handle<edm::View<reco::GenParticle> > genParticles;
-	if(isMCstudy_)
-              {
-                     iEvent.getByToken(genParticlesTok, genParticles);
-                     //std::cout<<"genparticles:   "<<genParticles->size()<<"\n";
-		     for( size_t i = 0; i < genParticles->size(); ++ i ) {
-		     const reco::GenParticle & genBsCand = (*genParticles)[ i ];
-		     if(abs(genBsCand.pdgId())/100==5){
-			     //std::cout<< " B Cand PDGID : "<< genBsCand.pdgId()<< "\n";
-			     //if(abs(genBsCand.pdgId()) == 531)nBs++;			     
-		     }
-		     }
-		     
-		     //std::cout<<" number of BsCandidates : "<<  nBs << "\n";
-                     fillMCInfo(genParticles);
-               }
+	
 	
 	const auto& theBField             = iSetup.getData(theBFieldTok);
 	const auto& caloGeom              = iSetup.getData(caloGeomTok);
@@ -211,8 +197,8 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	edm::Handle<EcalRecHitCollection> ecalRecHits;
 	iEvent.getByToken(ecalrechitEBTok, ecalRecHits);
 	//std::cout<< " super cluster multiplicity : "<< supercluster->size()<< "\n";
-	edm::Handle<std::vector<reco::Photon>> photon;
-    iEvent.getByToken(PhotonTagTok, photon);
+	edm::Handle<std::vector<reco::Photon>> photons;
+    iEvent.getByToken(PhotonTagTok, photons);
 	edm::Handle<std::vector<reco::PFCandidate>> pfCandidates;
 	iEvent.getByToken(PFCandTagTok, pfCandidates);
     
@@ -314,7 +300,8 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 			TrippleObjectVertex  tripvtxObservables;
 			decayVariables = tripvtxObservables.TrippleObjectVertexObservables(
 				*muons, 
-				*photon, 
+				*photons,
+			    *recVtxs,	
 				lazyTools, 
 				*conversions, 
 				bsandvtxVar, 
@@ -329,7 +316,8 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 			TetraObjectVertex tetradcObservables;
 			decayVariables = tetradcObservables.TetraObjectVertexObservables(
 				*muons, 
-				*photon, 
+				*photons,
+			    *recVtxs,	
 				lazyTools, 
 				*conversions, 
 				bsandvtxVar, 
@@ -453,13 +441,13 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 	   mu2vec.SetPtEtaPhi(decayVariables.mu2pt, decayVariables.mu2eta, decayVariables.mu2phi);
 
 	   
-	   bmmgRootTree_->photonMultiplicity_ = photon->size();
+	   bmmgRootTree_->photonMultiplicity_ = photons->size();
 	   RecoPhotons recoPhotonObserbles;
-	   std::vector<RecoPhotons::PhotonVariables> photonVar = recoPhotonObserbles.PhotonObservables(*photon);
+	   std::vector<RecoPhotons::PhotonVariables> photonVar = recoPhotonObserbles.PhotonObservables(*photons);
 		if (!photonVar.empty()) {
 		for (size_t iPhoton = 0; iPhoton < photonVar.size(); ++iPhoton) {
 			//std::cout << "size of photon collection : " << photonVar.size() << "\n";
-			const auto& ipatPhoton = (*photon)[iPhoton];
+			const auto& ipatPhoton = (*photons)[iPhoton];
 			if (ipatPhoton.pt() > 50.0 || !ipatPhoton.isEB()) {
 				excludedPhotons.insert(iPhoton);
 			}
@@ -508,12 +496,12 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 				bmmgRootTree_->photonSCPhiWidth_[iPhoton] = photonVar[iPhoton].scPhiWidth;
 				bmmgRootTree_->photonSCBrem_[iPhoton] = photonVar[iPhoton].scPhiWidth / photonVar[iPhoton].scEtaWidth;
 				photonleg1.SetPtEtaPhiE(photonVar[iPhoton].pt, photonVar[iPhoton].eta, photonVar[iPhoton].phi, photonVar[iPhoton].energy);
-				TLorentzVector bsleg = muonleg1 + muonleg2 + photonleg1;
-				if (bsleg.M() < BsLowerMassCutBeforeFit_ || bsleg.M() > BsUpperMassCutBeforeFit_) continue;
-				bmmgRootTree_->Bsmass_recommg_ = bsleg.M();
-				std::cout<< " ----------------bs mass from photon l1 reco photon -------------------------------"<< bsleg.M() << "\n";
+				TLorentzVector bslegTrippleObject = muonleg1 + muonleg2 + photonleg1;
+				if (bslegTrippleObject.M() < BsLowerMassCutBeforeFit_ || bslegTrippleObject.M() > BsUpperMassCutBeforeFit_) continue;
+				bmmgRootTree_->Bsmass_recommg_ = bslegTrippleObject.M();
+				//std::cout<< " ----------------bs mass from photon l1 reco photon -------------------------------"<< bslegTrippleObject.M() << "\n";
 				pgamma.SetPtEtaPhi(photonVar[iPhoton].pt, photonVar[iPhoton].eta, photonVar[iPhoton].phi);
-				pbs.SetPtEtaPhi(bsleg.Pt(), bsleg.Eta(), bsleg.Phi());
+				pbs.SetPtEtaPhi(bslegTrippleObject.Pt(), bslegTrippleObject.Eta(), bslegTrippleObject.Phi());
 				float helicity = pgamma.Dot(pbs) / (pgamma.Mag() * pbs.Mag());
 				TVector3 normal1 = mu1vec.Cross(mu2vec);
 				TVector3 normal2 = pgamma.Cross(pbs);
@@ -522,6 +510,7 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 				bmmgRootTree_->Bshelicity_recommg_ = helicity;
 				bmmgRootTree_->Bscoplanarity_recommg_ = coplanarity;
 				bmmgRootTree_->isFourBody_ = 0;
+				
 			}//Photon loop for three body through photon kinematics are saved irrespective of their multiplicity 
 			if (photonVar.size() - excludedPhotons.size() >= 2) {
 				for (size_t iPhoton = 0; iPhoton < photonVar.size(); ++iPhoton) {
@@ -626,6 +615,181 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 
 		}// PFCandidate loop
 	}// PFCandidate empty
+
+
+
+
+	//====================================================================================================
+	// Gen Particle information 
+	//====================================================================================================
+	edm::Handle<edm::View<reco::GenParticle> > genParticles;
+	if(isMCstudy_)
+              {
+					 iEvent.getByToken(genParticlesTok, genParticles);
+					 //std::cout<<"genparticles:   "<<genParticles->size()<<"\n";
+
+					  std::vector<reco::GenParticle> genParticleVec;
+					  for (const auto& gp : *genParticles) {
+						genParticleVec.push_back(gp);
+					}
+					GenDecayChain gen(genParticleVec);
+					const auto& G = gen.info();
+					 if (!G.isValid) {
+						 return;
+					 }
+
+					
+					 bmmgRootTree_->GenMotherID_ = G.motherPdgId;
+					 bmmgRootTree_->GenB_pt_      = G.Bp4.Pt();
+					 bmmgRootTree_->GenB_eta_     = G.Bp4.Eta();
+					 bmmgRootTree_->GenB_phi_     = G.Bp4.Phi();
+					 bmmgRootTree_->GenB_mass_    = G.Bp4.M();
+					 std::cout<<" Gen B Mass : "<< G.Bp4.M() << "Gen B Pt : "<< G.Bp4.Pt() << "\n";
+
+					 // Lifetime variables : wronng now 
+					 bmmgRootTree_->GenBLxy_      = G.BLxy;
+					 bmmgRootTree_->GenBct_       = G.Bct;
+					 bmmgRootTree_->GenBctErr_    = G.BctError;
+
+					 
+					 if (G.hasMuonPlus) {
+						 bmmgRootTree_->GenMuPlus_pt_  = G.muPlusP4.Pt();
+						 bmmgRootTree_->GenMuPlus_eta_ = G.muPlusP4.Eta();
+						 bmmgRootTree_->GenMuPlus_phi_ = G.muPlusP4.Phi();
+						 bmmgRootTree_->GenMuPlus_E_   = G.muPlusP4.E();
+					 }
+
+					 if (G.hasMuonMinus) {
+						 bmmgRootTree_->GenMuMinus_pt_  = G.muMinusP4.Pt();
+						 bmmgRootTree_->GenMuMinus_eta_ = G.muMinusP4.Eta();
+						 bmmgRootTree_->GenMuMinus_phi_ = G.muMinusP4.Phi();
+						 bmmgRootTree_->GenMuMinus_E_   = G.muMinusP4.E();
+					 }
+
+					 
+					 bmmgRootTree_->GenDimuon_mass_ = G.dimuonMass;
+					 bmmgRootTree_->GenDimuon_pt_   = G.dimuonPt;
+
+					 // Photon variables
+					 bmmgRootTree_->GenNPhotons_ = G.nPhotons;
+					 for (size_t i = 0; i < G.photons.size() && i < 4; i++) {
+						 bmmgRootTree_->GenGamma_pt_[i]     = G.photons[i].p4.Pt();
+						 bmmgRootTree_->GenGamma_eta_[i]    = G.photons[i].p4.Eta();
+						 bmmgRootTree_->GenGamma_phi_[i]    = G.photons[i].p4.Phi();
+						 bmmgRootTree_->GenGamma_E_[i]      = G.photons[i].p4.E();
+						 bmmgRootTree_->GenGamma_origin_[i] = G.photons[i].origin;
+						 bmmgRootTree_->GenGamma_motherId_[i] = G.photons[i].motherPdgId;
+						 bmmgRootTree_->GenGamma_dRmu1_[i]  = G.photons[i].deltaR_mu1;
+						 bmmgRootTree_->GenGamma_dRmu2_[i]  = G.photons[i].deltaR_mu2;
+					 }
+					 bmmgRootTree_->GenHelicity3_    = G.helicity3;
+					 bmmgRootTree_->GenCoplanarity3_ = G.coplanarity3;
+					 bmmgRootTree_->GenCosTheta_l_   = G.cosTheta_l;
+					 bmmgRootTree_->GenTriBodyMass_  = G.triBodyMass;
+					 bmmgRootTree_->GenHelicity4_    = G.helicity4;
+					 bmmgRootTree_->GenCoplanarity4_ = G.coplanarity4;
+					 bmmgRootTree_->GenFourBodyMass_ = G.fourBodyMass;
+					 bmmgRootTree_->GenDiphoton_mass_ = G.diphotonMass;
+					 bmmgRootTree_->GenDiphoton_pt_   = G.diphotonPt;
+					 bmmgRootTree_->GenHasJpsi_      = G.hasJpsi;
+					 bmmgRootTree_->GenJpsi_mass_    = G.hasJpsi ? G.jpsiP4.M() : -999;
+					 bmmgRootTree_->GenJpsi_pt_      = G.hasJpsi ? G.jpsiP4.Pt() : -999;
+					 bmmgRootTree_->GenHasNeutralMeson_ = G.hasNeutralMeson;
+					 bmmgRootTree_->GenNeutralMesonId_  = G.neutralMesonId;
+					 bmmgRootTree_->GenDecayMode_    = G.decayMode;
+					 bmmgRootTree_->GenIs3Body_      = G.is3BodyDecay;
+					 bmmgRootTree_->GenIs4Body_      = G.is4BodyDecay;
+					 bmmgRootTree_->GenIsHardProcess_ = G.isHardProcess;
+					 bmmgRootTree_->GenIsSignal_ = gen.isSignalLike();
+
+					 if (muons->size() >= 2) {
+        const reco::Muon& mu1 = (*muons)[0];
+        const reco::Muon& mu2 = (*muons)[1];
+        
+        // Clean! No redundant parameters
+        auto mu1Match = gen.matchMuonToGen(mu1);
+        auto mu2Match = gen.matchMuonToGen(mu2);
+        
+        bmmgRootTree_->Mu1_isMatched_       = mu1Match.isMatched;
+        bmmgRootTree_->Mu1_genPdgId_        = mu1Match.genPdgId;
+        bmmgRootTree_->Mu1_genMotherPdgId_  = mu1Match.genMotherPdgId;
+        bmmgRootTree_->Mu1_genGMotherPdgId_ = mu1Match.genGMotherPdgId;
+        bmmgRootTree_->Mu1_genDeltaR_       = mu1Match.deltaR;
+        bmmgRootTree_->Mu1_genDeltaPt_      = mu1Match.deltaPt;
+        
+        bmmgRootTree_->Mu2_isMatched_       = mu2Match.isMatched;
+        bmmgRootTree_->Mu2_genPdgId_        = mu2Match.genPdgId;
+        bmmgRootTree_->Mu2_genMotherPdgId_  = mu2Match.genMotherPdgId;
+        bmmgRootTree_->Mu2_genGMotherPdgId_ = mu2Match.genGMotherPdgId;
+        bmmgRootTree_->Mu2_genDeltaR_       = mu2Match.deltaR;
+        bmmgRootTree_->Mu2_genDeltaPt_      = mu2Match.deltaPt;
+        
+        bmmgRootTree_->DiMuon_isMatched_ = mu1Match.isMatched && mu2Match.isMatched;
+    }
+		            
+
+
+	                   for (size_t i = 0; i < photons->size() && i < 4; ++i) {
+                        const reco::Photon& myphoton = (*photons)[i];
+        
+        
+        auto photonMatch = gen.matchPhotonToGen(myphoton);
+        
+        bmmgRootTree_->Photon_isMatched_[i]       = photonMatch.isMatched;
+        bmmgRootTree_->Photon_genPdgId_[i]        = photonMatch.genPdgId;
+        bmmgRootTree_->Photon_genMotherPdgId_[i]  = photonMatch.genMotherPdgId;
+        bmmgRootTree_->Photon_genGMotherPdgId_[i] = photonMatch.genGMotherPdgId;
+        bmmgRootTree_->Photon_genDeltaR_[i]       = photonMatch.deltaR;
+		std::cout<<" Photon "<< i <<" deltaR : "<< photonMatch.deltaR << "\n";
+        bmmgRootTree_->Photon_genDeltaPt_[i]      = photonMatch.deltaPt;
+    }
+    
+    // Topology matching
+    if (muons->size() >= 2 && photons->size() >= 1) {
+        const reco::Muon& mu1 = (*muons)[0];
+        const reco::Muon& mu2 = (*muons)[1];
+        
+        // Build photon pointer vector
+        std::vector<const reco::Photon*> photonPtrs;
+        for (size_t i = 0; i < photons->size() && i < 2; ++i) {
+            photonPtrs.push_back(&((*photons)[i]));
+        }
+        
+      
+        auto topoMatch = gen.matchTopology(mu1, mu2, photonPtrs);
+        
+        bmmgRootTree_->Topology_isMatched_     = topoMatch.isMatched;
+        bmmgRootTree_->Topology_mu1Matched_    = topoMatch.mu1Matched;
+        bmmgRootTree_->Topology_mu2Matched_    = topoMatch.mu2Matched;
+        bmmgRootTree_->Topology_photon1Matched_ = topoMatch.photon1Matched;
+        bmmgRootTree_->Topology_photon2Matched_ = topoMatch.photon2Matched;
+        bmmgRootTree_->Topology_decayModeMatched_ = topoMatch.decayModeMatched;
+        
+        bool isSignalMatched = topoMatch.isMatched && gen.isSignalLike();
+        bmmgRootTree_->IsSignalMatched_ = isSignalMatched;
+    }
+    
+    
+    if (muons->size() >= 2) {
+        const reco::Muon& mu1 = (*muons)[0];
+        const reco::Muon& mu2 = (*muons)[1];
+        
+        // Muons from J/psi (443) from Bs (531)
+        auto mu1JpsiMatch = gen.matchToGen(mu1, 13, 443, 531, 0.05, 0.5);
+        auto mu2JpsiMatch = gen.matchToGen(mu2, 13, 443, 531, 0.05, 0.5);
+        
+        bmmgRootTree_->IsMuonsFromJpsi_ = mu1JpsiMatch.isMatched && mu2JpsiMatch.isMatched;
+        
+     
+        auto mu1DirectMatch = gen.matchToGen(mu1, 13, 531, 0, 0.05, 0.5);
+        auto mu2DirectMatch = gen.matchToGen(mu2, 13, 531, 0, 0.05, 0.5);
+        
+        bmmgRootTree_->IsMuonsDirectFromBs_ = mu1DirectMatch.isMatched && mu2DirectMatch.isMatched;
+    }
+
+		     fillMCInfo(genParticles); 
+		     
+               }
 
 	bmmgRootTree_->fill();
 }

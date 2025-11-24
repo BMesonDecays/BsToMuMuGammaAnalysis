@@ -236,9 +236,6 @@ void RadiativeRootTree::createTree(const std::string filename)
   bmmgTree_->Branch("pfCandRefPhotonScEta",pfCandRefPhotonScEta_,"pfCandRefPhotonScEta[2]/D");
   bmmgTree_->Branch("pfCandRefPhotonScPhi",pfCandRefPhotonScPhi_,"pfCandRefPhotonScPhi[2]/D");
   bmmgTree_->Branch("pfCandRefPhotonScEnergy",pfCandRefPhotonScEnergy_,"pfCandRefPhotonScEnergy[2]/D");
-  bmmgTree_->Branch("pfCandRefPhotonScRawEnergy",pfCandRefPhotonScRawEnergy_,"pfCandRefPhotonScRawEnergy[2]/D");
-  bmmgTree_->Branch("pfCandRefPhotonScEta",pfCandRefPhotonScEta_,"pfCandRefPhotonScEta[2]/D");
-  bmmgTree_->Branch("pfCandRefPhotonScPhi",pfCandRefPhotonScPhi_,"pfCandRefPhotonScPhi[2]/D");
   bmmgTree_->Branch("pfCandRefPhotonScEtaWidth",pfCandRefPhotonScEtaWidth_,"pfCandRefPhotonScEtaWidth[2]/D");
   bmmgTree_->Branch("pfCandRefPhotonScPhiWidth",pfCandRefPhotonScPhiWidth_,"pfCandRefPhotonScPhiWidth[2]/D");
   bmmgTree_->Branch("pfCandRefPhotonScBrem",pfCandRefPhotonScBrem_,"pfCandRefPhotonScBrem[2]/D");  
@@ -258,7 +255,6 @@ void RadiativeRootTree::createTree(const std::string filename)
   bmmgTree_->Branch("Bscoplanarity_recommg", &Bscoplanarity_recommg_, "Bscoplanarity_recommg/D");
   
   bmmgTree_->Branch("electronMultiplicity",&electronMultiplicity_,"electronMultiplicity/D");
-  bmmgTree_->Branch("pfCandMultiplicity",&pfCandMultiplicity_,"pfCandMultiplicity/D");
   bmmgTree_->Branch("costheta",&costheta_,"costheta/D");
   bmmgTree_->Branch("phi",&phi_,"phi/D");
   bmmgTree_->Branch("cospsi",&cospsi_,"cospsi/D");
@@ -274,6 +270,86 @@ void RadiativeRootTree::createTree(const std::string filename)
   bmmgTree_->Branch("JpsiGenLxyOld_",&JpsiGenLxyOld_,"JpsiGenLxyOld/D");
   bmmgTree_->Branch("JpsiGenLxyOverPt_",&JpsiGenLxyOverPt_,"JpsiGenLxyOverPt/D");
   bmmgTree_->Branch("JpsiGenNumberOfCandidates_",&JpsiGenNumberOfCandidates_,"JpsiGenNumberOfCandidates/D");
+
+
+  bmmgTree_->Branch("GenMotherID", &GenMotherID_,"GenMotherID/I");
+  bmmgTree_->Branch("GenB_pt", &GenB_pt_,"GenB_pt/D");
+  bmmgTree_->Branch("GenB_eta", &GenB_eta_,"GenB_eta/D");
+  bmmgTree_->Branch("GenB_phi", &GenB_phi_,"GenB_phi/D");
+  bmmgTree_->Branch("GenB_mass", &GenB_mass_,"GenB_mass/D");
+  bmmgTree_->Branch("GenBLxy", &GenBLxy_,"GenBLxy/D");
+  bmmgTree_->Branch("GenBct", &GenBct_,"GenBct/D");
+  bmmgTree_->Branch("GenBctErr", &GenBctErr_,"GenBctErr/D");
+  bmmgTree_->Branch("GenMuPlus_pt", &GenMuPlus_pt_,"GenMuPlus_pt/D");
+  bmmgTree_->Branch("GenMuPlus_eta", &GenMuPlus_eta_,"GenMuPlus_eta/D");
+  bmmgTree_->Branch("GenMuPlus_phi", &GenMuPlus_phi_,"GenMuPlus_phi/D");
+  bmmgTree_->Branch("GenMuPlus_E", &GenMuPlus_E_,"GenMuPlus_E/D");
+  bmmgTree_->Branch("GenMuMinus_pt", &GenMuMinus_pt_,"GenMuMinus_pt/D");
+  bmmgTree_->Branch("GenMuMinus_eta", &GenMuMinus_eta_,"GenMuMinus_eta/D");
+  bmmgTree_->Branch("GenMuMinus_phi", &GenMuMinus_phi_,"GenMuMinus_phi/D");
+  bmmgTree_->Branch("GenMuMinus_E", &GenMuMinus_E_,"GenMuMinus_E/D");
+  bmmgTree_->Branch("GenDimuon_mass", &GenDimuon_mass_,"GenDimuon_mass/D");
+  bmmgTree_->Branch("GenDimuon_pt", &GenDimuon_pt_,"GenDimuon_pt/D");
+  bmmgTree_->Branch("GenNPhotons", &GenNPhotons_,"GenNPhotons/I");
+  bmmgTree_->Branch("GenGamma_pt", GenGamma_pt_, "GenGamma_pt[4]/D");
+  bmmgTree_->Branch("GenGamma_eta", GenGamma_eta_, "GenGamma_eta[4]/D");
+  bmmgTree_->Branch("GenGamma_phi", GenGamma_phi_, "GenGamma_phi[4]/D");
+  bmmgTree_->Branch("GenGamma_E", GenGamma_E_, "GenGamma_E[4]/D");
+  bmmgTree_->Branch("GenGamma_origin", GenGamma_origin_, "GenGamma_origin[4]/I");
+  bmmgTree_->Branch("GenGamma_motherId", GenGamma_motherId_, "GenGamma_motherId[4]/I");
+  bmmgTree_->Branch("GenGamma_dRmu1", GenGamma_dRmu1_, "GenGamma_dRmu1[4]/D");
+  bmmgTree_->Branch("GenGamma_dRmu2", GenGamma_dRmu2_, "GenGamma_dRmu2[4]/D");    
+  bmmgTree_->Branch("GenHelicity3", &GenHelicity3_,"GenHelicity3/D");
+  bmmgTree_->Branch("GenCoplanarity3", &GenCoplanarity3_,"GenCoplanarity3/D");
+  bmmgTree_->Branch("GenCosTheta_l", &GenCosTheta_l_,"GenCosTheta_l/D");
+  bmmgTree_->Branch("GenTriBodyMass", &GenTriBodyMass_,"GenTriBodyMass/D");
+  bmmgTree_->Branch("GenHelicity4", &GenHelicity4_,"GenHelicity4/D");
+  bmmgTree_->Branch("GenCoplanarity4", &GenCoplanarity4_,"GenCoplanarity4/D");
+  bmmgTree_->Branch("GenFourBodyMass", &GenFourBodyMass_,"GenFourBodyMass/D");
+  bmmgTree_->Branch("GenDiphoton_mass", &GenDiphoton_mass_,"GenDiphoton_mass/D");
+  bmmgTree_->Branch("GenDiphoton_pt", &GenDiphoton_pt_,"GenDiphoton_pt/D");
+  bmmgTree_->Branch("GenHasJpsi", &GenHasJpsi_,"GenHasJpsi/O");
+  bmmgTree_->Branch("GenJpsi_mass", &GenJpsi_mass_,"GenJpsi_mass/D");
+  bmmgTree_->Branch("GenJpsi_pt", &GenJpsi_pt_,"GenJpsi_pt/D");
+  bmmgTree_->Branch("GenHasNeutralMeson", &GenHasNeutralMeson_,"GenHasNeutralMeson/O");
+  bmmgTree_->Branch("GenNeutralMesonId", &GenNeutralMesonId_,"GenNeutralMesonId/I");
+  bmmgTree_->Branch("GenDecayMode", &GenDecayMode_,"GenDecayMode/I");
+  bmmgTree_->Branch("GenIs3Body", &GenIs3Body_,"GenIs3Body/O");
+  bmmgTree_->Branch("GenIs4Body", &GenIs4Body_,"GenIs4Body/O");
+  bmmgTree_->Branch("GenIsHardProcess", &GenIsHardProcess_,"GenIsHardProcess/O");
+  bmmgTree_->Branch("GenIsSignal", &GenIsSignal_,"GenIsSignal/O");  
+  
+  bmmgTree_->Branch("Mu1_isMatched", &Mu1_isMatched_,"Mu1_isMatched/O");
+  bmmgTree_->Branch("Mu1_genPdgId", &Mu1_genPdgId_,"Mu1_genPdgId/I");
+  bmmgTree_->Branch("Mu1_genMotherPdgId", &Mu1_genMotherPdgId_,"Mu1_genMotherPdgId/I");
+  bmmgTree_->Branch("Mu1_genGM  otherPdgId", &Mu1_genGMotherPdgId_,"Mu1_genGMotherPdgId/I");
+  bmmgTree_->Branch("Mu1_genDeltaR", &Mu1_genDeltaR_,"Mu1_genDeltaR/F");
+  bmmgTree_->Branch("Mu1_genDeltaPt", &Mu1_genDeltaPt_,"Mu1_genDeltaPt/F");
+  bmmgTree_->Branch("Mu2_isMatched", &Mu2_isMatched_,"Mu2_isMatched/O");
+  bmmgTree_->Branch("Mu2_genPdgId", &Mu2_genPdgId_,"Mu2_genPdgId/I");
+  bmmgTree_->Branch("Mu2_genMotherPdgId", &Mu2_genMotherPdgId_,"Mu2_genMotherPdgId/I");
+  bmmgTree_->Branch("Mu2_genGMotherPdgId", &Mu2_genGMotherPdgId_,"Mu2_genGMotherPdgId/I");
+  bmmgTree_->Branch("Mu2_genDeltaR", &Mu2_genDeltaR_,"Mu2_genDeltaR/F");
+  bmmgTree_->Branch("Mu2_genDeltaPt", &Mu2_genDeltaPt_,"Mu2_genDeltaPt/F");
+  bmmgTree_->Branch("DiMuon_isMatched", &DiMuon_isMatched_,"DiMuon_isMatched/O");
+  bmmgTree_->Branch("Photon_isMatched", Photon_isMatched_, "Photon_isMatched[4]/O");
+  bmmgTree_->Branch("Photon_genPdgId", Photon_genPdgId_, "Photon_genPdgId[4]/I");
+  bmmgTree_->Branch("Photon_genMotherPdgId", Photon_genMotherPdgId_, "Photon_genMotherPdgId[4]/I");
+  bmmgTree_->Branch("Photon_genGMotherPdgId", Photon_genGMotherPdgId_, "Photon_genGMotherPdgId[4]/I");
+  bmmgTree_->Branch("Photon_genDeltaR", Photon_genDeltaR_, "Photon_genDeltaR[4]/F");
+  bmmgTree_->Branch("Photon_genDeltaPt", Photon_genDeltaPt_, "Photon_genDeltaPt[4]/F");
+  bmmgTree_->Branch("Photon_truthOrigin", Photon_truthOrigin_, "Photon_truthOrigin[4]/I");
+  bmmgTree_->Branch("NMatchedPhotons", &NMatchedPhotons_,"NMatchedPhotons/I");
+  bmmgTree_->Branch("Topology_isMatched", &Topology_isMatched_,"Topology_isMatched/O");
+  bmmgTree_->Branch("Topology_mu1Matched", &Topology_mu1Matched_,"Topology_mu1Matched/O");
+  bmmgTree_->Branch("Topology_mu2Matched", &Topology_mu2Matched_,"Topology_mu2Matched/O");
+  bmmgTree_->Branch("Topology_photon1Matched", &Topology_photon1Matched_,"Topology_photon1Matched/O");
+  bmmgTree_->Branch("Topology_photon2Matched", &Topology_photon2Matched_,"Topology_photon2Matched/O");
+  bmmgTree_->Branch("Topology_decayModeMatched", &Topology_decayModeMatched_,"Topology_decayModeMatched/O");
+  bmmgTree_->Branch("IsSignalMatched", &IsSignalMatched_,"IsSignalMatched/O");
+  bmmgTree_->Branch("IsMuonsFromJpsi", &IsMuonsFromJpsi_,"IsMuonsFromJpsi/O");
+  bmmgTree_->Branch("IsMuonsDirectFromBs", &IsMuonsDirectFromBs_,"IsMuonsDirectFromBs/O");
+
 
 }
 
@@ -559,6 +635,93 @@ void RadiativeRootTree::resetEntries()
 	JpsiGenNumberOfCandidates_ = -9999999;
 
 	for(size_t i=0; i<9;++i){PVcovariance_[i] = -9999999;}
+
+
+  //Gen Particle information
+	GenMotherID_  = -9999999;
+	GenB_pt_ = -9999999;
+	GenB_eta_ = -9999999;
+	GenB_phi_ = -9999999;
+	GenB_mass_ = -9999999;
+	GenBLxy_ = -9999999;
+	GenBct_ = -9999999;
+	GenBctErr_ = -9999999;
+	GenMuPlus_pt_ = -9999999;
+	GenMuPlus_eta_ = -9999999;
+	GenMuPlus_phi_ = -9999999;
+	GenMuPlus_E_ = -9999999;
+	GenMuMinus_pt_ = -9999999;
+	GenMuMinus_eta_ = -9999999;
+	GenMuMinus_phi_ = -9999999;
+	GenMuMinus_E_ = -9999999;
+	GenDimuon_mass_ = -9999999;
+	GenDimuon_pt_ = -9999999;
+	GenNPhotons_ = -9999999;
+  for(size_t i=0; i<4;++i){
+    GenGamma_pt_[i] = -9999999;
+    GenGamma_eta_[i] = -9999999;
+    GenGamma_phi_[i] = -9999999;
+    GenGamma_E_[i] = -9999999;
+    GenGamma_origin_[i] = -9999999;
+    GenGamma_motherId_[i] = -9999999;
+    GenGamma_dRmu1_[i] = -9999999;
+    GenGamma_dRmu2_[i] = -9999999;
+  }
+
+  GenHelicity3_ = -9999999;
+	GenCoplanarity3_ = -9999999;
+	GenCosTheta_l_ = -9999999;
+	GenTriBodyMass_ = -9999999;
+	GenHelicity4_ = -9999999;
+	GenCoplanarity4_ = -9999999;
+	GenFourBodyMass_ = -9999999;
+	GenDiphoton_mass_ = -9999999;
+	GenDiphoton_pt_ = -9999999;
+	GenHasJpsi_ = false;
+	GenJpsi_mass_ = -9999999;
+	GenJpsi_pt_ = -9999999;
+	GenHasNeutralMeson_ = -9999999;
+	GenNeutralMesonId_ = -9999999;
+	GenDecayMode_ = -9999999;
+	GenIs3Body_ = false;
+	GenIs4Body_ = false;
+	GenIsHardProcess_ = false;
+	GenIsSignal_ = false;
+
+	//Truth matched 
+	Mu1_isMatched_ = -9999999;
+	Mu1_genPdgId_ = -9999999;
+	Mu1_genMotherPdgId_ = -9999999;
+	Mu1_genGMotherPdgId_ = -9999999;
+	Mu1_genDeltaR_ = -9999999;
+	Mu1_genDeltaPt_ = -9999999;
+	Mu2_isMatched_ = -9999999;
+	Mu2_genPdgId_ = -9999999;
+	Mu2_genMotherPdgId_ = -9999999;
+	Mu2_genGMotherPdgId_ = -9999999;
+	Mu2_genDeltaR_ = -9999999;
+	Mu2_genDeltaPt_ = -9999999;
+	DiMuon_isMatched_ = -9999999;
+  for (size_t i=0; i<4;++i){
+    Photon_isMatched_[i] = -9999999;
+    Photon_genPdgId_[i] = -9999999;
+    Photon_genMotherPdgId_[i] = -9999999;
+    Photon_genGMotherPdgId_[i] = -9999999;
+    Photon_genDeltaR_[i] = -9999999;
+    Photon_genDeltaPt_[i] = -9999999;
+    Photon_truthOrigin_[i] = -9999999;
+
+  }
+	NMatchedPhotons_= -9999999;
+  Topology_isMatched_ = -9999999;
+	Topology_mu1Matched_ = -9999999;
+	Topology_mu2Matched_ = -9999999;
+	Topology_photon1Matched_ = -9999999;
+	Topology_photon2Matched_ = -9999999;
+	Topology_decayModeMatched_ = -9999999;
+	IsSignalMatched_ = -9999999;
+	IsMuonsFromJpsi_ = -9999999;
+	IsMuonsDirectFromBs_ = -9999999;
 }
 
 void RadiativeRootTree::getDeDx(const double f1, const double f2, const int f3)
@@ -863,6 +1026,105 @@ void RadiativeRootTree::setBranchAddresses(){
   bmmgTree_->SetBranchAddress("JpsiGenLxyOld", &JpsiGenLxyOld_);
   bmmgTree_->SetBranchAddress("JpsiGenLxyOverPt", &JpsiGenLxyOverPt_);
   bmmgTree_->SetBranchAddress("JpsiGenNumberOfCandidates", &JpsiGenNumberOfCandidates_);
+
+
+
+
+
+  // --- Gen Particle information ---
+bmmgTree_->SetBranchAddress("GenMotherID", &GenMotherID_);
+bmmgTree_->SetBranchAddress("GenB_pt", &GenB_pt_);
+bmmgTree_->SetBranchAddress("GenB_eta", &GenB_eta_);
+bmmgTree_->SetBranchAddress("GenB_phi", &GenB_phi_);
+bmmgTree_->SetBranchAddress("GenB_mass", &GenB_mass_);
+bmmgTree_->SetBranchAddress("GenBLxy", &GenBLxy_);
+bmmgTree_->SetBranchAddress("GenBct", &GenBct_);
+bmmgTree_->SetBranchAddress("GenBctErr", &GenBctErr_);
+bmmgTree_->SetBranchAddress("GenMuPlus_pt", &GenMuPlus_pt_);
+bmmgTree_->SetBranchAddress("GenMuPlus_eta", &GenMuPlus_eta_);
+bmmgTree_->SetBranchAddress("GenMuPlus_phi", &GenMuPlus_phi_);
+bmmgTree_->SetBranchAddress("GenMuPlus_E", &GenMuPlus_E_);
+bmmgTree_->SetBranchAddress("GenMuMinus_pt", &GenMuMinus_pt_);
+bmmgTree_->SetBranchAddress("GenMuMinus_eta", &GenMuMinus_eta_);
+bmmgTree_->SetBranchAddress("GenMuMinus_phi", &GenMuMinus_phi_);
+bmmgTree_->SetBranchAddress("GenMuMinus_E", &GenMuMinus_E_);
+bmmgTree_->SetBranchAddress("GenDimuon_mass", &GenDimuon_mass_);
+bmmgTree_->SetBranchAddress("GenDimuon_pt", &GenDimuon_pt_);
+bmmgTree_->SetBranchAddress("GenNPhotons", &GenNPhotons_);
+
+// Photons arrays
+bmmgTree_->SetBranchAddress("GenGamma_pt_", &GenGamma_pt_);
+bmmgTree_->SetBranchAddress("GenGamma_eta_", &GenGamma_eta_);
+bmmgTree_->SetBranchAddress("GenGamma_phi_", &GenGamma_phi_);
+bmmgTree_->SetBranchAddress("GenGamma_E_", &GenGamma_E_);
+bmmgTree_->SetBranchAddress("GenGamma_origin_", &GenGamma_origin_);
+bmmgTree_->SetBranchAddress("GenGamma_motherId_", &GenGamma_motherId_);
+bmmgTree_->SetBranchAddress("GenGamma_dRmu1_", &GenGamma_dRmu1_);
+bmmgTree_->SetBranchAddress("GenGamma_dRmu2_", &GenGamma_dRmu2_);
+
+
+// Angular variables
+bmmgTree_->SetBranchAddress("GenHelicity3", &GenHelicity3_);
+bmmgTree_->SetBranchAddress("GenCoplanarity3", &GenCoplanarity3_);
+bmmgTree_->SetBranchAddress("GenCosTheta_l", &GenCosTheta_l_);
+bmmgTree_->SetBranchAddress("GenTriBodyMass", &GenTriBodyMass_);
+bmmgTree_->SetBranchAddress("GenHelicity4", &GenHelicity4_);
+bmmgTree_->SetBranchAddress("GenCoplanarity4", &GenCoplanarity4_);
+bmmgTree_->SetBranchAddress("GenFourBodyMass", &GenFourBodyMass_);
+bmmgTree_->SetBranchAddress("GenDiphoton_mass", &GenDiphoton_mass_);
+bmmgTree_->SetBranchAddress("GenDiphoton_pt", &GenDiphoton_pt_);
+
+// Resonances
+bmmgTree_->SetBranchAddress("GenHasJpsi", &GenHasJpsi_);
+bmmgTree_->SetBranchAddress("GenJpsi_mass", &GenJpsi_mass_);
+bmmgTree_->SetBranchAddress("GenJpsi_pt", &GenJpsi_pt_);
+bmmgTree_->SetBranchAddress("GenHasNeutralMeson", &GenHasNeutralMeson_);
+bmmgTree_->SetBranchAddress("GenNeutralMesonId", &GenNeutralMesonId_);
+
+// Decay mode / flags
+bmmgTree_->SetBranchAddress("GenDecayMode", &GenDecayMode_);
+bmmgTree_->SetBranchAddress("GenIs3Body", &GenIs3Body_);
+bmmgTree_->SetBranchAddress("GenIs4Body", &GenIs4Body_);
+bmmgTree_->SetBranchAddress("GenIsHardProcess", &GenIsHardProcess_);
+bmmgTree_->SetBranchAddress("GenIsSignal", &GenIsSignal_);
+
+// --- Truth matched ---
+bmmgTree_->SetBranchAddress("Mu1_isMatched", &Mu1_isMatched_);
+bmmgTree_->SetBranchAddress("Mu1_genPdgId", &Mu1_genPdgId_);
+bmmgTree_->SetBranchAddress("Mu1_genMotherPdgId", &Mu1_genMotherPdgId_);
+bmmgTree_->SetBranchAddress("Mu1_genGMotherPdgId", &Mu1_genGMotherPdgId_);
+bmmgTree_->SetBranchAddress("Mu1_genDeltaR", &Mu1_genDeltaR_);
+bmmgTree_->SetBranchAddress("Mu1_genDeltaPt", &Mu1_genDeltaPt_);
+bmmgTree_->SetBranchAddress("Mu2_isMatched", &Mu2_isMatched_);
+bmmgTree_->SetBranchAddress("Mu2_genPdgId", &Mu2_genPdgId_);
+bmmgTree_->SetBranchAddress("Mu2_genMotherPdgId", &Mu2_genMotherPdgId_);
+bmmgTree_->SetBranchAddress("Mu2_genGMotherPdgId", &Mu2_genGMotherPdgId_);
+bmmgTree_->SetBranchAddress("Mu2_genDeltaR", &Mu2_genDeltaR_);
+bmmgTree_->SetBranchAddress("Mu2_genDeltaPt", &Mu2_genDeltaPt_);
+bmmgTree_->SetBranchAddress("DiMuon_isMatched", &DiMuon_isMatched_);
+
+// Photon truth arrays
+bmmgTree_->SetBranchAddress("Photon_isMatched_", &Photon_isMatched_);
+bmmgTree_->SetBranchAddress("Photon_genPdgId_", &Photon_genPdgId_);
+bmmgTree_->SetBranchAddress("Photon_genMotherPdgId_", &Photon_genMotherPdgId_);
+bmmgTree_->SetBranchAddress("Photon_genGMotherPdgId_", &Photon_genGMotherPdgId_);
+bmmgTree_->SetBranchAddress("Photon_genDeltaR_", &Photon_genDeltaR_);
+bmmgTree_->SetBranchAddress("Photon_genDeltaPt_", &Photon_genDeltaPt_);
+bmmgTree_->SetBranchAddress("Photon_truthOrigin_", &Photon_truthOrigin_);
+// Remaining flags
+bmmgTree_->SetBranchAddress("NMatchedPhotons", &NMatchedPhotons_);
+bmmgTree_->SetBranchAddress("Topology_isMatched", &Topology_isMatched_);
+bmmgTree_->SetBranchAddress("Topology_mu1Matched", &Topology_mu1Matched_);
+bmmgTree_->SetBranchAddress("Topology_mu2Matched", &Topology_mu2Matched_);
+bmmgTree_->SetBranchAddress("Topology_photon1Matched", &Topology_photon1Matched_);
+bmmgTree_->SetBranchAddress("Topology_photon2Matched", &Topology_photon2Matched_);
+bmmgTree_->SetBranchAddress("Topology_decayModeMatched", &Topology_decayModeMatched_);
+bmmgTree_->SetBranchAddress("IsSignalMatched", &IsSignalMatched_);
+bmmgTree_->SetBranchAddress("IsMuonsFromJpsi", &IsMuonsFromJpsi_);
+bmmgTree_->SetBranchAddress("IsMuonsDirectFromBs", &IsMuonsDirectFromBs_);
+
+
+
 
 }
 

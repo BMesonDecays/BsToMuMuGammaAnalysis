@@ -17,7 +17,7 @@ config.JobType.pyCfgParams = [f'outputFile={outputFileName}', f'nEvents={nEvents
 config.JobType.numCores = 2
 config.JobType.maxMemoryMB = 5000
 
-config.Data.userInputFiles = open("fileList.txt").readlines()
+config.Data.userInputFiles = open("BsToMuMuGammaFileList.txt").readlines()
 config.Data.splitting = 'FileBased'
 config.Data.unitsPerJob = 50
 config.Data.publication = False
@@ -25,5 +25,6 @@ config.Data.outputDatasetTag = 'BsToMuMuGamma_analysis'
 config.Data.outputPrimaryDataset = 'BsToMuMuGamma_analysis'
 
 config.Site.storageSite = 'T3_CH_CERNBOX'
-config.Site.whitelist = ['T2_CH_CERN']
-config.Data.outLFNDirBase = '/store/user/sslawins/bsmmg_output'
+#config.Site.whitelist = ['T2_CH_CERN']
+#config.Data.outLFNDirBase = '/store/user/sslawins/bsmmg_output'
+config.Data.outLFNDirBase = '/store/user/almuhamm/MuSampleSharedDirectory/BPHAnalyzerNtuples'

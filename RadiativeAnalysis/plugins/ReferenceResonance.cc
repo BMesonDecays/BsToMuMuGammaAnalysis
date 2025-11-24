@@ -68,11 +68,7 @@ ReferenceResonance::ResonanceDetails ReferenceResonance::findResonances(const re
         result.py  = ReferenceResonance::calculateProperty(mu1, mu2, [](const auto& p4) { return p4.py(); });
     }
 
-    if (verbose) {
-        std::cout << "Dimuon Mass: " << dimuonMass 
-                  << " | Resonance Flag: " << static_cast<int>(result.resonanceFlag)
-                  << " | Valid: " << result.isValid << "\n";
-    }
+   
 
     return result;
 }

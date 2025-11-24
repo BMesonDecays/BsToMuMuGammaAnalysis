@@ -127,16 +127,16 @@ cmsRun makeTree_BsMuMuGamma_MC_AOD.py nEvents=30000 outputFile=myBMMGPhiGammaTre
 # prefixPath3 ='/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToKStarGamma_MCTunesRun3ECM13p6TeV/BsToKStarGamma_CMSSW_12_4_11_patch3_02_01_2024/250110_222730/0001/'
 # prefixPath4 = '/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToMuMuGamma_MCTunesRun3ECM13p6TeV/BsToMuMuGamma_CMSSW_12_4_11_patch3_14_12_2024/241214_121515/0000'
 # #prefixPath ='/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToJpsiPi0_MCTunesRun3ECM13p6TeV/BsToJpsiPi0_CMSSW_12_4_11_patch3_30_11_2024/241209_175957/0000'
-# prefixPath5 = '/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToJpsiEta_MCTunesRun3ECM13p6TeV/BsToJpsiEta_CMSSW_12_4_11_patch3_09_01_2024/250109_235331/0000'
+prefixPath5 = '/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToJpsiEta_MCTunesRun3ECM13p6TeV/BsToJpsiEta_CMSSW_12_4_11_patch3_09_01_2024/250109_235331/0000'
 # fileList1 = glob.glob(prefixPath1+'/*.root')
 # fileList2 = glob.glob(prefixPath2+'/*.root')
 # fileList3 = glob.glob(prefixPath3+'/*.root')
 # fileList4 = glob.glob(prefixPath4+'/*.root')
-# fileList5 = glob.glob(prefixPath5+'/*.root')
+fileList5 = glob.glob(prefixPath5+'/*.root')
 # #fileList =  fileList1 + fileList2 + fileList3 + fileList4 + fileList5
 # #random.shuffle(fileList)
-# fileList_mix = ['file:'+aFile for aFile in fileList5]
-# process.source.fileNames = fileList_mix
+fileList_mix = ['file:'+aFile for aFile in fileList5]
+process.source.fileNames = fileList_mix
 
 
 
