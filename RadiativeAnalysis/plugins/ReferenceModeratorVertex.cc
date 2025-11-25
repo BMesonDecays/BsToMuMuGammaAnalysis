@@ -246,8 +246,7 @@ DecayChainVariables ReferenceModeratorVertex::ReferenceModeratorVertexObservable
                 //std::cout<<"Vertex position after the fit- BsTojpsiPhicase  "<< Bsvec.x() << "\t"<< Bsvec.y() << "\t"<< Bsvec.z() << "\n";
                 reco::Vertex recVtxs;
                 //std::cout << " the PV multiplicity returen in the TBV class BsTojpsiPhicase: " << bsAndVtxInfo.VtxIndex<< "\n";
-                reco::Vertex PVvtxHightestPt;//:wq = recVtxs[bsAndVtxInfo.VtxIndex];
-                /*Need input to solve the problem of multiple primary vertex*/
+                reco::Vertex PVvtxHightestPt = PVs[bsAndVtxInfo.VtxIndex]; 
                 //std::cout<<"Primary vertex HightestPt BsTojpsiPhicase"<<PVvtxHightestPt.x()<< "\t"<<PVvtxHightestPt.y()<< "\t"<<PVvtxHightestPt.z() <<"\n";
                 
                 dcv.BsCt3D = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*Bsvec.x()+
