@@ -108,6 +108,8 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig):
 	EtaPrimeMassWindowNoFit_          = iConfig.getParameter<double>("EtaPrimeMassWindowNoFit");
 	BsLowerMassCutBeforeFit_          = iConfig.getParameter<double>("BsLowerMassCutBeforeFit");
 	BsUpperMassCutBeforeFit_          = iConfig.getParameter<double>("BsUpperMassCutBeforeFit");
+	BdLowerMassCutBeforeFit_          = iConfig.getParameter<double>("BdLowerMassCutBeforeFit");
+	BdUpperMassCutBeforeFit_          = iConfig.getParameter<double>("BdUpperMassCutBeforeFit");
 	BsLowerMassCutAfterFit_           = iConfig.getParameter<double>("BsLowerMassCutAfterFit");
 	BsUpperMassCutAfterFit_           = iConfig.getParameter<double>("BsUpperMassCutAfterFit");
 	BdPDGMass_                        = iConfig.getParameter<double>("BdPDGMass");
@@ -296,7 +298,7 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 	    //iEvent.getByToken(pfCandTagTok, pfCands);
 	   
 		DecayChainVariables decayVariables;
-		if(muons->size()==2 && convPhotons->size() ==1){
+		if(muons->size()>=2 && convPhotons->size() >=1){
 			TrippleObjectVertex  tripvtxObservables;
 			decayVariables = tripvtxObservables.TrippleObjectVertexObservables(
 				*muons, 
@@ -312,7 +314,7 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 			bmmgRootTree_->vertexTypeFlag_ = 1;
 
 		}
-		if(muons->size()==2 && convPhotons->size() ==2){
+		if(muons->size()==2 && convPhotons->size() >=2){
 			TetraObjectVertex tetradcObservables;
 			decayVariables = tetradcObservables.TetraObjectVertexObservables(
 				*muons, 
@@ -353,7 +355,7 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 		bmmgRootTree_->DiMuon_CosineAlpha_   = decayVariables.opening_angle;
 		bmmgRootTree_->DiMuon_DCA_           = decayVariables.mumudca;
 		bmmgRootTree_->DiMuon_Chi2pv_KVFvtx_ = decayVariables.dimuonchi2;
-		//bmmgRootTree_->DiMuon_Mahalanobis_   = triDecayVar.mahalanobis;
+		bmmgRootTree_->DiMuon_Mahalanobis_   = decayVariables.mahalanobis;
 		bmmgRootTree_->DiMuon_Lxy_           = decayVariables.dimuonlxy;
 		bmmgRootTree_->DiMuon_Lxyerr_        = decayVariables.dimuonlxyerr;
 		bmmgRootTree_->DiMuon_LxyOverPt_     = decayVariables.dimuonlxyOverPt;
@@ -497,8 +499,16 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 				bmmgRootTree_->photonSCBrem_[iPhoton] = photonVar[iPhoton].scPhiWidth / photonVar[iPhoton].scEtaWidth;
 				photonleg1.SetPtEtaPhiE(photonVar[iPhoton].pt, photonVar[iPhoton].eta, photonVar[iPhoton].phi, photonVar[iPhoton].energy);
 				TLorentzVector bslegTrippleObject = muonleg1 + muonleg2 + photonleg1;
-				if (bslegTrippleObject.M() < BsLowerMassCutBeforeFit_ || bslegTrippleObject.M() > BsUpperMassCutBeforeFit_) continue;
+				double M = bslegTrippleObject.M();
+				bool inBs = (M >= BsLowerMassCutBeforeFit_ && M <= BsUpperMassCutBeforeFit_);
+				bool inBd = (M >= BdLowerMassCutBeforeFit_ && M <= BdUpperMassCutBeforeFit_);
+				if (!inBs && !inBd) continue;   // reject if in neither Bs nor Bd
+				if (inBs) bmmgRootTree_->BmesonType_ = 1; // Bs
+				if (inBd) bmmgRootTree_->BmesonType_ = 0; // Bd
 				bmmgRootTree_->Bsmass_recommg_ = bslegTrippleObject.M();
+				bmmgRootTree_->Bspt_recommg_ = bslegTrippleObject.Pt();
+				bmmgRootTree_->Bseta_recommg_ = bslegTrippleObject.Eta();
+				bmmgRootTree_->Bsphi_recommg_ = bslegTrippleObject.Phi();
 				//std::cout<< " ----------------bs mass from photon l1 reco photon -------------------------------"<< bslegTrippleObject.M() << "\n";
 				pgamma.SetPtEtaPhi(photonVar[iPhoton].pt, photonVar[iPhoton].eta, photonVar[iPhoton].phi);
 				pbs.SetPtEtaPhi(bslegTrippleObject.Pt(), bslegTrippleObject.Eta(), bslegTrippleObject.Phi());
@@ -528,19 +538,28 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 						bmmgRootTree_->DiGammaEta_alone_ = digamma.Eta();
 						bmmgRootTree_->DiGammaPhi_alone_ = digamma.Phi();
 						bmmgRootTree_->DiGammaPt_alone_ = digamma.Pt();
-						TLorentzVector bsleg = muonleg1 + muonleg2 + photonleg1 + photonleg2;
-                        if (bsleg.M() < BsLowerMassCutBeforeFit_ || bsleg.M() > BsUpperMassCutBeforeFit_) continue;
+						TLorentzVector bslegTetraObject = muonleg1 + muonleg2 + photonleg1 + photonleg2;
+                        double M = bslegTetraObject.M();
+						bool inBs = (M >= BsLowerMassCutBeforeFit_ && M <= BsUpperMassCutBeforeFit_);
+						bool inBd = (M >= BdLowerMassCutBeforeFit_ && M <= BdUpperMassCutBeforeFit_);
+						if (!inBs && !inBd) continue;   // reject if in neither Bs nor Bd
+						if (inBs) bmmgRootTree_->BmesonType_ = 1; // Bs
+						if (inBd) bmmgRootTree_->BmesonType_ = 0; // Bd
 						pdigamma.SetPtEtaPhi(digamma.Pt(), digamma.Eta(), digamma.Phi());
-						pbs.SetPtEtaPhi(bsleg.Pt(), bsleg.Eta(), bsleg.Phi());
+						pbs.SetPtEtaPhi(bslegTetraObject.Pt(), bslegTetraObject.Eta(), bslegTetraObject.Phi());
 						float helicity = pdigamma.Dot(pbs) / (pdigamma.Mag() * pbs.Mag());
 						TVector3 normal1 = mu1vec.Cross(mu2vec);
                         TVector3 normal2 = pdigamma.Cross(pbs);
                         double cosPhi = normal1.Dot(normal2) / (normal1.Mag() * normal2.Mag());
 						float coplanarity = TMath::ACos(TMath::Min(1.0, TMath::Max(-1.0, cosPhi)));
 						bmmgRootTree_->isFourBody_ = 1;
-						bmmgRootTree_->Bsmass_recommg_ = bsleg.M();
-						bmmgRootTree_->Bshelicity_recommg_ = helicity;
-						bmmgRootTree_->Bscoplanarity_recommg_ = coplanarity;
+						bmmgRootTree_->Bsmass_recommgg_ = bslegTetraObject.M();
+						bmmgRootTree_->Bspt_recommgg_ = bslegTetraObject.Pt();
+						bmmgRootTree_->Bseta_recommgg_ = bslegTetraObject.Eta();
+						bmmgRootTree_->Bsphi_recommgg_ = bslegTetraObject.Phi();
+						//std::cout<< " ----------------bs mass from photon l1 and l2 reco photon -------------------------------"<< bslegTetraObject.M() << "\n";
+						bmmgRootTree_->Bshelicity_recommgg_ = helicity;
+						bmmgRootTree_->Bscoplanarity_recommgg_ = coplanarity;
 
 					}//second photon loop
 				}//first photon loop

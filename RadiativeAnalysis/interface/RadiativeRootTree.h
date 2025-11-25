@@ -271,8 +271,19 @@ public:
 	double DiGammaPt_alone_;
 
 	double Bsmass_recommg_;
+	double Bspt_recommg_;
+	double Bseta_recommg_;
+	double Bsphi_recommg_;
 	double Bshelicity_recommg_;
 	double Bscoplanarity_recommg_;
+
+	double Bsmass_recommgg_;
+	double Bspt_recommgg_;
+	double Bseta_recommgg_;
+	double Bsphi_recommgg_;
+	double Bshelicity_recommgg_;
+	double Bscoplanarity_recommgg_;
+	int BmesonType_;
 
 	int electronMultiplicity_;
 	int pfCandMultiplicity_;

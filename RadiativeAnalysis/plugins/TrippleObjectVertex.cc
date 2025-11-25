@@ -86,11 +86,30 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
                dcv.opening_angle = CosAlpha;
                TrajectoryStateClosestToPoint mu1TS = muonTT1.impactPointTSCP();
                TrajectoryStateClosestToPoint mu2TS = muonTT2.impactPointTSCP();
+
                if (mu1TS.isValid() && mu2TS.isValid()) {
 		       MuonClosestApproachCalculator dcaCalculator;
 		       double distanceOfClosestApproach = dcaCalculator.calculateDCA(mu1TS, mu2TS);
 		       if (distanceOfClosestApproach >= 0.0)dcv.mumudca = distanceOfClosestApproach;
 	       }
+           if (mu1TS.isValid() && mu2TS.isValid()) {
+            auto par1 = mu1TS.perigeeParameters();
+            auto par2 = mu2TS.perigeeParameters();
+            AlgebraicVector5 p1 = par1.vector();
+            AlgebraicVector5 p2 = par2.vector();
+            AlgebraicSymMatrix55 C1 = mu1TS.perigeeError().covarianceMatrix();
+            AlgebraicSymMatrix55 C2 = mu2TS.perigeeError().covarianceMatrix();
+
+            AlgebraicSymMatrix55 Csum = C1 + C2;
+            AlgebraicVector5 diff = p1 - p2;
+            bool invertible = Csum.Invert();
+            if (invertible) {
+                double md2 = ROOT::Math::Similarity(diff, Csum);
+                if (md2 >= 0.0)dcv.mahalanobis = std::sqrt(md2);
+                //std::cout<< " Mahalanobis distance ------------------------------------------------------------------- : "<< dcv.mahalanobis << "\n";
+            }
+        }
+
 	       dcv.max_Dr1 = fabs( (- (mu1.vx()-bsAndVtxInfo.bs_x) * mu1.py() + (mu1.vy()-bsAndVtxInfo.bs_y) * mu1.px() ) / mu1.pt() );
 	       dcv.max_Dr2 = fabs( (- (mu2.vx()-bsAndVtxInfo.bs_x) * mu2.py() + (mu2.vy()-bsAndVtxInfo.bs_y) * mu2.px() ) / mu2.pt() );
 	       //std::cout<<"maxDR1: "<<dcv.max_Dr1<<"\t maxDR2 : "<<dcv.max_Dr2<<"\n";

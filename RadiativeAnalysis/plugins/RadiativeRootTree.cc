@@ -253,6 +253,18 @@ void RadiativeRootTree::createTree(const std::string filename)
   bmmgTree_->Branch("Bsmass_recommg", &Bsmass_recommg_, "Bsmass_recommg/D");
   bmmgTree_->Branch("Bshelicity_recommg", &Bshelicity_recommg_, "Bshelicity_recommg/D");
   bmmgTree_->Branch("Bscoplanarity_recommg", &Bscoplanarity_recommg_, "Bscoplanarity_recommg/D");
+  bmmgTree_->Branch("Bspt_recommg", &Bspt_recommg_, "Bspt_recommg/D");
+  bmmgTree_->Branch("Bseta_recommg", &Bseta_recommg_, "Bseta_recommg/D");
+  bmmgTree_->Branch("Bsphi_recommg", &Bsphi_recommg_, "Bsphi_recommg/D"); 
+  bmmgTree_->Branch("Bsmass_recommgg", &Bsmass_recommgg_, "Bsmass_recommgg/D");
+  bmmgTree_->Branch("Bshelicity_recommgg", &Bshelicity_recommgg_, "Bshelicity_recommgg/D");
+  bmmgTree_->Branch("Bscoplanarity_recommgg", &Bscoplanarity_recommgg_, "Bscoplanarity_recommgg/D");
+  bmmgTree_->Branch("Bspt_recommgg", &Bspt_recommgg_, "Bspt_recommgg/D");
+  bmmgTree_->Branch("Bseta_recommgg", &Bseta_recommgg_, "Bseta_recommgg/D");
+  bmmgTree_->Branch("Bsphi_recommgg", &Bsphi_recommgg_, "Bsphi_recommgg/D");
+  bmmgTree_->Branch("BmesonType", &BmesonType_, "BmesonType/I");
+
+
   
   bmmgTree_->Branch("electronMultiplicity",&electronMultiplicity_,"electronMultiplicity/D");
   bmmgTree_->Branch("costheta",&costheta_,"costheta/D");
@@ -622,6 +634,19 @@ void RadiativeRootTree::resetEntries()
   Bsmass_recommg_                = -9999999;
   Bshelicity_recommg_            = -9999999;
 	Bscoplanarity_recommg_         = -9999999;
+  Bspt_recommg_                 = -9999999;
+  Bseta_recommg_                = -9999999;
+  Bsphi_recommg_                = -9999999;
+  Bsmass_recommgg_               = -9999999;
+  Bshelicity_recommgg_           = -9999999;
+  Bscoplanarity_recommgg_        = -9999999;
+  Bspt_recommgg_                = -9999999;
+  Bseta_recommgg_               = -9999999;
+  Bsphi_recommgg_               = -9999999;
+  BmesonType_                   = -9999999;
+
+  
+  
 	
 	electronMultiplicity_   = -9999999;
   pfCandMultiplicity_     = -9999999;
@@ -1016,6 +1041,18 @@ void RadiativeRootTree::setBranchAddresses(){
   bmmgTree_->SetBranchAddress("Bsmass_recommg",  &Bsmass_recommg_);
   bmmgTree_->SetBranchAddress("Bshelicity_recommg",  &Bshelicity_recommg_);
   bmmgTree_->SetBranchAddress("Bscoplanarity_recommg",  &Bscoplanarity_recommg_);
+  bmmgTree_->SetBranchAddress("Bspt_recommg",    &Bspt_recommg_);
+  bmmgTree_->SetBranchAddress("Bseta_recommg",   &Bseta_recommg_);
+  bmmgTree_->SetBranchAddress("Bsphi_recommg",   &Bsphi_recommg_);
+  bmmgTree_->SetBranchAddress("Bsmass_recommgg",  &Bsmass_recommgg_);
+  bmmgTree_->SetBranchAddress("Bshelicity_recommgg",  &Bshelicity_recommgg_);
+  bmmgTree_->SetBranchAddress("Bscoplanarity_recommgg",  &Bscoplanarity_recommgg_);
+  bmmgTree_->SetBranchAddress("Bspt_recommgg",    &Bspt_recommgg_);
+  bmmgTree_->SetBranchAddress("Bseta_recommgg",   &Bseta_recommgg_);
+  bmmgTree_->SetBranchAddress("Bsphi_recommgg",   &Bsphi_recommgg_);
+  bmmgTree_->SetBranchAddress("BmesonType", &BmesonType_);
+
+ 
 
   bmmgTree_->SetBranchAddress("electronMultiplicity", &electronMultiplicity_);
   bmmgTree_->SetBranchAddress("JpsiGenPVx", &JpsiGenPVx_);
