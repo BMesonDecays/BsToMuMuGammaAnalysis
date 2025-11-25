@@ -313,7 +313,7 @@ for (size_t i = 0; i < photons.size(); ++i) {
         GlobalVector Bsvec(b_par[3], b_par[4], b_par[5]);
 
         // 3D and 2D decay length using PV and BS
-        reco::Vertex PVvtxHightestPt;
+        reco::Vertex PVvtxHightestPt = PVs[bsAndVtxInfo.VtxIndex];
         dcv.BsCt3D = m_lim.BsPDGMass * ((kvfbsvertex.position().x() - PVvtxHightestPt.x()) * Bsvec.x() +
                                         (kvfbsvertex.position().y() - PVvtxHightestPt.y()) * Bsvec.y() +
                                         (kvfbsvertex.position().z() - PVvtxHightestPt.z()) * Bsvec.z()) /
