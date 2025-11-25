@@ -26,4 +26,9 @@
 <use   name="TrackingTools/PatternTools"/>
 <use   name="DataFormats/EgammaReco"/>
 <use   name="DataFormats/EcalRecHit"/>
+
+
+<library name="PrimVertices" file="PrimVertices.cc">
+</library>
+
 <flags EDM_PLUGIN="1"/>
