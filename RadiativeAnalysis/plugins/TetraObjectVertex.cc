@@ -5,10 +5,10 @@
 
 TetraObjectVertex::TetraObjectVertex(){}
 DecayChainVariables TetraObjectVertex::TetraObjectVertexObservables(
-        const std::vector<reco::Muon>& muons, 
+                    const std::vector<reco::Muon>& muons, 
 		    const std::vector<reco::Photon>& photons,
-        const std::vector<reco::Vertex>& PVs,
-        const EcalClusterLazyTools& lazyTools,
+		    const std::vector<reco::Vertex>& PVs,
+                    const EcalClusterLazyTools& lazyTools,
 			const pat::CompositeCandidateCollection& conversions,
 			const BeamSpotAndVertex::BSAndVtxVariables& bsAndVtxInfo,
 			const MagneticField& bField,
@@ -88,7 +88,23 @@ DecayChainVariables TetraObjectVertex::TetraObjectVertexObservables(
 		       double distanceOfClosestApproach = dcaCalculator.calculateDCA(mu1TS, mu2TS);
 		       if (distanceOfClosestApproach >= 0.0)dcv.mumudca = distanceOfClosestApproach;
 	       }
-               dcv.max_Dr1 = fabs( (- (mu1.vx()-bsAndVtxInfo.bs_x) * mu1.py() + (mu1.vy()-bsAndVtxInfo.bs_y) * mu1.px() ) / mu1.pt() );
+         if (mu1TS.isValid() && mu2TS.isValid()) {
+            auto par1 = mu1TS.perigeeParameters();
+auto par2 = mu2TS.perigeeParameters();
+AlgebraicVector5 p1 = par1.vector();
+AlgebraicVector5 p2 = par2.vector();
+AlgebraicSymMatrix55 C1 = mu1TS.perigeeError().covarianceMatrix();
+AlgebraicSymMatrix55 C2 = mu2TS.perigeeError().covarianceMatrix();
+            AlgebraicSymMatrix55 Csum = C1 + C2;
+            AlgebraicVector5 diff = p1 - p2;
+            bool invertible = Csum.Invert();
+            if (invertible) {
+                double md2 = ROOT::Math::Similarity(diff, Csum);
+                if (md2 >= 0.0)dcv.mahalanobis = std::sqrt(md2);
+            }
+        }
+
+         dcv.max_Dr1 = fabs( (- (mu1.vx()-bsAndVtxInfo.bs_x) * mu1.py() + (mu1.vy()-bsAndVtxInfo.bs_y) * mu1.px() ) / mu1.pt() );
 	       dcv.max_Dr2 = fabs( (- (mu2.vx()-bsAndVtxInfo.bs_x) * mu2.py() + (mu2.vy()-bsAndVtxInfo.bs_y) * mu2.px() ) / mu2.pt() );
 	       //std::cout<<"maxDR1: "<<dcv.max_Dr1<<"\t maxDR2 : "<<dcv.max_Dr2<<"\n";
 	       if ( muon::overlap(mu1,mu2,1,1,true) ) continue; /// Skip the mu-mu combination if the two muons overlap
@@ -176,9 +192,8 @@ DecayChainVariables TetraObjectVertex::TetraObjectVertexObservables(
 	  		  AlgebraicVector7 b_par = bs->currentState().kinematicParameters().vector();
                 GlobalVector Bsvec(b_par[3], b_par[4], b_par[5]);
                 //std::cout<<"Vertex position after the fit  "<< Bsvec.x() << "\t"<< Bsvec.y() << "\t"<< Bsvec.z() << "\n";
-                //std::cout << " the PV multiplicity returen in the TBV class : " << bsAndVtxInfo.VtxIndex<< "\n";
                 reco::Vertex PVvtxHightestPt = PVs[bsAndVtxInfo.VtxIndex];
-                //std::cout<<"Primary vertex HightestPt"<<PVvtxHightestPt.x()<< "\t"<<PVvtxHightestPt.y()<< "\t"<<PVvtxHightestPt.z() <<"\n";
+		            std::cout<<" Tetra Object : Primary vertex HightestPt"<<PVvtxHightestPt.x()<< "\t"<<PVvtxHightestPt.y()<< "\t"<<PVvtxHightestPt.z() <<"\n";
                 MassLimits m_lim;
                 dcv.BsCt3D = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*Bsvec.x()+
                 (kvfbsvertex.position().y()-PVvtxHightestPt.y())*Bsvec.y()+

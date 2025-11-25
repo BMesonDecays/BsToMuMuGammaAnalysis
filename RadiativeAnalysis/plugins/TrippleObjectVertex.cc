@@ -8,7 +8,7 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
     //removing the qualifier TrippleObjectVertex fron the defintion of DecayChainVariables since it is not anymore a member of such class
     const std::vector<reco::Muon>& muons,
     const std::vector<reco::Photon>& photons,
-    const std::vector<reco::Vertex>& PVs,
+     const std::vector<reco::Vertex>& PVs,
     const EcalClusterLazyTools& lazyTools,
     const pat::CompositeCandidateCollection& conversions,
     const BeamSpotAndVertex::BSAndVtxVariables& bsAndVtxInfo,
@@ -86,11 +86,30 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
                dcv.opening_angle = CosAlpha;
                TrajectoryStateClosestToPoint mu1TS = muonTT1.impactPointTSCP();
                TrajectoryStateClosestToPoint mu2TS = muonTT2.impactPointTSCP();
+
                if (mu1TS.isValid() && mu2TS.isValid()) {
 		       MuonClosestApproachCalculator dcaCalculator;
 		       double distanceOfClosestApproach = dcaCalculator.calculateDCA(mu1TS, mu2TS);
 		       if (distanceOfClosestApproach >= 0.0)dcv.mumudca = distanceOfClosestApproach;
 	       }
+           if (mu1TS.isValid() && mu2TS.isValid()) {
+            auto par1 = mu1TS.perigeeParameters();
+            auto par2 = mu2TS.perigeeParameters();
+            AlgebraicVector5 p1 = par1.vector();
+            AlgebraicVector5 p2 = par2.vector();
+            AlgebraicSymMatrix55 C1 = mu1TS.perigeeError().covarianceMatrix();
+            AlgebraicSymMatrix55 C2 = mu2TS.perigeeError().covarianceMatrix();
+
+            AlgebraicSymMatrix55 Csum = C1 + C2;
+            AlgebraicVector5 diff = p1 - p2;
+            bool invertible = Csum.Invert();
+            if (invertible) {
+                double md2 = ROOT::Math::Similarity(diff, Csum);
+                if (md2 >= 0.0)dcv.mahalanobis = std::sqrt(md2);
+                //std::cout<< " Mahalanobis distance ------------------------------------------------------------------- : "<< dcv.mahalanobis << "\n";
+            }
+        }
+
 	       dcv.max_Dr1 = fabs( (- (mu1.vx()-bsAndVtxInfo.bs_x) * mu1.py() + (mu1.vy()-bsAndVtxInfo.bs_y) * mu1.px() ) / mu1.pt() );
 	       dcv.max_Dr2 = fabs( (- (mu2.vx()-bsAndVtxInfo.bs_x) * mu2.py() + (mu2.vy()-bsAndVtxInfo.bs_y) * mu2.px() ) / mu2.pt() );
 	       //std::cout<<"maxDR1: "<<dcv.max_Dr1<<"\t maxDR2 : "<<dcv.max_Dr2<<"\n";
@@ -169,7 +188,7 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
       
         for (const auto& conv : conversions) {
             dcv.vertexFitFlag = 1;
-            std::cout<<" The vertex fit flag is set to 1 for the converted photons : "<<dcv.vertexFitFlag<<"\n";
+            //std::cout<<" The vertex fit flag is set to 1 for the converted photons : "<<dcv.vertexFitFlag<<"\n";
                 const reco::Track eletk0 = *conv.userData<reco::Track>("track0");
                 const reco::Track eletk1 = *conv.userData<reco::Track>("track1");
                 std::vector<reco::TransientTrack> tttrk_electrons = {
@@ -184,7 +203,7 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
                 BCand = eleTrack1 + eleTrack2 + muonTrack1 + muonTrack2;
                 MassLimits m_lim;
                 if (BCand.M() < m_lim.BsMassCutLower || BCand.M() > m_lim.BsMassCutUpper) continue;
-                std::cout<<"mass B Converted Case-------------------------------------------------------------: "<<BCand.M()<<"\n";
+                //std::cout<<"mass B Converted Case-------------------------------------------------------------: "<<BCand.M()<<"\n";
        	  		/*BCand.addDaughter(mu1);
        	  		BCand.addDaughter(mu2);
        	  	    BCand.addDaughter(eletk0);
@@ -209,9 +228,9 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
                 KinematicConstrainedFit BCandFitter;
                 bool fitSuccess = BCandFitter.TrippleObjectVertexFitConvertedPhoton(ttrk_muons, nominalMuonMass, tttrk_electrons, nominalElectronMass, verbose);
                 if (!fitSuccess) continue;
-		        std::cout<<"print the fit sucess with converted photons  : "<< fitSuccess<< "\n";
+		        //std::cout<<"print the fit sucess with converted photons  : "<< fitSuccess<< "\n";
                 dcv.fittedBmassConvertedPhoton = BCandFitter.getBhadronMass();
-                std::cout<<"fitted B mass from vertex -------------------------------------------------: "<<dcv.fittedBmassConvertedPhoton<<"\n";
+                //std::cout<<"fitted B mass from vertex -------------------------------------------------: "<<dcv.fittedBmassConvertedPhoton<<"\n";
                 dcv.BsMass = BCand.M();
                 dcv.BsPt   = BCand.Pt();
                 dcv.BsEta  = BCand.Eta();
@@ -221,9 +240,7 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
 	  		    AlgebraicVector7 b_par = bs->currentState().kinematicParameters().vector();
                 GlobalVector Bsvec(b_par[3], b_par[4], b_par[5]);
                 
-                
-                reco::Vertex PVvtxHightestPt = PVs[bsAndVtxInfo.VtxIndex];
-                
+                reco::Vertex PVvtxHightestPt = PVs[bsAndVtxInfo.VtxIndex]; 
                 
                 dcv.BsCt3D = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*Bsvec.x()+
                 (kvfbsvertex.position().y()-PVvtxHightestPt.y())*Bsvec.y()+
@@ -320,7 +337,7 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
             (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y());  
             //std::cout << " the decay time 2D BS : " << dcv.BsCt3D << "\n";
             }//end of reco photon loop 
-        std::cout << " vertex fit flag :"<< dcv.vertexFitFlag << "\n";
+            std::cout << " vertex fit flag :"<< dcv.vertexFitFlag << "\n";
         
 	}
     }

@@ -42,9 +42,8 @@ std::vector<ParticleFlowCandidate::PFCandidateVariables> ParticleFlowCandidate::
         pfcandVar.hoEnergy = irecoPFCandidate.hoEnergy();
         pfcandVar.rawHoEnergy = irecoPFCandidate.rawHoEnergy();
         reco::PhotonRef photonRef = irecoPFCandidate.photonRef();
-        bool hasPhotonRef = !photonRef.isNull();
-        std::cout<<"Photon Reference: " << (hasPhotonRef ? "Exists" : "Does not exist") << std::endl;
-        std::cout<<" ========================================================================="<<"\n";
+        //std::cout<<"Photon Reference: " << (hasPhotonRef ? "Exists" : "Does not exist") << std::endl;
+        //std::cout<<" ========================================================================="<<"\n";
         if (!photonRef.isNull()) {
             pfcandVar.refphotonpt = photonRef->pt();
             pfcandVar.refphotoneta = photonRef->eta();
@@ -84,9 +83,10 @@ std::vector<ParticleFlowCandidate::PFCandidateVariables> ParticleFlowCandidate::
 
 
             } else {
-                std::cout << "No valid photonRef for this PFCandidate.\n";
+                bool hasPhotonRef = photonRef.isNull();
+                //std::cout << "No valid photonRef for this PFCandidate.\n";
             }
-        std::cout<<" ========================================================================="<<"\n";
+        //std::cout<<" ========================================================================="<<"\n";
         if (!irecoPFCandidate.photonRef().isNull())
             std::cout << "Photon pt = " << irecoPFCandidate.photonRef()->pt() << "\n";
         if (!irecoPFCandidate.gsfElectronRef().isNull())
@@ -96,7 +96,7 @@ std::vector<ParticleFlowCandidate::PFCandidateVariables> ParticleFlowCandidate::
         if (!irecoPFCandidate.superClusterRef().isNull())
             std::cout << "SC energy = " << irecoPFCandidate.superClusterRef()->energy() << "\n";
 
-        std::cout << "---------------------------------------------check other refrences --------------------------\n";
+        //std::cout << "---------------------------------------------check other refrences --------------------------\n";
         pfcandVars.push_back(pfcandVar);
     }       
     return pfcandVars;

@@ -39,6 +39,7 @@ struct DecayChainVariables {
     double dimuonlxyerr = -9999;
     double dimuonlxyOverPt = -9999;
     double dimuonchi2 = -9999;
+    double mahalanobis = -9999;
     double mu1pz = -9999.0, mu1pt = -9999.0, mu1eta = -9999.0, mu1phi = -9999.0, mu1energy = -9999.0;
     double mu2pz = -9999.0, mu2pt = -9999.0, mu2eta = -9999.0, mu2phi = -9999.0, mu2energy = -9999.0;
     int isCowboy = -9999;

@@ -197,6 +197,8 @@ private:
   double PsiMassWindowBeforeFit_;
   double BsLowerMassCutBeforeFit_;
   double BsUpperMassCutBeforeFit_;
+  double BdLowerMassCutBeforeFit_ ;
+  double BdUpperMassCutBeforeFit_ ;
   double BsLowerMassCutAfterFit_ ;
   double BsUpperMassCutAfterFit_ ;
 

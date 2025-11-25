@@ -1,7 +1,7 @@
 import CRABClient
 from CRABClient.UserUtilities import config
 
-outputFileName = 'BsToMuMuGamma_analysis.root'
+outputFileName = 'BsToMuMuGamma.root'
 nEvents = -1
 
 config = config()
@@ -14,10 +14,10 @@ config.JobType.pluginName = 'Analysis'
 config.JobType.psetName = '../test/makeTree_BsMuMuGamma_MC_AOD.py'
 config.JobType.outputFiles = [outputFileName]
 config.JobType.pyCfgParams = [f'outputFile={outputFileName}', f'nEvents={nEvents}']
-config.JobType.numCores = 2
-config.JobType.maxMemoryMB = 5000
+config.JobType.numCores = 1
+config.JobType.maxMemoryMB = 3000
 
-config.Data.userInputFiles = open("fileList.txt").readlines()
+config.Data.userInputFiles = open("BsToMuMuGammaFileList.txt").readlines()
 config.Data.splitting = 'FileBased'
 config.Data.unitsPerJob = 50
 config.Data.publication = False
@@ -26,4 +26,5 @@ config.Data.outputPrimaryDataset = 'BsToMuMuGamma_analysis'
 
 config.Site.storageSite = 'T3_CH_CERNBOX'
 config.Site.whitelist = ['T2_CH_CERN']
-config.Data.outLFNDirBase = '/store/user/sslawins/bsmmg_output'
+#config.Data.outLFNDirBase = '/store/user/sslawins/bsmmg_output'
+config.Data.outLFNDirBase = '/store/user/almuhamm/MuSampleSharedDirectory/BPHAnalyzerNtuples/crabmmg'
