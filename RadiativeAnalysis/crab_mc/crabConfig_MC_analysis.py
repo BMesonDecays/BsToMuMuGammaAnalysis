@@ -18,8 +18,9 @@ config.JobType.numCores = 1
 config.JobType.maxMemoryMB = 3000
 
 config.Data.userInputFiles = open("BsToMuMuGammaFileList.txt").readlines()
-config.Data.splitting = 'FileBased'
-config.Data.unitsPerJob = 50
+config.Data.unitsPerJob     = 5#5000
+config.Data.totalUnits      = 70000000
+config.Data.splitting       = 'FileBased'
 config.Data.publication = False
 config.Data.outputDatasetTag = 'BsToMuMuGamma_analysis'
 config.Data.outputPrimaryDataset = 'BsToMuMuGamma_analysis'

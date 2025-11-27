@@ -83,8 +83,8 @@ else:
 # )
 # )
 
-process.options.numberOfThreads=cms.untracked.uint32(2)
-process.options.numberOfStreams=cms.untracked.uint32(1)
+#process.options.numberOfThreads=cms.untracked.uint32(2)
+#process.options.numberOfStreams=cms.untracked.uint32(1)
 
 process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring())
 """
@@ -217,6 +217,8 @@ process.bmmgVertexAnalysis = cms.EDAnalyzer("RadiativeAnalysis",
                                           KaonTrackPtCut                = cms.double(0.7),
                                           BsLowerMassCutBeforeFit       = cms.double(4.5),
                                           BsUpperMassCutBeforeFit       = cms.double(6.5),
+                                          BdLowerMassCutBeforeFit       = cms.double(4.2),
+                                          BdUpperMassCutBeforeFit       = cms.double(6.2),
                                           BsLowerMassCutAfterFit        = cms.double(4.5),
                                           BsUpperMassCutAfterFit        = cms.double(6.5),
                                           verbose                       = cms.bool(True),

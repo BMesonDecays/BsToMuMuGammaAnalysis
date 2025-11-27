@@ -187,9 +187,9 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	iEvent.getByToken(primaryvertexTok, recVtxs);
 	if (!vertexBeamSpot.isValid() || recVtxs->empty()) {return;}
 	edm::Handle<std::vector<reco::Muon>> muons;
-    iEvent.getByToken(MuonTagTok, muons);
+        iEvent.getByToken(MuonTagTok, muons);
 	edm::Handle<std::vector<pat::CompositeCandidate>> convPhotons;
-    iEvent.getByToken(convertedPhotonsTagTok, convPhotons);
+        iEvent.getByToken(convertedPhotonsTagTok, convPhotons);
 	const pat::CompositeCandidateCollection * conversions = convPhotons.product();
 	edm::Handle<std::vector<reco::Track>> tracks;
 	iEvent.getByToken(trackTagTok, tracks);
@@ -200,7 +200,7 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	iEvent.getByToken(ecalrechitEBTok, ecalRecHits);
 	//std::cout<< " super cluster multiplicity : "<< supercluster->size()<< "\n";
 	edm::Handle<std::vector<reco::Photon>> photons;
-    iEvent.getByToken(PhotonTagTok, photons);
+        iEvent.getByToken(PhotonTagTok, photons);
 	edm::Handle<std::vector<reco::PFCandidate>> pfCandidates;
 	iEvent.getByToken(PFCandTagTok, pfCandidates);
     
@@ -298,12 +298,12 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 	    //iEvent.getByToken(pfCandTagTok, pfCands);
 	   
 		DecayChainVariables decayVariables;
-		if(muons->size()>=2 && convPhotons->size() >=1){
+		if(muons->size()>=2 && convPhotons->size() >=1 && photons->size() >=1){
 			TrippleObjectVertex  tripvtxObservables;
 			decayVariables = tripvtxObservables.TrippleObjectVertexObservables(
 				*muons, 
 				*photons,
-			    *recVtxs,	
+			        *recVtxs,	
 				lazyTools, 
 				*conversions, 
 				bsandvtxVar, 
@@ -311,15 +311,15 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 				nominalMuonMass, 
 				nominalElectronMass, 
 				trackBuilder);
-			bmmgRootTree_->vertexTypeFlag_ = 1;
+		          	bmmgRootTree_->vertexTypeFlag_ = 1;
 
 		}
-		if(muons->size()==2 && convPhotons->size() >=2){
+		if(muons->size()==2 && convPhotons->size() >=2 && photons->size() >=2){
 			TetraObjectVertex tetradcObservables;
 			decayVariables = tetradcObservables.TetraObjectVertexObservables(
 				*muons, 
 				*photons,
-			    *recVtxs,	
+			        *recVtxs,	
 				lazyTools, 
 				*conversions, 
 				bsandvtxVar, 
@@ -327,7 +327,7 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 				nominalMuonMass, 
 				nominalElectronMass, 
 				trackBuilder);
-			bmmgRootTree_->vertexTypeFlag_ = 2;
+		        	bmmgRootTree_->vertexTypeFlag_ = 2;
 		}
 
 		if(muons->size()==2 && tracks->size()>=2){
@@ -503,8 +503,10 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 				bool inBs = (M >= BsLowerMassCutBeforeFit_ && M <= BsUpperMassCutBeforeFit_);
 				bool inBd = (M >= BdLowerMassCutBeforeFit_ && M <= BdUpperMassCutBeforeFit_);
 				if (!inBs && !inBd) continue;   // reject if in neither Bs nor Bd
-				if (inBs) bmmgRootTree_->BmesonType_ = 1; // Bs
-				if (inBd) bmmgRootTree_->BmesonType_ = 0; // Bd
+				//mutually exclusive assignment
+				if (inBs && !inBd) bmmgRootTree_->BmesonType_ = 1; // Bs only
+				else if (inBd && !inBs) bmmgRootTree_->BmesonType_ = 0; // Bd only
+				else bmmgRootTree_->BmesonType_ = -1; // ambiguous, ignore
 				bmmgRootTree_->Bsmass_recommg_ = bslegTrippleObject.M();
 				bmmgRootTree_->Bspt_recommg_ = bslegTrippleObject.Pt();
 				bmmgRootTree_->Bseta_recommg_ = bslegTrippleObject.Eta();
@@ -539,12 +541,13 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 						bmmgRootTree_->DiGammaPhi_alone_ = digamma.Phi();
 						bmmgRootTree_->DiGammaPt_alone_ = digamma.Pt();
 						TLorentzVector bslegTetraObject = muonleg1 + muonleg2 + photonleg1 + photonleg2;
-                        double M = bslegTetraObject.M();
+						double M = bslegTetraObject.M();
 						bool inBs = (M >= BsLowerMassCutBeforeFit_ && M <= BsUpperMassCutBeforeFit_);
 						bool inBd = (M >= BdLowerMassCutBeforeFit_ && M <= BdUpperMassCutBeforeFit_);
 						if (!inBs && !inBd) continue;   // reject if in neither Bs nor Bd
-						if (inBs) bmmgRootTree_->BmesonType_ = 1; // Bs
-						if (inBd) bmmgRootTree_->BmesonType_ = 0; // Bd
+						if (inBs && !inBd) bmmgRootTree_->BmesonType_ = 1; // Bs only
+						else if (inBd && !inBs) bmmgRootTree_->BmesonType_ = 0; // Bd only
+						else bmmgRootTree_->BmesonType_ = -1; // ambiguous, ignore
 						pdigamma.SetPtEtaPhi(digamma.Pt(), digamma.Eta(), digamma.Phi());
 						pbs.SetPtEtaPhi(bslegTetraObject.Pt(), bslegTetraObject.Eta(), bslegTetraObject.Phi());
 						float helicity = pdigamma.Dot(pbs) / (pdigamma.Mag() * pbs.Mag());
