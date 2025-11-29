@@ -40,14 +40,14 @@
 #include <vector>
 using namespace std;
 
-class BmomAnalysis : public edm::one::EDAnalyzer<>
+class PrimVertices : public edm::one::EDAnalyzer<>
 {
 public:
   //constructor, function is called when new object is created
-  explicit BmomAnalysis(const edm::ParameterSet& conf);
+  explicit PrimVertices(const edm::ParameterSet& conf);
 
   //destructor, function is called when object is destroyed
-  ~BmomAnalysis();
+  ~PrimVertices();
 
   //edm filter plugin specific functions
   virtual void beginJob();
@@ -64,7 +64,7 @@ private:
   TH1I* hNOfPV;
 };
 
-BmomAnalysis::BmomAnalysis(const edm::ParameterSet& conf)
+PrimVertices::PrimVertices(const edm::ParameterSet& conf)
   : theConfig(conf), theEventCount(0)
 {
   cout <<" CTORXX" << endl;
@@ -72,19 +72,19 @@ BmomAnalysis::BmomAnalysis(const edm::ParameterSet& conf)
   thePrimaryVerticesToken = consumes< vector<reco::Vertex> >(edm::InputTag("offlinePrimaryVertices"));
 }
 
-BmomAnalysis::~BmomAnalysis()
+PrimVertices::~PrimVertices()
 {
   cout <<" DTOR" << endl;
 }
 
-void BmomAnalysis::beginJob()
+void PrimVertices::beginJob()
 {
   hNOfPV = new TH1I("hNOfPV", "# PV", 10, 0, 10);
 
-  cout << "HERE BmomAnalysis::beginJob()" << endl;
+  cout << "HERE PrimVertices::beginJob()" << endl;
 }
 
-void BmomAnalysis::endJob()
+void PrimVertices::endJob()
 {
   //make a new Root file
   TFile myRootFile(theConfig.getParameter<std::string>("outHist").c_str(), "RECREATE");
@@ -96,12 +96,12 @@ void BmomAnalysis::endJob()
 
   delete hNOfPV;
 
-  cout << "HERE BmomAnalysis::endJob()" << endl;
+  cout << "HERE PrimVertices::endJob()" << endl;
 }
 
-void BmomAnalysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
+void PrimVertices::analyze(const edm::Event& ev, const edm::EventSetup& es)
 {
-  std::cout << " -------------------------------- HERE BmomAnalysis::analyze "<< std::endl;
+  std::cout << " -------------------------------- HERE PrimVertices::analyze "<< std::endl;
 
   const std::vector<reco::Vertex> & primVertices = ev.get(thePrimaryVerticesToken);
 
@@ -111,4 +111,4 @@ void BmomAnalysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
 }
 
 
-DEFINE_FWK_MODULE(BmomAnalysis);
+DEFINE_FWK_MODULE(PrimVertices);

@@ -14,8 +14,8 @@ f = TFile(fileName);
 f.ls();
 
 c1 = TCanvas('cHisto','cHisto',1000,600)
-histo = gROOT.FindObject('hNOfPV')
-histo.SetTitle("In 'filtered.root'; ;# PV")
+histo = gROOT.FindObject('hBsToMuMuGammaMultiplicity')
+histo.SetTitle("In 'filtered.root';# Bs2MMG decays ;")
 histo.Draw()
-c1.Print("hNOfPV.pdf")
+c1.Print("hBsToMuMuGammaMultiplicity.pdf")
 input('press enter to exit')

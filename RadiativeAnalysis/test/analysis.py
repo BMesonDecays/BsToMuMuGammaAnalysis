@@ -6,7 +6,9 @@ import os
 import sys
 import subprocess
 
-process = cms.Process("PrimVertices")
+
+from Configuration.Eras.Era_Run3_cff import Run3
+process = cms.Process("analysis", Run3)
 
 # MessageLogger & co.
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
@@ -26,11 +28,16 @@ process.load('Configuration.StandardSequences.MagneticField_cff')
 process.load("Configuration.StandardSequences.Reconstruction_cff")
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
+from Configuration.AlCa.GlobalTag import GlobalTag
+# process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_data', '')
+process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_mc_FULL','')
 
 
-process.analiza= cms.EDAnalyzer("PrimVertices",
+process.analiza= cms.EDAnalyzer("BsPtBalance",
   outHist = cms.string('histos.root'),
 )
+
+
 
 process.MyPath = cms.Path(process.analiza)
 

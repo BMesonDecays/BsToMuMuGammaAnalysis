@@ -30,10 +30,7 @@
 <use   name="BsToMuMuGammaAnalysis/RadiativeAnalysis"/>
 
 
-<library name="BmomAnalysis" file="BmomAnalysis.cc">
-</library>
-
-<library name="MarcinsIdea" file="MarcinsIdea.cc">
+<library name="BsPtBalance" file="BsPtBalance.cc">
 </library>
 
 <library name="MMGVertexFitExample" file="MMGVertexFitExample.cc">

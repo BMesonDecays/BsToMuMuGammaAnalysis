@@ -75,14 +75,14 @@ using namespace std;
 
 
 //object definition
-class MarcinsIdea : public edm::one::EDAnalyzer<> {
+class BsPtBalance : public edm::one::EDAnalyzer<> {
 public:
 
   //constructor, function is called when new object is created
-  explicit MarcinsIdea(const edm::ParameterSet& conf);
+  explicit BsPtBalance(const edm::ParameterSet& conf);
 
   //destructor, function is called when object is destroyed
-  ~MarcinsIdea();
+  ~BsPtBalance();
 
   //edm filter plugin specific functions
   virtual void beginJob();
@@ -141,6 +141,11 @@ private:
   TH1D* hDimuonVertexYResidual;
   TH1D* hDimuonVertexZResidual;
 
+  TH1D* hUnscaledRecoVsGenPhotonEnergy;
+  TH1D* hScaledRecoVsGenPhotonEnergy;
+  TH1D* hUnscaledCorrRecoVsGenPhotonEnergy;
+  TH1D* hScaledCorrRecoVsGenPhotonEnergy;
+
   TTree* theTree;
   std::vector<float> vPVToSV;
   std::vector<float> vPhotonMomentum;
@@ -152,7 +157,7 @@ private:
 };
 
 
-MarcinsIdea::MarcinsIdea(const edm::ParameterSet& conf)
+BsPtBalance::BsPtBalance(const edm::ParameterSet& conf)
   : theConfig(conf), theEventCount(0)
 {
   cout <<" CTORXX" << endl;
@@ -168,12 +173,12 @@ MarcinsIdea::MarcinsIdea(const edm::ParameterSet& conf)
 
 }
 
-MarcinsIdea::~MarcinsIdea()
+BsPtBalance::~BsPtBalance()
 {
   cout <<" DTOR" << endl;
 }
 
-bool MarcinsIdea::isSameDecay(const std::vector<int>& dec1, const std::vector<int>& dec2) {
+bool BsPtBalance::isSameDecay(const std::vector<int>& dec1, const std::vector<int>& dec2) {
     
     if (dec1.size() != dec2.size()) {
         return false; 
@@ -186,7 +191,7 @@ bool MarcinsIdea::isSameDecay(const std::vector<int>& dec1, const std::vector<in
 }
 
 
-void MarcinsIdea::beginJob()
+void BsPtBalance::beginJob()
 {
   //create a histogram
 
@@ -224,15 +229,22 @@ void MarcinsIdea::beginJob()
   hDimuonVertexYResidual = new TH1D("hDimuonVertexYResidual", "hDimuonVertexYResidual; [cm]", 100, -0.05, 0.05);
   hDimuonVertexZResidual = new TH1D("hDimuonVertexZResidual", "hDimuonVertexZResidual; [cm]", 100, -0.05, 0.05);
 
+
+  hUnscaledRecoVsGenPhotonEnergy = new TH1D("hUnscaledRecoVsGenPhotonEnergy","hUnscaledRecoVsGenPhotonEnergy", 500, -50.,50.);
+  hScaledRecoVsGenPhotonEnergy = new TH1D("hScaledRecoVsGenPhotonEnergy","hScaledRecoVsGenPhotonEnergy", 500, -50.,50.);
+  hUnscaledCorrRecoVsGenPhotonEnergy = new TH1D("hUnscaledCorrRecoVsGenPhotonEnergy","hUnscaledCorrRecoVsGenPhotonEnergy", 500, -50.,50.);
+  hScaledCorrRecoVsGenPhotonEnergy = new TH1D("hScaledCorrRecoVsGenPhotonEnergy","hScaledCorrRecoVsGenPhotonEnergy", 500, -50.,50.);
+
+
   theTree = new TTree("theTree", "theTree");
   theTree->Branch("vPVToSV", &vPVToSV);
   theTree->Branch("vPhotonMomentum", &vPhotonMomentum);
   theTree->Branch("vDimuonMomentum", &vDimuonMomentum);
 
-  cout << "HERE MarcinsIdea::beginJob()" << endl;
+  cout << "HERE BsPtBalance::beginJob()" << endl;
 }
 
-void MarcinsIdea::endJob()
+void BsPtBalance::endJob()
 {
   //make a new Root file
   TFile myRootFile( theConfig.getParameter<std::string>("outHist").c_str(), "RECREATE");
@@ -272,6 +284,11 @@ void MarcinsIdea::endJob()
   hDimuonVertexXResidual->Write();
   hDimuonVertexYResidual->Write();
   hDimuonVertexZResidual->Write();
+
+  hUnscaledRecoVsGenPhotonEnergy->Write();
+  hScaledRecoVsGenPhotonEnergy->Write();
+  hUnscaledCorrRecoVsGenPhotonEnergy->Write();
+  hScaledCorrRecoVsGenPhotonEnergy->Write();
   
   // theTree->Write();
 
@@ -311,16 +328,21 @@ void MarcinsIdea::endJob()
   delete hDimuonVertexYResidual;
   delete hDimuonVertexZResidual;
 
+  delete hUnscaledRecoVsGenPhotonEnergy;
+  delete hScaledRecoVsGenPhotonEnergy;
+  delete hUnscaledCorrRecoVsGenPhotonEnergy;
+  delete hScaledCorrRecoVsGenPhotonEnergy;
+
   delete theTree;
 
-  cout << "HERE MarcinsIdea::endJob()" << endl;
+  cout << "HERE BsPtBalance::endJob()" << endl;
 }
 
 
-void MarcinsIdea::analyze(
+void BsPtBalance::analyze(
     const edm::Event& ev, const edm::EventSetup& es)
 {
-  std::cout << " -------------------------------- HERE MarcinsIdea::analyze "<< std::endl;
+  std::cout << " -------------------------------- HERE BsPtBalance::analyze "<< std::endl;
 
   const std::vector<reco::GenParticle> & genPar = ev.get(theGenParticleToken);
   const std::vector<reco::Muon> & recoMuons = ev.get(theMuonToken);
@@ -346,6 +368,8 @@ void MarcinsIdea::analyze(
 
 
   GlobalPoint genSV;
+  // genMuons and genPhotons from BsToMuMuGamma decay channel
+  // checked that only one such decay per event
   for(const auto& genP : genPar)
   {
     if (abs(genP.pdgId()) == 531)
@@ -365,13 +389,13 @@ void MarcinsIdea::analyze(
         genSV = GlobalPoint(genP.daughter(0)->vx(), genP.daughter(0)->vy(), genP.daughter(0)->vz());
       }
     }
-  }
+  }  
 
   // reco muon matching
   for (const reco::Candidate* genMu : genMuons)
   {
     float minDR = 10;
-    const reco::Muon* bestMatchedMuon;
+    const reco::Muon* bestMatchedMuon = &recoMuons.at(0);
     bool matched = false;
     for (const auto& recoMu : recoMuons)
     {
@@ -394,7 +418,7 @@ void MarcinsIdea::analyze(
   for (const reco::Candidate* genPh : genPhotons)
   {
     float minDR = 10;
-    const reco::Photon* bestMatchedPhoton;
+    const reco::Photon* bestMatchedPhoton = &recoPhotons.at(0);
     bool matched = false;
     for (const auto& recoPh : recoPhotons)
     {
@@ -413,9 +437,6 @@ void MarcinsIdea::analyze(
     }
   }
   if(recoMatchedPhotons.size() == 0) return;
-
-  hRecoVsGenEnergyProfile->Fill(genMatchedPhotons[0]->energy(), recoMatchedPhotons[0]->energy());
-
 
   if(recoMatchedPhotons[0]->isEB() == 0) return; // only EB photons
 
@@ -445,13 +466,13 @@ void MarcinsIdea::analyze(
   allParticles.push_back(mu1);
   allParticles.push_back(mu2);
 
-
+  // SV fit using only two muons
   KinematicParticleVertexFitter fitter;
   cout << "Fitting" << endl;
   RefCountedKinematicTree vertexFitTree = fitter.fit(allParticles);
 
   if (!vertexFitTree->isValid()) return;
-  // get the fitted particle and vertex
+  // get the fitted particle (i.e. dimuon) and vertex
   vertexFitTree->movePointerToTheTop();
   RefCountedKinematicParticle fitParticle = vertexFitTree->currentParticle();
   RefCountedKinematicVertex fitVertex = vertexFitTree->currentDecayVertex();
@@ -469,9 +490,7 @@ void MarcinsIdea::analyze(
   hDimuonMassResidualNoFit->Fill((recoMatchedMuons.at(0)->p4() + recoMatchedMuons.at(1)->p4()).mass() - (genMatchedMuons.at(0)->p4() + genMatchedMuons.at(1)->p4()).mass());
   hDimuonMassResidualWithFit->Fill(dimuonP4.mass() - (genMatchedMuons.at(0)->p4() + genMatchedMuons.at(1)->p4()).mass());
 
-  GlobalPoint pvGlobalPoint(primaryVertices[0].position().x(), primaryVertices[0].position().y(), primaryVertices[0].position().z());
-  GlobalVector PVToSV = fittedGlobalPoint - pvGlobalPoint;
-
+  // photon enters  
   if(recoMatchedPhotons.size() != 1) return;
 
   hMuonFitGenGammaResidual->Fill((dimuonP4 + genMatchedPhotons.at(0)->p4()).mass() - (genMatchedMuons.at(0)->p4() + genMatchedMuons.at(1)->p4() + genMatchedPhotons.at(0)->p4()).mass());
@@ -486,6 +505,11 @@ void MarcinsIdea::analyze(
   hBsMass->Fill(BsMass);
   hBsMassResidual->Fill((BsMass - 5.366));
 
+  // spacial vectors
+  GlobalPoint pvGlobalPoint(primaryVertices[0].position().x(), primaryVertices[0].position().y(), primaryVertices[0].position().z());
+  GlobalVector PVToSV = fittedGlobalPoint - pvGlobalPoint;
+
+
   GlobalPoint caloPosition = GlobalPoint(recoPhoton.superCluster()->position().x(),
                                                   recoPhoton.superCluster()->position().y(),
                                                   recoPhoton.superCluster()->position().z());
@@ -498,28 +522,10 @@ void MarcinsIdea::analyze(
 
   hDimuonGammaCosInBsFrame->Fill(w.cross(u).unit().dot(w.cross(v).unit()));
 
-  std::cout << "p4 cross pt to sv " << (dimuonMomentum + photonMomentum).unit().cross(w).mag() << std::endl;
+  //std::cout << "p4 cross pt to sv " << (dimuonMomentum + photonMomentum).unit().cross(w).mag() << std::endl;
+ 
 
-  // minimize the transverse component of the Bs
-  double E = (w.dot(v)*w.dot(u) - v.dot(u))/(1 - w.dot(u)*w.dot(u));
-
-  std::cout << "E: " << E << std::endl;
-
-  math::XYZTLorentzVector correctedPhotonP4(u.x() * E, u.y() * E, u.z() * E, E);
-
-  double correctedBsMass = (dimuonP4 + correctedPhotonP4).mass();
-  std::cout << "Corrected Bs Mass: " << correctedBsMass << std::endl;
-
-  hBsMassResidualCorrected->Fill((correctedBsMass - 5.366));
-
-
-  vPVToSV.clear(); vPVToSV.push_back(PVToSV.x()); vPVToSV.push_back(PVToSV.y()); vPVToSV.push_back(PVToSV.z());
-  vPhotonMomentum.clear(); vPhotonMomentum.push_back(photonMomentum.x()); vPhotonMomentum.push_back(photonMomentum.y()); vPhotonMomentum.push_back(photonMomentum.z());
-  vDimuonMomentum.clear(); vDimuonMomentum.push_back(dimuonMomentum.x()); vDimuonMomentum.push_back(dimuonMomentum.y()); vDimuonMomentum.push_back(dimuonMomentum.z());
-
-  theTree->Fill();
-
-  // other idea, scale the photon momentum to the dimuon momentum, in the Bs transverse plane
+  // scale the photon momentum to the dimuon momentum, in the Bs transverse plane
   GlobalVector dimuonTransverse = w.cross(v);
   GlobalVector photonTransverse = w.cross(photonMomentum);
   double scaleFactor = dimuonTransverse.mag() / photonTransverse.mag();
@@ -531,7 +537,28 @@ void MarcinsIdea::analyze(
   
   hScaledBsMassResidual->Fill((scaledBsMass - 5.366));
 
+  // gen vs reco photon energy before and after scaling
+  math::XYZTLorentzVector genPhotonP4 = genMatchedPhotons.at(0)->p4();
+  hUnscaledRecoVsGenPhotonEnergy->Fill(photonP4.energy() - genPhotonP4.energy());
+  hScaledRecoVsGenPhotonEnergy->Fill(scaledPhotonP4.energy() - genPhotonP4.energy());
 
+  // scale the corrected photon momentum
+  double correctedEnergy = (photonP4.energy() - 0.599366) / 1.02408;
+  GlobalVector correctedPhotonMomentum = photonMomentum.unit() * correctedEnergy;
+  math::XYZTLorentzVector correctedPhotonP4 = math::XYZTLorentzVector(correctedPhotonMomentum.x(),
+                                              correctedPhotonMomentum.y(),
+                                              correctedPhotonMomentum.z(),
+                                              correctedEnergy);
+
+  GlobalVector correctedPhotonTransverse = w.cross(correctedPhotonMomentum);
+  double correctedScaleFactor = dimuonTransverse.mag() / correctedPhotonTransverse.mag();
+  math::XYZTLorentzVector scaledCorrectedPhotonP4 = correctedPhotonP4 * correctedScaleFactor;
+
+  hUnscaledCorrRecoVsGenPhotonEnergy->Fill(correctedPhotonP4.energy() - genPhotonP4.energy());
+  hScaledCorrRecoVsGenPhotonEnergy->Fill(scaledCorrectedPhotonP4.energy() - genPhotonP4.energy());
+
+
+  /*
   // angles between reco and gen dimuon and photon in Bs frame
   GlobalVector genDimuonMomentum = GlobalVector(genMatchedMuons.at(0)->momentum().x() + genMatchedMuons.at(1)->momentum().x(), 
                                     genMatchedMuons.at(0)->momentum().y() + genMatchedMuons.at(1)->momentum().y(), 
@@ -558,9 +585,9 @@ void MarcinsIdea::analyze(
   GlobalVector correctedPhotonMomentum = photonMomentum.unit() * correctedEnergy;
   GlobalVector correctedPhotonMomentumInBsFrame = genBsDirection.cross(correctedPhotonMomentum);
   hRecoVsGenPtBsFramePhotonProfileCorrected->Fill(genPhotonMomentumInBsFrame.mag(), correctedPhotonMomentumInBsFrame.mag());
-
+  */
 
   cout <<"*** Analyze event: " << ev.id() <<" analysed event count:" << ++theEventCount << endl;
 }
 
-DEFINE_FWK_MODULE(MarcinsIdea);
+DEFINE_FWK_MODULE(BsPtBalance);
