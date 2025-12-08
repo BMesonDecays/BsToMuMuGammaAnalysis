@@ -303,7 +303,7 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 			decayVariables = tripvtxObservables.TrippleObjectVertexObservables(
 				*muons, 
 				*photons,
-			        *recVtxs,	
+			    *recVtxs,	
 				lazyTools, 
 				*conversions, 
 				bsandvtxVar, 
@@ -311,7 +311,7 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 				nominalMuonMass, 
 				nominalElectronMass, 
 				trackBuilder);
-		          	bmmgRootTree_->vertexTypeFlag_ = 1;
+		        bmmgRootTree_->vertexTypeFlag_ = 1;
 
 		}
 		if(muons->size()==2 && convPhotons->size() >=2 && photons->size() >=2){
@@ -319,7 +319,7 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 			decayVariables = tetradcObservables.TetraObjectVertexObservables(
 				*muons, 
 				*photons,
-			        *recVtxs,	
+			    *recVtxs,	
 				lazyTools, 
 				*conversions, 
 				bsandvtxVar, 
@@ -327,7 +327,7 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 				nominalMuonMass, 
 				nominalElectronMass, 
 				trackBuilder);
-		        	bmmgRootTree_->vertexTypeFlag_ = 2;
+		        bmmgRootTree_->vertexTypeFlag_ = 2;
 		}
 
 		if(muons->size()==2 && tracks->size()>=2){
@@ -443,6 +443,12 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 	   mu2vec.SetPtEtaPhi(decayVariables.mu2pt, decayVariables.mu2eta, decayVariables.mu2phi);
 
 	   
+
+
+//================================================== Photon Observables =================================================//
+// We could actually take converted and reco photon 
+
+
 	   bmmgRootTree_->photonMultiplicity_ = photons->size();
 	   RecoPhotons recoPhotonObserbles;
 	   std::vector<RecoPhotons::PhotonVariables> photonVar = recoPhotonObserbles.PhotonObservables(*photons);

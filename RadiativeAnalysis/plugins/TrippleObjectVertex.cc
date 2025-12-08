@@ -1,6 +1,6 @@
 //Author : Muhammad Alibordi, University of Warsaw
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/TrippleObjectVertex.h"
-
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/BaselineMatching.h"
 
 
 TrippleObjectVertex::TrippleObjectVertex(){}
@@ -131,6 +131,9 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
 			dcv.mu2pt = mu1.pt();dcv.mu2pz = mu1.pz();dcv.mu2eta = mu1.eta();dcv.mu2phi = mu1.phi(); dcv.mu2energy = mu1.energy();
 			dcv.mu1phi = mu2.phi();dcv.mu1pt = mu2.pt();dcv.mu1pz = mu2.pz();dcv.mu1eta = mu2.eta(); dcv.mu1energy = mu2.energy();
 		}
+
+        // Just check the consistency of the assigment and sorting the charge - Alibordi
+        
         //std::cout<< " muon1 enenrgy : "<< dcv.mu1energy << "\n";
         //std::cout<< " muon2 enenrgy : "<< dcv.mu2energy << "\n";
 		//std::cout << "mu1pt: " << dcv.mu1pt << ", "<< "mu1pz: " << dcv.mu1pz << ", "<< "mu1eta: " << dcv.mu1eta << ", "<< "mu1phi: " << dcv.mu1phi <<"\n";
@@ -182,8 +185,48 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
 
 
 
+// loops for converted photon and reco supposed to be mutually exclusive , 
+// and we need proper flags so that the kinematics must not get overwritten one by another - Alibordi
+// Tetra object requires same treatement , then the additional variable for the soft muoin MVA ID in the ntuple 
+// Trigger filter matching delta and flag to have a surface level handle of estimating trigger efficiency - 8th Dec 2025 
+//
+ /*// Build 4-vectors
+TLorentzVector pBs = bs_p4;
+TLorentzVector pGamma = gamma_p4;
+TLorentzVector pMu1 = mu1_p4;
+TLorentzVector pMu2 = mu2_p4;
+
+// ---- BOOST TO BS REST FRAME ----
+TVector3 boostVec = -pBs.BoostVector();
+
+TLorentzVector gammaRF = pGamma;
+TLorentzVector mu1RF = pMu1;
+TLorentzVector mu2RF = pMu2;
+
+gammaRF.Boost(boostVec);
+mu1RF.Boost(boostVec);
+mu2RF.Boost(boostVec);
+
+// ---- HELICITY ANGLE ----
+// angle between gamma and dimuon in Bs rest frame
+TVector3 gammaDir = gammaRF.Vect().Unit();
+TVector3 dimuDir  = (mu1RF + mu2RF).Vect().Unit();
+
+float helicity = gammaDir.Dot(dimuDir);   // = cos(theta*)
 
 
+// ---- ACOPLANARITY ANGLE ----
+// normals to the two planes in Bs rest frame
+TVector3 n1 = mu1RF.Vect().Cross(mu2RF.Vect()).Unit();
+TVector3 n2 = gammaRF.Vect().Cross(dimuDir).Unit();
+
+double cosPhi = n1.Dot(n2);
+cosPhi = std::clamp(cosPhi, -1.0, 1.0);
+
+float acoplanarity = acos(cosPhi);
+
+ */
+// make different variables for reco and converted photons in the ntuple - Alibordi, 
 
       
         for (const auto& conv : conversions) {
@@ -242,6 +285,11 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
                 
                 reco::Vertex PVvtxHightestPt = PVs[bsAndVtxInfo.VtxIndex]; 
                 
+
+
+                //  Primary vertex methods from old Giacomos code - Alibordi 8th Dec 2025
+
+
                 dcv.BsCt3D = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*Bsvec.x()+
                 (kvfbsvertex.position().y()-PVvtxHightestPt.y())*Bsvec.y()+
                 (kvfbsvertex.position().z()-PVvtxHightestPt.z())*Bsvec.z())/
@@ -265,6 +313,7 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
             if (photon.superCluster().isNull()) continue;
             if (photon.superCluster()->energy() < 1.0) continue; // Minimum energy cut for photons
             if (photon.isEB() && photon.superCluster()->eta() < -2.5) continue; // Exclude barrel photons with eta < -2.5
+            //this barrel cut supposed to be exact - upper line , lower line 
             if (photon.isEE() && photon.superCluster()->eta() > 2.5) continue; // Exclude endcap photons with eta > 2.5
             TLorentzVector BCand, photonvec, muonTrack1, muonTrack2;
             photonvec.SetPtEtaPhiE(photon.pt(), photon.eta(), photon.phi(), photon.energy());

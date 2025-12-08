@@ -9,6 +9,9 @@ using namespace std;
 using namespace pat;
 #include <TMath.h>
 
+// Mass contraints should be set to the pg vbalues not feed from four momenta, which in general has windened resolution -Szymon 
+//No resonance case - no constaint  - Szymon 
+
 
 KinematicConstrainedFit::KinematicConstrainedFit(){}
 bool KinematicConstrainedFit::doFit(std::vector<reco::TransientTrack> t_tracks, const double muonMass, const double mass1, const double  mass2){
@@ -161,13 +164,13 @@ bool KinematicConstrainedFit::TrippleObjectVertexFitConvertedPhoton(
         return false;
     }
     KinematicConstraint *photonConstraint = new MassKinematicConstraint(zero_mass, zero_sigma);
-    //photonVertexFitTree->movePointerToTheTop();
     KinematicParticleFitter csFitterPhoton;
     photonVertexFitTree = csFitterPhoton.fit(photonConstraint, photonVertexFitTree);
     if (!photonVertexFitTree || !photonVertexFitTree->isValid()) {
         edm::LogInfo("TrippleObjectVertexFit") << "Photon mass-constrained fit failed.";
         return false;
     }
+    photonVertexFitTree->movePointerToTheTop();
     RefCountedKinematicParticle fittedPhoton = photonVertexFitTree->currentParticle();
     std::cout << "Muon0 p converted photon case = " << muonTT[0].track().p() << "\n";
     std::cout << "Muon1 p converted photon case = " << muonTT[1].track().p() << "\n";
