@@ -51,8 +51,9 @@
 
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/BeamSpot/interface/BeamSpot.h"
-
 #include "DataFormats/Math/interface/LorentzVector.h"
+
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/Tools.h"
 
 #include "TH1D.h"
 #include "TH2D.h"
@@ -149,6 +150,8 @@ private:
 
   TH1D* hMuondR;
   TH1D* hPhotondR;
+  TH1D* hPcaPV;
+  TH1D* hBestPcaPV;
 
   TTree* theTree;
   std::vector<float> vPVToSV;
@@ -242,6 +245,8 @@ void BsPtBalance::beginJob()
 
   hMuondR = new TH1D("hMuondR","all reco vs one gen muon; dR; ", 100, 0., 0.1);
   hPhotondR = new TH1D("hPhotondR","all reco vs one gen photon; dR; ", 100, 0., 0.1);
+  hPcaPV = new TH1D("hPcaPV","pca-pv distance for fittedDimuonGenPhoton (every PV); distance;", 100,0.,0.3);
+  hBestPcaPV = new TH1D("hBestPcaPV","pca-pv distance for fittedDimuonGenPhoton (best PV); distance;", 100,0.,0.05);
 
 
   theTree = new TTree("theTree", "theTree");
@@ -301,6 +306,8 @@ void BsPtBalance::endJob()
 
   hMuondR->Write();
   hPhotondR->Write();
+  hPcaPV->Write();
+  hBestPcaPV->Write();
   
   // theTree->Write();
 
@@ -348,6 +355,8 @@ void BsPtBalance::endJob()
 
   delete hMuondR;
   delete hPhotondR;
+  delete hPcaPV;
+  delete hBestPcaPV;
 
   delete theTree;
 
@@ -425,7 +434,8 @@ void BsPtBalance::analyze(
         matched = true;
       }
     }
-    if(matched) hMuondR->Fill(minDR);
+    if(matched) 
+      hMuondR->Fill(minDR);
     if (matched && minDR < 0.01)
     {
       recoMatchedMuons.push_back(bestMatchedMuon);
@@ -451,7 +461,8 @@ void BsPtBalance::analyze(
         matched = true;
       }
     }
-    if(matched) hPhotondR->Fill(minDR);
+    if(matched) 
+      hPhotondR->Fill(minDR);
     if (matched && minDR < 0.02)
     {
       recoMatchedPhotons.push_back(bestMatchedPhoton);
@@ -503,17 +514,43 @@ void BsPtBalance::analyze(
   if (!fitVertex->vertexIsValid()) return;
 
   GlobalPoint fittedGlobalPoint = fitVertex->position();
+  math::XYZPoint fittedGlobalPoint_math(fittedGlobalPoint.x(),fittedGlobalPoint.y(),fittedGlobalPoint.z());
 
   hDimuonVertexXResidual->Fill(fittedGlobalPoint.x() - genSV.x());
   hDimuonVertexYResidual->Fill(fittedGlobalPoint.y() - genSV.y());
   hDimuonVertexZResidual->Fill(fittedGlobalPoint.z() - genSV.z());
 
   GlobalVector dimuonMomentum = fitParticle->currentState().kinematicParameters().momentum();
+  math::XYZVector dimuonMomentum_math(dimuonMomentum.x(),dimuonMomentum.y(),dimuonMomentum.z());
   math::XYZTLorentzVector dimuonP4(dimuonMomentum.x(), dimuonMomentum.y(), dimuonMomentum.z(), fitParticle->currentState().kinematicParameters().energy());
 
   hDimuonMassResidualNoFit->Fill((recoMatchedMuons.at(0)->p4() + recoMatchedMuons.at(1)->p4()).mass() - (genMatchedMuons.at(0)->p4() + genMatchedMuons.at(1)->p4()).mass());
   hDimuonMassResidualWithFit->Fill(dimuonP4.mass() - (genMatchedMuons.at(0)->p4() + genMatchedMuons.at(1)->p4()).mass());
 
+  // find the PCA to PVs using recoMuons (fitDimuon) and genPhoton
+  math::XYZVector fitDimuonGenPhotonMomentum = dimuonMomentum_math + genMatchedPhotons.at(0)->momentum();
+
+  double minDistPcaPV = 1000.0;
+  reco::Vertex bestPrimVertex;
+
+  for(long unsigned int i=0; i<primaryVertices.size(); i++)
+  {
+    math::XYZPoint pca = Tools::pca(primaryVertices.at(i).position(), fittedGlobalPoint_math, fitDimuonGenPhotonMomentum);
+    math::XYZVector tempDiffPcaPV = pca - primaryVertices.at(i).position();
+    double tempDistPcaPV = TMath::Sqrt(tempDiffPcaPV.mag2());
+
+    hPcaPV->Fill(tempDistPcaPV);
+
+    if (tempDistPcaPV < minDistPcaPV)
+    {
+      minDistPcaPV = tempDistPcaPV;
+      bestPrimVertex = primaryVertices.at(i);
+    }
+  }
+  hBestPcaPV->Fill(minDistPcaPV);
+
+
+  /*
   // photon enters  
   if(recoMatchedPhotons.size() != 1) return;
 
@@ -582,7 +619,7 @@ void BsPtBalance::analyze(
   hScaledCorrRecoVsGenPhotonEnergy->Fill(scaledCorrectedPhotonP4.energy() - genPhotonP4.energy());
 
 
-  /*
+  //
   // angles between reco and gen dimuon and photon in Bs frame
   GlobalVector genDimuonMomentum = GlobalVector(genMatchedMuons.at(0)->momentum().x() + genMatchedMuons.at(1)->momentum().x(), 
                                     genMatchedMuons.at(0)->momentum().y() + genMatchedMuons.at(1)->momentum().y(), 
