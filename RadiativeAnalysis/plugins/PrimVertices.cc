@@ -32,12 +32,14 @@
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/BeamSpot/interface/BeamSpot.h"
 
-
 #include <sstream>
 #include <iomanip> 
 #include <utility>
 #include <numeric>
 #include <vector>
+
+#include "TNtupleD.h"
+
 using namespace std;
 
 class PrimVertices : public edm::one::EDAnalyzer<>
@@ -62,6 +64,8 @@ private:
 
   // histograms
   TH1I* hNOfPV;
+  // TNtuple
+  TNtupleD* tPVxyz;
 };
 
 PrimVertices::PrimVertices(const edm::ParameterSet& conf)
@@ -80,6 +84,7 @@ PrimVertices::~PrimVertices()
 void PrimVertices::beginJob()
 {
   hNOfPV = new TH1I("hNOfPV", "# PV", 10, 0, 10);
+  tPVxyz = new TNtupleD("tPVxyz","tPVxyz","evNo:x:y:z");
 
   cout << "HERE PrimVertices::beginJob()" << endl;
 }
@@ -91,10 +96,12 @@ void PrimVertices::endJob()
 
   //write histogram data
   hNOfPV->Write();
+  tPVxyz->Write();
   
   myRootFile.Close();
 
   delete hNOfPV;
+  delete tPVxyz;
 
   cout << "HERE PrimVertices::endJob()" << endl;
 }
@@ -106,6 +113,9 @@ void PrimVertices::analyze(const edm::Event& ev, const edm::EventSetup& es)
   const std::vector<reco::Vertex> & primVertices = ev.get(thePrimaryVerticesToken);
 
   hNOfPV->Fill(primVertices.size());
+
+  for(auto pv : primVertices)
+    tPVxyz->Fill(ev.id().event(), pv.x(),pv.y(),pv.z());
 
   cout <<"*** Analyze event: " << ev.id() <<" analysed event count:" << ++theEventCount << endl;
 }

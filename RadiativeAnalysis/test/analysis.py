@@ -33,8 +33,8 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_mc_FULL','')
 
 
-process.analiza= cms.EDAnalyzer("BsPtBalance",
-  outHist = cms.string('histos.root'),
+process.analiza= cms.EDAnalyzer("PrimVertices",
+  outHist = cms.string('tPVxyz.root'),
 )
 
 

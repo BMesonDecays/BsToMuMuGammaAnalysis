@@ -14,8 +14,8 @@ f = TFile(fileName);
 f.ls();
 
 c1 = TCanvas('cHisto','cHisto',1000,600)
-histo = gROOT.FindObject('hBsToMuMuGammaMultiplicity')
-histo.SetTitle("In 'filtered.root';# Bs2MMG decays ;")
+histo = gROOT.FindObject('hPhotondR')
+histo.SetTitle("all reco vs one gen photon;dR ;")
 histo.Draw()
-c1.Print("hBsToMuMuGammaMultiplicity.pdf")
+c1.Print("hPhotondR.pdf")
 input('press enter to exit')

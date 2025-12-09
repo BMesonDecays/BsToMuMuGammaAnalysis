@@ -36,5 +36,8 @@
 <library name="MMGVertexFitExample" file="MMGVertexFitExample.cc">
 </library>
 
+<library name="PrimVertices" file="PrimVertices.cc">
+</library>
+
 
 <flags EDM_PLUGIN="1"/>

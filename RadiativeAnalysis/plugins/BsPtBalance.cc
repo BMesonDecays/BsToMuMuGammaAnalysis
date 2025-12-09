@@ -127,6 +127,7 @@ private:
   TH1D* hDimuonGammaCosInBsFrame;
 
   TH1D* hScale;
+  TH1D* hCorrScale;
 
   TProfile* hRecoVsGenEnergyProfile;
   TProfile* hRecoVsGenPtBsFrameMuonProfile;
@@ -145,6 +146,9 @@ private:
   TH1D* hScaledRecoVsGenPhotonEnergy;
   TH1D* hUnscaledCorrRecoVsGenPhotonEnergy;
   TH1D* hScaledCorrRecoVsGenPhotonEnergy;
+
+  TH1D* hMuondR;
+  TH1D* hPhotondR;
 
   TTree* theTree;
   std::vector<float> vPVToSV;
@@ -215,6 +219,7 @@ void BsPtBalance::beginJob()
   hDimuonGammaCosInBsFrame = new TH1D("hDimuonGammaCosInBsFrame", "hDimuonGammaCosInBsFrame", 100, -1, 1);
 
   hScale = new TH1D("hScale", "hScale", 100, -2, 2);
+  hCorrScale = new TH1D("hCorrScale", "hCorrScale", 100, -2, 2);
 
   hRecoVsGenEnergyProfile = new TProfile("hRecoVsGenEnergyProfile", "hRecoVsGenEnergyProfile; gen Energy; reco Energy", 35, 0, 35, "s");
 
@@ -234,6 +239,9 @@ void BsPtBalance::beginJob()
   hScaledRecoVsGenPhotonEnergy = new TH1D("hScaledRecoVsGenPhotonEnergy","hScaledRecoVsGenPhotonEnergy", 500, -50.,50.);
   hUnscaledCorrRecoVsGenPhotonEnergy = new TH1D("hUnscaledCorrRecoVsGenPhotonEnergy","hUnscaledCorrRecoVsGenPhotonEnergy", 500, -50.,50.);
   hScaledCorrRecoVsGenPhotonEnergy = new TH1D("hScaledCorrRecoVsGenPhotonEnergy","hScaledCorrRecoVsGenPhotonEnergy", 500, -50.,50.);
+
+  hMuondR = new TH1D("hMuondR","all reco vs one gen muon; dR; ", 100, 0., 0.1);
+  hPhotondR = new TH1D("hPhotondR","all reco vs one gen photon; dR; ", 100, 0., 0.1);
 
 
   theTree = new TTree("theTree", "theTree");
@@ -271,6 +279,7 @@ void BsPtBalance::endJob()
   hDimuonGammaCosInBsFrame->Write();
 
   hScale->Write();
+  hCorrScale->Write();
 
   hRecoVsGenEnergyProfile->Write();
 
@@ -289,6 +298,9 @@ void BsPtBalance::endJob()
   hScaledRecoVsGenPhotonEnergy->Write();
   hUnscaledCorrRecoVsGenPhotonEnergy->Write();
   hScaledCorrRecoVsGenPhotonEnergy->Write();
+
+  hMuondR->Write();
+  hPhotondR->Write();
   
   // theTree->Write();
 
@@ -314,6 +326,7 @@ void BsPtBalance::endJob()
   delete hDimuonGammaCosInBsFrame;
 
   delete hScale;
+  delete hCorrScale;
 
   delete hRecoVsGenEnergyProfile;
 
@@ -332,6 +345,9 @@ void BsPtBalance::endJob()
   delete hScaledRecoVsGenPhotonEnergy;
   delete hUnscaledCorrRecoVsGenPhotonEnergy;
   delete hScaledCorrRecoVsGenPhotonEnergy;
+
+  delete hMuondR;
+  delete hPhotondR;
 
   delete theTree;
 
@@ -389,13 +405,15 @@ void BsPtBalance::analyze(
         genSV = GlobalPoint(genP.daughter(0)->vx(), genP.daughter(0)->vy(), genP.daughter(0)->vz());
       }
     }
-  }  
+  }
+  if(genPhotons.size() == 0) return;  //no 'SameDecay' found  
+
 
   // reco muon matching
   for (const reco::Candidate* genMu : genMuons)
   {
     float minDR = 10;
-    const reco::Muon* bestMatchedMuon = &recoMuons.at(0);
+    const reco::Muon* bestMatchedMuon = &recoMuons.at(0); //initialization to suppress warning
     bool matched = false;
     for (const auto& recoMu : recoMuons)
     {
@@ -407,18 +425,21 @@ void BsPtBalance::analyze(
         matched = true;
       }
     }
+    if(matched) hMuondR->Fill(minDR);
     if (matched && minDR < 0.01)
     {
       recoMatchedMuons.push_back(bestMatchedMuon);
       genMatchedMuons.push_back(genMu);
     }
   }
+  if(recoMatchedMuons.size() != 2)  return;
+
 
   // reco photon matching
   for (const reco::Candidate* genPh : genPhotons)
   {
     float minDR = 10;
-    const reco::Photon* bestMatchedPhoton = &recoPhotons.at(0);
+    const reco::Photon* bestMatchedPhoton = &recoPhotons.at(0); //initialization to suppress warning
     bool matched = false;
     for (const auto& recoPh : recoPhotons)
     {
@@ -430,18 +451,21 @@ void BsPtBalance::analyze(
         matched = true;
       }
     }
+    if(matched) hPhotondR->Fill(minDR);
     if (matched && minDR < 0.02)
     {
       recoMatchedPhotons.push_back(bestMatchedPhoton);
       genMatchedPhotons.push_back(genPh);
     }
   }
-  if(recoMatchedPhotons.size() == 0) return;
+  if(recoMatchedPhotons.size() != 1) return;
 
   if(recoMatchedPhotons[0]->isEB() == 0) return; // only EB photons
 
-  // kinematic particle creation
-  
+
+  ////////////////////////  FITTING /////////////////////
+
+  // kinematic particle creation  
   vector<RefCountedKinematicParticle> muonKinematicParticles;
   for(const auto& recoMuPtr : recoMatchedMuons)
   {
@@ -470,8 +494,8 @@ void BsPtBalance::analyze(
   KinematicParticleVertexFitter fitter;
   cout << "Fitting" << endl;
   RefCountedKinematicTree vertexFitTree = fitter.fit(allParticles);
-
   if (!vertexFitTree->isValid()) return;
+
   // get the fitted particle (i.e. dimuon) and vertex
   vertexFitTree->movePointerToTheTop();
   RefCountedKinematicParticle fitParticle = vertexFitTree->currentParticle();
@@ -505,10 +529,9 @@ void BsPtBalance::analyze(
   hBsMass->Fill(BsMass);
   hBsMassResidual->Fill((BsMass - 5.366));
 
-  // spacial vectors
+  // spatial vectors
   GlobalPoint pvGlobalPoint(primaryVertices[0].position().x(), primaryVertices[0].position().y(), primaryVertices[0].position().z());
   GlobalVector PVToSV = fittedGlobalPoint - pvGlobalPoint;
-
 
   GlobalPoint caloPosition = GlobalPoint(recoPhoton.superCluster()->position().x(),
                                                   recoPhoton.superCluster()->position().y(),
@@ -522,8 +545,7 @@ void BsPtBalance::analyze(
 
   hDimuonGammaCosInBsFrame->Fill(w.cross(u).unit().dot(w.cross(v).unit()));
 
-  //std::cout << "p4 cross pt to sv " << (dimuonMomentum + photonMomentum).unit().cross(w).mag() << std::endl;
- 
+  //std::cout << "p4 cross pt to sv " << (dimuonMomentum + photonMomentum).unit().cross(w).mag() << std::endl; 
 
   // scale the photon momentum to the dimuon momentum, in the Bs transverse plane
   GlobalVector dimuonTransverse = w.cross(v);
@@ -553,6 +575,8 @@ void BsPtBalance::analyze(
   GlobalVector correctedPhotonTransverse = w.cross(correctedPhotonMomentum);
   double correctedScaleFactor = dimuonTransverse.mag() / correctedPhotonTransverse.mag();
   math::XYZTLorentzVector scaledCorrectedPhotonP4 = correctedPhotonP4 * correctedScaleFactor;
+
+  hCorrScale->Fill(correctedScaleFactor);
 
   hUnscaledCorrRecoVsGenPhotonEnergy->Fill(correctedPhotonP4.energy() - genPhotonP4.energy());
   hScaledCorrRecoVsGenPhotonEnergy->Fill(scaledCorrectedPhotonP4.energy() - genPhotonP4.energy());
