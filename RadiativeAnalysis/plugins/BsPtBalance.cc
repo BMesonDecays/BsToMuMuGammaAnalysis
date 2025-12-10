@@ -26,6 +26,7 @@
 #include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
 #include "TrackingTools/Records/interface/TransientTrackRecord.h"
 #include "RecoVertex/KinematicFitPrimitives/interface/ParticleMass.h"
+#include "RecoVertex/KinematicFitPrimitives/interface/KinematicVertex.h"
 #include "RecoVertex/KinematicFitPrimitives/interface/KinematicParticle.h"
 #include "RecoVertex/KinematicFitPrimitives/interface/KinematicParticleFactoryFromTransientTrack.h"
 #include "RecoVertex/KinematicFit/interface/KinematicParticleVertexFitter.h"
@@ -63,8 +64,11 @@
 #include "TString.h"
 #include "TLorentzVector.h"
 #include "Math/Vector3D.h"
+#include "Math/SMatrix.h"
+#include "Math/SVector.h"
 #include "TTree.h"
 #include "TBranch.h"
+
 
 #include <sstream>
 #include <iomanip> 
@@ -153,6 +157,7 @@ private:
   TH1D* hPcaPV;
   TH1D* hBestPcaPV;
   TH1D* hCos_GenB_PvToSv;
+  TH1D* hBsDisplSignificance;
 
   TTree* theTree;
   std::vector<float> vPVToSV;
@@ -249,6 +254,7 @@ void BsPtBalance::beginJob()
   hPcaPV = new TH1D("hPcaPV","pca-pv distance for fittedDimuonGenPhoton (every PV); distance;", 100,0.,0.3);
   hBestPcaPV = new TH1D("hBestPcaPV","pca-pv distance for fittedDimuonGenPhoton (best PV); distance;", 100,0.,0.05);
   hCos_GenB_PvToSv = new TH1D("hCos_GenB_PvToSv","hCos_GenB_PvToSv",100,0.9,1.);
+  hBsDisplSignificance = new TH1D("hBsDisplSignificance","hBsDisplSignificance",100,0.,100.);
 
 
   theTree = new TTree("theTree", "theTree");
@@ -311,6 +317,7 @@ void BsPtBalance::endJob()
   hPcaPV->Write();
   hBestPcaPV->Write();
   hCos_GenB_PvToSv->Write();
+  hBsDisplSignificance->Write();
   
   // theTree->Write();
 
@@ -361,6 +368,7 @@ void BsPtBalance::endJob()
   delete hPcaPV;
   delete hBestPcaPV;
   delete hCos_GenB_PvToSv;
+  delete hBsDisplSignificance;
 
   delete theTree;
 
@@ -572,6 +580,22 @@ void BsPtBalance::analyze(
   double BsMass = (dimuonP4 + photonP4).mass();
   hBsMass->Fill(BsMass);
   hBsMassResidual->Fill((BsMass - 5.366));
+
+  
+  // Bs displacement significance
+  math::XYZPoint pvPosition = bestPrimVertex.position();
+  math::XYZPoint svPosition = math::XYZPoint(fittedGlobalPoint.x(),fittedGlobalPoint.y(),fittedGlobalPoint.z());
+
+  math::XYZVector pv_sv = svPosition - pvPosition;
+  ROOT::Math::SVector<double,3> pv_svDir (pv_sv.unit().x(),pv_sv.unit().y(),pv_sv.unit().z());  //must be SVector for the next lines
+
+  double pvErrorPv_sv = ROOT::Math::Similarity(pv_svDir, bestPrimVertex.covariance());
+  double svErrorPv_sv = ROOT::Math::Similarity(pv_svDir, fitVertex->error().matrix());
+  double pv_svError2 = pvErrorPv_sv*pvErrorPv_sv + svErrorPv_sv*svErrorPv_sv;
+  double BsDisplSignificance = TMath::Sqrt(pv_sv.mag2() / pv_svError2);
+
+  hBsDisplSignificance->Fill(BsDisplSignificance);
+
 
   // spatial vectors
   GlobalPoint pvGlobalPoint(bestPrimVertex.position().x(), bestPrimVertex.position().y(), bestPrimVertex.position().z());
