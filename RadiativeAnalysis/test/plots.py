@@ -13,9 +13,11 @@ gROOT.Reset()
 f = TFile(fileName);
 f.ls();
 
+#'''
 c1 = TCanvas('cHisto','cHisto',1000,600)
-histo = gROOT.FindObject('hPhotondR')
-histo.SetTitle("all reco vs one gen photon;dR ;")
+histo = gROOT.FindObject('hScaledRecoVsGenPhotonEnergy')
+histo.SetTitle("ScaledRecoVsGenPhotonEnergy (PV[0])")
 histo.Draw()
-c1.Print("hPhotondR.pdf")
+c1.Print("images/hScaledRecoVsGenPhotonEnergy_PV0.pdf")
 input('press enter to exit')
+#'''

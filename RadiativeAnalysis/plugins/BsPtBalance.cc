@@ -393,6 +393,7 @@ void BsPtBalance::analyze(
 
 
   GlobalPoint genSV;
+  reco::GenParticle genB0s = genPar.at(0); //generated B0s decaying into mmg
   // genMuons and genPhotons from BsToMuMuGamma decay channel
   // checked that only one such decay per event
   for(const auto& genP : genPar)
@@ -412,6 +413,7 @@ void BsPtBalance::analyze(
           if(abs(genP.daughter(i)->pdgId()) == 22) genPhotons.push_back(genP.daughter(i));
         }
         genSV = GlobalPoint(genP.daughter(0)->vx(), genP.daughter(0)->vy(), genP.daughter(0)->vz());
+        genB0s = genP;
       }
     }
   }
@@ -463,7 +465,7 @@ void BsPtBalance::analyze(
     }
     if(matched) 
       hPhotondR->Fill(minDR);
-    if (matched && minDR < 0.02)
+    if (matched && minDR < 0.03)
     {
       recoMatchedPhotons.push_back(bestMatchedPhoton);
       genMatchedPhotons.push_back(genPh);
@@ -514,7 +516,7 @@ void BsPtBalance::analyze(
   if (!fitVertex->vertexIsValid()) return;
 
   GlobalPoint fittedGlobalPoint = fitVertex->position();
-  math::XYZPoint fittedGlobalPoint_math(fittedGlobalPoint.x(),fittedGlobalPoint.y(),fittedGlobalPoint.z());
+  math::XYZPoint fittedGlobalPoint_math (fittedGlobalPoint.x(),fittedGlobalPoint.y(),fittedGlobalPoint.z());
 
   hDimuonVertexXResidual->Fill(fittedGlobalPoint.x() - genSV.x());
   hDimuonVertexYResidual->Fill(fittedGlobalPoint.y() - genSV.y());
@@ -549,10 +551,11 @@ void BsPtBalance::analyze(
   }
   hBestPcaPV->Fill(minDistPcaPV);
 
+  if(minDistPcaPV > 0.01) return;
 
-  /*
+
   // photon enters  
-  if(recoMatchedPhotons.size() != 1) return;
+  if(recoMatchedPhotons.size() != 1) return;  //redundant
 
   hMuonFitGenGammaResidual->Fill((dimuonP4 + genMatchedPhotons.at(0)->p4()).mass() - (genMatchedMuons.at(0)->p4() + genMatchedMuons.at(1)->p4() + genMatchedPhotons.at(0)->p4()).mass());
 
@@ -567,7 +570,7 @@ void BsPtBalance::analyze(
   hBsMassResidual->Fill((BsMass - 5.366));
 
   // spatial vectors
-  GlobalPoint pvGlobalPoint(primaryVertices[0].position().x(), primaryVertices[0].position().y(), primaryVertices[0].position().z());
+  GlobalPoint pvGlobalPoint(primaryVertices.at(0).position().x(), primaryVertices.at(0).position().y(), primaryVertices.at(0).position().z());
   GlobalVector PVToSV = fittedGlobalPoint - pvGlobalPoint;
 
   GlobalPoint caloPosition = GlobalPoint(recoPhoton.superCluster()->position().x(),
@@ -580,7 +583,7 @@ void BsPtBalance::analyze(
   GlobalVector u = SVToCalo.unit();
   GlobalVector v = dimuonMomentum;
 
-  hDimuonGammaCosInBsFrame->Fill(w.cross(u).unit().dot(w.cross(v).unit()));
+  hDimuonGammaCosInBsFrame->Fill(w.cross(u).unit().dot(w.cross(v).unit())); //plane transverse to PVToSV
 
   //std::cout << "p4 cross pt to sv " << (dimuonMomentum + photonMomentum).unit().cross(w).mag() << std::endl; 
 
@@ -619,7 +622,7 @@ void BsPtBalance::analyze(
   hScaledCorrRecoVsGenPhotonEnergy->Fill(scaledCorrectedPhotonP4.energy() - genPhotonP4.energy());
 
 
-  //
+  /*
   // angles between reco and gen dimuon and photon in Bs frame
   GlobalVector genDimuonMomentum = GlobalVector(genMatchedMuons.at(0)->momentum().x() + genMatchedMuons.at(1)->momentum().x(), 
                                     genMatchedMuons.at(0)->momentum().y() + genMatchedMuons.at(1)->momentum().y(), 
