@@ -15,9 +15,9 @@ f.ls();
 
 #'''
 c1 = TCanvas('cHisto','cHisto',1000,600)
-histo = gROOT.FindObject('hScaledRecoVsGenPhotonEnergy')
-histo.SetTitle("ScaledRecoVsGenPhotonEnergy (PV[0])")
+histo = gROOT.FindObject('hCos_GenB_PvToSv')
+#histo.SetTitle("ScaledRecoVsGenPhotonEnergy (PV[0])")
 histo.Draw()
-c1.Print("images/hScaledRecoVsGenPhotonEnergy_PV0.pdf")
+c1.Print("images/hCos_GenB_PvToSv.pdf")
 input('press enter to exit')
 #'''

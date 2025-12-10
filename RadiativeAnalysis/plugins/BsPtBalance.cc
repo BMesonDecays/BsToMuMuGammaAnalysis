@@ -152,6 +152,7 @@ private:
   TH1D* hPhotondR;
   TH1D* hPcaPV;
   TH1D* hBestPcaPV;
+  TH1D* hCos_GenB_PvToSv;
 
   TTree* theTree;
   std::vector<float> vPVToSV;
@@ -247,6 +248,7 @@ void BsPtBalance::beginJob()
   hPhotondR = new TH1D("hPhotondR","all reco vs one gen photon; dR; ", 100, 0., 0.1);
   hPcaPV = new TH1D("hPcaPV","pca-pv distance for fittedDimuonGenPhoton (every PV); distance;", 100,0.,0.3);
   hBestPcaPV = new TH1D("hBestPcaPV","pca-pv distance for fittedDimuonGenPhoton (best PV); distance;", 100,0.,0.05);
+  hCos_GenB_PvToSv = new TH1D("hCos_GenB_PvToSv","hCos_GenB_PvToSv",100,0.9,1.);
 
 
   theTree = new TTree("theTree", "theTree");
@@ -308,6 +310,7 @@ void BsPtBalance::endJob()
   hPhotondR->Write();
   hPcaPV->Write();
   hBestPcaPV->Write();
+  hCos_GenB_PvToSv->Write();
   
   // theTree->Write();
 
@@ -357,6 +360,7 @@ void BsPtBalance::endJob()
   delete hPhotondR;
   delete hPcaPV;
   delete hBestPcaPV;
+  delete hCos_GenB_PvToSv;
 
   delete theTree;
 
@@ -570,7 +574,7 @@ void BsPtBalance::analyze(
   hBsMassResidual->Fill((BsMass - 5.366));
 
   // spatial vectors
-  GlobalPoint pvGlobalPoint(primaryVertices.at(0).position().x(), primaryVertices.at(0).position().y(), primaryVertices.at(0).position().z());
+  GlobalPoint pvGlobalPoint(bestPrimVertex.position().x(), bestPrimVertex.position().y(), bestPrimVertex.position().z());
   GlobalVector PVToSV = fittedGlobalPoint - pvGlobalPoint;
 
   GlobalPoint caloPosition = GlobalPoint(recoPhoton.superCluster()->position().x(),
@@ -621,6 +625,11 @@ void BsPtBalance::analyze(
   hUnscaledCorrRecoVsGenPhotonEnergy->Fill(correctedPhotonP4.energy() - genPhotonP4.energy());
   hScaledCorrRecoVsGenPhotonEnergy->Fill(scaledCorrectedPhotonP4.energy() - genPhotonP4.energy());
 
+
+  // angle btwn genBs momentum and w - PV to SV vector
+  GlobalVector genBsMomentum = GlobalVector(genB0s.momentum().x(),genB0s.momentum().y(),genB0s.momentum().z());
+  GlobalVector genBsDirection = genBsMomentum.unit();
+  hCos_GenB_PvToSv->Fill(genBsDirection.dot(w));  
 
   /*
   // angles between reco and gen dimuon and photon in Bs frame
