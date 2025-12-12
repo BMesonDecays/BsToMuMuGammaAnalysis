@@ -26,7 +26,10 @@ namespace Tools{
     {
         if (partB0s->numberOfMothers() > 1)   return partB0s; //first B0s/B0s_bar in the B0s-B0s_bar state
 
-        return findFirstB0s(partB0s->mother(0));
+        const reco::Candidate* mother = partB0s->mother(0);
+        if (std::abs(mother->pdgId()) != 531)  return partB0s; //first B0s produced from non-B0s
+
+        return findFirstB0s(mother);
     }
 }
 

@@ -19,7 +19,7 @@ process.options = cms.untracked.PSet(wantSummary = cms.untracked.bool(False))
 
 process.source = cms.Source('PoolSource', fileNames = cms.untracked.vstring("file:/eos/user/p/psajdak/data/BsToMuMuGamma_filtered.root"))
 process.source.skipEvents = cms.untracked.uint32(0)
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100))
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1))
 
 process.load("TrackingTools/TransientTrack/TransientTrackBuilder_cfi")
 process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')

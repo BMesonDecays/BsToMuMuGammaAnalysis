@@ -177,7 +177,7 @@ void GenPV::analyze(
   
   ////////////////////////////////////////
   
-  reco::GenParticle genB0s = genPar.at(0); //generated B0s decaying into mmg
+  const reco::GenParticle* genB0sPtr = &genPar.at(0); //generated B0s decaying into mmg
   
   // find B0s decaying into mmg
   for(const auto& genP : genPar)
@@ -191,18 +191,17 @@ void GenPV::analyze(
       }
       if(isSameDecay(daughters, MuMuG))
       {
-        genB0s = genP;
+        genB0sPtr = &genP;
       }
     }
   }
 
-  const reco::Candidate* genB0sPtr = &genB0s;
-  const reco::Candidate* firstB0s = Tools::findFirstB0s(genB0sPtr);    //first produced B0s
+  const reco::Candidate* firstB0sPtr = Tools::findFirstB0s(genB0sPtr);    //first produced B0s
 
   cout << "First B0s's mothers: \t";
-  for (long unsigned int i=0; i<firstB0s->numberOfMothers(); i++)
+  for (long unsigned int i=0; i<firstB0sPtr->numberOfMothers(); i++)
   {
-    const reco::Candidate* mother = genB0s.mother(i);
+    const reco::Candidate* mother = firstB0sPtr->mother(i);
     cout << mother->pdgId() << "\t" ;
   }
   cout << endl;
