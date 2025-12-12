@@ -32,12 +32,14 @@
 
 <library name="BsPtBalance" file="BsPtBalance.cc">
 </library>
-
 <library name="MMGVertexFitExample" file="MMGVertexFitExample.cc">
 </library>
-
 <library name="PrimVertices" file="PrimVertices.cc">
 </library>
+<library name="GenPV" file="GenPV.cc">
+</library>
+
+
 
 
 <flags EDM_PLUGIN="1"/>
