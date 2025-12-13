@@ -117,8 +117,11 @@ private:
 
   TH1D* hRecoPca_bestRecoPV_z;
   TH1D* hBestRecoPV_GenPV_z;
-  TH1I* hClosestSameAsBestPV;
-  TH1D* hClosestPV_BestPV_z;
+  TH1I* hLargestPt;
+  TH1I* hLargestNTr;
+  TH1D* hPtClosOverLarg;
+  TH1D* hNTrClosOverLarg;
+  TH1I* hLargestPtAndNTr;
 
 };
 
@@ -161,9 +164,12 @@ void GenPV::beginJob()
 {
     hRecoPca_bestRecoPV_z = new TH1D("hRecoPca_bestRecoPV_z","hRecoPca_bestRecoPV_z",100,0.,0.012);
     hBestRecoPV_GenPV_z = new TH1D("hBestRecoPV_GenPV_z","hBestRecoPV_GenPV_z",100,0.,0.012);
-    hClosestSameAsBestPV = new TH1I("hClosestSameAsBestPV","hClosestSameAsBestPV",2,0,2);
-    hClosestPV_BestPV_z = new TH1D("hClosestPV_BestPV_z","hClosestPV_BestPV_z",100,0.,0.08);
-    
+    hLargestPt = new TH1I("hLargestPt","Has closest PV largest p_t",2,0,2);
+    hLargestNTr = new TH1I("hLargestNTr","Has closest PV largest n_tracks",2,0,2);
+    hPtClosOverLarg = new TH1D("hPtClosOverLarg","p_t (closest/largest)",100,0.,1.);
+    hNTrClosOverLarg = new TH1D("hNTrClosOverLarg","n_tracks (closest/largest)",100,0.,1.);
+    hLargestPtAndNTr = new TH1I("hLargestPtAndNTr","Has closest PV largest p_t and n_tracks",2,0,2);
+
     cout << "HERE GenPV::beginJob()" << endl;
 }
 
@@ -175,16 +181,23 @@ void GenPV::endJob()
   //write histogram data
   hRecoPca_bestRecoPV_z->Write();
   hBestRecoPV_GenPV_z->Write();
-  hClosestSameAsBestPV->Write();
-  hClosestPV_BestPV_z->Write();
+  hLargestPt->Write();
+  hLargestNTr->Write();
+  hPtClosOverLarg->Write();
+  hNTrClosOverLarg->Write();
+  hLargestPtAndNTr->Write();
 
   myRootFile.Close();
 
   delete hRecoPca_bestRecoPV_z;
   delete hBestRecoPV_GenPV_z;
-  delete hClosestSameAsBestPV;
-  delete hClosestPV_BestPV_z;
-  
+  delete hLargestPt;
+  delete hLargestNTr;
+  delete hPtClosOverLarg;
+  delete hNTrClosOverLarg;
+  delete hLargestPtAndNTr;
+
+
   cout << "HERE GenPV::endJob()" << endl;
 }
 
@@ -385,14 +398,40 @@ void GenPV::analyze(
             closestPVIndex = i;
         }
     }
+    reco::Vertex closestPV = primaryVertices.at(closestPVIndex);
 
-    if (closestPVIndex == bestPrimVertexIndex)
-        hClosestSameAsBestPV->Fill(1);
+    // check the p_t and n_tr of recoPVs
+    std::vector<double> pTVector;
+    std::vector<unsigned int> nTrVector;
+    for (auto &pv : primaryVertices)
+    {
+        pTVector.push_back(pv.p4().pt());
+        nTrVector.push_back(pv.nTracks());
+    }
+
+    auto max_it = std::max_element(pTVector.begin(),pTVector.end());
+    unsigned int largestPtIndex = std::distance(pTVector.begin(), max_it);
+
+    auto max_it2 = std::max_element(nTrVector.begin(),nTrVector.end());
+    unsigned int largestNTrIndex = std::distance(nTrVector.begin(), max_it2);
+
+    // fill histograms
+    if (largestPtIndex == closestPVIndex)
+        hLargestPt->Fill(1);
     else
     {
-        hClosestSameAsBestPV->Fill(0);
-        hClosestPV_BestPV_z->Fill(std::abs(bestPV.position().z() - primaryVertices.at(closestPVIndex).position().z()));
+        hLargestPt->Fill(0);
+        hPtClosOverLarg->Fill(closestPV.p4().pt() / pTVector.at(largestPtIndex));
     }
+    if (largestNTrIndex == closestPVIndex)
+        hLargestNTr->Fill(1);
+    else
+    {
+        hLargestNTr->Fill(0);
+        hNTrClosOverLarg->Fill(closestPV.nTracks() / nTrVector.at(largestNTrIndex));
+    }
+
+    hLargestPtAndNTr->Fill(int(largestPtIndex == closestPVIndex && largestNTrIndex == closestPVIndex));    
 
   }
 
