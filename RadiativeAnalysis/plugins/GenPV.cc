@@ -68,6 +68,7 @@
 #include "Math/SVector.h"
 #include "TTree.h"
 #include "TBranch.h"
+#include "TH1I.h"
 
 
 #include <sstream>
@@ -114,7 +115,10 @@ private:
     
   std::vector<int> MuMuG = {22, 13, -13};
 
-  TH1D* hRecoPCA_GenPV_z;
+  TH1D* hRecoPca_bestRecoPV_z;
+  TH1D* hBestRecoPV_GenPV_z;
+  TH1I* hClosestSameAsBestPV;
+  TH1D* hClosestPV_BestPV_z;
 
 };
 
@@ -155,7 +159,10 @@ bool GenPV::isSameDecay(const std::vector<int>& dec1, const std::vector<int>& de
 
 void GenPV::beginJob()
 {
-    hRecoPCA_GenPV_z = new TH1D("hRecoPCA_GenPV_z","hRecoPCA_GenPV_z",100,0.,0.03);
+    hRecoPca_bestRecoPV_z = new TH1D("hRecoPca_bestRecoPV_z","hRecoPca_bestRecoPV_z",100,0.,0.012);
+    hBestRecoPV_GenPV_z = new TH1D("hBestRecoPV_GenPV_z","hBestRecoPV_GenPV_z",100,0.,0.012);
+    hClosestSameAsBestPV = new TH1I("hClosestSameAsBestPV","hClosestSameAsBestPV",2,0,2);
+    hClosestPV_BestPV_z = new TH1D("hClosestPV_BestPV_z","hClosestPV_BestPV_z",100,0.,0.08);
     
     cout << "HERE GenPV::beginJob()" << endl;
 }
@@ -166,11 +173,17 @@ void GenPV::endJob()
   TFile myRootFile( theConfig.getParameter<std::string>("outHist").c_str(), "RECREATE");
 
   //write histogram data
-  hRecoPCA_GenPV_z->Write();
+  hRecoPca_bestRecoPV_z->Write();
+  hBestRecoPV_GenPV_z->Write();
+  hClosestSameAsBestPV->Write();
+  hClosestPV_BestPV_z->Write();
 
   myRootFile.Close();
 
-  delete hRecoPCA_GenPV_z;
+  delete hRecoPca_bestRecoPV_z;
+  delete hBestRecoPV_GenPV_z;
+  delete hClosestSameAsBestPV;
+  delete hClosestPV_BestPV_z;
   
   cout << "HERE GenPV::endJob()" << endl;
 }
@@ -322,7 +335,7 @@ void GenPV::analyze(
   math::XYZVector dimuonMomentum_math(dimuonMomentum.x(),dimuonMomentum.y(),dimuonMomentum.z());
   
 
-  //////////////PCA(mmg)_reco to the genPV////////////////////////////
+  //////////////PCA(mmg)_reco to the bestRecoPV////////////////////////////
 
   const reco::Candidate* firstB0sPtr = Tools::findFirstB0s(genB0sPtr);    //first produced B0s
   const math::XYZPoint genPV = firstB0sPtr->vertex();
@@ -330,11 +343,58 @@ void GenPV::analyze(
   reco::Photon recoPhoton = *recoMatchedPhotons.at(0);
   recoPhoton.setVertex(reco::Candidate::Point(fittedSV.x(), fittedSV.y(), fittedSV.z()));
 
-  // find the PCA
   math::XYZVector fitDimuonRecoPhotonMomentum = dimuonMomentum_math + recoPhoton.momentum();
-  math::XYZPoint pca = Tools::pca(genPV, fittedSV, fitDimuonRecoPhotonMomentum);
 
-  hRecoPCA_GenPV_z->Fill(std::abs(pca.z() - genPV.z()));  
+  double minDistPcaPV = 1000.0;
+  unsigned int bestPrimVertexIndex = 0;
+  math::XYZPoint pca(0.,0.,0.);
+  // find the best reco PV
+  for(long unsigned int i=0; i<primaryVertices.size(); i++)
+  {
+    math::XYZPoint tempPca = Tools::pca(primaryVertices.at(i).position(), fittedSV, fitDimuonRecoPhotonMomentum);
+    math::XYZVector tempDiffPcaPV = tempPca - primaryVertices.at(i).position();
+    double tempDistPcaPV = TMath::Sqrt(tempDiffPcaPV.mag2());
+
+    if (tempDistPcaPV < minDistPcaPV)
+    {
+      minDistPcaPV = tempDistPcaPV;
+      bestPrimVertexIndex = i;
+      pca = tempPca;
+    }
+  }
+  if(minDistPcaPV > 0.01) return;
+
+  reco::Vertex bestPV = primaryVertices.at(bestPrimVertexIndex);
+
+  hRecoPca_bestRecoPV_z->Fill(std::abs(pca.z() - bestPV.position().z()) );
+  hBestRecoPV_GenPV_z->Fill(std::abs(bestPV.position().z() - genPV.z()) );
+
+  // more than one recoPV
+  if (primaryVertices.size() > 1)
+  {
+    unsigned int closestPVIndex = bestPrimVertexIndex;
+    double minRecoPV_GenPV_z = std::abs(bestPV.position().z() - genPV.z());
+
+    // find the recoPV closest (in z) to the genPV
+    for(unsigned int i=0; i<primaryVertices.size();i++)
+    {
+        double tempRecoPV_GenPV_z = std::abs(primaryVertices.at(i).position().z() - genPV.z());
+        if (tempRecoPV_GenPV_z < minRecoPV_GenPV_z)
+        {
+            minRecoPV_GenPV_z = tempRecoPV_GenPV_z;
+            closestPVIndex = i;
+        }
+    }
+
+    if (closestPVIndex == bestPrimVertexIndex)
+        hClosestSameAsBestPV->Fill(1);
+    else
+    {
+        hClosestSameAsBestPV->Fill(0);
+        hClosestPV_BestPV_z->Fill(std::abs(bestPV.position().z() - primaryVertices.at(closestPVIndex).position().z()));
+    }
+
+  }
 
 
 
