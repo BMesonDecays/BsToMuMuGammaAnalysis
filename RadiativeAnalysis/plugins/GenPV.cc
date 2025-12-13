@@ -114,6 +114,8 @@ private:
     
   std::vector<int> MuMuG = {22, 13, -13};
 
+  TH1D* hRecoPCA_GenPV_z;
+
 };
 
 
@@ -153,8 +155,9 @@ bool GenPV::isSameDecay(const std::vector<int>& dec1, const std::vector<int>& de
 
 void GenPV::beginJob()
 {
-
-  cout << "HERE GenPV::beginJob()" << endl;
+    hRecoPCA_GenPV_z = new TH1D("hRecoPCA_GenPV_z","hRecoPCA_GenPV_z",100,0.,0.03);
+    
+    cout << "HERE GenPV::beginJob()" << endl;
 }
 
 void GenPV::endJob()
@@ -162,7 +165,12 @@ void GenPV::endJob()
   //make a new Root file
   TFile myRootFile( theConfig.getParameter<std::string>("outHist").c_str(), "RECREATE");
 
+  //write histogram data
+  hRecoPCA_GenPV_z->Write();
+
   myRootFile.Close();
+
+  delete hRecoPCA_GenPV_z;
   
   cout << "HERE GenPV::endJob()" << endl;
 }
@@ -173,10 +181,23 @@ void GenPV::analyze(
   std::cout << " -------------------------------- HERE GenPV::analyze "<< std::endl;
 
   const std::vector<reco::GenParticle> & genPar = ev.get(theGenParticleToken);
-  
+  const std::vector<reco::Muon> & recoMuons = ev.get(theMuonToken);
+  const std::vector<reco::Photon> & recoPhotons = ev.get(thePhotonToken);
+  const std::vector<reco::Vertex> & primaryVertices = ev.get(theVertexToken);
+
+  auto const& field = es.getData(m_fieldToken);
+
+  vector<const reco::Candidate*> genMuons;
+  vector<const reco::Muon*> recoMatchedMuons;
+  vector<const reco::Candidate*> genMatchedMuons;
+
+  vector<const reco::Candidate*> genPhotons;
+  vector<const reco::Photon*> recoMatchedPhotons;
+  vector<const reco::Candidate*> genMatchedPhotons;  
   
   ////////////////////////////////////////
   
+  GlobalPoint genSV;
   const reco::GenParticle* genB0sPtr = &genPar.at(0); //generated B0s decaying into mmg
   
   // find B0s decaying into mmg
@@ -192,24 +213,128 @@ void GenPV::analyze(
       if(isSameDecay(daughters, MuMuG))
       {
         genB0sPtr = &genP;
+        genSV = GlobalPoint(genP.daughter(0)->vx(), genP.daughter(0)->vy(), genP.daughter(0)->vz());
+        
+        for(unsigned int i=0; i < genP.numberOfDaughters(); i++)
+        {
+          if(abs(genP.daughter(i)->pdgId()) == 13) genMuons.push_back(genP.daughter(i));
+          if(abs(genP.daughter(i)->pdgId()) == 22) genPhotons.push_back(genP.daughter(i));
+        }
       }
     }
   }
+  if(genPhotons.size() == 0) return;  //no 'SameDecay' found  
+
+
+  // reco muon matching
+  for (const reco::Candidate* genMu : genMuons)
+  {
+    float minDR = 10;
+    const reco::Muon* bestMatchedMuon = &recoMuons.at(0); //initialization to suppress warning
+    bool matched = false;
+    for (const auto& recoMu : recoMuons)
+    {
+      float dR = reco::deltaR(recoMu, *genMu);
+      if (dR < minDR)
+      {
+        minDR = dR;
+        bestMatchedMuon = &recoMu;
+        matched = true;
+      }
+    }
+    if (matched && minDR < 0.01)
+    {
+      recoMatchedMuons.push_back(bestMatchedMuon);
+      genMatchedMuons.push_back(genMu);
+    }
+  }
+  if(recoMatchedMuons.size() != 2)  return;
+
+
+  // reco photon matching
+  for (const reco::Candidate* genPh : genPhotons)
+  {
+    float minDR = 10;
+    const reco::Photon* bestMatchedPhoton = &recoPhotons.at(0); //initialization to suppress warning
+    bool matched = false;
+    for (const auto& recoPh : recoPhotons)
+    {
+      float dR = reco::deltaR(recoPh, *genPh);
+      if (dR < minDR)
+      {
+        minDR = dR;
+        bestMatchedPhoton = &recoPh;
+        matched = true;
+      }
+    }
+    if (matched && minDR < 0.03)
+    {
+      recoMatchedPhotons.push_back(bestMatchedPhoton);
+      genMatchedPhotons.push_back(genPh);
+    }
+  }
+  if(recoMatchedPhotons.size() != 1) return;
+
+  if(recoMatchedPhotons[0]->isEB() == 0) return; // only EB photons
+
+
+  ////////////////////////  FITTING /////////////////////
+
+  // kinematic particle creation  
+  vector<RefCountedKinematicParticle> muonKinematicParticles;
+  for(const auto& recoMuPtr : recoMatchedMuons)
+  {
+    reco::Muon recoMu = *recoMuPtr;
+    reco::TrackRef muTrack = recoMu.track();
+    if(!muTrack) continue;
+    reco::TransientTrack muonTT = reco::TransientTrack(muTrack, &field);
+
+    const ParticleMass muon_mass(0.105658);
+    float muon_sigma = 23E-10;
+
+    KinematicParticleFactoryFromTransientTrack pFactory;
+    muonKinematicParticles.push_back(pFactory.particle(muonTT, muon_mass, float(0), float(0), muon_sigma));
+  }
+
+  if (muonKinematicParticles.size() != 2) return;
+
+  RefCountedKinematicParticle mu1 = muonKinematicParticles.at(0);
+  RefCountedKinematicParticle mu2 = muonKinematicParticles.at(1);
+  std::vector<RefCountedKinematicParticle> allParticles;
+  allParticles.push_back(mu1);
+  allParticles.push_back(mu2);
+
+  // SV fit using only two muons
+  KinematicParticleVertexFitter fitter;
+  RefCountedKinematicTree vertexFitTree = fitter.fit(allParticles);
+  if (!vertexFitTree->isValid()) return;
+
+  // get the fitted particle (i.e. dimuon) and vertex
+  vertexFitTree->movePointerToTheTop();
+  RefCountedKinematicParticle fitParticle = vertexFitTree->currentParticle();
+  RefCountedKinematicVertex fitVertex = vertexFitTree->currentDecayVertex();
+  if (!fitVertex->vertexIsValid()) return;
+
+  GlobalPoint fittedGlobalPoint = fitVertex->position();
+  math::XYZPoint fittedSV (fittedGlobalPoint.x(),fittedGlobalPoint.y(),fittedGlobalPoint.z());
+
+  GlobalVector dimuonMomentum = fitParticle->currentState().kinematicParameters().momentum();
+  math::XYZVector dimuonMomentum_math(dimuonMomentum.x(),dimuonMomentum.y(),dimuonMomentum.z());
+  
+
+  //////////////PCA(mmg)_reco to the genPV////////////////////////////
 
   const reco::Candidate* firstB0sPtr = Tools::findFirstB0s(genB0sPtr);    //first produced B0s
+  const math::XYZPoint genPV = firstB0sPtr->vertex();
 
-  cout << "First B0s's mothers: \t";
-  for (long unsigned int i=0; i<firstB0sPtr->numberOfMothers(); i++)
-  {
-    const reco::Candidate* mother = firstB0sPtr->mother(i);
-    cout << mother->pdgId() << "\t" ;
-  }
-  cout << endl;
+  reco::Photon recoPhoton = *recoMatchedPhotons.at(0);
+  recoPhoton.setVertex(reco::Candidate::Point(fittedSV.x(), fittedSV.y(), fittedSV.z()));
 
+  // find the PCA
+  math::XYZVector fitDimuonRecoPhotonMomentum = dimuonMomentum_math + recoPhoton.momentum();
+  math::XYZPoint pca = Tools::pca(genPV, fittedSV, fitDimuonRecoPhotonMomentum);
 
-
-
-
+  hRecoPCA_GenPV_z->Fill(std::abs(pca.z() - genPV.z()));  
 
 
 
