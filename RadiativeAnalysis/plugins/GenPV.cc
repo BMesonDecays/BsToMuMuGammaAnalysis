@@ -115,13 +115,7 @@ private:
     
   std::vector<int> MuMuG = {22, 13, -13};
 
-  TH1D* hRecoPca_bestRecoPV_z;
-  TH1D* hBestRecoPV_GenPV_z;
-  TH1I* hLargestPt;
-  TH1I* hLargestNTr;
-  TH1D* hPtClosOverLarg;
-  TH1D* hNTrClosOverLarg;
-  TH1I* hLargestPtAndNTr;
+  TH1D* hDistances;
 
 };
 
@@ -162,13 +156,7 @@ bool GenPV::isSameDecay(const std::vector<int>& dec1, const std::vector<int>& de
 
 void GenPV::beginJob()
 {
-    hRecoPca_bestRecoPV_z = new TH1D("hRecoPca_bestRecoPV_z","hRecoPca_bestRecoPV_z",100,0.,0.012);
-    hBestRecoPV_GenPV_z = new TH1D("hBestRecoPV_GenPV_z","hBestRecoPV_GenPV_z",100,0.,0.012);
-    hLargestPt = new TH1I("hLargestPt","Has closest PV largest p_t",2,0,2);
-    hLargestNTr = new TH1I("hLargestNTr","Has closest PV largest n_tracks",2,0,2);
-    hPtClosOverLarg = new TH1D("hPtClosOverLarg","p_t (closest/largest)",100,0.,1.);
-    hNTrClosOverLarg = new TH1D("hNTrClosOverLarg","n_tracks (closest/largest)",100,0.,1.);
-    hLargestPtAndNTr = new TH1I("hLargestPtAndNTr","Has closest PV largest p_t and n_tracks",2,0,2);
+    hDistances = new TH1D("hDistances","Difference of distances from 2 methods",100,-1.,1.);
 
     cout << "HERE GenPV::beginJob()" << endl;
 }
@@ -179,24 +167,11 @@ void GenPV::endJob()
   TFile myRootFile( theConfig.getParameter<std::string>("outHist").c_str(), "RECREATE");
 
   //write histogram data
-  hRecoPca_bestRecoPV_z->Write();
-  hBestRecoPV_GenPV_z->Write();
-  hLargestPt->Write();
-  hLargestNTr->Write();
-  hPtClosOverLarg->Write();
-  hNTrClosOverLarg->Write();
-  hLargestPtAndNTr->Write();
+  hDistances->Write();
 
   myRootFile.Close();
 
-  delete hRecoPca_bestRecoPV_z;
-  delete hBestRecoPV_GenPV_z;
-  delete hLargestPt;
-  delete hLargestNTr;
-  delete hPtClosOverLarg;
-  delete hNTrClosOverLarg;
-  delete hLargestPtAndNTr;
-
+  delete hDistances;
 
   cout << "HERE GenPV::endJob()" << endl;
 }
@@ -210,6 +185,7 @@ void GenPV::analyze(
   const std::vector<reco::Muon> & recoMuons = ev.get(theMuonToken);
   const std::vector<reco::Photon> & recoPhotons = ev.get(thePhotonToken);
   const std::vector<reco::Vertex> & primaryVertices = ev.get(theVertexToken);
+  const reco::BeamSpot & beamSpot = ev.get(theBeamSpotToken);
 
   auto const& field = es.getData(m_fieldToken);
 
@@ -224,7 +200,7 @@ void GenPV::analyze(
   ////////////////////////////////////////
   
   GlobalPoint genSV;
-  const reco::GenParticle* genB0sPtr = &genPar.at(0); //generated B0s decaying into mmg
+  //const reco::GenParticle* genB0sPtr = &genPar.at(0); //generated B0s decaying into mmg
   
   // find B0s decaying into mmg
   for(const auto& genP : genPar)
@@ -238,7 +214,7 @@ void GenPV::analyze(
       }
       if(isSameDecay(daughters, MuMuG))
       {
-        genB0sPtr = &genP;
+        //genB0sPtr = &genP;
         genSV = GlobalPoint(genP.daughter(0)->vx(), genP.daughter(0)->vy(), genP.daughter(0)->vz());
         
         for(unsigned int i=0; i < genP.numberOfDaughters(); i++)
@@ -348,93 +324,27 @@ void GenPV::analyze(
   math::XYZVector dimuonMomentum_math(dimuonMomentum.x(),dimuonMomentum.y(),dimuonMomentum.z());
   
 
-  //////////////PCA(mmg)_reco to the bestRecoPV////////////////////////////
-
-  const reco::Candidate* firstB0sPtr = Tools::findFirstB0s(genB0sPtr);    //first produced B0s
-  const math::XYZPoint genPV = firstB0sPtr->vertex();
+  //////////////PCA(mmg)_reco to the beamSpot////////////////////////////
 
   reco::Photon recoPhoton = *recoMatchedPhotons.at(0);
   recoPhoton.setVertex(reco::Candidate::Point(fittedSV.x(), fittedSV.y(), fittedSV.z()));
 
   math::XYZVector fitDimuonRecoPhotonMomentum = dimuonMomentum_math + recoPhoton.momentum();
 
-  double minDistPcaPV = 1000.0;
-  unsigned int bestPrimVertexIndex = 0;
-  math::XYZPoint pca(0.,0.,0.);
-  // find the best reco PV
-  for(long unsigned int i=0; i<primaryVertices.size(); i++)
-  {
-    math::XYZPoint tempPca = Tools::pca(primaryVertices.at(i).position(), fittedSV, fitDimuonRecoPhotonMomentum);
-    math::XYZVector tempDiffPcaPV = tempPca - primaryVertices.at(i).position();
-    double tempDistPcaPV = TMath::Sqrt(tempDiffPcaPV.mag2());
+  math::XYZVector beamSpotDirection = math::XYZVector(beamSpot.dxdz(), beamSpot.dydz(), 1.0);
+  beamSpotDirection = beamSpotDirection.unit();
 
-    if (tempDistPcaPV < minDistPcaPV)
-    {
-      minDistPcaPV = tempDistPcaPV;
-      bestPrimVertexIndex = i;
-      pca = tempPca;
-    }
-  }
-  if(minDistPcaPV > 0.01) return;
+  double pca_beamSpotDistance = Tools::closestDistance(fittedSV, fitDimuonRecoPhotonMomentum, beamSpot.position(), beamSpotDirection);
 
-  reco::Vertex bestPV = primaryVertices.at(bestPrimVertexIndex);
+  // closest points on the beamSpot and fitDimuonRecoPhotonMomentum lines
+  std::vector<math::XYZPoint> closestPoints = Tools::closestPoints(fittedSV, fitDimuonRecoPhotonMomentum, beamSpot.position(), beamSpotDirection);
+  math::XYZVector twoClosestPoints = closestPoints.at(1) - closestPoints.at(0);
+  double twoClosestPointsDistance = TMath::Sqrt(twoClosestPoints.Mag2());
 
-  hRecoPca_bestRecoPV_z->Fill(std::abs(pca.z() - bestPV.position().z()) );
-  hBestRecoPV_GenPV_z->Fill(std::abs(bestPV.position().z() - genPV.z()) );
-
-  // more than one recoPV
-  if (primaryVertices.size() > 1)
-  {
-    unsigned int closestPVIndex = bestPrimVertexIndex;
-    double minRecoPV_GenPV_z = std::abs(bestPV.position().z() - genPV.z());
-
-    // find the recoPV closest (in z) to the genPV
-    for(unsigned int i=0; i<primaryVertices.size();i++)
-    {
-        double tempRecoPV_GenPV_z = std::abs(primaryVertices.at(i).position().z() - genPV.z());
-        if (tempRecoPV_GenPV_z < minRecoPV_GenPV_z)
-        {
-            minRecoPV_GenPV_z = tempRecoPV_GenPV_z;
-            closestPVIndex = i;
-        }
-    }
-    reco::Vertex closestPV = primaryVertices.at(closestPVIndex);
-
-    // check the p_t and n_tr of recoPVs
-    std::vector<double> pTVector;
-    std::vector<unsigned int> nTrVector;
-    for (auto &pv : primaryVertices)
-    {
-        pTVector.push_back(pv.p4().pt());
-        nTrVector.push_back(pv.nTracks());
-    }
-
-    auto max_it = std::max_element(pTVector.begin(),pTVector.end());
-    unsigned int largestPtIndex = std::distance(pTVector.begin(), max_it);
-
-    auto max_it2 = std::max_element(nTrVector.begin(),nTrVector.end());
-    unsigned int largestNTrIndex = std::distance(nTrVector.begin(), max_it2);
-
-    // fill histograms
-    if (largestPtIndex == closestPVIndex)
-        hLargestPt->Fill(1);
-    else
-    {
-        hLargestPt->Fill(0);
-        hPtClosOverLarg->Fill(closestPV.p4().pt() / pTVector.at(largestPtIndex));
-    }
-    if (largestNTrIndex == closestPVIndex)
-        hLargestNTr->Fill(1);
-    else
-    {
-        hLargestNTr->Fill(0);
-        hNTrClosOverLarg->Fill(closestPV.nTracks() / nTrVector.at(largestNTrIndex));
-    }
-
-    hLargestPtAndNTr->Fill(int(largestPtIndex == closestPVIndex && largestNTrIndex == closestPVIndex));    
-
-  }
-
+  // compare the distances
+  hDistances->Fill(pca_beamSpotDistance - twoClosestPointsDistance);
+  
+  
 
 
 

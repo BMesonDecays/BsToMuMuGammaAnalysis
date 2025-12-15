@@ -3,6 +3,7 @@
 
 #include "DataFormats/Candidate/interface/Candidate.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
+#include "DataFormats/BeamSpot/interface/BeamSpot.h"
 
 #include <vector>
 #include <set>
@@ -31,6 +32,94 @@ namespace Tools{
 
         return findFirstB0s(mother);
     }
+
+    // find the point on the beamspot line (bSPoint) closest to a given point (point)
+    math::XYZPoint bSpotClosestPoint(math::XYZPoint point, const reco::BeamSpot& bSpot)
+    {
+        math::XYZVector bSpotDirection = math::XYZVector(bSpot.dxdz(), bSpot.dydz(), 1.0);
+        bSpotDirection = bSpotDirection.unit();
+        const math::XYZPoint bSpotRefPoint = bSpot.position();
+
+        math::XYZVector point_bSpotRefPoint = point - bSpotRefPoint;
+        math::XYZPoint bSPoint = bSpotRefPoint + bSpotDirection*(point_bSpotRefPoint.Dot(bSpotDirection));
+
+        return bSPoint;
+    }
+
+    // find the (closest) distance between two lines in 3D
+    double closestDistance(const math::XYZPoint &refPoint1, const math::XYZVector &dirVector1,
+                                                const math::XYZPoint &refPoint2, const math::XYZVector &dirVector2)
+    {
+        math::XYZVector dirUnit1 = dirVector1.Unit();
+        math::XYZVector dirUnit2 = dirVector2.Unit();
+        math::XYZVector closestDistDirection = dirUnit1.Cross(dirUnit2);    //direction of the vector connecting the two desired closest points
+
+        double closestDistance = std::abs(closestDistDirection.Dot(refPoint2 - refPoint1)); //unsigned (closest) distance between two lines
+        
+        return closestDistance;
+    }
+
+    // OLD  find two points (one for each line) closest to each other for two lines in 3D
+    std::vector<math::XYZPoint> OLDclosestPoints(const math::XYZPoint &refPoint1, const math::XYZVector &dirVector1,
+                                                const math::XYZPoint &refPoint2, const math::XYZVector &dirVector2)
+    {
+        math::XYZVector dirUnit1 = dirVector1.Unit();
+        math::XYZVector dirUnit2 = dirVector2.Unit();
+        math::XYZVector closestDistDirection = dirUnit1.Cross(dirUnit2);    //direction of the vector connecting the two desired closest points
+
+        double closestDistance = closestDistDirection.Dot(refPoint2 - refPoint1); //signed (closest) distance between two lines
+        math::XYZVector closestDistVector = closestDistDirection * closestDistance; //vector connecting two closest points
+
+        // line1 displaced by closestDistVector crosses line2
+        // find the crossing point
+        // refPoint1.x() + closestDistVector.x() + t1*dirUnit1.x() = refPoint2.x() + t2*dirUnit2.x()
+        // refPoint1.x() + closestDistVector.x() - refPoint2.x() = t1*(-dirUnit1.x()) + t2*dirUnit2.x() 
+        // same for the y direction
+        // find t1 and t2, invert the dirUnit matrix (appearing on the right side)
+        double det = -dirUnit1.x()*dirUnit2.y() + dirUnit1.y()*dirUnit2.x();
+        double leftSideX = refPoint1.x() + closestDistVector.x() - refPoint2.x();
+        double leftSideY = refPoint1.y() + closestDistVector.y() - refPoint2.y();
+        double t1 = (leftSideX*dirUnit2.y() + leftSideY*(-dirUnit2.x())) / det;
+        double t2 = (leftSideX*dirUnit1.x() + leftSideY*(-dirUnit1.x())) / det;
+
+        math::XYZPoint closestPoint1 = refPoint1 + t1*dirUnit1;
+        math::XYZPoint closestPoint2 = refPoint2 + t2*dirUnit2;
+
+        std::vector<math::XYZPoint> outputVector;
+        outputVector.push_back(closestPoint1);
+        outputVector.push_back(closestPoint2);
+
+        return  outputVector;
+    }
+
+    // find two points (one for each line) closest to each other for two lines in 3D
+    std::vector<math::XYZPoint> closestPoints(const math::XYZPoint &refPoint1, const math::XYZVector &dirVector1,
+                                                const math::XYZPoint &refPoint2, const math::XYZVector &dirVector2)
+    {
+        math::XYZVector dirUnit1 = dirVector1.Unit();
+        math::XYZVector dirUnit2 = dirVector2.Unit();
+        math::XYZVector nVector = dirUnit1.Cross(dirUnit2);    //direction of the vector connecting the two desired closest points
+
+        math::XYZVector ref1_ref2 = refPoint2 - refPoint1;
+        math::XYZVector dir1CrossN = dirUnit1.Cross(nVector);
+        math::XYZVector dir2CrossN = dirUnit2.Cross(nVector);
+        double dirUnit1DotDirUnit2 = dirUnit1.Dot(dirUnit2);
+        double sign = std::abs(dirUnit1DotDirUnit2)/dirUnit1DotDirUnit2;
+
+        // closestPoint1 = refPoint1 + t1*dirUnit1
+        // closestPoint2 = refPoint2 + t2*dirUnit2
+        double t1 = sign * (dir2CrossN.Dot(ref1_ref2))/(dirUnit1.Dot(dir2CrossN));
+        double t2 = sign * (dir1CrossN.Dot(ref1_ref2))/(dirUnit2.Dot(dir1CrossN));
+        math::XYZPoint closestPoint1 = refPoint1 + t1*dirUnit1;
+        math::XYZPoint closestPoint2 = refPoint2 + t2*dirUnit2;
+
+        std::vector<math::XYZPoint> outputVector;
+        outputVector.push_back(closestPoint1);
+        outputVector.push_back(closestPoint2);
+
+        return outputVector;
+    }
+
 }
 
 
