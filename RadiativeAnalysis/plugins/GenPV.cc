@@ -115,7 +115,7 @@ private:
     
   std::vector<int> MuMuG = {22, 13, -13};
 
-  TH1D* hDistances;
+  TH1D* hPca_beamSpot;
 
 };
 
@@ -156,7 +156,7 @@ bool GenPV::isSameDecay(const std::vector<int>& dec1, const std::vector<int>& de
 
 void GenPV::beginJob()
 {
-    hDistances = new TH1D("hDistances","Difference of distances from 2 methods",100,-1.,1.);
+    hPca_beamSpot = new TH1D("hPca_beamSpot","Distance of the fitDimuonRecoPhotonMomentum to beamSpot",100,0.,0.02);
 
     cout << "HERE GenPV::beginJob()" << endl;
 }
@@ -167,11 +167,11 @@ void GenPV::endJob()
   TFile myRootFile( theConfig.getParameter<std::string>("outHist").c_str(), "RECREATE");
 
   //write histogram data
-  hDistances->Write();
+  hPca_beamSpot->Write();
 
   myRootFile.Close();
 
-  delete hDistances;
+  delete hPca_beamSpot;
 
   cout << "HERE GenPV::endJob()" << endl;
 }
@@ -335,15 +335,7 @@ void GenPV::analyze(
   beamSpotDirection = beamSpotDirection.unit();
 
   double pca_beamSpotDistance = Tools::closestDistance(fittedSV, fitDimuonRecoPhotonMomentum, beamSpot.position(), beamSpotDirection);
-
-  // closest points on the beamSpot and fitDimuonRecoPhotonMomentum lines
-  std::vector<math::XYZPoint> closestPoints = Tools::closestPoints(fittedSV, fitDimuonRecoPhotonMomentum, beamSpot.position(), beamSpotDirection);
-  math::XYZVector twoClosestPoints = closestPoints.at(1) - closestPoints.at(0);
-  double twoClosestPointsDistance = TMath::Sqrt(twoClosestPoints.Mag2());
-
-  // compare the distances
-  hDistances->Fill(pca_beamSpotDistance - twoClosestPointsDistance);
-  
+  hPca_beamSpot->Fill(pca_beamSpotDistance);
   
 
 

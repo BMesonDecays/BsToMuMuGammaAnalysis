@@ -13,11 +13,13 @@ gROOT.Reset()
 f = TFile(fileName);
 f.ls();
 
+histoname = "hPca_beamSpot"
+
 #'''
 c1 = TCanvas('cHisto','cHisto',1000,600)
-histo = gROOT.FindObject('hRecoPCA_GenPV_z')
+histo = gROOT.FindObject(histoname)
 #histo.SetTitle("ScaledRecoVsGenPhotonEnergy (PV[0])")
 histo.Draw()
-c1.Print("images/hRecoPCA_GenPV_z.pdf")
+c1.Print("images/"+histoname+".pdf")
 input('press enter to exit')
 #'''
