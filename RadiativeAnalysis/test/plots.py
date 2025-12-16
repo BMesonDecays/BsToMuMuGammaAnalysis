@@ -6,14 +6,14 @@ from ROOT import *
 
 
 print ("Hello ROOT")
-fileName = "histos.root"
+fileName = "outputData/hGenPV.root"
 
 print ('Read data from: ', fileName)
 gROOT.Reset()
 f = TFile(fileName);
 f.ls();
 
-histoname = "hPca_beamSpot"
+histoname = "hBestRecoPV_GenPV_z"
 
 #'''
 c1 = TCanvas('cHisto','cHisto',1000,600)
