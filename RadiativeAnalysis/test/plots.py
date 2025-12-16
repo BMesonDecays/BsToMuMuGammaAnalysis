@@ -6,14 +6,14 @@ from ROOT import *
 
 
 print ("Hello ROOT")
-fileName = "outputData/hGenPV.root"
+fileName = "outputData/hGenPV_005Cut.root"
 
 print ('Read data from: ', fileName)
 gROOT.Reset()
 f = TFile(fileName);
 f.ls();
 
-histoname = "hBestRecoPV_GenPV_z"
+histoname = "hClosestPV_BestPV_z_005Cut"
 
 #'''
 c1 = TCanvas('cHisto','cHisto',1000,600)

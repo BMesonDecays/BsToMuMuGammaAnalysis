@@ -115,7 +115,11 @@ private:
     
   std::vector<int> MuMuG = {22, 13, -13};
 
-  TH1D* hPca_beamSpot;
+  TH1D* hRecoPca_bestRecoPV_z_005Cut;
+  TH1D* hBestRecoPV_GenPV_z_005Cut;
+  TH1D* hExcludedBestRecoPV_GenPV_z;
+  TH1I* hClosestSameAsBestPV_005Cut;
+  TH1D* hClosestPV_BestPV_z_005Cut;
 
 };
 
@@ -156,8 +160,12 @@ bool GenPV::isSameDecay(const std::vector<int>& dec1, const std::vector<int>& de
 
 void GenPV::beginJob()
 {
-    hPca_beamSpot = new TH1D("hPca_beamSpot","Distance of the fitDimuonRecoPhotonMomentum to beamSpot",100,0.,0.02);
-
+    hRecoPca_bestRecoPV_z_005Cut = new TH1D("hRecoPca_bestRecoPV_z_005Cut","hRecoPca_bestRecoPV_z_005Cut",100,0.,0.012);
+    hBestRecoPV_GenPV_z_005Cut = new TH1D("hBestRecoPV_GenPV_z_005Cut","hBestRecoPV_GenPV_z_005Cut",100,0.,0.012);
+    hExcludedBestRecoPV_GenPV_z = new TH1D("hExcludedBestRecoPV_GenPV_z","hExcludedBestRecoPV_GenPV_z",100,0.,0.012);
+    hClosestSameAsBestPV_005Cut = new TH1I("hClosestSameAsBestPV_005Cut","hClosestSameAsBestPV_005Cut",2,0,2);
+    hClosestPV_BestPV_z_005Cut = new TH1D("hClosestPV_BestPV_z_005Cut","hClosestPV_BestPV_z_005Cut",100,0.,0.08);
+    
     cout << "HERE GenPV::beginJob()" << endl;
 }
 
@@ -167,12 +175,20 @@ void GenPV::endJob()
   TFile myRootFile( theConfig.getParameter<std::string>("outHist").c_str(), "RECREATE");
 
   //write histogram data
-  hPca_beamSpot->Write();
+  hRecoPca_bestRecoPV_z_005Cut->Write();
+  hBestRecoPV_GenPV_z_005Cut->Write();
+  hExcludedBestRecoPV_GenPV_z->Write();
+  hClosestSameAsBestPV_005Cut->Write();
+  hClosestPV_BestPV_z_005Cut->Write();
 
   myRootFile.Close();
 
-  delete hPca_beamSpot;
-
+  delete hRecoPca_bestRecoPV_z_005Cut;
+  delete hBestRecoPV_GenPV_z_005Cut;
+  delete hExcludedBestRecoPV_GenPV_z;
+  delete hClosestSameAsBestPV_005Cut;
+  delete hClosestPV_BestPV_z_005Cut;
+  
   cout << "HERE GenPV::endJob()" << endl;
 }
 
@@ -185,7 +201,6 @@ void GenPV::analyze(
   const std::vector<reco::Muon> & recoMuons = ev.get(theMuonToken);
   const std::vector<reco::Photon> & recoPhotons = ev.get(thePhotonToken);
   const std::vector<reco::Vertex> & primaryVertices = ev.get(theVertexToken);
-  const reco::BeamSpot & beamSpot = ev.get(theBeamSpotToken);
 
   auto const& field = es.getData(m_fieldToken);
 
@@ -200,7 +215,7 @@ void GenPV::analyze(
   ////////////////////////////////////////
   
   GlobalPoint genSV;
-  //const reco::GenParticle* genB0sPtr = &genPar.at(0); //generated B0s decaying into mmg
+  const reco::GenParticle* genB0sPtr = &genPar.at(0); //generated B0s decaying into mmg
   
   // find B0s decaying into mmg
   for(const auto& genP : genPar)
@@ -214,7 +229,7 @@ void GenPV::analyze(
       }
       if(isSameDecay(daughters, MuMuG))
       {
-        //genB0sPtr = &genP;
+        genB0sPtr = &genP;
         genSV = GlobalPoint(genP.daughter(0)->vx(), genP.daughter(0)->vy(), genP.daughter(0)->vz());
         
         for(unsigned int i=0; i < genP.numberOfDaughters(); i++)
@@ -324,19 +339,74 @@ void GenPV::analyze(
   math::XYZVector dimuonMomentum_math(dimuonMomentum.x(),dimuonMomentum.y(),dimuonMomentum.z());
   
 
-  //////////////PCA(mmg)_reco to the beamSpot////////////////////////////
+  //////////////PCA(mmg)_reco to the bestRecoPV////////////////////////////
+
+  const reco::Candidate* firstB0sPtr = Tools::findFirstB0s(genB0sPtr);    //first produced B0s
+  const math::XYZPoint genPV = firstB0sPtr->vertex();
 
   reco::Photon recoPhoton = *recoMatchedPhotons.at(0);
   recoPhoton.setVertex(reco::Candidate::Point(fittedSV.x(), fittedSV.y(), fittedSV.z()));
 
   math::XYZVector fitDimuonRecoPhotonMomentum = dimuonMomentum_math + recoPhoton.momentum();
 
-  math::XYZVector beamSpotDirection = math::XYZVector(beamSpot.dxdz(), beamSpot.dydz(), 1.0);
-  beamSpotDirection = beamSpotDirection.unit();
+  double minDistPcaPV = 1000.0;
+  unsigned int bestPrimVertexIndex = 0;
+  math::XYZPoint pca(0.,0.,0.);
+  // find the best reco PV
+  for(long unsigned int i=0; i<primaryVertices.size(); i++)
+  {
+    math::XYZPoint tempPca = Tools::pca(primaryVertices.at(i).position(), fittedSV, fitDimuonRecoPhotonMomentum);
+    math::XYZVector tempDiffPcaPV = tempPca - primaryVertices.at(i).position();
+    double tempDistPcaPV = TMath::Sqrt(tempDiffPcaPV.mag2());
 
-  double pca_beamSpotDistance = Tools::closestDistance(fittedSV, fitDimuonRecoPhotonMomentum, beamSpot.position(), beamSpotDirection);
-  hPca_beamSpot->Fill(pca_beamSpotDistance);
-  
+    if (tempDistPcaPV < minDistPcaPV)
+    {
+      minDistPcaPV = tempDistPcaPV;
+      bestPrimVertexIndex = i;
+      pca = tempPca;
+    }
+  }
+  if(minDistPcaPV > 0.01) return;
+
+  reco::Vertex bestPV = primaryVertices.at(bestPrimVertexIndex);
+  double recoPca_bestRecoPV_z = std::abs(pca.z() - bestPV.position().z());
+  // cut based on reco data: B0s track distance (in z) to the best recoPV
+  if (recoPca_bestRecoPV_z > 0.005) 
+  {
+    hExcludedBestRecoPV_GenPV_z->Fill(std::abs(bestPV.position().z() - genPV.z()) );
+    return;
+  }
+
+  hRecoPca_bestRecoPV_z_005Cut->Fill(recoPca_bestRecoPV_z);
+  hBestRecoPV_GenPV_z_005Cut->Fill(std::abs(bestPV.position().z() - genPV.z()) );
+
+  // more than one recoPV
+  if (primaryVertices.size() > 1)
+  {
+    unsigned int closestPVIndex = bestPrimVertexIndex;
+    double minRecoPV_GenPV_z = std::abs(bestPV.position().z() - genPV.z());
+
+    // find the recoPV closest (in z) to the genPV
+    for(unsigned int i=0; i<primaryVertices.size();i++)
+    {
+        double tempRecoPV_GenPV_z = std::abs(primaryVertices.at(i).position().z() - genPV.z());
+        if (tempRecoPV_GenPV_z < minRecoPV_GenPV_z)
+        {
+            minRecoPV_GenPV_z = tempRecoPV_GenPV_z;
+            closestPVIndex = i;
+        }
+    }
+
+    if (closestPVIndex == bestPrimVertexIndex)
+        hClosestSameAsBestPV_005Cut->Fill(1);
+    else
+    {
+        hClosestSameAsBestPV_005Cut->Fill(0);
+        hClosestPV_BestPV_z_005Cut->Fill(std::abs(bestPV.position().z() - primaryVertices.at(closestPVIndex).position().z()));
+    }
+
+  }
+
 
 
 
