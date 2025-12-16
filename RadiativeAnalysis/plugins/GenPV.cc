@@ -69,6 +69,7 @@
 #include "TTree.h"
 #include "TBranch.h"
 #include "TH1I.h"
+#include "TGraph.h"
 
 
 #include <sstream>
@@ -118,8 +119,19 @@ private:
   TH1D* hRecoPca_bestRecoPV_z_005Cut;
   TH1D* hBestRecoPV_GenPV_z_005Cut;
   TH1D* hExcludedBestRecoPV_GenPV_z;
-  TH1I* hClosestSameAsBestPV_005Cut;
-  TH1D* hClosestPV_BestPV_z_005Cut;
+  
+  TH1D* hPtBestPV;
+  TH1I* hPtLargestClosest;
+  TH1I* hNTrLargestClosest;
+  TH1I* hPtLargestBest;
+  TH1I* hNTrLargestBest;
+  TH1I* hPtAndNTrLargestClosest;
+  TH1I* hPtAndNTrLargestBest;
+
+  TGraph* gPtLargestClosest;
+  TGraph* gNTrLargestClosest;
+  TGraph* gPtLargestBest;
+  TGraph* gNTrLargestBest;
 
 };
 
@@ -163,9 +175,32 @@ void GenPV::beginJob()
     hRecoPca_bestRecoPV_z_005Cut = new TH1D("hRecoPca_bestRecoPV_z_005Cut","hRecoPca_bestRecoPV_z_005Cut",100,0.,0.012);
     hBestRecoPV_GenPV_z_005Cut = new TH1D("hBestRecoPV_GenPV_z_005Cut","hBestRecoPV_GenPV_z_005Cut",100,0.,0.012);
     hExcludedBestRecoPV_GenPV_z = new TH1D("hExcludedBestRecoPV_GenPV_z","hExcludedBestRecoPV_GenPV_z",100,0.,0.012);
-    hClosestSameAsBestPV_005Cut = new TH1I("hClosestSameAsBestPV_005Cut","hClosestSameAsBestPV_005Cut",2,0,2);
-    hClosestPV_BestPV_z_005Cut = new TH1D("hClosestPV_BestPV_z_005Cut","hClosestPV_BestPV_z_005Cut",100,0.,0.08);
-    
+
+    hPtBestPV = new TH1D("hPtBestPV","hPtBestPV",100,0.,100.);
+    hPtLargestClosest = new TH1I("hPtLargestClosest","hPtLargestClosest",2,0,2);
+    hNTrLargestClosest = new TH1I("hNTrLargestClosest","hNTrLargestClosest",2,0,2);
+    hPtLargestBest = new TH1I("hPtLargestBest","hPtLargestBest",2,0,2);
+    hNTrLargestBest = new TH1I("hNTrLargestBest","hNTrLargestBest",2,0,2);
+    hPtAndNTrLargestClosest = new TH1I("hPtAndNTrLargestClosest","hPtAndNTrLargestClosest",2,0,2);
+    hPtAndNTrLargestBest = new TH1I("hPtAndNTrLargestBest","hPtAndNTrLargestBest",2,0,2);
+
+    gPtLargestBest = new TGraph();
+    gPtLargestBest->SetName("gPtLargestBest");
+    gPtLargestBest->SetTitle("gPtLargestBest");
+
+    gPtLargestClosest = new TGraph();
+    gPtLargestClosest->SetName("gPtLargestClosest");
+    gPtLargestClosest->SetTitle("gPtLargestClosest");
+
+    gNTrLargestBest = new TGraph();
+    gNTrLargestBest->SetName("gNTrLargestBest");
+    gNTrLargestBest->SetTitle("gNTrLargestBest");
+
+    gNTrLargestClosest = new TGraph();
+    gNTrLargestClosest->SetName("gNTrLargestClosest");
+    gNTrLargestClosest->SetTitle("gNTrLargestClosest");
+   
+
     cout << "HERE GenPV::beginJob()" << endl;
 }
 
@@ -178,16 +213,41 @@ void GenPV::endJob()
   hRecoPca_bestRecoPV_z_005Cut->Write();
   hBestRecoPV_GenPV_z_005Cut->Write();
   hExcludedBestRecoPV_GenPV_z->Write();
-  hClosestSameAsBestPV_005Cut->Write();
-  hClosestPV_BestPV_z_005Cut->Write();
+
+  hPtBestPV->Write();
+  hPtLargestClosest->Write();
+  hNTrLargestClosest->Write();
+  hPtLargestBest->Write();
+  hNTrLargestBest->Write();
+  hPtAndNTrLargestClosest->Write();
+  hPtAndNTrLargestBest->Write();
+
+  gPtLargestBest->Write();
+  gPtLargestClosest->Write();
+  gNTrLargestClosest->Write();
+  gNTrLargestBest->Write();
+  
+  
 
   myRootFile.Close();
 
   delete hRecoPca_bestRecoPV_z_005Cut;
   delete hBestRecoPV_GenPV_z_005Cut;
   delete hExcludedBestRecoPV_GenPV_z;
-  delete hClosestSameAsBestPV_005Cut;
-  delete hClosestPV_BestPV_z_005Cut;
+
+  delete hPtBestPV;
+  delete hPtLargestClosest;
+  delete hNTrLargestClosest;
+  delete hPtLargestBest;
+  delete hNTrLargestBest;
+  delete hPtAndNTrLargestClosest;
+  delete hPtAndNTrLargestBest;
+
+  delete gPtLargestBest;
+  delete gPtLargestClosest;
+  delete gNTrLargestClosest;
+  delete gNTrLargestBest;
+  
   
   cout << "HERE GenPV::endJob()" << endl;
 }
@@ -380,6 +440,8 @@ void GenPV::analyze(
   hRecoPca_bestRecoPV_z_005Cut->Fill(recoPca_bestRecoPV_z);
   hBestRecoPV_GenPV_z_005Cut->Fill(std::abs(bestPV.position().z() - genPV.z()) );
 
+  hPtBestPV->Fill(bestPV.p4().pt());  // transverse momentum of the chosen (best) reco primary vertex
+
   // more than one recoPV
   if (primaryVertices.size() > 1)
   {
@@ -397,13 +459,58 @@ void GenPV::analyze(
         }
     }
 
-    if (closestPVIndex == bestPrimVertexIndex)
-        hClosestSameAsBestPV_005Cut->Fill(1);
-    else
+    reco::Vertex closestPV = primaryVertices.at(closestPVIndex);
+
+    // check the p_t and n_tr of recoPVs
+    std::vector<double> pTVector;
+    std::vector<unsigned int> nTrVector;
+    for (auto &pv : primaryVertices)
     {
-        hClosestSameAsBestPV_005Cut->Fill(0);
-        hClosestPV_BestPV_z_005Cut->Fill(std::abs(bestPV.position().z() - primaryVertices.at(closestPVIndex).position().z()));
+        pTVector.push_back(pv.p4().pt());
+        nTrVector.push_back(pv.nTracks());
     }
+
+    auto max_it = std::max_element(pTVector.begin(),pTVector.end());
+    unsigned int largestPtIndex = std::distance(pTVector.begin(), max_it);
+
+    auto max_it2 = std::max_element(nTrVector.begin(),nTrVector.end());
+    unsigned int largestNTrIndex = std::distance(nTrVector.begin(), max_it2);
+
+    // fill graphs
+    gPtLargestClosest->AddPoint(pTVector.at(largestPtIndex), closestPV.p4().pt());
+    gNTrLargestClosest->AddPoint(nTrVector.at(largestNTrIndex), closestPV.nTracks());
+    gPtLargestBest->AddPoint(pTVector.at(largestPtIndex), bestPV.p4().pt());
+    gNTrLargestBest->AddPoint(nTrVector.at(largestNTrIndex), bestPV.nTracks());
+
+
+    // fill histograms
+    // largest vs closest
+    if (largestPtIndex == closestPVIndex)
+        hPtLargestClosest->Fill(1);
+    else
+        hPtLargestClosest->Fill(0);
+        
+    if (largestNTrIndex == closestPVIndex)
+        hNTrLargestClosest->Fill(1);
+    else
+        hNTrLargestClosest->Fill(0);
+
+    hPtAndNTrLargestClosest->Fill(int(largestPtIndex == closestPVIndex && largestNTrIndex == closestPVIndex)); 
+    
+    // largest vs best
+    if (largestPtIndex == bestPrimVertexIndex)
+        hPtLargestBest->Fill(1);
+    else
+        hPtLargestBest->Fill(0);
+        
+    if (largestNTrIndex == bestPrimVertexIndex)
+        hNTrLargestBest->Fill(1);
+    else
+        hNTrLargestBest->Fill(0);
+
+    hPtAndNTrLargestBest->Fill(int(largestPtIndex == bestPrimVertexIndex && largestNTrIndex == bestPrimVertexIndex));     
+
+    
 
   }
 
