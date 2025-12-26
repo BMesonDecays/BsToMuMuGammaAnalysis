@@ -63,6 +63,12 @@ class TetraObjectVertex{
               
                    
         };
+        double MuMass =  0.1056583715;
+	TLorentzVector Mu1, Mu2 ;
+	int BsPVVtxInd=0;
+	
+	typedef reco::Candidate::LorentzVector LorentzVector;
+    typedef std::pair<const reco::MuonChamberMatch*, const reco::MuonSegmentMatch*> MatchPair;
 
         DecayChainVariables TetraObjectVertexObservables(const std::vector<reco::Muon>& muons, 
 		     const std::vector<reco::Photon>& photons,

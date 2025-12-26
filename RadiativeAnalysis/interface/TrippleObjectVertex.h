@@ -30,8 +30,6 @@
 #include "TrackingTools/Records/interface/TransientTrackRecord.h"
 #include "RecoEcal/EgammaCoreTools/interface/EcalClusterTools.h"
 #include "DataFormats/MuonReco/interface/MuonChamberMatch.h"
-
-
 #include <memory>
 #include <cstddef>
 #include <cfloat>
@@ -42,6 +40,7 @@
 #include "TLorentzRotation.h"
 #include <iostream>
 #include "TMath.h"
+
 
 class TrippleObjectVertex{
     public: 
@@ -60,9 +59,10 @@ class TrippleObjectVertex{
     };
 	double MuMass =  0.1056583715;
 	TLorentzVector Mu1, Mu2 ;
-	using namespace std;
+	int BsPVVtxInd=0;
+	
 	typedef reco::Candidate::LorentzVector LorentzVector;
-    typedef pair<const reco::MuonChamberMatch*, const reco::MuonSegmentMatch*> MatchPair;
+    typedef std::pair<const reco::MuonChamberMatch*, const reco::MuonSegmentMatch*> MatchPair;
 
 
 	DecayChainVariables TrippleObjectVertexObservables(const std::vector<reco::Muon>& muons, 

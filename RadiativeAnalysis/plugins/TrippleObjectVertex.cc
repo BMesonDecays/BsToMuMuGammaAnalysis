@@ -190,47 +190,12 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
 // Tetra object requires same treatement , then the additional variable for the soft muoin MVA ID in the ntuple 
 // Trigger filter matching delta and flag to have a surface level handle of estimating trigger efficiency - 8th Dec 2025 
 //
- /*// Build 4-vectors
-TLorentzVector pBs = bs_p4;
-TLorentzVector pGamma = gamma_p4;
-TLorentzVector pMu1 = mu1_p4;
-TLorentzVector pMu2 = mu2_p4;
-
-// ---- BOOST TO BS REST FRAME ----
-TVector3 boostVec = -pBs.BoostVector();
-
-TLorentzVector gammaRF = pGamma;
-TLorentzVector mu1RF = pMu1;
-TLorentzVector mu2RF = pMu2;
-
-gammaRF.Boost(boostVec);
-mu1RF.Boost(boostVec);
-mu2RF.Boost(boostVec);
-
-// ---- HELICITY ANGLE ----
-// angle between gamma and dimuon in Bs rest frame
-TVector3 gammaDir = gammaRF.Vect().Unit();
-TVector3 dimuDir  = (mu1RF + mu2RF).Vect().Unit();
-
-float helicity = gammaDir.Dot(dimuDir);   // = cos(theta*)
 
 
-// ---- ACOPLANARITY ANGLE ----
-// normals to the two planes in Bs rest frame
-TVector3 n1 = mu1RF.Vect().Cross(mu2RF.Vect()).Unit();
-TVector3 n2 = gammaRF.Vect().Cross(dimuDir).Unit();
-
-double cosPhi = n1.Dot(n2);
-cosPhi = std::clamp(cosPhi, -1.0, 1.0);
-
-float acoplanarity = acos(cosPhi);
-
- */
-// make different variables for reco and converted photons in the ntuple - Alibordi, 
 
       
         for (const auto& conv : conversions) {
-            dcv.vertexFitFlag = 1;
+            dcv.vertexFitFlag_mmconvg = 1;
             //std::cout<<" The vertex fit flag is set to 1 for the converted photons : "<<dcv.vertexFitFlag<<"\n";
                 const reco::Track eletk0 = *conv.userData<reco::Track>("track0");
                 const reco::Track eletk1 = *conv.userData<reco::Track>("track1");
@@ -238,9 +203,10 @@ float acoplanarity = acos(cosPhi);
                     reco::TransientTrack(eletk0, &bField),
                     reco::TransientTrack(eletk1, &bField)
                 };
-                TLorentzVector BCand, eleTrack1, eleTrack2, muonTrack1, muonTrack2;
+                TLorentzVector BCand, eleTrack1, eleTrack2, muonTrack1, muonTrack2, photon4vec;
                 eleTrack1.SetPtEtaPhiM(eletk0.pt(), eletk0.eta(), eletk0.phi(), nominalElectronMass);
                 eleTrack2.SetPtEtaPhiM(eletk1.pt(), eletk1.eta(), eletk1.phi(), nominalElectronMass);
+                photon4vec = eleTrack1 + eleTrack2;
                 muonTrack1.SetPtEtaPhiM(mu1.pt(), mu1.eta(), mu1.phi(), nominalMuonMass);
                 muonTrack2.SetPtEtaPhiM(mu2.pt(), mu2.eta(), mu2.phi(), nominalMuonMass);
                 BCand = eleTrack1 + eleTrack2 + muonTrack1 + muonTrack2;
@@ -253,7 +219,9 @@ float acoplanarity = acos(cosPhi);
        	  		BCand.addDaughter(eletk1);
        	  		AddFourMomenta add4mom;
        	  		add4mom.set(BCand);*/
-               
+                
+                
+
        	  		std::vector<reco::TransientTrack> t_tracks;
                 t_tracks.push_back(muonTT1);
                 t_tracks.push_back(muonTT2);
@@ -267,22 +235,21 @@ float acoplanarity = acos(cosPhi);
                 GlobalError gigibs=kvfbsvertex.positionError();
                 double vtxprob_Bs = TMath::Prob(vertexbskalman.chi2(),(int)vertexbskalman.ndof());
                 if (vtxprob_Bs < 1e-5) continue;
-                dcv.BsVtxProb = vtxprob_Bs;
+                dcv.bsvtxprob_mmconvg = vtxprob_Bs;
                 KinematicConstrainedFit BCandFitter;
                 bool fitSuccess = BCandFitter.TrippleObjectVertexFitConvertedPhoton(ttrk_muons, nominalMuonMass, tttrk_electrons, nominalElectronMass, verbose);
                 if (!fitSuccess) continue;
 		        //std::cout<<"print the fit sucess with converted photons  : "<< fitSuccess<< "\n";
                 dcv.fittedBmassConvertedPhoton = BCandFitter.getBhadronMass();
                 //std::cout<<"fitted B mass from vertex -------------------------------------------------: "<<dcv.fittedBmassConvertedPhoton<<"\n";
-                dcv.BsMass = BCand.M();
-                dcv.BsPt   = BCand.Pt();
-                dcv.BsEta  = BCand.Eta();
-                dcv.BsPhi  = BCand.Phi();
+                dcv.fourvectorbsmass_mmconvg = BCand.M();
+                dcv.fourvectorbspt_mmconvg   = BCand.Pt();
+                dcv.fourvectorbseta_mmconvg  = BCand.Eta();
+                dcv.fourvectorbsphi_mmconvg  = BCand.Phi();
                 RefCountedKinematicParticle bs = BCandFitter.getBhardon();
 	  		    RefCountedKinematicVertex bVertex = BCandFitter.getVertex();
 	  		    AlgebraicVector7 b_par = bs->currentState().kinematicParameters().vector();
                 GlobalVector Bsvec(b_par[3], b_par[4], b_par[5]);
-                
                 reco::Vertex PVvtxHightestPt = PVs[bsAndVtxInfo.VtxIndex]; 
                 
 
@@ -290,22 +257,179 @@ float acoplanarity = acos(cosPhi);
                 //  Primary vertex methods from old Giacomos code - Alibordi 8th Dec 2025
 
 
-                dcv.BsCt3D = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*Bsvec.x()+
+                dcv.bsct3d_mmconvg = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*Bsvec.x()+
                 (kvfbsvertex.position().y()-PVvtxHightestPt.y())*Bsvec.y()+
                 (kvfbsvertex.position().z()-PVvtxHightestPt.z())*Bsvec.z())/
                 (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y()+Bsvec.z()*Bsvec.z());
                 
-                dcv.BsCt2D = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*Bsvec.x()+
+                dcv.bsct2d_mmconvg = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*Bsvec.x()+
                 (kvfbsvertex.position().y()-PVvtxHightestPt.y())*Bsvec.y())/
                 (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y());
-                std::cout << " the decay time 2D -------------------------------------------------------------------------: " << dcv.BsCt2D << "\n";
-                dcv.BsCt2DBS = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-bsAndVtxInfo.bs_x)*Bsvec.x()+
+                std::cout << " the decay time 2D -------------------------------------------------------------------------: " << dcv.bsct2d_mmconvg << "\n";
+                dcv.bsct2dbs_mmconvg = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-bsAndVtxInfo.bs_x)*Bsvec.x()+
                 (kvfbsvertex.position().y()-bsAndVtxInfo.bs_y)*Bsvec.y())/
                 (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y());
+                
+                Int_t PVCosThetaIndex = -1;
+                Int_t PVClosestZIndex = -1;
+                double MinDistance  = std::numeric_limits<double>::max();
+	            double MinDistanceZ = std::numeric_limits<double>::max();
+                const double bsZ = kvfbsvertex.position().z();
+                for (std::size_t i = 0; i < PVs.size(); ++i) {
+                    const auto& vtx = PVs[i];
+                    if (!vtx.isValid()) continue;
+                    const double dz = std::abs(bsZ - vtx.z());
+                    if (dz < MinDistanceZ) {
+                        MinDistanceZ = dz;
+                        PVClosestZIndex = static_cast<int>(i);
+                    }
+                    Double_t PVSVvecDotBsPvec=(kvfbsvertex.position().x()-vtx.x())*Bsvec.x()+(kvfbsvertex.position().y()-vtx.y())*Bsvec.y()+(kvfbsvertex.position().z()-vtx.z())*Bsvec.z();
+                    Double_t PVSVlength = TMath::Sqrt( pow((kvfbsvertex.position().x()- vtx.x()), 2.0) + pow((kvfbsvertex.position().y()-vtx.y()), 2.0) + pow((kvfbsvertex.position().z()- vtx.z()), 2.0) );
+                    Double_t BsPlength = TMath::Sqrt(Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y() + Bsvec.z()*Bsvec.z());
+                    Double_t BsCosTheta = PVSVvecDotBsPvec / (BsPlength * PVSVlength);
+                    Double_t distance = 1-BsCosTheta;
+                    if(distance < MinDistance){
+                        MinDistance = distance;
+                        PVCosThetaIndex = static_cast<int>(i);
+                        std::cout << " The index of the primary vertex with cos theta method : " << PVCosThetaIndex << "\n";
+                    }
+
+                }
+                if (PVCosThetaIndex==-1) continue;
+                if (PVClosestZIndex==-1) continue;
+                BsPVVtxInd = PVCosThetaIndex;
+                reco::Vertex PVvtxCosTheta = PVs[PVCosThetaIndex];
+                reco::Vertex PVvtxClosestZ = PVs[PVClosestZIndex]; 
+
+                std::cout << " The index of the primary vertex with cos theta method : " << BsPVVtxInd << "\n";
+                if (BsPVVtxInd >= 0 && BsPVVtxInd < static_cast<int>(PVs.size())) {
+                    const reco::Vertex& bsPV = PVs[BsPVVtxInd];
+                    std::cout<< " number of tracks :               " << bsPV.nTracks() << "\n";
+                    PVvtxCosTheta  = bsPV;
+                }
+                
+
+
+                /*std::vector<reco::TransientTrack> pvRefitTracks;
+                for (auto trkRef : PVvtxCosTheta.tracks()) {
+                    if (!trkRef.isNonnull()) continue;
+                    if (trkRef.key() == muTrack1.key() ||
+                    trkRef.key() == muTrack2.key() ||
+                    trkRef.key() == tttrk_electrons[0].track().key() ||
+                    trkRef.key() == tttrk_electrons[1].track().key())
+                    {
+                        continue;
+                    }
+                    reco::TransientTrack tTrk = transientTrackBuilder.build(trkRef);
+                    if (tTrk.isValid()) pvRefitTracks.push_back(tTrk);
+                    }
+                    reco::BeamSpot vertexBeamSpot(
+                        GlobalPoint(bsAndVtxInfo.bs_x, bsAndVtxInfo.bs_y, bsAndVtxInfo.bs_z),
+                        bsAndVtxInfo.bs_sigmaZ,
+                        bsAndVtxInfo.bs_dxdz,
+                        bsAndVtxInfo.bs_dydz
+                    );
+
+                    AdaptiveVertexFitter avf;
+                    TransientVertex newPV = avf.vertex(pvRefitTracks, vertexBeamSpot);
+                    if (newPV.isValid()) PVvtxCosTheta = reco::Vertex(newPV);
+
+                    
+                    std::vector<reco::TransientTrack> pvClosestZRefitTracks;
+                    for (auto trkRef : PVvtxClosestZ.tracks()) {
+                        if (!trkRef.isNonnull()) continue;
+                        if (trkRef.key() == muTrack1.key() ||
+                        trkRef.key() == muTrack2.key() ||
+                        trkRef.key() == tttrk_electrons[0].track().key() ||
+                        trkRef.key() == tttrk_electrons[1].track().key()) continue;
+                        TransientTrack tTrk = transientTrackBuilder.build(trkRef);
+                        if (tTrk.isValid()) pvClosestZRefitTracks.push_back(tTrk);
+                    }
+                    TransientVertex newClosestZ = avf.vertex(pvClosestZRefitTracks, vertexBeamSpot);
+                    if(newClosestZ.isValid()) PVvtxClosestZ = reco::Vertex(newClosestZ);*/
+                    dcv.vertexfitPVxrefitcosTheta_mmconvg = PVvtxCosTheta.x();
+                    dcv.vertexfitPVyrefitcosTheta_mmconvg = PVvtxCosTheta.y();
+                    dcv.vertexfitPVzrefitcosTheta_mmconvg = PVvtxCosTheta.z();
+                    dcv.vertexfitPVxrefitclosestZ_mmconvg = PVvtxClosestZ.x();
+                    dcv.vertexfitPVyrefitclosestZ_mmconvg = PVvtxClosestZ.y();
+                    dcv.vertexfitPVzrefitclosestZ_mmconvg = PVvtxClosestZ.z();
+
+                    dcv.vertexfitBsCt3DPVClosestZ_mmconvg = BsPDGMass_*( (kvfbsvertex.position().x()-PVvtxClosestZ.x())*Bsvec.x() + 
+                    (kvfbsvertex.position().y()-PVvtxClosestZ.y())*Bsvec.y() + 
+                    (kvfbsvertex.position().z()-PVvtxClosestZ.z())*Bsvec.z() )/( Bsvec.x()*Bsvec.x() + Bsvec.y()*Bsvec.y() +
+                     Bsvec.z()*Bsvec.z() );
+
+                    dcv.vertexfitBsCt2DPVClosestZ_mmconvg = BsPDGMass_*( (kvfbsvertex.position().x()-PVvtxClosestZ.x())*Bsvec.x() + 
+                    (kvfbsvertex.position().y()-PVvtxClosestZ.y())*Bsvec.y()  )/( Bsvec.x()*Bsvec.x() + Bsvec.y()*Bsvec.y()  ); 
+
+                    dcv.vertexfitBsCt3DPVCosTheta_mmconvg = BsPDGMass_*( (kvfbsvertex.position().x()-PVvtxCosTheta.x())*Bsvec.x() + 
+                    (kvfbsvertex.position().y()-PVvtxCosTheta.y())*Bsvec.y() + 
+                    (kvfbsvertex.position().z()-PVvtxCosTheta.z())*Bsvec.z() )/( Bsvec.x()*Bsvec.x() + Bsvec.y()*Bsvec.y() + Bsvec.z()*Bsvec.z() );
+                    dcv.vertexfitBsCt2DPVCosTheta_mmconvg = BsPDGMass_*( (kvfbsvertex.position().x()-PVvtxCosTheta.x())*Bsvec.x() + 
+                    (kvfbsvertex.position().y()-PVvtxCosTheta.y())*Bsvec.y() )/( Bsvec.x()*Bsvec.x() + Bsvec.y()*Bsvec.y() );
+                    dcv.vertexfitBsCt2DPVCosThetaOld_mmconvg = BsPDGMass_*( (kvfbsvertex.position().x()-PVvtxCosTheta.x())*BCand.Px() + 
+                    (kvfbsvertex.position().y()-PVvtxCosTheta.y())*BCand.Py() )/( BCand.Px()*BCand.Px() + BCand.Py()*BCand.Py() );
+                    dcv.vertexfitBsCt2DPVClosestZOld_mmconvg = BsPDGMass_*( (kvfbsvertex.position().x()-PVvtxClosestZ.x())*BCand.Px() + 
+                    (kvfbsvertex.position().y()-PVvtxClosestZ.y())*BCand.Py() )/( BCand.Px()*BCand.Px() + BCand.Py()*BCand.Py() );
+                    dcv.vertexfitBsCt2DBSOld_mmconvg = BsPDGMass_*( (kvfbsvertex.position().x()-bsAndVtxInfo.bs_x)*BCand.Px() + 
+                    (kvfbsvertex.position().y()-bsAndVtxInfo.bs_y)*BCand.Py() )/( BCand.Px()*BCand.Px() + BCand.Py()*BCand.Py() );  
+                    dcv.vertexfitBsCt2DOld_mmconvg = BsPDGMass_*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*BCand.Px() + 
+                    (kvfbsvertex.position().y()-PVvtxHightestPt.y())*BCand.Py() )/( BCand.Px()*BCand.Px() + BCand.Py()*BCand.Py() );    
+                    
+                    
+
+
+
+                    
+
+
+
+
+
+
+
+                    
+
+
+
+
+
+                //Helicity and acoplanarity calculation for converted photons - in the rest frame of Bs
+                TLorentzVector pBs = BCand;
+                TVector3 boostVec = -pBs.BoostVector();
+                TLorentzVector gammaRF = photon4vec;
+                TLorentzVector mu1RF = muonTrack1;
+                TLorentzVector mu2RF = muonTrack2;
+                gammaRF.Boost(boostVec);
+                mu1RF.Boost(boostVec);
+                mu2RF.Boost(boostVec);
+                
+                TVector3 gammaDir = gammaRF.Vect().Unit();
+                TVector3 dimuDir  = (mu1RF + mu2RF).Vect().Unit();
+                float helicity_conv = gammaDir.Dot(dimuDir);   // = cos(theta*)
+                dcv.bshelicity_mmconvg = helicity_conv;
+               
+                TVector3 n1 = mu1RF.Vect().Cross(mu2RF.Vect()).Unit();
+                TVector3 n2 = gammaRF.Vect().Cross(dimuDir).Unit();
+                double cosPhi = n1.Dot(n2);
+                cosPhi = std::clamp(cosPhi, -1.0, 1.0);
+                float acoplanarity_conv = acos(cosPhi);
+                dcv.bscoplanarity_mmconvg = acoplanarity_conv;
+
+
+
+
+
+
                 
                 }//end of conversion loop
             
         
+
+//////////////////////////////////////////////////////////////////
+//////////////////// Reco photon loop starts here - Alibordi//////
+//////////////////////////////////////////////////////////////////
+
             for (size_t i = 0; i < photons.size(); ++i) {
             dcv.vertexFitFlag = 2;
             std::cout<<" The vertex fit flag is set to 2 for the reco photons : "<<dcv.vertexFitFlag<<"\n";

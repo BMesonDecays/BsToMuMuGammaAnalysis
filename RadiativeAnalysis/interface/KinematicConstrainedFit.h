@@ -98,6 +98,11 @@ class KinematicConstrainedFit{
 		RefCountedKinematicTree             myTree_B;
 		RefCountedKinematicTree             myTree_Jpsi;
 		RefCountedKinematicTree             renewed_BsConstrainedTree;
+
+		
+		
+        
+
 		
 		
 

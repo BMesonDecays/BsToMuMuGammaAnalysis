@@ -57,6 +57,12 @@ struct DecayChainVariables {
        4. Four object reco vertex case       : *_mmrecogg
        */
 
+    int vertexFitFlag_mmconvg = -9999;
+    int vertexFitFlag_mmconvgg = -9999;
+    int vertexFitFlag_mmrecog = -9999;
+    int vertexFitFlag_mmrecogg = -9999;
+    int vertexFitFlag_refmodmmKK = -9999;
+
 
     //Tripple object reco photon vertex variables   
     double fourvectorbsmass_mmrecog = -9999;
@@ -82,7 +88,6 @@ struct DecayChainVariables {
     double vertexfitBsCt3DPVCosTheta_mmrecog = -9999;
     double vertexfitBsCt2DPVCosTheta_mmrecog = -9999;
     double vertexfitBsCt2DPVCosThetaOld_mmrecog = -9999;
-    double vertexfitBsCt2DPVClosestZOld_mmrecog = -9999;
     double vertexfitBsCt2DBSOld_mmrecog = -9999;
     double vertexfitBsCt2DPVClosestZOld_mmrecog = -9999;
     double vertexfitBsCt2DOld_mmrecog = -9999;
@@ -94,7 +99,6 @@ struct DecayChainVariables {
     double vertexfitBsCtErr2DBSOld_mmrecog = -9999;
     double vertexfitBsCtErr2DOld_mmrecog = -9999;
     double vertexfitBsCtErr2DClosestZOld_mmrecog = -9999;
-    double vertexfitBsCtErr2DOld_mmrecog = -9999;
     double vertexfitBsCtErr3D_mmrecog = -9999;
     double vertexfitBsCtErr2D2_mmrecog = -9999;
     double vertexfitBsCtErrMPV_mmrecog = -9999;
