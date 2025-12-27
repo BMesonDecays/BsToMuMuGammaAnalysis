@@ -59,40 +59,8 @@ namespace Tools{
         return closestDistance;
     }
 
-    // OLD  find two points (one for each line) closest to each other for two lines in 3D
-    std::vector<math::XYZPoint> OLDclosestPoints(const math::XYZPoint &refPoint1, const math::XYZVector &dirVector1,
-                                                const math::XYZPoint &refPoint2, const math::XYZVector &dirVector2)
-    {
-        math::XYZVector dirUnit1 = dirVector1.Unit();
-        math::XYZVector dirUnit2 = dirVector2.Unit();
-        math::XYZVector closestDistDirection = dirUnit1.Cross(dirUnit2);    //direction of the vector connecting the two desired closest points
 
-        double closestDistance = closestDistDirection.Dot(refPoint2 - refPoint1); //signed (closest) distance between two lines
-        math::XYZVector closestDistVector = closestDistDirection * closestDistance; //vector connecting two closest points
-
-        // line1 displaced by closestDistVector crosses line2
-        // find the crossing point
-        // refPoint1.x() + closestDistVector.x() + t1*dirUnit1.x() = refPoint2.x() + t2*dirUnit2.x()
-        // refPoint1.x() + closestDistVector.x() - refPoint2.x() = t1*(-dirUnit1.x()) + t2*dirUnit2.x() 
-        // same for the y direction
-        // find t1 and t2, invert the dirUnit matrix (appearing on the right side)
-        double det = -dirUnit1.x()*dirUnit2.y() + dirUnit1.y()*dirUnit2.x();
-        double leftSideX = refPoint1.x() + closestDistVector.x() - refPoint2.x();
-        double leftSideY = refPoint1.y() + closestDistVector.y() - refPoint2.y();
-        double t1 = (leftSideX*dirUnit2.y() + leftSideY*(-dirUnit2.x())) / det;
-        double t2 = (leftSideX*dirUnit1.x() + leftSideY*(-dirUnit1.x())) / det;
-
-        math::XYZPoint closestPoint1 = refPoint1 + t1*dirUnit1;
-        math::XYZPoint closestPoint2 = refPoint2 + t2*dirUnit2;
-
-        std::vector<math::XYZPoint> outputVector;
-        outputVector.push_back(closestPoint1);
-        outputVector.push_back(closestPoint2);
-
-        return  outputVector;
-    }
-
-    // find two points (one for each line) closest to each other for two lines in 3D
+    // UNVERIFIED find two points (one for each line) closest to each other for two lines in 3D
     std::vector<math::XYZPoint> closestPoints(const math::XYZPoint &refPoint1, const math::XYZVector &dirVector1,
                                                 const math::XYZPoint &refPoint2, const math::XYZVector &dirVector2)
     {
@@ -119,6 +87,19 @@ namespace Tools{
 
         return outputVector;
     }
+
+    // check whether the same decay (same PDG ids)
+    bool isSameDecay(const std::vector<int>& dec1, const std::vector<int>& dec2) {    
+        if (dec1.size() != dec2.size()) {
+            return false; 
+        }
+
+        std::set<int> dec1Set(dec1.begin(), dec1.end());
+        std::set<int> dec2Set(dec2.begin(), dec2.end());
+
+        return dec1Set == dec2Set;
+    }
+
 
 }
 
