@@ -136,13 +136,13 @@ JpsiGamma::~JpsiGamma()
 
 void JpsiGamma::beginJob()
 {
-    hGenDeltaR_dimuon_photon = new TH1D("hGenDeltaR_dimuon_photon","hGenDeltaR_dimuon_photon",100,0.,10.);
-    hRecoDeltaR_dimuon_photon = new TH1D("hRecoDeltaR_dimuon_photon","hRecoDeltaR_dimuon_photon",100,0.,10.);
+    hGenDeltaR_dimuon_photon = new TH1D("hGenDeltaR_dimuon_photon","hGenDeltaR_dimuon_photon",100,0.,3.);
+    hRecoDeltaR_dimuon_photon = new TH1D("hRecoDeltaR_dimuon_photon","hRecoDeltaR_dimuon_photon",100,0.,3.);
 
-    hMuonMinDR = new TH1D("hMuonMinDR","hMuonMinDR",100,0.,10.);
-    hPhotonMinDR = new TH1D("hPhotonMinDR","hPhotonMinDR",100,0.,10.);
-    hNofRecoMuons = new TH1I("hNofRecoMuons","hNofRecoMuons",100,0,10);
-    hNofRecoPhotons = new TH1I("hNofRecoPhotons","hNofRecoPhotons",100,0,10);
+    hMuonMinDR = new TH1D("hMuonMinDR","hMuonMinDR",100,0.,1.);
+    hPhotonMinDR = new TH1D("hPhotonMinDR","hPhotonMinDR",100,0.,1.);
+    hNofRecoMuons = new TH1I("hNofRecoMuons","hNofRecoMuons",100,1,10);
+    hNofRecoPhotons = new TH1I("hNofRecoPhotons","hNofRecoPhotons",100,1,10);
     
     cout << "HERE JpsiGamma::beginJob()" << endl;
 }
