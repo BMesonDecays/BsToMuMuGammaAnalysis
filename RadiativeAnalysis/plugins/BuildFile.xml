@@ -31,7 +31,7 @@
 
 
 
-<library name="GenPV" file="GenPV.cc">
+<library name="JpsiGamma" file="JpsiGamma.cc">
 </library>
 
 

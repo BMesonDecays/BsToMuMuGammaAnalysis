@@ -1,3 +1,5 @@
 [!h]*.root
 histos*.root
 board.txt
+jobs/
+__*

@@ -107,7 +107,13 @@ private:
   std::vector<int> JpsiG = {443, 22};
   std::vector<int> MuMu = {13, -13};
 
-  TH1D* hRecoPCA_GenPV_z;
+  TH1D* hGenDeltaR_dimuon_photon;
+  TH1D* hRecoDeltaR_dimuon_photon;
+
+  TH1D* hMuonMinDR;
+  TH1D* hPhotonMinDR;
+  TH1I* hNofRecoMuons;
+  TH1I* hNofRecoPhotons;
 
 };
 
@@ -130,7 +136,13 @@ JpsiGamma::~JpsiGamma()
 
 void JpsiGamma::beginJob()
 {
-    hRecoPCA_GenPV_z = new TH1D("hRecoPCA_GenPV_z","hRecoPCA_GenPV_z",100,0.,0.012);
+    hGenDeltaR_dimuon_photon = new TH1D("hGenDeltaR_dimuon_photon","hGenDeltaR_dimuon_photon",100,0.,10.);
+    hRecoDeltaR_dimuon_photon = new TH1D("hRecoDeltaR_dimuon_photon","hRecoDeltaR_dimuon_photon",100,0.,10.);
+
+    hMuonMinDR = new TH1D("hMuonMinDR","hMuonMinDR",100,0.,10.);
+    hPhotonMinDR = new TH1D("hPhotonMinDR","hPhotonMinDR",100,0.,10.);
+    hNofRecoMuons = new TH1I("hNofRecoMuons","hNofRecoMuons",100,0,10);
+    hNofRecoPhotons = new TH1I("hNofRecoPhotons","hNofRecoPhotons",100,0,10);
     
     cout << "HERE JpsiGamma::beginJob()" << endl;
 }
@@ -141,11 +153,21 @@ void JpsiGamma::endJob()
   TFile myRootFile( theConfig.getParameter<std::string>("outHist").c_str(), "RECREATE");
 
   //write histogram data
-  hRecoPCA_GenPV_z->Write();
+  hGenDeltaR_dimuon_photon->Write();
+  hRecoDeltaR_dimuon_photon->Write();
+  hMuonMinDR->Write();
+  hPhotonMinDR->Write();  
+  hNofRecoMuons->Write();
+  hNofRecoPhotons->Write();  
 
   myRootFile.Close();
 
-  delete hRecoPCA_GenPV_z;
+  delete hGenDeltaR_dimuon_photon;
+  delete hRecoDeltaR_dimuon_photon;
+  delete hMuonMinDR;
+  delete hPhotonMinDR;
+  delete hNofRecoMuons;
+  delete hNofRecoPhotons;
   
   cout << "HERE JPsiGamma::endJob()" << endl;
 }
@@ -170,8 +192,8 @@ void JpsiGamma::analyze(
   ////////////////////////////////////////
   
   const reco::GenParticle* genB0sPtr = &genPar.at(0); //generated B0s decaying into mmg
-  const reco::GenParticle* genJpsiPtr = &genPar.at(0); // generated Jpsi
-  const reco::GenParticle* genGammaPtr = &genPar.at(0)  // generated photon
+  const reco::Candidate* genJpsiPtr = &genPar.at(0); // generated Jpsi
+  const reco::Candidate* genGammaPtr = &genPar.at(0);  // generated photon
   
   // find B0s decaying into Jpsi(MuMu) + gamma
   // fill genMuons with muons from Jpsi decay
@@ -206,7 +228,12 @@ void JpsiGamma::analyze(
   }
   if(genPhotons.size() == 0) return;  //no 'SameDecay' found  
 
+  // check sizes of reco muons and photons
+  hNofRecoMuons->Fill(recoMuons.size());
+  hNofRecoPhotons->Fill(recoPhotons.size());
 
+
+  if(recoMuons.size() == 0) return;
   // reco muon matching
   for (const reco::Candidate* genMu : genMuons)
   {
@@ -223,15 +250,16 @@ void JpsiGamma::analyze(
         matched = true;
       }
     }
+    if (matched) {hMuonMinDR->Fill(minDR);}
     if (matched && minDR < 0.01)
     {
       recoMatchedMuons.push_back(bestMatchedMuon);
       genMatchedMuons.push_back(genMu);
     }
   }
-  if(recoMatchedMuons.size() != 2)  return;
 
 
+  if(recoPhotons.size() == 0) return;
   // reco photon matching
   for (const reco::Candidate* genPh : genPhotons)
   {
@@ -248,17 +276,30 @@ void JpsiGamma::analyze(
         matched = true;
       }
     }
+    if (matched)  {hPhotonMinDR->Fill(minDR);}
     if (matched && minDR < 0.03)
     {
       recoMatchedPhotons.push_back(bestMatchedPhoton);
       genMatchedPhotons.push_back(genPh);
     }
   }
+  if(recoMatchedMuons.size() != 2)  return;
   if(recoMatchedPhotons.size() != 1) return;
 
   if(recoMatchedPhotons[0]->isEB() == 0) return; // only EB photons
 
+  // get deltaR (dimuon, photon)
+  math::XYZVector genDimuonMomentum = genMuons.at(0)->momentum() + genMuons.at(1)->momentum();
+  double deltaR_gen_dimuon_photon = reco::deltaR(genDimuonMomentum, *genPhotons.at(0));
+  hGenDeltaR_dimuon_photon->Fill(deltaR_gen_dimuon_photon);
 
+  math::XYZVector recoDimuonMomentum = recoMatchedMuons.at(0)->momentum() + recoMatchedMuons.at(0)->momentum();
+  double deltaR_reco_dimuon_photon = reco::deltaR(recoDimuonMomentum, *recoMatchedPhotons.at(0));
+  hRecoDeltaR_dimuon_photon->Fill(deltaR_reco_dimuon_photon);
+
+  
+
+  /*
   ////////////////////////  FITTING /////////////////////
 
   // kinematic particle creation  
@@ -317,7 +358,7 @@ void JpsiGamma::analyze(
 
   hRecoPCA_GenPV_z->Fill(std::abs(pca.z() - genPV.z()));  
 
-
+  */
 
 
   cout <<"*** Analyze event: " << ev.id() <<" analysed event count:" << ++theEventCount << endl;
