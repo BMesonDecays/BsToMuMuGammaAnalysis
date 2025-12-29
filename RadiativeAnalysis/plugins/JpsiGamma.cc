@@ -110,10 +110,7 @@ private:
   TH1D* hGenDeltaR_dimuon_photon;
   TH1D* hRecoDeltaR_dimuon_photon;
 
-  TH1D* hMuonMinDR;
-  TH1D* hPhotonMinDR;
-  TH1I* hNofRecoMuons;
-  TH1I* hNofRecoPhotons;
+  TH1D* hPhotonCaloEta;
 
 };
 
@@ -139,10 +136,7 @@ void JpsiGamma::beginJob()
     hGenDeltaR_dimuon_photon = new TH1D("hGenDeltaR_dimuon_photon","hGenDeltaR_dimuon_photon",100,0.,3.);
     hRecoDeltaR_dimuon_photon = new TH1D("hRecoDeltaR_dimuon_photon","hRecoDeltaR_dimuon_photon",100,0.,3.);
 
-    hMuonMinDR = new TH1D("hMuonMinDR","hMuonMinDR",100,0.,1.);
-    hPhotonMinDR = new TH1D("hPhotonMinDR","hPhotonMinDR",100,0.,1.);
-    hNofRecoMuons = new TH1I("hNofRecoMuons","hNofRecoMuons",100,1,10);
-    hNofRecoPhotons = new TH1I("hNofRecoPhotons","hNofRecoPhotons",100,1,10);
+    hPhotonCaloEta = new TH1D("hPhotonCaloEta","hPhotonCaloEta",100,0.,5.);
     
     cout << "HERE JpsiGamma::beginJob()" << endl;
 }
@@ -155,19 +149,13 @@ void JpsiGamma::endJob()
   //write histogram data
   hGenDeltaR_dimuon_photon->Write();
   hRecoDeltaR_dimuon_photon->Write();
-  hMuonMinDR->Write();
-  hPhotonMinDR->Write();  
-  hNofRecoMuons->Write();
-  hNofRecoPhotons->Write();  
+  hPhotonCaloEta->Write();
 
   myRootFile.Close();
 
   delete hGenDeltaR_dimuon_photon;
   delete hRecoDeltaR_dimuon_photon;
-  delete hMuonMinDR;
-  delete hPhotonMinDR;
-  delete hNofRecoMuons;
-  delete hNofRecoPhotons;
+  delete hPhotonCaloEta;
   
   cout << "HERE JPsiGamma::endJob()" << endl;
 }
@@ -221,6 +209,7 @@ void JpsiGamma::analyze(
           genMuons.push_back(genJpsiPtr->daughter(0));
           genMuons.push_back(genJpsiPtr->daughter(1));
           genPhotons.push_back(genGammaPtr);
+          break;  // assert that only one B0s -> Jpsi(MuMu)Gamma decay per event
         }
 
       }
@@ -228,12 +217,8 @@ void JpsiGamma::analyze(
   }
   if(genPhotons.size() == 0) return;  //no 'SameDecay' found  
 
-  // check sizes of reco muons and photons
-  hNofRecoMuons->Fill(recoMuons.size());
-  hNofRecoPhotons->Fill(recoPhotons.size());
+  if(recoMuons.size() < 2 || recoPhotons.size() < 1) return;  // insufficient number of reco muons and photons
 
-
-  if(recoMuons.size() == 0) return;
   // reco muon matching
   for (const reco::Candidate* genMu : genMuons)
   {
@@ -250,16 +235,13 @@ void JpsiGamma::analyze(
         matched = true;
       }
     }
-    if (matched) {hMuonMinDR->Fill(minDR);}
-    if (matched && minDR < 0.01)
+    if (matched && minDR < 0.01)  //cut on dR(reco,gen)
     {
       recoMatchedMuons.push_back(bestMatchedMuon);
       genMatchedMuons.push_back(genMu);
     }
   }
 
-
-  if(recoPhotons.size() == 0) return;
   // reco photon matching
   for (const reco::Candidate* genPh : genPhotons)
   {
@@ -276,8 +258,7 @@ void JpsiGamma::analyze(
         matched = true;
       }
     }
-    if (matched)  {hPhotonMinDR->Fill(minDR);}
-    if (matched && minDR < 0.03)
+    if (matched && minDR < 0.03)  // cut on dR(reco,gen)
     {
       recoMatchedPhotons.push_back(bestMatchedPhoton);
       genMatchedPhotons.push_back(genPh);
@@ -286,18 +267,20 @@ void JpsiGamma::analyze(
   if(recoMatchedMuons.size() != 2)  return;
   if(recoMatchedPhotons.size() != 1) return;
 
-  if(recoMatchedPhotons[0]->isEB() == 0) return; // only EB photons
+  //if(recoMatchedPhotons[0]->isEB() == 0) return; // only EB photons
 
   // get deltaR (dimuon, photon)
   math::XYZVector genDimuonMomentum = genMuons.at(0)->momentum() + genMuons.at(1)->momentum();
   double deltaR_gen_dimuon_photon = reco::deltaR(genDimuonMomentum, *genPhotons.at(0));
   hGenDeltaR_dimuon_photon->Fill(deltaR_gen_dimuon_photon);
 
-  math::XYZVector recoDimuonMomentum = recoMatchedMuons.at(0)->momentum() + recoMatchedMuons.at(0)->momentum();
+  math::XYZVector recoDimuonMomentum = recoMatchedMuons.at(0)->momentum() + recoMatchedMuons.at(1)->momentum();
   double deltaR_reco_dimuon_photon = reco::deltaR(recoDimuonMomentum, *recoMatchedPhotons.at(0));
   hRecoDeltaR_dimuon_photon->Fill(deltaR_reco_dimuon_photon);
 
-  
+  // eta of the photon's calorimeter
+  double photonCaloEta = recoMatchedPhotons.at(0)->superCluster()->eta();
+  hPhotonCaloEta->Fill(photonCaloEta);
 
   /*
   ////////////////////////  FITTING /////////////////////
