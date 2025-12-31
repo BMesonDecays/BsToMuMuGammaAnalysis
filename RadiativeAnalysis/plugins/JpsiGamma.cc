@@ -68,6 +68,7 @@
 #include "Math/SVector.h"
 #include "TTree.h"
 #include "TBranch.h"
+#include "TNtupleD.h"
 
 
 #include <sstream>
@@ -103,6 +104,8 @@ private:
   edm::EDGetTokenT < vector<reco::GenParticle> > theGenParticleToken;
   edm::EDGetTokenT < vector<reco::Muon> > theMuonToken;
   edm::EDGetTokenT < vector<reco::Photon> > thePhotonToken;
+
+  edm::ESGetToken<MagneticField, IdealMagneticFieldRecord> m_fieldToken;
     
   std::vector<int> JpsiG = {443, 22};
   std::vector<int> MuMu = {13, -13};
@@ -110,7 +113,7 @@ private:
   TH1D* hGenDeltaR_dimuon_photon;
   TH1D* hRecoDeltaR_dimuon_photon;
 
-  TH1D* hPhotonCaloEta;
+  TNtupleD* tMuMuGamma;
 
 };
 
@@ -124,6 +127,8 @@ JpsiGamma::JpsiGamma(const edm::ParameterSet& conf)
   theMuonToken = consumes< vector<reco::Muon>  >( edm::InputTag("muons"));
   thePhotonToken = consumes< vector<reco::Photon>  >( edm::InputTag("photons"));
 
+  m_fieldToken = esConsumes<MagneticField, IdealMagneticFieldRecord>();
+
 }
 
 JpsiGamma::~JpsiGamma()
@@ -136,7 +141,7 @@ void JpsiGamma::beginJob()
     hGenDeltaR_dimuon_photon = new TH1D("hGenDeltaR_dimuon_photon","hGenDeltaR_dimuon_photon",100,0.,3.);
     hRecoDeltaR_dimuon_photon = new TH1D("hRecoDeltaR_dimuon_photon","hRecoDeltaR_dimuon_photon",100,0.,3.);
 
-    hPhotonCaloEta = new TH1D("hPhotonCaloEta","hPhotonCaloEta",100,0.,5.);
+    tMuMuGamma = new TNtupleD("tMuMuGamma","tMuMuGamma","M_MuMu:eta_Gamma:M_MuMuGamma");
     
     cout << "HERE JpsiGamma::beginJob()" << endl;
 }
@@ -149,13 +154,14 @@ void JpsiGamma::endJob()
   //write histogram data
   hGenDeltaR_dimuon_photon->Write();
   hRecoDeltaR_dimuon_photon->Write();
-  hPhotonCaloEta->Write();
+
+  tMuMuGamma->Write();
 
   myRootFile.Close();
 
   delete hGenDeltaR_dimuon_photon;
   delete hRecoDeltaR_dimuon_photon;
-  delete hPhotonCaloEta;
+  delete tMuMuGamma;
   
   cout << "HERE JPsiGamma::endJob()" << endl;
 }
@@ -169,6 +175,8 @@ void JpsiGamma::analyze(
   const std::vector<reco::Muon> & recoMuons = ev.get(theMuonToken);
   const std::vector<reco::Photon> & recoPhotons = ev.get(thePhotonToken);
   
+  auto const& field = es.getData(m_fieldToken);
+
   vector<const reco::Candidate*> genMuons;
   vector<const reco::Muon*> recoMatchedMuons;
   vector<const reco::Candidate*> genMatchedMuons;
@@ -280,9 +288,8 @@ void JpsiGamma::analyze(
 
   // eta of the photon's calorimeter
   double photonCaloEta = recoMatchedPhotons.at(0)->superCluster()->eta();
-  hPhotonCaloEta->Fill(photonCaloEta);
 
-  /*
+  
   ////////////////////////  FITTING /////////////////////
 
   // kinematic particle creation  
@@ -320,13 +327,29 @@ void JpsiGamma::analyze(
   RefCountedKinematicVertex fitVertex = vertexFitTree->currentDecayVertex();
   if (!fitVertex->vertexIsValid()) return;
 
+  double M_MuMu = fitParticle->currentState().mass();
+
   GlobalPoint fittedGlobalPoint = fitVertex->position();
   math::XYZPoint fittedSV (fittedGlobalPoint.x(),fittedGlobalPoint.y(),fittedGlobalPoint.z());
 
-  GlobalVector dimuonMomentum = fitParticle->currentState().kinematicParameters().momentum();
+  KinematicParameters dimuonKinPar = fitParticle->currentState().kinematicParameters();
+  GlobalVector dimuonMomentum = dimuonKinPar.momentum();
   math::XYZVector dimuonMomentum_math(dimuonMomentum.x(),dimuonMomentum.y(),dimuonMomentum.z());
+  math::XYZTLorentzVector fitDimuonLVec (dimuonMomentum.x(),dimuonMomentum.y(),dimuonMomentum.z(), dimuonKinPar.energy());
+
+  // photon enters
+  reco::Photon recoPhoton = *recoMatchedPhotons.at(0);
+  //recoPhoton.setVertex(reco::Candidate::Point(fittedSV.x(), fittedSV.y(), fittedSV.z()));
+  math::XYZTLorentzVector recoPhotonLVec = recoPhoton.p4();
+
+  // invariant mass of fitDimuonRecoPhoton
+  auto fitDimuonRecoPhotonLVec = fitDimuonLVec + recoPhotonLVec;
+  double M_MuMuGamma = fitDimuonRecoPhotonLVec.M();
+
+  tMuMuGamma->Fill(M_MuMu, photonCaloEta, M_MuMuGamma);  
   
 
+  /*
   //////////////PCA(mmg)_reco to the genPV////////////////////////////
 
   const reco::Candidate* firstB0sPtr = Tools::findFirstB0s(genB0sPtr);    //first produced B0s
