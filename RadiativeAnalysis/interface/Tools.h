@@ -22,6 +22,38 @@ namespace Tools{
         return PCA;
     }
 
+    // find the smallest distance of closest approach of a momentum line to the best (closest) PV, (SV point needed)
+    // return two points: best PV position and the PCA point
+    std::vector<math::XYZPoint> points_PV_pca (const std::vector<reco::Vertex> & primaryVertices,
+                                                math::XYZPoint svPosition,
+                                                math::XYZVector momentum)
+    {
+        double minDistance = 999.0;
+        const reco::Vertex* bestPV_ptr = &primaryVertices.at(0);
+        math::XYZPoint bestPCA = primaryVertices.at(0).position();
+
+        for (const auto & pv : primaryVertices)
+        {
+            const math::XYZPoint & pvPosition = pv.position();
+            double s = ((pvPosition - svPosition).Dot(momentum)) / momentum.Mag2();
+            math::XYZPoint tempPCA = svPosition + s*momentum;
+            double tempDistance = TMath::Sqrt((pvPosition-tempPCA).Mag2());
+
+            if (tempDistance < minDistance)
+            {
+                minDistance = tempDistance;
+                bestPV_ptr = &pv;
+                bestPCA = tempPCA;
+            }
+        }
+
+        std::vector<math::XYZPoint> outputVector;
+        outputVector.push_back(bestPV_ptr->position());
+        outputVector.push_back(bestPCA);
+        return outputVector;
+    }
+
+
     // find first produced B0s in MC sample
     const reco::Candidate* findFirstB0s(const reco::Candidate* partB0s)
     {

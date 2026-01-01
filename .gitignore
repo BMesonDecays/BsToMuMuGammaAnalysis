@@ -3,3 +3,4 @@ histos*.root
 board.txt
 jobs/
 __*
+*tupleProjections/

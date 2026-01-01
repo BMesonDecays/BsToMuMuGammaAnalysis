@@ -15,11 +15,11 @@ f.ls();
 
 histoname = "hRecoPCA_GenPV_z"
 
-#'''
+'''
 c1 = TCanvas('cHisto','cHisto',1000,600)
 histo = gROOT.FindObject(histoname)
 #histo.SetTitle("ScaledRecoVsGenPhotonEnergy (PV[0])")
 histo.Draw()
 c1.Print("images/"+histoname+"_012.pdf")
 input('press enter to exit')
-#'''
+'''

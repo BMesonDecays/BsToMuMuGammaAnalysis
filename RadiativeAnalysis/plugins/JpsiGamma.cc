@@ -101,17 +101,11 @@ private:
   edm::ParameterSet theConfig;
   unsigned int theEventCount;
 
-  edm::EDGetTokenT < vector<reco::GenParticle> > theGenParticleToken;
   edm::EDGetTokenT < vector<reco::Muon> > theMuonToken;
   edm::EDGetTokenT < vector<reco::Photon> > thePhotonToken;
+  edm::EDGetTokenT < vector<reco::Vertex> > theVertexToken; 
 
   edm::ESGetToken<MagneticField, IdealMagneticFieldRecord> m_fieldToken;
-    
-  std::vector<int> JpsiG = {443, 22};
-  std::vector<int> MuMu = {13, -13};
-
-  TH1D* hGenDeltaR_dimuon_photon;
-  TH1D* hRecoDeltaR_dimuon_photon;
 
   TNtupleD* tMuMuGamma;
 
@@ -123,9 +117,9 @@ JpsiGamma::JpsiGamma(const edm::ParameterSet& conf)
 {
   cout <<" CTORXX" << endl;
 
-  theGenParticleToken = consumes< vector<reco::GenParticle>  >( edm::InputTag("genParticles"));
   theMuonToken = consumes< vector<reco::Muon>  >( edm::InputTag("muons"));
   thePhotonToken = consumes< vector<reco::Photon>  >( edm::InputTag("photons"));
+  theVertexToken = consumes< vector<reco::Vertex>  >( edm::InputTag("offlinePrimaryVertices"));
 
   m_fieldToken = esConsumes<MagneticField, IdealMagneticFieldRecord>();
 
@@ -138,10 +132,7 @@ JpsiGamma::~JpsiGamma()
 
 void JpsiGamma::beginJob()
 {
-    hGenDeltaR_dimuon_photon = new TH1D("hGenDeltaR_dimuon_photon","hGenDeltaR_dimuon_photon",100,0.,3.);
-    hRecoDeltaR_dimuon_photon = new TH1D("hRecoDeltaR_dimuon_photon","hRecoDeltaR_dimuon_photon",100,0.,3.);
-
-    tMuMuGamma = new TNtupleD("tMuMuGamma","tMuMuGamma","M_MuMu:eta_Gamma:M_MuMuGamma");
+    tMuMuGamma = new TNtupleD("tMuMuGamma","tMuMuGamma","M_dimuon:ProbOfCommonMuonVertex:eta_photon:deltaR_dimuon_photon:minPCA_distance:M_dimuonGamma");
     
     cout << "HERE JpsiGamma::beginJob()" << endl;
 }
@@ -152,15 +143,10 @@ void JpsiGamma::endJob()
   TFile myRootFile( theConfig.getParameter<std::string>("outHist").c_str(), "RECREATE");
 
   //write histogram data
-  hGenDeltaR_dimuon_photon->Write();
-  hRecoDeltaR_dimuon_photon->Write();
-
   tMuMuGamma->Write();
 
   myRootFile.Close();
 
-  delete hGenDeltaR_dimuon_photon;
-  delete hRecoDeltaR_dimuon_photon;
   delete tMuMuGamma;
   
   cout << "HERE JPsiGamma::endJob()" << endl;
@@ -171,200 +157,88 @@ void JpsiGamma::analyze(
 {
   std::cout << " -------------------------------- HERE JpsiGamma::analyze "<< std::endl;
 
-  const std::vector<reco::GenParticle> & genPar = ev.get(theGenParticleToken);
   const std::vector<reco::Muon> & recoMuons = ev.get(theMuonToken);
   const std::vector<reco::Photon> & recoPhotons = ev.get(thePhotonToken);
+  const std::vector<reco::Vertex> & primaryVertices = ev.get(theVertexToken);
   
-  auto const& field = es.getData(m_fieldToken);
-
-  vector<const reco::Candidate*> genMuons;
-  vector<const reco::Muon*> recoMatchedMuons;
-  vector<const reco::Candidate*> genMatchedMuons;
-
-  vector<const reco::Candidate*> genPhotons;
-  vector<const reco::Photon*> recoMatchedPhotons;
-  vector<const reco::Candidate*> genMatchedPhotons;  
+  auto const& field = es.getData(m_fieldToken);  
   
   ////////////////////////////////////////
-  
-  const reco::GenParticle* genB0sPtr = &genPar.at(0); //generated B0s decaying into mmg
-  const reco::Candidate* genJpsiPtr = &genPar.at(0); // generated Jpsi
-  const reco::Candidate* genGammaPtr = &genPar.at(0);  // generated photon
-  
-  // find B0s decaying into Jpsi(MuMu) + gamma
-  // fill genMuons with muons from Jpsi decay
-  for(const auto& genP : genPar)
-  {
-    if (abs(genP.pdgId()) == 531) // B0s
-    {
-      vector<int> daughters;
-      for(unsigned int i=0; i < genP.numberOfDaughters(); i++)
-      {
-        if (genP.daughter(i)->pdgId() == 443)  {genJpsiPtr = genP.daughter(i);}
-        if (genP.daughter(i)->pdgId() == 22)  {genGammaPtr = genP.daughter(i);}
-        daughters.push_back(genP.daughter(i)->pdgId());
-      }
-      if(Tools::isSameDecay(daughters, JpsiG))
-      {
-        vector<int> JpsiDaughters;
-        for (unsigned int i=0; i < genJpsiPtr->numberOfDaughters(); i++)
-        {
-          JpsiDaughters.push_back(genJpsiPtr->daughter(i)->pdgId());
-        }
 
-        if(Tools::isSameDecay(JpsiDaughters, MuMu)) // Jpsi -> MuMu ?
-        {
-          genMuons.push_back(genJpsiPtr->daughter(0));
-          genMuons.push_back(genJpsiPtr->daughter(1));
-          genPhotons.push_back(genGammaPtr);
-          break;  // assert that only one B0s -> Jpsi(MuMu)Gamma decay per event
-        }
-
-      }
-    }
-  }
-  if(genPhotons.size() == 0) return;  //no 'SameDecay' found  
-
-  if(recoMuons.size() < 2 || recoPhotons.size() < 1) return;  // insufficient number of reco muons and photons
-
-  // reco muon matching
-  for (const reco::Candidate* genMu : genMuons)
-  {
-    float minDR = 10;
-    const reco::Muon* bestMatchedMuon = &recoMuons.at(0); //initialization to suppress warning
-    bool matched = false;
-    for (const auto& recoMu : recoMuons)
-    {
-      float dR = reco::deltaR(recoMu, *genMu);
-      if (dR < minDR)
-      {
-        minDR = dR;
-        bestMatchedMuon = &recoMu;
-        matched = true;
-      }
-    }
-    if (matched && minDR < 0.01)  //cut on dR(reco,gen)
-    {
-      recoMatchedMuons.push_back(bestMatchedMuon);
-      genMatchedMuons.push_back(genMu);
-    }
-  }
-
-  // reco photon matching
-  for (const reco::Candidate* genPh : genPhotons)
-  {
-    float minDR = 10;
-    const reco::Photon* bestMatchedPhoton = &recoPhotons.at(0); //initialization to suppress warning
-    bool matched = false;
-    for (const auto& recoPh : recoPhotons)
-    {
-      float dR = reco::deltaR(recoPh, *genPh);
-      if (dR < minDR)
-      {
-        minDR = dR;
-        bestMatchedPhoton = &recoPh;
-        matched = true;
-      }
-    }
-    if (matched && minDR < 0.03)  // cut on dR(reco,gen)
-    {
-      recoMatchedPhotons.push_back(bestMatchedPhoton);
-      genMatchedPhotons.push_back(genPh);
-    }
-  }
-  if(recoMatchedMuons.size() != 2)  return;
-  if(recoMatchedPhotons.size() != 1) return;
-
-  //if(recoMatchedPhotons[0]->isEB() == 0) return; // only EB photons
-
-  // get deltaR (dimuon, photon)
-  math::XYZVector genDimuonMomentum = genMuons.at(0)->momentum() + genMuons.at(1)->momentum();
-  double deltaR_gen_dimuon_photon = reco::deltaR(genDimuonMomentum, *genPhotons.at(0));
-  hGenDeltaR_dimuon_photon->Fill(deltaR_gen_dimuon_photon);
-
-  math::XYZVector recoDimuonMomentum = recoMatchedMuons.at(0)->momentum() + recoMatchedMuons.at(1)->momentum();
-  double deltaR_reco_dimuon_photon = reco::deltaR(recoDimuonMomentum, *recoMatchedPhotons.at(0));
-  hRecoDeltaR_dimuon_photon->Fill(deltaR_reco_dimuon_photon);
-
-  // eta of the photon's calorimeter
-  double photonCaloEta = recoMatchedPhotons.at(0)->superCluster()->eta();
-
-  
-  ////////////////////////  FITTING /////////////////////
-
-  // kinematic particle creation  
-  vector<RefCountedKinematicParticle> muonKinematicParticles;
-  for(const auto& recoMuPtr : recoMatchedMuons)
-  {
-    reco::Muon recoMu = *recoMuPtr;
-    reco::TrackRef muTrack = recoMu.track();
-    if(!muTrack) continue;
-    reco::TransientTrack muonTT = reco::TransientTrack(muTrack, &field);
-
-    const ParticleMass muon_mass(0.105658);
-    float muon_sigma = 23E-10;
-
-    KinematicParticleFactoryFromTransientTrack pFactory;
-    muonKinematicParticles.push_back(pFactory.particle(muonTT, muon_mass, float(0), float(0), muon_sigma));
-  }
-
-  if (muonKinematicParticles.size() != 2) return;
-
-  RefCountedKinematicParticle mu1 = muonKinematicParticles.at(0);
-  RefCountedKinematicParticle mu2 = muonKinematicParticles.at(1);
-  std::vector<RefCountedKinematicParticle> allParticles;
-  allParticles.push_back(mu1);
-  allParticles.push_back(mu2);
-
-  // SV fit using only two muons
+  const ParticleMass muon_mass(0.105658);
+  float muon_sigma = 23E-10;
+  KinematicParticleFactoryFromTransientTrack pFactory;
   KinematicParticleVertexFitter fitter;
-  RefCountedKinematicTree vertexFitTree = fitter.fit(allParticles);
-  if (!vertexFitTree->isValid()) return;
 
-  // get the fitted particle (i.e. dimuon) and vertex
-  vertexFitTree->movePointerToTheTop();
-  RefCountedKinematicParticle fitParticle = vertexFitTree->currentParticle();
-  RefCountedKinematicVertex fitVertex = vertexFitTree->currentDecayVertex();
-  if (!fitVertex->vertexIsValid()) return;
+  // take two oppositely charged recoMuons
+  for (std::vector<reco::Muon>::const_iterator im1 = recoMuons.begin(); im1 < recoMuons.end(); im1++)
+  {
+    reco::TrackRef mu1Track = im1->track();
+    if (!mu1Track)  continue;
+    reco::TransientTrack muon1TT = reco::TransientTrack(mu1Track, &field);
+    
+    for (std::vector<reco::Muon>::const_iterator im2 = im1+1; im2 < recoMuons.end(); im2++)
+    {
+      if (im1->charge() * im2->charge() != -1)  continue;
 
-  double M_MuMu = fitParticle->currentState().mass();
+      // fit the vertex of two muons using the KinematicFitter
+      reco::TrackRef mu2Track = im2->track();
+      if (!mu2Track) continue;
+      reco::TransientTrack muon2TT = reco::TransientTrack(mu2Track, &field);
 
-  GlobalPoint fittedGlobalPoint = fitVertex->position();
-  math::XYZPoint fittedSV (fittedGlobalPoint.x(),fittedGlobalPoint.y(),fittedGlobalPoint.z());
+      std::vector<RefCountedKinematicParticle> muonKinematicParticles;
+      muonKinematicParticles.push_back(pFactory.particle(muon1TT, muon_mass, float(0), float(0), muon_sigma));
+      muonKinematicParticles.push_back(pFactory.particle(muon2TT, muon_mass, float(0), float(0), muon_sigma));
+      if (muonKinematicParticles.size() != 2) continue;
 
-  KinematicParameters dimuonKinPar = fitParticle->currentState().kinematicParameters();
-  GlobalVector dimuonMomentum = dimuonKinPar.momentum();
-  math::XYZVector dimuonMomentum_math(dimuonMomentum.x(),dimuonMomentum.y(),dimuonMomentum.z());
-  math::XYZTLorentzVector fitDimuonLVec (dimuonMomentum.x(),dimuonMomentum.y(),dimuonMomentum.z(), dimuonKinPar.energy());
+      RefCountedKinematicTree vertexFitTree = fitter.fit(muonKinematicParticles); // was "allParticles"
+      if (!vertexFitTree->isValid()) continue;
 
-  // photon enters
-  reco::Photon recoPhoton = *recoMatchedPhotons.at(0);
-  //recoPhoton.setVertex(reco::Candidate::Point(fittedSV.x(), fittedSV.y(), fittedSV.z()));
-  math::XYZTLorentzVector recoPhotonLVec = recoPhoton.p4();
+      // get the fitted particle (i.e. dimuon) and vertex
+      vertexFitTree->movePointerToTheTop();
+      RefCountedKinematicParticle fitParticle = vertexFitTree->currentParticle();
+      RefCountedKinematicVertex fitVertex = vertexFitTree->currentDecayVertex();
+      if (!fitVertex->vertexIsValid()) return;
+      double commonVertexProb = TMath::Prob(fitVertex->chiSquared(), fitVertex->degreesOfFreedom());  // potential problem: degreesOfFreedom type
+      if (commonVertexProb < 0.1) continue; // cut on the common vertex prob. of two muons
 
-  // invariant mass of fitDimuonRecoPhoton
-  auto fitDimuonRecoPhotonLVec = fitDimuonLVec + recoPhotonLVec;
-  double M_MuMuGamma = fitDimuonRecoPhotonLVec.M();
+      double M_dimuon = fitParticle->currentState().mass(); // invariant mass of the fitted dimuon
 
-  tMuMuGamma->Fill(M_MuMu, photonCaloEta, M_MuMuGamma);  
-  
+      GlobalPoint fittedGlobalPoint = fitVertex->position();
+      math::XYZPoint fittedSV (fittedGlobalPoint.x(),fittedGlobalPoint.y(),fittedGlobalPoint.z());
 
-  /*
-  //////////////PCA(mmg)_reco to the genPV////////////////////////////
+      KinematicParameters dimuonKinPar = fitParticle->currentState().kinematicParameters();
+      GlobalVector dimuonMomentum = dimuonKinPar.momentum();
+      math::XYZTLorentzVector lFitDimuonVector (dimuonMomentum.x(),dimuonMomentum.y(),dimuonMomentum.z(), dimuonKinPar.energy());
 
-  const reco::Candidate* firstB0sPtr = Tools::findFirstB0s(genB0sPtr);    //first produced B0s
-  const math::XYZPoint genPV = firstB0sPtr->vertex();
+      // take a photon
+      for (std::vector<reco::Photon>::const_iterator igamma = recoPhotons.begin(); igamma < recoPhotons.end(); igamma++)
+      {
+        double photonCaloEta = igamma->superCluster()->eta();
 
-  reco::Photon recoPhoton = *recoMatchedPhotons.at(0);
-  recoPhoton.setVertex(reco::Candidate::Point(fittedSV.x(), fittedSV.y(), fittedSV.z()));
+        math::XYZTLorentzVector lRecoGammaVector = igamma->p4();
+        double deltaR_fitDimuon_recoPhoton = reco::deltaR(lFitDimuonVector, lRecoGammaVector);
 
-  // find the PCA
-  math::XYZVector fitDimuonRecoPhotonMomentum = dimuonMomentum_math + recoPhoton.momentum();
-  math::XYZPoint pca = Tools::pca(genPV, fittedSV, fitDimuonRecoPhotonMomentum);
+        // consider the closest approach distance of fitDimuonRecoPhoton to the best (closest) recoPV
+        math::XYZTLorentzVector lFitDimuonRecoPhotonVector = lFitDimuonVector + lRecoGammaVector;
 
-  hRecoPCA_GenPV_z->Fill(std::abs(pca.z() - genPV.z()));  
+        std::vector<math::XYZPoint> closestPoints = Tools::points_PV_pca (primaryVertices, fittedSV,
+                                                                lFitDimuonRecoPhotonVector.Vect());
+        auto bestPVposition = closestPoints.at(0);
+        auto bestPCA = closestPoints.at(1);
+        
+        double closestAppDistance = TMath::Sqrt((bestPVposition-bestPCA).Mag2());
 
-  */
+        double M_dimuonGamma = lFitDimuonRecoPhotonVector.M();
+
+        // fill the Ntuple
+        tMuMuGamma->Fill(M_dimuon, commonVertexProb, photonCaloEta, deltaR_fitDimuon_recoPhoton, closestAppDistance, M_dimuonGamma);
+
+      }
+
+
+    } 
+  }
 
 
   cout <<"*** Analyze event: " << ev.id() <<" analysed event count:" << ++theEventCount << endl;
