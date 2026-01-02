@@ -34,8 +34,8 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_mc_FULL','')
 
 
-process.analiza= cms.EDAnalyzer("JpsiGamma",
-  outHist = cms.string('BsToJpsiGamma.root'),
+process.analiza= cms.EDAnalyzer("JpsiGammaGenMatched",
+  outHist = cms.string('BsToJpsiGammaGenMatched.root'),
 )
 
 

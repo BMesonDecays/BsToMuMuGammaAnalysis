@@ -31,9 +31,8 @@
 
 
 
-<library name="JpsiGamma" file="JpsiGamma.cc">
+<library name="JpsiGammaGenMatched" file="JpsiGammaGenMatched.cc">
 </library>
-
 
 
 
