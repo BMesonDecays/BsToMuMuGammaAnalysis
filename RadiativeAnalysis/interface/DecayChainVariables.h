@@ -27,10 +27,32 @@ struct DecayChainVariables {
     int mu2isgood = -9999;
     int mu1innertrkhq = -9999;
     int mu2innertrkhq = -9999;
+
     double dimuonMass = -9999;
     double dimuonEta = -9999;
     double dimuonPhi = -9999;
     double dimuonPt = -9999;
+
+    double dimuonMass_Jpsi = -9999;
+    double dimuonEta_Jpsi = -9999;
+    double dimuonPhi_Jpsi = -9999;
+    double dimuonPt_Jpsi = -9999;
+
+    double dimuonMass_Phi = -9999;
+    double dimuonEta_Phi = -9999;
+    double dimuonPhi_Phi = -9999;
+    double dimuonPt_Phi = -9999;
+
+    double dimuonMass_Kstar0 = -9999;
+    double dimuonEta_Kstar0 = -9999;
+    double dimuonPhi_Kstar0 = -9999;
+    double dimuonPt_Kstar0 = -9999;
+
+    double dimuonMass_NoBound = -9999;
+    double dimuonEta_NoBound = -9999;
+    double dimuonPhi_NoBound = -9999;
+    double dimuonPt_NoBound = -9999;
+
     int resonanceFlag = -9999;
     double opening_angle = -9999;
     double dimuonvtxprob = -9999;

@@ -45,6 +45,24 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
             dcv.dimuonPhi = resonanceResult.phi;
             dcv.dimuonPt = resonanceResult.pt;
             dcv.resonanceFlag = static_cast<int>(resonanceResult.resonanceFlag); 
+            int flag = static_cast<int>(resonanceResult.resonanceFlag);
+            if (flag == 1) {
+                dcv.dimuonMass_Jpsi = resonanceResult.mass;dcv.dimuonEta_Jpsi = resonanceResult.eta;
+                dcv.dimuonPhi_Jpsi = resonanceResult.phi;dcv.dimuonPt_Jpsi = resonanceResult.pt;// Jpsi
+            }
+            else if (flag == 2) {  
+                dcv.dimuonMass_Phi = resonanceResult.mass;dcv.dimuonEta_Phi = resonanceResult.eta;
+                dcv.dimuonPhi_Phi = resonanceResult.phi;dcv.dimuonPt_Phi = resonanceResult.pt;// Phi
+            }
+            else if (flag == 3) {  
+                dcv.dimuonMass_Kstar0 = resonanceResult.mass;dcv.dimuonEta_Kstar0 = resonanceResult.eta;
+                dcv.dimuonPhi_Kstar0 = resonanceResult.phi;dcv.dimuonPt_Kstar0 = resonanceResult.pt;// KStar
+            }
+            else if (flag == 4) {  
+                dcv.dimuonMass_NoBound = resonanceResult.mass;dcv.dimuonEta_NoBound = resonanceResult.eta;
+                dcv.dimuonPhi_NoBound = resonanceResult.phi;dcv.dimuonPt_NoBound = resonanceResult.pt;// NonResonant
+            }
+
             }
             
             reco::TransientTrack muonTT1(muTrack1, &bField);
@@ -250,7 +268,25 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
 	  		    RefCountedKinematicVertex bVertex = BCandFitter.getVertex();
 	  		    AlgebraicVector7 b_par = bs->currentState().kinematicParameters().vector();
                 GlobalVector Bsvec(b_par[3], b_par[4], b_par[5]);
-                reco::Vertex PVvtxHightestPt = PVs[bsAndVtxInfo.VtxIndex]; 
+                reco::Vertex PVvtxHightestPt = PVs[bsAndVtxInfo.VtxIndex];
+                AlgebraicVector7 b_par = bs->currentState().kinematicParameters().vector();
+	  		    AlgebraicSymMatrix77 bs_er = bs->currentState().kinematicParametersError().matrix();
+                AlgebraicMatrix33 BVError(bVertex->error().matrix());
+                dcv.vertexfitbsmass_mmconvg = b_par[6];
+                dcv.vertexfitbspt_mmconvg = Bsvec.perp();
+                dcv.vertexfitbseta_mmconvg = Bsvec.eta();
+                dcv.vertexfitbsphi_mmconvg = Bsvec.phi();
+                dcv.vertexfitbspz_mmconvg = Bsvec.z();
+                TMatrix cova(2,2);
+                cova.IsSymmetric();
+                cova(0,0)=gigibs.cxx();
+                cova(1,1)=gigibs.cyy();
+                cova(0,1)=gigibs.cyx();
+                cova(1,0)=gigibs.cyx();
+
+
+                
+
                 
 
 
@@ -374,10 +410,112 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
                     dcv.vertexfitBsCt2DBSOld_mmconvg = BsPDGMass_*( (kvfbsvertex.position().x()-bsAndVtxInfo.bs_x)*BCand.Px() + 
                     (kvfbsvertex.position().y()-bsAndVtxInfo.bs_y)*BCand.Py() )/( BCand.Px()*BCand.Px() + BCand.Py()*BCand.Py() );  
                     dcv.vertexfitBsCt2DOld_mmconvg = BsPDGMass_*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*BCand.Px() + 
-                    (kvfbsvertex.position().y()-PVvtxHightestPt.y())*BCand.Py() )/( BCand.Px()*BCand.Px() + BCand.Py()*BCand.Py() );    
-                    
-                    
+                    (kvfbsvertex.position().y()-PVvtxHightestPt.y())*BCand.Py() )/( BCand.Px()*BCand.Px() + BCand.Py()*BCand.Py() );
 
+                    // Smart lambda for ct error calculation - keeps everything inline
+                    auto calculateCtError = [&](const GlobalPoint& refVertex, 
+                                               const GlobalError& refVertexErr,
+                                               const GlobalVector& momentumVec,
+                                               const char* outputVarName) -> double {
+                        VertexDistanceXY d;
+                        const GlobalPoint mySV(kvfbsvertex.position().x(), kvfbsvertex.position().y(), kvfbsvertex.position().z());
+                        const GlobalError mySVErr = kvfbsvertex.positionError();
+                        
+                        Measurement1D VtxDist = d.distance(VertexState(mySV, mySVErr), VertexState(refVertex, refVertexErr));
+                        double VtxDistErr = VtxDist.error();
+                        double transmom = std::sqrt(momentumVec.y()*momentumVec.y() + momentumVec.x()*momentumVec.x());
+                        
+                        if(transmom == 0 || VtxDist.value() == 0) return -1.0; // sentinel value
+                        
+                        double dx = kvfbsvertex.position().x() - refVertex.x();
+                        double dy = kvfbsvertex.position().y() - refVertex.y();
+                        double cos = (dx*momentumVec.x() + dy*momentumVec.y()) / (transmom * VtxDist.value());
+                        
+                        TVector LengthVector(2);
+                        LengthVector(0) = dx;
+                        LengthVector(1) = dy;
+                        
+                        double firstTerm2 = std::pow(BsPDGMass * VtxDistErr * std::abs(cos) / transmom, 2.);
+                        double secondTerm2 = std::pow(BsPDGMass * std::abs(cos) / (transmom*transmom), 2.) * cova.Similarity(LengthVector);
+                        
+                        return std::sqrt(firstTerm2 + secondTerm2);
+                    };
+
+                    // Now use it - clean and compact!
+                    // Beam spot with fitted momentum
+                    const GlobalPoint myBeamSpot(bsAndVtxInfo.bs_x, bsAndVtxInfo.bs_y, bsAndVtxInfo.bs_z);
+                    dcv.vertexfitBsCtErr2DBS_mmconvg = calculateCtError(myBeamSpot, bsAndVtxInfo.BeamSpot_cov2d, Bsvec, "BS_fitted");
+
+                    // PV variants with fitted momentum
+                    dcv.vertexfitBsCtErr2D_mmconvg = calculateCtError(
+                        GlobalPoint(PVvtxHightestPt.x(), PVvtxHightestPt.y(), PVvtxHightestPt.z()),
+                        PVvtxHightestPt.covariance(), Bsvec, "PV_highestPt");
+
+                    dcv.vertexfitBsCtErr2DClosestZ_mmconvg = calculateCtError(
+                        GlobalPoint(PVvtxClosestZ.x(), PVvtxClosestZ.y(), PVvtxClosestZ.z()),
+                        PVvtxClosestZ.covariance(), Bsvec, "PV_closestZ");
+
+                    dcv.vertexfitBsCtErr2DCostheta_mmconvg = calculateCtError(
+                        GlobalPoint(PVvtxCosTheta.x(), PVvtxCosTheta.y(), PVvtxCosTheta.z()),
+                        PVvtxCosTheta.covariance(), Bsvec, "PV_costheta");
+
+                    // Same vertices with non-fitted momentum
+                    GlobalVector BsVecNonFitted(BCand.Px(), BCand.Py(), BCand.Pz());
+
+                    dcv.vertexfitBsCtErr2DOld_mmconvg = calculateCtError(
+                        GlobalPoint(PVvtxHightestPt.x(), PVvtxHightestPt.y(), PVvtxHightestPt.z()),
+                        PVvtxHightestPt.covariance(), BsVecNonFitted, "PV_highestPt_old");
+
+                    dcv.vertexfitBsCtErr2DClosestZOld_mmconvg = calculateCtError(
+                        GlobalPoint(PVvtxClosestZ.x(), PVvtxClosestZ.y(), PVvtxClosestZ.z()),
+                        PVvtxClosestZ.covariance(), BsVecNonFitted, "PV_closestZ_old");
+
+                    dcv.vertexfitBsCtErr2DOld_mmconvg = calculateCtError(
+                        GlobalPoint(PVvtxCosTheta.x(), PVvtxCosTheta.y(), PVvtxCosTheta.z()),
+                        PVvtxCosTheta.covariance(), BsVecNonFitted, "PV_costheta_old");
+
+                    dcv.vertexfitBsCtErr2DBSOld_mmconvg = calculateCtError(
+                        myBeamSpot, bsAndVtxInfo.BeamSpot_cov2d, BsVecNonFitted, "BS_old");
+
+                    
+                    AlgebraicMatrix31 pB;
+                    pB(0,0) = bs->currentState().globalMomentum().x();
+                    pB(1,0) = bs->currentState().globalMomentum().y();
+                    pB(2,0) = bs->currentState().globalMomentum().z();
+
+                    AlgebraicMatrix13 pBT;
+                    pBT(0,0) = bs->currentState().globalMomentum().x();
+                    pBT(0,1) = bs->currentState().globalMomentum().y();
+                    pBT(0,2) = bs->currentState().globalMomentum().z();
+
+                    AlgebraicMatrix31 PV;
+                    PV(0,0) = PVx;
+                    PV(0,1) = PVy;
+                    PV(0,2) = PVz;
+                    
+                    AlgebraicMatrix31 BV;
+                    BV(0,0) = bVertex->position().x();
+                    BV(0,1) = bVertex->position().y();
+                    BV(0,2) = bVertex->position().z();
+                    AlgebraicMatrix31 lxyz = BV-PV;
+                    AlgebraicMatrix33 PVError(PVvtxHightestPt.error());
+                    AlgebraicMatrix33 BVError(bVertex->error().matrix());
+                    AlgebraicMatrix33 lxyzError = PVError + BVError;
+                    lxyzError.Invert();
+
+                    AlgebraicMatrix11 a = pBT * lxyzError * pB ;
+                    AlgebraicMatrix11 b = pBT * lxyzError * lxyz;
+                    double num(b(0,0));
+                    double deno(a(0,0));
+                    dcv.vertexfitBsCtMPVrefit_mmconvg = (num*bs->currentState().mass())/(deno);
+
+
+                   
+
+
+
+
+                    
 
 
                     

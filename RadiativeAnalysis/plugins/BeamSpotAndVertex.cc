@@ -93,6 +93,8 @@ BeamSpotAndVertex::BSAndVtxVariables BeamSpotAndVertex::BSAndVtxObservables(cons
 	    bsvtxv.bs_sigmaZ = beamSpot.sigmaZ();
 	    bsvtxv.bs_dsigmaZ = beamSpot.sigmaZ0Error();
 		bsvtxv.position = beamSpot.position();
+		bsvtxv.BeamSpot_cov2d = beamSpot.covariance2D();
+		bsvtxv.BeamSpot_cov3d = beamSpot.covariance3D();
     
     
     return bsvtxv;
