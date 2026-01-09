@@ -110,6 +110,121 @@ public:
 	int    DiMuon_mu1nPixHits_alone_;
 	int    DiMuon_mu2nPixHits_alone_;
 
+
+
+
+
+
+	// Tripple object converted photon vertex variables
+
+double FourvectorBsMass_mmconvg_;
+double FourvectorBsPt_mmconvg_;
+double FourvectorBsEta_mmconvg_;
+double FourvectorBsPhi_mmconvg_;
+
+double VertexfitBsMass_mmconvg_;
+double VertexfitBsPt_mmconvg_;
+double VertexfitBsEta_mmconvg_;
+double VertexfitBsPhi_mmconvg_;
+double VertexfitBsPz_mmconvg_;
+
+double VertexfitBsSVx_mmconvg_;
+double VertexfitBsSVy_mmconvg_;
+double VertexfitBsSVz_mmconvg_;
+
+double FourvectorConvGammaPt_mmconvg_;
+double FourvectorConvGammaEta_mmconvg_;
+double FourvectorConvGammaPhi_mmconvg_;
+
+double VertexfitPVxRefitCosTheta_mmconvg_;
+double VertexfitPVyRefitCosTheta_mmconvg_;
+double VertexfitPVzRefitCosTheta_mmconvg_;
+
+double VertexfitPVxRefitClosestZ_mmconvg_;
+double VertexfitPVyRefitClosestZ_mmconvg_;
+double VertexfitPVzRefitClosestZ_mmconvg_;
+
+double VertexfitBsCt3DPVClosestZ_mmconvg_;
+double VertexfitBsCt2DPVClosestZ_mmconvg_;
+double VertexfitBsCt3DPVCosTheta_mmconvg_;
+double VertexfitBsCt2DPVCosTheta_mmconvg_;
+double VertexfitBsCt2DPVCosThetaOld_mmconvg_;
+double VertexfitBsCt2DPVClosestZOld_mmconvg_;
+double VertexfitBsCt2DBSOld_mmconvg_;
+double VertexfitBsCt2DOld_mmconvg_;
+
+double VertexfitBsCtErr2DBS_mmconvg_;
+double VertexfitBsCtErr2D_mmconvg_;
+double VertexfitBsCtErr2DClosestZ_mmconvg_;
+double VertexfitBsCtErr2DCosTheta_mmconvg_;
+double VertexfitBsCtErr2DCosThetaOld_mmconvg_;
+double VertexfitBsCtErr2DBSOld_mmconvg_;
+double VertexfitBsCtErr2DOld_mmconvg_;
+double VertexfitBsCtErr2DClosestZOld_mmconvg_;
+double VertexfitBsCtErr3D_mmconvg_;
+double VertexfitBsCtErr2D2_mmconvg_;
+double VertexfitBsCtErrMPV_mmconvg_;
+
+double VertexfitBsCt3DRefit_mmconvg_;
+double VertexfitBsCt2DRefit_mmconvg_;
+double VertexfitBsCtMPVRefit_mmconvg_;
+double VertexfitBsCtErr3DRefit_mmconvg_;
+double VertexfitBsCtErr2DRefit_mmconvg_;
+double VertexfitBsCtErrMPVRefit_mmconvg_;
+
+double VertexfitBsLxy_mmconvg_;
+double VertexfitBsLxyErr_mmconvg_;
+double VertexfitBsCt_mmconvg_;
+double VertexfitBsCtErr_mmconvg_;
+
+double VertexfitBsErrX_mmconvg_;
+double VertexfitBsErrY_mmconvg_;
+double VertexfitBsErrXY_mmconvg_;
+
+double VertexfitBsDist3D_mmconvg_;
+double VertexfitBsDist3DErr_mmconvg_;
+double VertexfitBsTime3D_mmconvg_;
+double VertexfitBsTime3DErr_mmconvg_;
+
+double VertexfitBsDist2D_mmconvg_;
+double VertexfitBsDist2DErr_mmconvg_;
+double VertexfitBsTime2D_mmconvg_;
+double VertexfitBsTime2DErr_mmconvg_;
+
+double BsVtxProb_mmconvg_;
+double BsCt2D_mmconvg_;
+double BsCt2DBS_mmconvg_;
+double BsCt3D_mmconvg_;
+
+double DeltaRPhoton1DiMuon_mmconvg_;
+double DeltaRPhoton2DiMuon_mmconvg_;
+
+double BsHelicity_mmconvg_;
+double BsCoplanarity_mmconvg_;
+
+
+double DiMuonMass_Jpsi_;
+double DiMuonEta_Jpsi_;
+double DiMuonPhi_Jpsi_;
+double DiMuonPt_Jpsi_;
+
+double DiMuonMass_Phi_;
+double DiMuonEta_Phi_;
+double DiMuonPhi_Phi_;
+double DiMuonPt_Phi_;
+
+double DiMuonMass_Kstar0_;
+double DiMuonEta_Kstar0_;
+double DiMuonPhi_Kstar0_;
+double DiMuonPt_Kstar0_;
+
+double DiMuonMass_NoBound_;
+double DiMuonEta_NoBound_;
+double DiMuonPhi_NoBound_;
+double DiMuonPt_NoBound_;
+
+
+
 	double BsM_beffit_;
 	double BsEta_beffit_;
 	double BsPhi_beffit_;

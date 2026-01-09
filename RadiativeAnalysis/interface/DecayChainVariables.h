@@ -174,6 +174,9 @@ double vertexfitbspz_mmconvg = -9999;
 double vertexfitbsSVx_mmconvg = -9999;
 double vertexfitbsSVy_mmconvg = -9999;
 double vertexfitbsSVz_mmconvg = -9999;
+double fourvectorconvgammapt_mmconvg = -9999;
+double fourvectorconvgammaeta_mmconvg = -9999;
+double fourvectorconvgammaphi_mmconvg = -9999;
 
 double vertexfitPVxrefitcosTheta_mmconvg = -9999;
 double vertexfitPVyrefitcosTheta_mmconvg = -9999;
@@ -236,7 +239,7 @@ double bsct3d_mmconvg = -9999;
 
 double deltaRphoton1dimuon_mmconvg = -9999;
 double deltaRphoton2dimuon_mmconvg = -9999;
-double deltaRphoton1photon2_mmconvg = -9999;
+
 
 double bshelicity_mmconvg = -9999;
 double bscoplanarity_mmconvg = -9999;
@@ -248,6 +251,9 @@ double fourvectorbsmass_mmconvgg = -9999;
 double fourvectorbspt_mmconvgg = -9999;
 double fourvectorbseta_mmconvgg = -9999;
 double fourvectorbsphi_mmconvgg = -9999;
+double fourvectorconvgammapt_mmconvgg = -9999;
+double fourvectorconvgammaeta_mmconvgg = -9999;
+double fourvectorconvgammaphi_mmconvgg = -9999;
 double vertexfitbsmass_mmconvgg = -9999;
 double vertexfitbspt_mmconvgg = -9999;
 double vertexfitbseta_mmconvgg = -9999;

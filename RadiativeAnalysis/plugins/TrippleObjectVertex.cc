@@ -229,6 +229,9 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
                 muonTrack2.SetPtEtaPhiM(mu2.pt(), mu2.eta(), mu2.phi(), nominalMuonMass);
                 BCand = eleTrack1 + eleTrack2 + muonTrack1 + muonTrack2;
                 MassLimits m_lim;
+                dcv.fourvectorconvgammapt_mmconvg  = photon4vec.Pt();
+                dcv.fourvectorconvgammaeta_mmconvg = photon4vec.Eta();
+                dcv.fourvectorconvgammaphi_mmconvg = photon4vec.Phi();
                 if (BCand.M() < m_lim.BsMassCutLower || BCand.M() > m_lim.BsMassCutUpper) continue;
                 //std::cout<<"mass B Converted Case-------------------------------------------------------------: "<<BCand.M()<<"\n";
        	  		/*BCand.addDaughter(mu1);
@@ -390,26 +393,26 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
                     dcv.vertexfitPVyrefitclosestZ_mmconvg = PVvtxClosestZ.y();
                     dcv.vertexfitPVzrefitclosestZ_mmconvg = PVvtxClosestZ.z();
 
-                    dcv.vertexfitBsCt3DPVClosestZ_mmconvg = BsPDGMass_*( (kvfbsvertex.position().x()-PVvtxClosestZ.x())*Bsvec.x() + 
+                    dcv.vertexfitBsCt3DPVClosestZ_mmconvg = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxClosestZ.x())*Bsvec.x() + 
                     (kvfbsvertex.position().y()-PVvtxClosestZ.y())*Bsvec.y() + 
                     (kvfbsvertex.position().z()-PVvtxClosestZ.z())*Bsvec.z() )/( Bsvec.x()*Bsvec.x() + Bsvec.y()*Bsvec.y() +
                      Bsvec.z()*Bsvec.z() );
 
-                    dcv.vertexfitBsCt2DPVClosestZ_mmconvg = BsPDGMass_*( (kvfbsvertex.position().x()-PVvtxClosestZ.x())*Bsvec.x() + 
+                    dcv.vertexfitBsCt2DPVClosestZ_mmconvg = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxClosestZ.x())*Bsvec.x() + 
                     (kvfbsvertex.position().y()-PVvtxClosestZ.y())*Bsvec.y()  )/( Bsvec.x()*Bsvec.x() + Bsvec.y()*Bsvec.y()  ); 
 
-                    dcv.vertexfitBsCt3DPVCosTheta_mmconvg = BsPDGMass_*( (kvfbsvertex.position().x()-PVvtxCosTheta.x())*Bsvec.x() + 
+                    dcv.vertexfitBsCt3DPVCosTheta_mmconvg = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxCosTheta.x())*Bsvec.x() + 
                     (kvfbsvertex.position().y()-PVvtxCosTheta.y())*Bsvec.y() + 
                     (kvfbsvertex.position().z()-PVvtxCosTheta.z())*Bsvec.z() )/( Bsvec.x()*Bsvec.x() + Bsvec.y()*Bsvec.y() + Bsvec.z()*Bsvec.z() );
-                    dcv.vertexfitBsCt2DPVCosTheta_mmconvg = BsPDGMass_*( (kvfbsvertex.position().x()-PVvtxCosTheta.x())*Bsvec.x() + 
+                    dcv.vertexfitBsCt2DPVCosTheta_mmconvg = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxCosTheta.x())*Bsvec.x() + 
                     (kvfbsvertex.position().y()-PVvtxCosTheta.y())*Bsvec.y() )/( Bsvec.x()*Bsvec.x() + Bsvec.y()*Bsvec.y() );
-                    dcv.vertexfitBsCt2DPVCosThetaOld_mmconvg = BsPDGMass_*( (kvfbsvertex.position().x()-PVvtxCosTheta.x())*BCand.Px() + 
+                    dcv.vertexfitBsCt2DPVCosThetaOld_mmconvg = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxCosTheta.x())*BCand.Px() + 
                     (kvfbsvertex.position().y()-PVvtxCosTheta.y())*BCand.Py() )/( BCand.Px()*BCand.Px() + BCand.Py()*BCand.Py() );
-                    dcv.vertexfitBsCt2DPVClosestZOld_mmconvg = BsPDGMass_*( (kvfbsvertex.position().x()-PVvtxClosestZ.x())*BCand.Px() + 
+                    dcv.vertexfitBsCt2DPVClosestZOld_mmconvg = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxClosestZ.x())*BCand.Px() + 
                     (kvfbsvertex.position().y()-PVvtxClosestZ.y())*BCand.Py() )/( BCand.Px()*BCand.Px() + BCand.Py()*BCand.Py() );
-                    dcv.vertexfitBsCt2DBSOld_mmconvg = BsPDGMass_*( (kvfbsvertex.position().x()-bsAndVtxInfo.bs_x)*BCand.Px() + 
+                    dcv.vertexfitBsCt2DBSOld_mmconvg = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-bsAndVtxInfo.bs_x)*BCand.Px() + 
                     (kvfbsvertex.position().y()-bsAndVtxInfo.bs_y)*BCand.Py() )/( BCand.Px()*BCand.Px() + BCand.Py()*BCand.Py() );  
-                    dcv.vertexfitBsCt2DOld_mmconvg = BsPDGMass_*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*BCand.Px() + 
+                    dcv.vertexfitBsCt2DOld_mmconvg = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*BCand.Px() + 
                     (kvfbsvertex.position().y()-PVvtxHightestPt.y())*BCand.Py() )/( BCand.Px()*BCand.Px() + BCand.Py()*BCand.Py() );
 
                     // Smart lambda for ct error calculation - keeps everything inline
@@ -435,8 +438,8 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
                         LengthVector(0) = dx;
                         LengthVector(1) = dy;
                         
-                        double firstTerm2 = std::pow(BsPDGMass * VtxDistErr * std::abs(cos) / transmom, 2.);
-                        double secondTerm2 = std::pow(BsPDGMass * std::abs(cos) / (transmom*transmom), 2.) * cova.Similarity(LengthVector);
+                        double firstTerm2 = std::pow(m_lim.BsPDGMass * VtxDistErr * std::abs(cos) / transmom, 2.);
+                        double secondTerm2 = std::pow(m_lim.BsPDGMass * std::abs(cos) / (transmom*transmom), 2.) * cova.Similarity(LengthVector);
                         
                         return std::sqrt(firstTerm2 + secondTerm2);
                     };
@@ -508,6 +511,112 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
                     double num(b(0,0));
                     double deno(a(0,0));
                     dcv.vertexfitBsCtMPVrefit_mmconvg = (num*bs->currentState().mass())/(deno);
+                    dcv.vertexfitBsCtErrMPV_mmconvg = mlim.BsPDGMass/sqrt(deno);
+
+
+
+                    GlobalPoint SVpos( bVertex->position().x(), bVertex->position().y(), bVertex->position().z());
+                    GlobalPoint PVpos( PVvtxHightestPt.x(), PVvtxHightestPt.y(), PVvtxHightestPt.z());
+                    GlobalError SVerr( bVertex->error() );
+                    GlobalError PVerr( PVvtxHightestPt.error() );
+                    VertexDistance3D dist3D;
+                    Measurement1D measurement3D = dist3D.distance(VertexState(SVpos,SVerr),VertexState(PVpos,PVerr));
+                    double error3D = measurement3D.error();
+                    double scale1 = ((bVertex->position().x() - PVvtxHightestPt.x())*Bsvec.x()+
+                    (bVertex->position().y() - PVvtxHightestPt.y())*Bsvec.y()+
+                    (bVertex->position().z() - PVvtxHightestPt.z())*Bsvec.z())/
+                    (sqrt(Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y()+Bsvec.z()*Bsvec.z())*
+                    sqrt((bVertex->position().x() - PVvtxHightestPt.x())*(bVertex->position().x() - PVvtxHightestPt.x())+
+                    (bVertex->position().y() - PVvtxHightestPt.y())*(bVertex->position().y() - PVvtxHightestPt.y())+
+                    (bVertex->position().z() - PVvtxHightestPt.z())*(bVertex->position().z() - PVvtxHightestPt.z())));
+                    dcv.vertexfitBsCtErr3D_mmconvg = m_lim.BsPDGMass*(error3D*abs(scale1))/sqrt(Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y()+Bsvec.z()*Bsvec.z());
+
+                    dcv.vertexfitBsCt3Drefit_mmconvg = m_lim.BsPDGMass*((bVertex->position().x()-PVvtxHightestPt.x())*Bsvec.x()+
+                    +(bVertex->position().y()-PVvtxHightestPt.y())*Bsvec.y()+
+                    +(bVertex->position().z()-PVvtxHightestPt.z())*Bsvec.z())/
+                    (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y()+Bsvec.z()*Bsvec.z());
+
+                    dcv.vertexfitBsCt2Drefit_mmconvg = m_lim.BsPDGMass*((bVertex->position().x()-PVvtxHightestPt.x())*Bsvec.x()+
+                    +(bVertex->position().y()-PVvtxHightestPt.y())*Bsvec.y())/
+                    (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y());
+
+
+                    AlgebraicMatrix31 pB2;
+                    pB2(0,0) = bs->currentState().globalMomentum().x();
+                    pB2(1,0) = bs->currentState().globalMomentum().y();
+                    pB2(2,0) = bs->currentState().globalMomentum().z();
+
+                    AlgebraicMatrix13 pBT2;
+                    pBT2(0,0) = bs->currentState().globalMomentum().x();
+                    pBT2(0,1) = bs->currentState().globalMomentum().y();
+                    pBT2(0,2) = bs->currentState().globalMomentum().z();
+
+                    AlgebraicMatrix31 PV2;
+                    PV2(0,0) = PVvtxHightestPt.x();
+                    PV2(0,1) = PVvtxHightestPt.y();
+                    PV2(0,2) = PVvtxHightestPt.z();
+                    
+                    AlgebraicMatrix31 BV2;
+                    BV2(0,0) = bVertex->position().x();
+                    BV2(0,1) = bVertex->position().y();
+                    BV2(0,2) = bVertex->position().z();
+                    
+                    AlgebraicMatrix31 lxyz2 = BV2 - PV2;
+                    AlgebraicMatrix33 PVError2(PVvtxHightestPt.error());
+                    AlgebraicMatrix33 BVError2(bVertex->error().matrix());
+                    AlgebraicMatrix33 lxyzError2 = PVError2 + BVError2;
+                    lxyzError2.Invert();
+
+                    AlgebraicMatrix11 a2 = pBT2 * lxyzError2 * pB2;
+                    AlgebraicMatrix11 b2 = pBT2 * lxyzError2 * lxyz2;
+                    double num2(b2(0,0));
+                    double deno2(a2(0,0));
+                    dcv.vertexfitBsCtMPVrefit_mmconvg = (num2 * bs->currentState().mass()) / (deno2);
+
+
+
+                    //Error on ctau 3D
+                    GlobalPoint SVpos2( bVertex->position().x(), bVertex->position().y(), bVertex->position().z());
+                    GlobalPoint PVpos2( PVvtxHightestPt.x(), PVvtxHightestPt.y(), PVvtxHightestPt.z());
+                    GlobalError SVerr2( bVertex->error() );
+                    GlobalError PVerr2( PVvtxHightestPt.error() );
+                    VertexDistance3D dist12;
+                    Measurement1D measurement12 = dist12.distance(VertexState(SVpos2,SVerr2),VertexState(PVpos2,PVerr2));
+                    double error3D2 = measurement12.error();
+                    double scale12 = ((bVertex->position().x() - PVvtxHightestPt.x())*Bsvec.x()+
+                             (bVertex->position().y() - PVvtxHightestPt.y())*Bsvec.y()+
+                             (bVertex->position().z() - PVvtxHightestPt.z())*Bsvec.z())/(sqrt(Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y()+Bsvec.z()*Bsvec.z())*
+                             sqrt((bVertex->position().x() - PVvtxHightestPt.x())*(bVertex->position().x() - PVvtxHightestPt.x())+
+                             (bVertex->position().y() - PVvtxHightestPt.y())*(bVertex->position().y() - PVvtxHightestPt.y())+
+                             (bVertex->position().z() - PVvtxHightestPt.z())*(bVertex->position().z() - PVvtxHightestPt.z())));
+                    dcv.vertexfitBsCtErr3Drefit_mmconvg = mlim.BsPDGMass*(error3D2*abs(scale12))/sqrt(Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y()+Bsvec.z()*Bsvec.z());
+                    //Error on catu 2D
+                    VertexDistanceXY dist22;
+                    Measurement1D measurement22 = dist22.distance(VertexState(SVpos2,SVerr2),VertexState(PVpos2,PVerr2));
+                    double error2D2 = measurement22.error();
+                    double scale22 = ((bVertex->position().x() - reFitVertex.x())*Bsvec.x()+
+                    (bVertex->position().y() - reFitVertex.y())*Bsvec.y())/(sqrt(Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y())*
+                    sqrt((bVertex->position().x() - reFitVertex.x())*(bVertex->position().x() - reFitVertex.x())+
+                    (bVertex->position().y() - reFitVertex.y())*(bVertex->position().y() - reFitVertex.y())));
+                    dcv.vertexfitBsCtErr2Drefit_mmconvg= mlim.BsPDGMass*(error2D2*abs(scale22))/sqrt(Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y());
+                    if(Bsvec.perp()!=0) {
+                        dcv.vertexfitBsLxy_mmconvg = dist22.distance(VertexState(SVpos2,SVerr2),VertexState(PVpos2,PVerr2)).value();
+                        dcv.vertexfitBsLxyErr_mmconvg = error2D2;
+                    }
+
+
+
+
+
+
+
+
+
+
+
+
+                    
+            
 
 
                    

@@ -99,6 +99,84 @@ void RadiativeRootTree::createTree(const std::string filename)
   bmmgTree_->Branch("DiMuon_mu1nPixHits_alone", &DiMuon_mu1nPixHits_alone_,"DiMuon_mu1nPixHits_alone/I");
   bmmgTree_->Branch("DiMuon_mu2nPixHits_alone", &DiMuon_mu2nPixHits_alone_,"DiMuon_mu2nPixHits_alone/I");
   bmmgTree_->Branch("DiMuon_NumberOfCandidates", &DiMuon_NumberOfCandidates_,"DiMuon_NumberOfCandidates/I");
+
+
+bmmgTree_->Branch("FourvectorBsMass_mmconvg", &FourvectorBsMass_mmconvg_, "FourvectorBsMass_mmconvg/D");
+bmmgTree_->Branch("FourvectorBsPt_mmconvg", &FourvectorBsPt_mmconvg_, "FourvectorBsPt_mmconvg/D");
+bmmgTree_->Branch("FourvectorBsEta_mmconvg", &FourvectorBsEta_mmconvg_, "FourvectorBsEta_mmconvg/D");
+bmmgTree_->Branch("FourvectorBsPhi_mmconvg", &FourvectorBsPhi_mmconvg_, "FourvectorBsPhi_mmconvg/D");
+
+bmmgTree_->Branch("VertexfitBsMass_mmconvg", &VertexfitBsMass_mmconvg_, "VertexfitBsMass_mmconvg/D");
+bmmgTree_->Branch("VertexfitBsPt_mmconvg", &VertexfitBsPt_mmconvg_, "VertexfitBsPt_mmconvg/D");
+bmmgTree_->Branch("VertexfitBsEta_mmconvg", &VertexfitBsEta_mmconvg_, "VertexfitBsEta_mmconvg/D");
+bmmgTree_->Branch("VertexfitBsPhi_mmconvg", &VertexfitBsPhi_mmconvg_, "VertexfitBsPhi_mmconvg/D");
+bmmgTree_->Branch("VertexfitBsPz_mmconvg", &VertexfitBsPz_mmconvg_, "VertexfitBsPz_mmconvg/D");
+
+bmmgTree_->Branch("VertexfitBsSVx_mmconvg", &VertexfitBsSVx_mmconvg_, "VertexfitBsSVx_mmconvg/D");
+bmmgTree_->Branch("VertexfitBsSVy_mmconvg", &VertexfitBsSVy_mmconvg_, "VertexfitBsSVy_mmconvg/D");
+bmmgTree_->Branch("VertexfitBsSVz_mmconvg", &VertexfitBsSVz_mmconvg_, "VertexfitBsSVz_mmconvg/D");
+
+bmmgTree_->Branch("FourvectorConvGammaPt_mmconvg", &FourvectorConvGammaPt_mmconvg_, "FourvectorConvGammaPt_mmconvg/D");
+bmmgTree_->Branch("FourvectorConvGammaEta_mmconvg", &FourvectorConvGammaEta_mmconvg_, "FourvectorConvGammaEta_mmconvg/D");
+bmmgTree_->Branch("FourvectorConvGammaPhi_mmconvg", &FourvectorConvGammaPhi_mmconvg_, "FourvectorConvGammaPhi_mmconvg/D");
+
+bmmgTree_->Branch("VertexfitPVxRefitCosTheta_mmconvg", &VertexfitPVxRefitCosTheta_mmconvg_, "VertexfitPVxRefitCosTheta_mmconvg/D");
+bmmgTree_->Branch("VertexfitPVyRefitCosTheta_mmconvg", &VertexfitPVyRefitCosTheta_mmconvg_, "VertexfitPVyRefitCosTheta_mmconvg/D");
+bmmgTree_->Branch("VertexfitPVzRefitCosTheta_mmconvg", &VertexfitPVzRefitCosTheta_mmconvg_, "VertexfitPVzRefitCosTheta_mmconvg/D");
+
+bmmgTree_->Branch("VertexfitPVxRefitClosestZ_mmconvg", &VertexfitPVxRefitClosestZ_mmconvg_, "VertexfitPVxRefitClosestZ_mmconvg/D");
+bmmgTree_->Branch("VertexfitPVyRefitClosestZ_mmconvg", &VertexfitPVyRefitClosestZ_mmconvg_, "VertexfitPVyRefitClosestZ_mmconvg/D");
+bmmgTree_->Branch("VertexfitPVzRefitClosestZ_mmconvg", &VertexfitPVzRefitClosestZ_mmconvg_, "VertexfitPVzRefitClosestZ_mmconvg/D");
+
+
+
+bmmgTree_->Branch("VertexfitBsCt3DPVClosestZ_mmconvg", &VertexfitBsCt3DPVClosestZ_mmconvg_, "VertexfitBsCt3DPVClosestZ_mmconvg/D");
+bmmgTree_->Branch("VertexfitBsCt2DPVClosestZ_mmconvg", &VertexfitBsCt2DPVClosestZ_mmconvg_, "VertexfitBsCt2DPVClosestZ_mmconvg/D");
+bmmgTree_->Branch("VertexfitBsCt3DPVCosTheta_mmconvg", &VertexfitBsCt3DPVCosTheta_mmconvg_, "VertexfitBsCt3DPVCosTheta_mmconvg/D");
+bmmgTree_->Branch("VertexfitBsCt2DPVCosTheta_mmconvg", &VertexfitBsCt2DPVCosTheta_mmconvg_, "VertexfitBsCt2DPVCosTheta_mmconvg/D");
+
+bmmgTree_->Branch("VertexfitBsCtErr2D_mmconvg", &VertexfitBsCtErr2D_mmconvg_, "VertexfitBsCtErr2D_mmconvg/D");
+bmmgTree_->Branch("VertexfitBsCtErr3D_mmconvg", &VertexfitBsCtErr3D_mmconvg_, "VertexfitBsCtErr3D_mmconvg/D");
+
+bmmgTree_->Branch("VertexfitBsDist3D_mmconvg", &VertexfitBsDist3D_mmconvg_, "VertexfitBsDist3D_mmconvg/D");
+bmmgTree_->Branch("VertexfitBsDist3DErr_mmconvg", &VertexfitBsDist3DErr_mmconvg_, "VertexfitBsDist3DErr_mmconvg/D");
+bmmgTree_->Branch("VertexfitBsDist2D_mmconvg", &VertexfitBsDist2D_mmconvg_, "VertexfitBsDist2D_mmconvg/D");
+bmmgTree_->Branch("VertexfitBsDist2DErr_mmconvg", &VertexfitBsDist2DErr_mmconvg_, "VertexfitBsDist2DErr_mmconvg/D");
+
+bmmgTree_->Branch("BsVtxProb_mmconvg", &BsVtxProb_mmconvg_, "BsVtxProb_mmconvg/D");
+bmmgTree_->Branch("BsCt2D_mmconvg", &BsCt2D_mmconvg_, "BsCt2D_mmconvg/D");
+bmmgTree_->Branch("BsCt3D_mmconvg", &BsCt3D_mmconvg_, "BsCt3D_mmconvg/D");
+
+
+bmmgTree_->Branch("DeltaRPhoton1DiMuon_mmconvg", &DeltaRPhoton1DiMuon_mmconvg_, "DeltaRPhoton1DiMuon_mmconvg/D");
+bmmgTree_->Branch("DeltaRPhoton2DiMuon_mmconvg", &DeltaRPhoton2DiMuon_mmconvg_, "DeltaRPhoton2DiMuon_mmconvg/D");
+
+bmmgTree_->Branch("BsHelicity_mmconvg", &BsHelicity_mmconvg_, "BsHelicity_mmconvg/D");
+bmmgTree_->Branch("BsCoplanarity_mmconvg", &BsCoplanarity_mmconvg_, "BsCoplanarity_mmconvg/D");
+
+bmmgTree_->Branch("DiMuonMass_Jpsi", &DiMuonMass_Jpsi_, "DiMuonMass_Jpsi/D");
+bmmgTree_->Branch("DiMuonEta_Jpsi", &DiMuonEta_Jpsi_, "DiMuonEta_Jpsi/D");
+bmmgTree_->Branch("DiMuonPhi_Jpsi", &DiMuonPhi_Jpsi_, "DiMuonPhi_Jpsi/D");
+bmmgTree_->Branch("DiMuonPt_Jpsi", &DiMuonPt_Jpsi_, "DiMuonPt_Jpsi/D");
+
+bmmgTree_->Branch("DiMuonMass_Phi", &DiMuonMass_Phi_, "DiMuonMass_Phi/D");
+bmmgTree_->Branch("DiMuonEta_Phi", &DiMuonEta_Phi_, "DiMuonEta_Phi/D");
+bmmgTree_->Branch("DiMuonPhi_Phi", &DiMuonPhi_Phi_, "DiMuonPhi_Phi/D");
+bmmgTree_->Branch("DiMuonPt_Phi", &DiMuonPt_Phi_, "DiMuonPt_Phi/D");
+
+bmmgTree_->Branch("DiMuonMass_Kstar0", &DiMuonMass_Kstar0_, "DiMuonMass_Kstar0/D");
+bmmgTree_->Branch("DiMuonEta_Kstar0", &DiMuonEta_Kstar0_, "DiMuonEta_Kstar0/D");
+bmmgTree_->Branch("DiMuonPhi_Kstar0", &DiMuonPhi_Kstar0_, "DiMuonPhi_Kstar0/D");
+bmmgTree_->Branch("DiMuonPt_Kstar0", &DiMuonPt_Kstar0_, "DiMuonPt_Kstar0/D");
+
+bmmgTree_->Branch("DiMuonMass_NoBound", &DiMuonMass_NoBound_, "DiMuonMass_NoBound/D");
+bmmgTree_->Branch("DiMuonEta_NoBound", &DiMuonEta_NoBound_, "DiMuonEta_NoBound/D");
+bmmgTree_->Branch("DiMuonPhi_NoBound", &DiMuonPhi_NoBound_, "DiMuonPhi_NoBound/D");
+bmmgTree_->Branch("DiMuonPt_NoBound", &DiMuonPt_NoBound_, "DiMuonPt_NoBound/D");
+
+
+
+
   bmmgTree_->Branch("BsM_beffit", &BsM_beffit_,"BsM_beffit/D");
   bmmgTree_->Branch("BsEta_beffit", &BsEta_beffit_,"BsEta_beffit/D");
   bmmgTree_->Branch("BsPhi_beffit", &BsPhi_beffit_,"BsPhi_beffit/D");
@@ -463,6 +541,106 @@ void RadiativeRootTree::resetEntries()
   DiMuon_LxyOverPt_ = -9999999;
   DiMuon_mu1Cat_alone_ = -9999999;
   DiMuon_mu2Cat_alone_ = -9999999;
+
+
+
+
+// ---- Four-vector Bs ----
+FourvectorBsMass_mmconvg_ = -9999999;
+FourvectorBsPt_mmconvg_   = -9999999;
+FourvectorBsEta_mmconvg_  = -9999999;
+FourvectorBsPhi_mmconvg_  = -9999999;
+
+// ---- Vertex-fit Bs kinematics ----
+VertexfitBsMass_mmconvg_ = -9999999;
+VertexfitBsPt_mmconvg_   = -9999999;
+VertexfitBsEta_mmconvg_  = -9999999;
+VertexfitBsPhi_mmconvg_  = -9999999;
+VertexfitBsPz_mmconvg_   = -9999999;
+
+// ---- Secondary vertex ----
+VertexfitBsSVx_mmconvg_ = -9999999;
+VertexfitBsSVy_mmconvg_ = -9999999;
+VertexfitBsSVz_mmconvg_ = -9999999;
+
+// ---- Converted photon four-vector ----
+FourvectorConvGammaPt_mmconvg_  = -9999999;
+FourvectorConvGammaEta_mmconvg_ = -9999999;
+FourvectorConvGammaPhi_mmconvg_ = -9999999;
+
+// ---- PV refit / cos(theta) ----
+VertexfitPVxRefitCosTheta_mmconvg_ = -9999999;
+VertexfitPVyRefitCosTheta_mmconvg_ = -9999999;
+VertexfitPVzRefitCosTheta_mmconvg_ = -9999999;
+
+// ---- PV refit / closest-Z ----
+VertexfitPVxRefitClosestZ_mmconvg_ = -9999999;
+VertexfitPVyRefitClosestZ_mmconvg_ = -9999999;
+VertexfitPVzRefitClosestZ_mmconvg_ = -9999999;
+
+// ---- Proper decay lengths ----
+VertexfitBsCt3DPVClosestZ_mmconvg_ = -9999999;
+VertexfitBsCt2DPVClosestZ_mmconvg_ = -9999999;
+VertexfitBsCt3DPVCosTheta_mmconvg_ = -9999999;
+VertexfitBsCt2DPVCosTheta_mmconvg_ = -9999999;
+
+// ---- Lifetime errors ----
+VertexfitBsCtErr2D_mmconvg_ = -9999999;
+VertexfitBsCtErr3D_mmconvg_ = -9999999;
+
+// ---- Distances and times (3D) ----
+VertexfitBsDist3D_mmconvg_     = -9999999;
+VertexfitBsDist3DErr_mmconvg_  = -9999999;
+VertexfitBsTime3D_mmconvg_     = -9999999;
+VertexfitBsTime3DErr_mmconvg_  = -9999999;
+
+// ---- Distances and times (2D) ----
+VertexfitBsDist2D_mmconvg_     = -9999999;
+VertexfitBsDist2DErr_mmconvg_  = -9999999;
+VertexfitBsTime2D_mmconvg_     = -9999999;
+VertexfitBsTime2DErr_mmconvg_  = -9999999;
+
+// ---- Global Bs observables ----
+BsVtxProb_mmconvg_ = -9999999;
+BsCt2D_mmconvg_    = -9999999;
+BsCt3D_mmconvg_    = -9999999;
+
+// ---- Angular / topology ----
+DeltaRPhoton1DiMuon_mmconvg_ = -9999999;
+DeltaRPhoton2DiMuon_mmconvg_ = -9999999;
+
+BsHelicity_mmconvg_    = -9999999;
+BsCoplanarity_mmconvg_ = -9999999;
+
+// ===============================
+// Reset variables (DiMuon blocks)
+// ===============================
+
+// ---- J/psi ----
+DiMuonMass_Jpsi_ = -9999999;
+DiMuonEta_Jpsi_  = -9999999;
+DiMuonPhi_Jpsi_  = -9999999;
+DiMuonPt_Jpsi_   = -9999999;
+
+// ---- Phi ----
+DiMuonMass_Phi_ = -9999999;
+DiMuonEta_Phi_  = -9999999;
+DiMuonPhi_Phi_  = -9999999;
+DiMuonPt_Phi_   = -9999999;
+
+// ---- K*0 ----
+DiMuonMass_Kstar0_ = -9999999;
+DiMuonEta_Kstar0_  = -9999999;
+DiMuonPhi_Kstar0_  = -9999999;
+DiMuonPt_Kstar0_   = -9999999;
+
+// ---- No bound ----
+DiMuonMass_NoBound_ = -9999999;
+DiMuonEta_NoBound_  = -9999999;
+DiMuonPhi_NoBound_  = -9999999;
+DiMuonPt_NoBound_   = -9999999;
+
+
   BsM_beffit_ = -9999999;
 	BsEta_beffit_ = -9999999;
 	BsPhi_beffit_ = -9999999;
@@ -884,6 +1062,81 @@ void RadiativeRootTree::setBranchAddresses(){
   bmmgTree_->SetBranchAddress("DiMuon_LxyOverPt", &DiMuon_LxyOverPt_);
   bmmgTree_->SetBranchAddress("DiMuon_mu1Cat_alone", &DiMuon_mu1Cat_alone_);
   bmmgTree_->SetBranchAddress("DiMuon_mu2Cat_alone", &DiMuon_mu2Cat_alone_);
+
+
+  bmmgTree_->SetBranchAddress("FourvectorBsMass_mmconvg", &FourvectorBsMass_mmconvg_);
+bmmgTree_->SetBranchAddress("FourvectorBsPt_mmconvg", &FourvectorBsPt_mmconvg_);
+bmmgTree_->SetBranchAddress("FourvectorBsEta_mmconvg", &FourvectorBsEta_mmconvg_);
+bmmgTree_->SetBranchAddress("FourvectorBsPhi_mmconvg", &FourvectorBsPhi_mmconvg_);
+
+bmmgTree_->SetBranchAddress("VertexfitBsMass_mmconvg", &VertexfitBsMass_mmconvg_);
+bmmgTree_->SetBranchAddress("VertexfitBsPt_mmconvg", &VertexfitBsPt_mmconvg_);
+bmmgTree_->SetBranchAddress("VertexfitBsEta_mmconvg", &VertexfitBsEta_mmconvg_);
+bmmgTree_->SetBranchAddress("VertexfitBsPhi_mmconvg", &VertexfitBsPhi_mmconvg_);
+bmmgTree_->SetBranchAddress("VertexfitBsPz_mmconvg", &VertexfitBsPz_mmconvg_);
+
+bmmgTree_->SetBranchAddress("VertexfitBsSVx_mmconvg", &VertexfitBsSVx_mmconvg_);
+bmmgTree_->SetBranchAddress("VertexfitBsSVy_mmconvg", &VertexfitBsSVy_mmconvg_);
+bmmgTree_->SetBranchAddress("VertexfitBsSVz_mmconvg", &VertexfitBsSVz_mmconvg_);
+
+bmmgTree_->SetBranchAddress("FourvectorConvGammaPt_mmconvg", &FourvectorConvGammaPt_mmconvg_);
+bmmgTree_->SetBranchAddress("FourvectorConvGammaEta_mmconvg", &FourvectorConvGammaEta_mmconvg_);
+bmmgTree_->SetBranchAddress("FourvectorConvGammaPhi_mmconvg", &FourvectorConvGammaPhi_mmconvg_);
+
+
+bmmgTree_->SetBranchAddress("VertexfitPVxRefitCosTheta_mmconvg", &VertexfitPVxRefitCosTheta_mmconvg_);
+bmmgTree_->SetBranchAddress("VertexfitPVyRefitCosTheta_mmconvg", &VertexfitPVyRefitCosTheta_mmconvg_);
+bmmgTree_->SetBranchAddress("VertexfitPVzRefitCosTheta_mmconvg", &VertexfitPVzRefitCosTheta_mmconvg_);
+
+bmmgTree_->SetBranchAddress("VertexfitPVxRefitClosestZ_mmconvg", &VertexfitPVxRefitClosestZ_mmconvg_);
+bmmgTree_->SetBranchAddress("VertexfitPVyRefitClosestZ_mmconvg", &VertexfitPVyRefitClosestZ_mmconvg_);
+bmmgTree_->SetBranchAddress("VertexfitPVzRefitClosestZ_mmconvg", &VertexfitPVzRefitClosestZ_mmconvg_);
+
+bmmgTree_->SetBranchAddress("VertexfitBsCt3DPVClosestZ_mmconvg", &VertexfitBsCt3DPVClosestZ_mmconvg_);
+bmmgTree_->SetBranchAddress("VertexfitBsCt2DPVClosestZ_mmconvg", &VertexfitBsCt2DPVClosestZ_mmconvg_);
+bmmgTree_->SetBranchAddress("VertexfitBsCt3DPVCosTheta_mmconvg", &VertexfitBsCt3DPVCosTheta_mmconvg_);
+bmmgTree_->SetBranchAddress("VertexfitBsCt2DPVCosTheta_mmconvg", &VertexfitBsCt2DPVCosTheta_mmconvg_);
+
+bmmgTree_->SetBranchAddress("VertexfitBsCtErr2D_mmconvg", &VertexfitBsCtErr2D_mmconvg_);
+bmmgTree_->SetBranchAddress("VertexfitBsCtErr3D_mmconvg", &VertexfitBsCtErr3D_mmconvg_);
+
+bmmgTree_->SetBranchAddress("VertexfitBsDist3D_mmconvg", &VertexfitBsDist3D_mmconvg_);
+bmmgTree_->SetBranchAddress("VertexfitBsDist3DErr_mmconvg", &VertexfitBsDist3DErr_mmconvg_);
+bmmgTree_->SetBranchAddress("VertexfitBsDist2D_mmconvg", &VertexfitBsDist2D_mmconvg_);
+bmmgTree_->SetBranchAddress("VertexfitBsDist2DErr_mmconvg", &VertexfitBsDist2DErr_mmconvg_);
+
+bmmgTree_->SetBranchAddress("BsVtxProb_mmconvg", &BsVtxProb_mmconvg_);
+bmmgTree_->SetBranchAddress("BsCt2D_mmconvg", &BsCt2D_mmconvg_);
+bmmgTree_->SetBranchAddress("BsCt3D_mmconvg", &BsCt3D_mmconvg_);
+
+
+bmmgTree_->SetBranchAddress("DeltaRPhoton1DiMuon_mmconvg", &DeltaRPhoton1DiMuon_mmconvg_);
+bmmgTree_->SetBranchAddress("DeltaRPhoton2DiMuon_mmconvg", &DeltaRPhoton2DiMuon_mmconvg_);
+
+bmmgTree_->SetBranchAddress("BsHelicity_mmconvg", &BsHelicity_mmconvg_);
+bmmgTree_->SetBranchAddress("BsCoplanarity_mmconvg", &BsCoplanarity_mmconvg_);
+
+bmmgTree_->SetBranchAddress("DiMuonMass_Jpsi", &DiMuonMass_Jpsi_);
+bmmgTree_->SetBranchAddress("DiMuonEta_Jpsi", &DiMuonEta_Jpsi_);
+bmmgTree_->SetBranchAddress("DiMuonPhi_Jpsi", &DiMuonPhi_Jpsi_);
+bmmgTree_->SetBranchAddress("DiMuonPt_Jpsi", &DiMuonPt_Jpsi_);
+
+bmmgTree_->SetBranchAddress("DiMuonMass_Phi", &DiMuonMass_Phi_);
+bmmgTree_->SetBranchAddress("DiMuonEta_Phi", &DiMuonEta_Phi_);
+bmmgTree_->SetBranchAddress("DiMuonPhi_Phi", &DiMuonPhi_Phi_);
+bmmgTree_->SetBranchAddress("DiMuonPt_Phi", &DiMuonPt_Phi_);
+
+bmmgTree_->SetBranchAddress("DiMuonMass_Kstar0", &DiMuonMass_Kstar0_);
+bmmgTree_->SetBranchAddress("DiMuonEta_Kstar0", &DiMuonEta_Kstar0_);
+bmmgTree_->SetBranchAddress("DiMuonPhi_Kstar0", &DiMuonPhi_Kstar0_);
+bmmgTree_->SetBranchAddress("DiMuonPt_Kstar0", &DiMuonPt_Kstar0_);
+
+bmmgTree_->SetBranchAddress("DiMuonMass_NoBound", &DiMuonMass_NoBound_);
+bmmgTree_->SetBranchAddress("DiMuonEta_NoBound", &DiMuonEta_NoBound_);
+bmmgTree_->SetBranchAddress("DiMuonPhi_NoBound", &DiMuonPhi_NoBound_);
+bmmgTree_->SetBranchAddress("DiMuonPt_NoBound", &DiMuonPt_NoBound_);
+
+
   bmmgTree_->SetBranchAddress("BsM_beffit", &BsM_beffit_);
   bmmgTree_->SetBranchAddress("BsEta_beffit", &BsEta_beffit_);
   bmmgTree_->SetBranchAddress("BsPhi_beffit", &BsPhi_beffit_);
