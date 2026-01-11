@@ -9,7 +9,7 @@ datasetName = "2024BCpruned"
 
 # Prepare a directory for the output histograms
 dirPath = 'tupleProjections/'+datasetName+'/cut1'
-if not os.access(dirPath[:-5], os.F_OK):
+if not os.access(dirPath[:-5], os.F_OK):    # '/cut?' has 5 chars
     os.mkdir(dirPath[:-5])
 if os.access(dirPath, os.F_OK):
     os.rmdir(dirPath)
