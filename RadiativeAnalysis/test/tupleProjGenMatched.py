@@ -6,10 +6,10 @@ import numpy as np
 
 
 # Prepare a directory for the output histograms
-dirPath = 'tupleProjections/recoGenMatched'
+dirPath = 'tupleProjections/recoGenMatched_wFP'
 
 # Get the tuple
-tupleFile = r.TFile("./outputData/tBsToJpsiGammaGenMatched.root","READ")
+tupleFile = r.TFile("./outputData/BsToJpsiGammaGenMatched_FlPath.root","READ")
 ntuple = tupleFile.Get("tMuMuGamma")
 
 # Make a list with branch names
@@ -24,7 +24,8 @@ binInfo = {
     branchNames[2] : (100,-3.,3.),
     branchNames[3] : (100,0.,0.5),
     branchNames[4] : (100,0.,0.05),
-    branchNames[5] : (100,0.,10.)
+    branchNames[5] : (100,0.,10.),
+    branchNames[6] : (100,0.,5.)
 }
 
 # Create and fill the histograms

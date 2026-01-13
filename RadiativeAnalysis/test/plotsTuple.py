@@ -3,13 +3,13 @@ import ROOT as r
 import sys
 
 # Get the tuple
-tupleFile = r.TFile("./outputData/tBsToJpsiGamma_RecoOnly_allMC.root","READ")
+tupleFile = r.TFile("./outputData/BsToJpsiGammaGenMatched_FlPath.root","READ")
 ntuple = tupleFile.Get("tMuMuGamma")
-#ntuple.Print()
+ntuple.Print()
 
 # Create a histogram
-branchName = "minPCA_distance"
-histo = r.TH1D("h"+branchName, branchName, 100, 0.,0.2)
+branchName = "minPV_SVdistance"
+histo = r.TH1D("h"+branchName, branchName, 100, 0.,1.)
 ntuple.Project("h"+branchName, branchName)
 histo.SetDirectory(0)
 
@@ -19,5 +19,5 @@ tupleFile.Close()
 canvas = r.TCanvas("c"+str(histo.GetTitle()))
 canvas.cd()
 histo.Draw()
-canvas.Print("h"+branchName+"Reco"+".pdf")
+canvas.Print("h"+branchName+"Temp"+".pdf")
 input('press enter to exit')

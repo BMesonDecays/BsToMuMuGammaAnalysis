@@ -61,6 +61,22 @@ namespace Tools{
     }
 
 
+    // find the minimal 3D distance to any PV
+    double minDistPV (math::XYZPoint point, const std::vector<reco::Vertex> & primaryVertices)
+    {
+        double minDist = 999.;
+        for (auto & pv : primaryVertices)
+        {
+            math::XYZVector displ = point - pv.position();
+            double tempDist = TMath::Sqrt(displ.Mag2());
+            if (tempDist < minDist)
+                minDist = tempDist;
+        }
+        
+        return minDist;
+    }
+
+
     // find first produced B0s in MC sample
     const reco::Candidate* findFirstB0s(const reco::Candidate* partB0s)
     {
