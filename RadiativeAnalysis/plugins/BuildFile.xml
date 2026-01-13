@@ -31,7 +31,7 @@
 
 
 
-<library name="JpsiGammaMiniAOD" file="JpsiGammaMiniAOD.cc">
+<library name="JpsiGammaGenMatched" file="JpsiGammaGenMatched.cc">
 </library>
 
 

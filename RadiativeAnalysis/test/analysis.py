@@ -18,9 +18,9 @@ process.options = cms.untracked.PSet(wantSummary = cms.untracked.bool(False))
 
 
 process.source = cms.Source('PoolSource', fileNames = cms.untracked.vstring(
-    "/store/data/Run2024B/ParkingDoubleMuonLowMass0/MINIAOD/PromptReco-v1/000/378/981/00000/5c8cde04-e7ac-4c56-849a-85bd77ae9624.root"))
+    "/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToJpsiGamma_MCTunesRun3ECM13p6TeV/BsToJpsiGamma_CMSSW_12_4_11_patch3_19_01_2025/250119_174005/0000/private_BsToJpsiGamma_Run3_27.root"))
 process.source.skipEvents = cms.untracked.uint32(0)
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000))
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(800))
 
 process.load("TrackingTools/TransientTrack/TransientTrackBuilder_cfi")
 process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
@@ -34,8 +34,8 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_mc_FULL','')
 
 
-process.analiza= cms.EDAnalyzer("JpsiGammaMiniAOD",
-  outHist = cms.string('BsToJpsiGammaData.root'),
+process.analiza= cms.EDAnalyzer("JpsiGammaGenMatched",
+  outHist = cms.string('testOutput.root'),
 )
 
 

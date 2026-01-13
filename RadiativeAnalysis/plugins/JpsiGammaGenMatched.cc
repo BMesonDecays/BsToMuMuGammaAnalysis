@@ -105,6 +105,7 @@ private:
   edm::EDGetTokenT < vector<reco::Muon> > theMuonToken;
   edm::EDGetTokenT < vector<reco::Photon> > thePhotonToken;
   edm::EDGetTokenT < vector<reco::Vertex> > theVertexToken; 
+  edm::EDGetTokenT < edm::TriggerResults > theTriggerResultsToken;
 
   edm::ESGetToken<MagneticField, IdealMagneticFieldRecord> m_fieldToken;
 
@@ -125,6 +126,7 @@ JpsiGammaGenMatched::JpsiGammaGenMatched(const edm::ParameterSet& conf)
   theMuonToken = consumes< vector<reco::Muon>  >( edm::InputTag("muons"));
   thePhotonToken = consumes< vector<reco::Photon>  >( edm::InputTag("photons"));
   theVertexToken = consumes< vector<reco::Vertex>  >( edm::InputTag("offlinePrimaryVertices"));
+  theTriggerResultsToken = consumes< edm::TriggerResults > (edm::InputTag("TriggerResults","","HLT"));
 
   m_fieldToken = esConsumes<MagneticField, IdealMagneticFieldRecord>();
 
@@ -166,6 +168,10 @@ void JpsiGammaGenMatched::analyze(
   const std::vector<reco::Muon> & recoMuons = ev.get(theMuonToken);
   const std::vector<reco::Photon> & recoPhotons = ev.get(thePhotonToken);
   const std::vector<reco::Vertex> & primaryVertices = ev.get(theVertexToken);
+
+  // trigger info
+  const edm::TriggerResults & triggerResults = ev.get(theTriggerResultsToken);
+  edm::TriggerNames triggerNames = ev.triggerNames(triggerResults);
   
   auto const& field = es.getData(m_fieldToken);  
 
@@ -327,6 +333,13 @@ void JpsiGammaGenMatched::analyze(
 
   // fill the Ntuple
   tMuMuGamma->Fill(M_dimuon, commonVertexProb, photonCaloEta, deltaR_fitDimuon_recoPhoton, closestAppDistance, M_dimuonGamma);
+
+  // print the trigger info
+  for (unsigned int i=0; i < triggerResults.size();i++)
+  {
+    if (triggerResults.accept(i))
+      std::cout << triggerNames.triggerName(i) << std::endl;
+  }
 
 
 

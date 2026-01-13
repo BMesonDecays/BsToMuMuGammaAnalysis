@@ -21,6 +21,13 @@ namespace Tools{
 
         return PCA;
     }
+    // tutaj znajdowany jest punkt najbliższego podejścia (PCA) dla danego primary i secondary vertex oraz wektora pędu
+    // w moim przypadku był to pęd cząstki rozpadającej się w tym secondary vertexie
+    // PCA ma być na przedłużeniu kierunku pędu
+    // s*|mom| to odległość od SV do PCA; tutaj s jest od razu dzielone przez wartość pędu (|mom|)
+    // s powinno wyjść z odpowiednim znakiem
+    // do wektora położenia SV dodawany jest wektor łączący SV z PCA: s*mom (gdyby wcześniej s nie było dzielone przez |mom|, tutaj byłoby s*(mom/|mom|))
+
 
     // find the smallest distance of closest approach of a momentum line to the best (closest) PV, (SV point needed)
     // return two points: best PV position and the PCA point
