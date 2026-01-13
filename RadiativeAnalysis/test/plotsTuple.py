@@ -3,14 +3,15 @@ import ROOT as r
 import sys
 
 # Get the tuple
-tupleFile = r.TFile("./outputData/BsToJpsiGammaGenMatched_FlPath.root","READ")
+tupleFile = r.TFile("BsToJpsiGammaData.root","READ")
 ntuple = tupleFile.Get("tMuMuGamma")
 ntuple.Print()
 
+
 # Create a histogram
-branchName = "minPV_SVdistance"
-histo = r.TH1D("h"+branchName, branchName, 100, 0.,1.)
-ntuple.Project("h"+branchName, branchName)
+branchName = "minFlightPath"
+histo = r.TH1D("h"+branchName, branchName, 100, 0.,0.1)
+ntuple.Project("h"+branchName, branchName, "TMath::Abs(M_dimuon - 3.0969) < 0.06")
 histo.SetDirectory(0)
 
 tupleFile.Close()

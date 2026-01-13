@@ -139,7 +139,7 @@ JpsiGammaGenMatched::~JpsiGammaGenMatched()
 
 void JpsiGammaGenMatched::beginJob()
 {
-    tMuMuGamma = new TNtupleD("tMuMuGamma","tMuMuGamma","M_dimuon:ProbOfCommonMuonVertex:eta_photon:deltaR_dimuon_photon:minPCA_distance:M_dimuonGamma:minPV_SVdistance");
+    tMuMuGamma = new TNtupleD("tMuMuGamma","tMuMuGamma","M_dimuon:ProbOfCommonMuonVertex:eta_photon:deltaR_dimuon_photon:minPCA_distance:M_dimuonGamma:minFlightPath");
     
     cout << "HERE JpsiGammaGenMatched::beginJob()" << endl;
 }
@@ -330,10 +330,10 @@ void JpsiGammaGenMatched::analyze(
         
   double closestAppDistance = TMath::Sqrt((bestPVposition-bestPCA).Mag2());
   double M_dimuonGamma = lFitDimuonRecoPhotonVector.M();
-  double minDistancePV = Tools::minDistPV(fittedSV, primaryVertices);
+  double minFlightPath = Tools::minDistPV(fittedSV, primaryVertices);
 
   // fill the Ntuple
-  tMuMuGamma->Fill(M_dimuon, commonVertexProb, photonCaloEta, deltaR_fitDimuon_recoPhoton, closestAppDistance, M_dimuonGamma, minDistancePV);
+  tMuMuGamma->Fill(M_dimuon, commonVertexProb, photonCaloEta, deltaR_fitDimuon_recoPhoton, closestAppDistance, M_dimuonGamma, minFlightPath);
 
   /*
   // print the trigger info

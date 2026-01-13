@@ -39,6 +39,8 @@
 #include "RecoVertex/KinematicFit/interface/MultiTrackMassKinematicConstraint.h"
 #include "RecoVertex/KinematicFit/interface/KinematicConstrainedVertexFitter.h"
 
+#include "RecoVertex/VertexPrimitives/interface/TransientVertex.h"
+#include "RecoVertex/KalmanVertexFit/interface/KalmanVertexFitter.h"
 
 #include "TrackingTools/TrajectoryState/interface/FreeTrajectoryState.h"
 #include "TrackingTools/TrajectoryParametrization/interface/CartesianTrajectoryError.h"
@@ -105,6 +107,7 @@ private:
   edm::EDGetTokenT < vector<pat::Muon> > theMuonToken;
   edm::EDGetTokenT < vector<pat::Photon> > thePhotonToken;
   edm::EDGetTokenT < vector<reco::Vertex> > theVertexToken; 
+  edm::EDGetTokenT < vector<pat::PackedCandidate> > thePackedCandidateToken;
 
   edm::ESGetToken<MagneticField, IdealMagneticFieldRecord> m_fieldToken;
 
@@ -121,6 +124,7 @@ JpsiGammaMiniAOD::JpsiGammaMiniAOD(const edm::ParameterSet& conf)
   theMuonToken = consumes< vector<pat::Muon>  >( edm::InputTag("slimmedMuons"));
   thePhotonToken = consumes< vector<pat::Photon>  >( edm::InputTag("slimmedPhotons"));
   theVertexToken = consumes< vector<reco::Vertex>  >( edm::InputTag("offlineSlimmedPrimaryVertices"));
+  thePackedCandidateToken = consumes< vector<pat::PackedCandidate> >(edm::InputTag("packedPFCandidates"));
 
   m_fieldToken = esConsumes<MagneticField, IdealMagneticFieldRecord>();
 
@@ -133,7 +137,7 @@ JpsiGammaMiniAOD::~JpsiGammaMiniAOD()
 
 void JpsiGammaMiniAOD::beginJob()
 {
-    tMuMuGamma = new TNtupleD("tMuMuGamma","tMuMuGamma","M_dimuon:ProbOfCommonMuonVertex:eta_photon:deltaR_dimuon_photon:minPCA_distance:M_dimuonGamma");
+    tMuMuGamma = new TNtupleD("tMuMuGamma","tMuMuGamma","M_dimuon:ProbOfCommonMuonVertex:eta_photon:deltaR_dimuon_photon:minPCA_distance:M_dimuonGamma:minFlightPath:maxProb_MuMuNotGamma");
     
     cout << "HERE JpsiGammaMiniAOD::beginJob()" << endl;
 }
@@ -161,6 +165,7 @@ void JpsiGammaMiniAOD::analyze(
   const std::vector<pat::Muon> & recoMuons = ev.get(theMuonToken);
   const std::vector<pat::Photon> & recoPhotons = ev.get(thePhotonToken);
   const std::vector<reco::Vertex> & primaryVertices = ev.get(theVertexToken);
+  const std::vector<pat::PackedCandidate> & packedCandidates = ev.get(thePackedCandidateToken);
   
   auto const& field = es.getData(m_fieldToken);  
   
@@ -212,6 +217,30 @@ void JpsiGammaMiniAOD::analyze(
       GlobalVector dimuonMomentum = dimuonKinPar.momentum();
       math::XYZTLorentzVector lFitDimuonVector (dimuonMomentum.x(),dimuonMomentum.y(),dimuonMomentum.z(), dimuonKinPar.energy());
 
+      // check if no other packed candidate is compatible with the two muons vertex (get the maximal probability)
+      double maxVertexProb = 0.0;
+      std::vector<reco::TransientTrack> trackTTs;
+      trackTTs.push_back(muon1TT);
+      trackTTs.push_back(muon2TT);
+      KalmanVertexFitter kvf(true);
+      for (std::vector<pat::PackedCandidate>::const_iterator icand = packedCandidates.begin(); icand < packedCandidates.end(); icand++)
+      {
+        if (! icand->hasTrackDetails()) continue;
+        const reco::Track* candTrackPtr = icand->bestTrack();
+        // deltaR check to eliminate the already used two muons
+        if(std::min(reco::deltaR(*candTrackPtr,*mu1Track),reco::deltaR(*candTrackPtr,*mu2Track))<0.0003) continue;
+
+        reco::TransientTrack candTT = reco::TransientTrack(*candTrackPtr, &field);
+        trackTTs.push_back(candTT);
+        reco::Vertex v3part (TransientVertex(kvf.vertex(trackTTs)));
+        double prob3part = TMath::Prob(v3part.chi2(),v3part.ndof());
+        if (prob3part > maxVertexProb)
+          maxVertexProb = prob3part;
+        
+        trackTTs.pop_back();
+      }
+
+      
       // take a photon
       for (std::vector<pat::Photon>::const_iterator igamma = recoPhotons.begin(); igamma < recoPhotons.end(); igamma++)
       {
@@ -232,8 +261,10 @@ void JpsiGammaMiniAOD::analyze(
 
         double M_dimuonGamma = lFitDimuonRecoPhotonVector.M();
 
+        double minFlightPath = Tools::minDistPV(fittedSV, primaryVertices);
+
         // fill the Ntuple
-        tMuMuGamma->Fill(M_dimuon, commonVertexProb, photonCaloEta, deltaR_fitDimuon_recoPhoton, closestAppDistance, M_dimuonGamma);
+        tMuMuGamma->Fill(M_dimuon, commonVertexProb, photonCaloEta, deltaR_fitDimuon_recoPhoton, closestAppDistance, M_dimuonGamma, minFlightPath, maxVertexProb);
 
       }
 
