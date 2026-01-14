@@ -5,10 +5,10 @@ import os
 import numpy as np
 
 
-datasetName = "2024BCpruned"
+datasetName = "2024BCprunedNew"
 
 # Prepare a directory for the output histograms
-dirPath = 'tupleProjections/'+datasetName+'/cut1'
+dirPath = 'tupleProjections/'+datasetName+'/cut2'
 if not os.access(dirPath[:-5], os.F_OK):    # '/cut?' has 5 chars
     os.mkdir(dirPath[:-5])
 if os.access(dirPath, os.F_OK):
@@ -26,10 +26,10 @@ for branch in ntuple.GetListOfBranches():
 
 # Define the cuts
 cutList = []
-cutList.append(r.TCut("M_dimuonCut","TMath::Abs(M_dimuon - 3.0969) < 0.06"))    #Jpsi mass constraint
-cutList.append(r.TCut("commonMuonVrtxProbCut","ProbOfCommonMuonVertex > 0.5"))
-cutList.append(r.TCut("deltaR_dimuon_photonCut","deltaR_dimuon_photon < 0.35 && deltaR_dimuon_photon > 0.15"))  #based on GenMatched tuple
-cutList.append(r.TCut("minPCA_distanceCut","minPCA_distance < 0.007"))
+cutList.append(r.TCut("M_dimuonCut","TMath::Abs(M_dimuon - 3.0969) < 0.15"))    #Jpsi mass constraint
+cutList.append(r.TCut("commonMuonVrtxProbCut","ProbOfCommonMuonVertex > 0.1"))
+cutList.append(r.TCut("deltaR_dimuon_photonCut","deltaR_dimuon_photon < 0.4 && deltaR_dimuon_photon > 0.1"))  #based on GenMatched tuple
+cutList.append(r.TCut("minPCA_distanceCut","minPCA_distance < 0.01"))
 
 totalCut = r.TCut()
 for cut in cutList:
@@ -38,13 +38,14 @@ totalCut.Print()
 
 '''
 # Copy the ntuple limited by the cuts
-outputFile = r.TFile("./outputData/BsToJpsiGamma"+datasetName+"pruned.root","RECREATE")
+outputFile = r.TFile("./outputData/BsToJpsiGamma"+datasetName+"prunedNew.root","RECREATE")
 totalCut.Write()
 newNtuple = ntuple.CopyTree(str(totalCut))
 newNtuple.Write()
 outputFile.Close()
 tupleFile.Close()
 '''
+
 
 with open(dirPath+'/cuts.txt','w') as of:
     print(totalCut.GetTitle(), file=of)
