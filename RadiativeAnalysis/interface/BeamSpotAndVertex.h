@@ -24,7 +24,6 @@
 
 
 
-
 class BeamSpotAndVertex{
     public: 
         BeamSpotAndVertex();
@@ -58,8 +57,8 @@ class BeamSpotAndVertex{
 			bool isValidPV = false;
 			bool ispv = false;
 			bool isbs = false;
-			CovarianceMatrix BeamSpot_cov2d ;
-			Covariance3DMatrix  BeamSpot_cov3d;
+			reco::BeamSpot::CovarianceMatrix BeamSpot_cov2d ;
+			reco::BeamSpot::Covariance3DMatrix  BeamSpot_cov3d;
 			reco::BeamSpot::Point position;
 		};;
 

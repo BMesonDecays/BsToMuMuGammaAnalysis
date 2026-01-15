@@ -31,7 +31,7 @@ BeamSpotAndVertex::BSAndVtxVariables BeamSpotAndVertex::BSAndVtxObservables(cons
 		for(int i = 0; i < 3 ; ++i){
 			for(int j =0; j< 3; ++j){
 				bsvtxv.pv_covariance[iteratorCov] = vtx.covariance(i, j);
-
+				iteratorCov++;
 			}
 		}
 		//std::cout << " size of the vertex : " << bsvtxv.VtxIndex << "\n";
@@ -93,7 +93,7 @@ BeamSpotAndVertex::BSAndVtxVariables BeamSpotAndVertex::BSAndVtxObservables(cons
 	    bsvtxv.bs_sigmaZ = beamSpot.sigmaZ();
 	    bsvtxv.bs_dsigmaZ = beamSpot.sigmaZ0Error();
 		bsvtxv.position = beamSpot.position();
-		bsvtxv.BeamSpot_cov2d = beamSpot.covariance2D();
+		bsvtxv.BeamSpot_cov2d = beamSpot.covariance(); // not sure if this is meant, this is 7 dimensional covariance
 		bsvtxv.BeamSpot_cov3d = beamSpot.covariance3D();
     
     

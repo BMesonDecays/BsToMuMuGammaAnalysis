@@ -272,7 +272,6 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
 	  		    AlgebraicVector7 b_par = bs->currentState().kinematicParameters().vector();
                 GlobalVector Bsvec(b_par[3], b_par[4], b_par[5]);
                 reco::Vertex PVvtxHightestPt = PVs[bsAndVtxInfo.VtxIndex];
-                AlgebraicVector7 b_par = bs->currentState().kinematicParameters().vector();
 	  		    AlgebraicSymMatrix77 bs_er = bs->currentState().kinematicParametersError().matrix();
                 AlgebraicMatrix33 BVError(bVertex->error().matrix());
                 dcv.vertexfitbsmass_mmconvg = b_par[6];
@@ -492,9 +491,9 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
                     pBT(0,2) = bs->currentState().globalMomentum().z();
 
                     AlgebraicMatrix31 PV;
-                    PV(0,0) = PVx;
-                    PV(0,1) = PVy;
-                    PV(0,2) = PVz;
+                    PV(0,0) = PVvtxClosestZ.x();
+                    PV(0,1) = PVvtxClosestZ.y();
+                    PV(0,2) = PVvtxClosestZ.z(); // not sure if this is what was meant
                     
                     AlgebraicMatrix31 BV;
                     BV(0,0) = bVertex->position().x();
@@ -502,7 +501,6 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
                     BV(0,2) = bVertex->position().z();
                     AlgebraicMatrix31 lxyz = BV-PV;
                     AlgebraicMatrix33 PVError(PVvtxHightestPt.error());
-                    AlgebraicMatrix33 BVError(bVertex->error().matrix());
                     AlgebraicMatrix33 lxyzError = PVError + BVError;
                     lxyzError.Invert();
 
@@ -511,7 +509,7 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
                     double num(b(0,0));
                     double deno(a(0,0));
                     dcv.vertexfitBsCtMPVrefit_mmconvg = (num*bs->currentState().mass())/(deno);
-                    dcv.vertexfitBsCtErrMPV_mmconvg = mlim.BsPDGMass/sqrt(deno);
+                    dcv.vertexfitBsCtErrMPV_mmconvg = m_lim.BsPDGMass/sqrt(deno);
 
 
 
