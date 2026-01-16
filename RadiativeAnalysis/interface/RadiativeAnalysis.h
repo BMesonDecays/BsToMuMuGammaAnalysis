@@ -112,6 +112,7 @@ private:
   bool isMINIAOD_;
   std::string outputFile_; // output file
   RadiativeRootTree *bmmgRootTree_;
+  MuonMVAID* muonMVAIDProducer_;
 
   edm::ParameterSet theConfig_;
   edm::InputTag genParticlesLabel;
