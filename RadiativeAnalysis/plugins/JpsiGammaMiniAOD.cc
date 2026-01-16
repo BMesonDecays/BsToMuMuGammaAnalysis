@@ -137,7 +137,8 @@ JpsiGammaMiniAOD::~JpsiGammaMiniAOD()
 
 void JpsiGammaMiniAOD::beginJob()
 {
-    tMuMuGamma = new TNtupleD("tMuMuGamma","tMuMuGamma","M_dimuon:ProbOfCommonMuonVertex:eta_photon:deltaR_dimuon_photon:minPCA_distance:M_dimuonGamma:minFlightPath:maxProb_MuMuNotGamma");
+    tMuMuGamma = new TNtupleD("tMuMuGamma","tMuMuGamma",
+      "M_dimuon:ProbOfCommonMuonVertex:eta_photon:deltaR_dimuon_photon:minPCA_distance:M_dimuonGamma:minFlightPath:maxProb_MuMuNotGamma:nOfPhotons0_4:nOfPhotons0_1_0_4:nOfPhotons0_2_0_4");
     
     cout << "HERE JpsiGammaMiniAOD::beginJob()" << endl;
 }
@@ -205,10 +206,12 @@ void JpsiGammaMiniAOD::analyze(
       RefCountedKinematicParticle fitParticle = vertexFitTree->currentParticle();
       RefCountedKinematicVertex fitVertex = vertexFitTree->currentDecayVertex();
       if (!fitVertex->vertexIsValid()) return;
-      double commonVertexProb = TMath::Prob(fitVertex->chiSquared(), fitVertex->degreesOfFreedom());  // potential problem: degreesOfFreedom type
+      double commonVertexProb = TMath::Prob(fitVertex->chiSquared(), fitVertex->degreesOfFreedom());
       if (commonVertexProb < 0.1) continue; // cut on the common vertex prob. of two muons
 
       double M_dimuon = fitParticle->currentState().mass(); // invariant mass of the fitted dimuon
+
+      if (std::fabs(M_dimuon - 3.097) > 0.2)  continue; // constraint on M_mumu ~ M_Jpsi
 
       GlobalPoint fittedGlobalPoint = fitVertex->position();
       math::XYZPoint fittedSV (fittedGlobalPoint.x(),fittedGlobalPoint.y(),fittedGlobalPoint.z());
@@ -226,11 +229,12 @@ void JpsiGammaMiniAOD::analyze(
       for (std::vector<pat::PackedCandidate>::const_iterator icand = packedCandidates.begin(); icand < packedCandidates.end(); icand++)
       {
         if (! icand->hasTrackDetails()) continue;
-        const reco::Track* candTrackPtr = icand->bestTrack();
-        // deltaR check to eliminate the already used two muons
-        if(std::min(reco::deltaR(*candTrackPtr,*mu1Track),reco::deltaR(*candTrackPtr,*mu2Track))<0.0003) continue;
+        const reco::Track candTrack = icand->pseudoTrack();
 
-        reco::TransientTrack candTT = reco::TransientTrack(*candTrackPtr, &field);
+        // deltaR check to eliminate the already used two muons
+        if(std::min(reco::deltaR(candTrack,*mu1Track),reco::deltaR(candTrack,*mu2Track))<0.0003) continue;
+
+        reco::TransientTrack candTT = reco::TransientTrack(candTrack, &field);
         trackTTs.push_back(candTT);
         reco::Vertex v3part (TransientVertex(kvf.vertex(trackTTs)));
         double prob3part = TMath::Prob(v3part.chi2(),v3part.ndof());
@@ -239,15 +243,25 @@ void JpsiGammaMiniAOD::analyze(
         
         trackTTs.pop_back();
       }
-
       
       // take a photon
+      int nOfPhotons0_4 = 0;
+      int nOfPhotons0_1_0_4 = 0;
+      int nOfPhotons0_2_0_4 = 0;
       for (std::vector<pat::Photon>::const_iterator igamma = recoPhotons.begin(); igamma < recoPhotons.end(); igamma++)
       {
         double photonCaloEta = igamma->superCluster()->eta();
 
         math::XYZTLorentzVector lRecoGammaVector = igamma->p4();
         double deltaR_fitDimuon_recoPhoton = reco::deltaR(lFitDimuonVector, lRecoGammaVector);
+
+        // count number of photons in the event with deltaR < 0.4 (and >0.1/0/2)
+        if (deltaR_fitDimuon_recoPhoton < 0.4)
+        {
+          nOfPhotons0_4 ++;
+          nOfPhotons0_1_0_4 += (int)(deltaR_fitDimuon_recoPhoton > 0.1);
+          nOfPhotons0_2_0_4 += (int)(deltaR_fitDimuon_recoPhoton > 0.2);
+        }
 
         // consider the closest approach distance of fitDimuonRecoPhoton to the best (closest) recoPV
         math::XYZTLorentzVector lFitDimuonRecoPhotonVector = lFitDimuonVector + lRecoGammaVector;
@@ -261,10 +275,11 @@ void JpsiGammaMiniAOD::analyze(
 
         double M_dimuonGamma = lFitDimuonRecoPhotonVector.M();
 
-        double minFlightPath = Tools::minDistPV(fittedSV, primaryVertices);
+        double flightLength = TMath::Sqrt((fittedSV - bestPVposition).Mag2());
 
         // fill the Ntuple
-        tMuMuGamma->Fill(M_dimuon, commonVertexProb, photonCaloEta, deltaR_fitDimuon_recoPhoton, closestAppDistance, M_dimuonGamma, minFlightPath, maxVertexProb);
+        tMuMuGamma->Fill(M_dimuon, commonVertexProb, photonCaloEta, deltaR_fitDimuon_recoPhoton, closestAppDistance, 
+          M_dimuonGamma, flightLength, maxVertexProb, (double)nOfPhotons0_4,(double)nOfPhotons0_1_0_4,(double)nOfPhotons0_2_0_4);
 
       }
 

@@ -30,12 +30,12 @@ process.load("Configuration.StandardSequences.Reconstruction_cff")
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 from Configuration.AlCa.GlobalTag import GlobalTag
-#process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_data', '')
-process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_mc_FULL','')
+process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_data', '')
+#process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_mc_FULL','')
 
 
-process.analiza= cms.EDAnalyzer("JpsiGammaGenMatched",
-  outHist = cms.string('BsToJpsiGammaMC.root'),
+process.analiza= cms.EDAnalyzer("JpsiGammaMiniAOD",
+  outHist = cms.string('BsToJpsiGammaData.root'),
 )
 
 
