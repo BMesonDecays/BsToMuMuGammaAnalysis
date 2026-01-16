@@ -139,7 +139,8 @@ JpsiGammaGenMatched::~JpsiGammaGenMatched()
 
 void JpsiGammaGenMatched::beginJob()
 {
-    tMuMuGamma = new TNtupleD("tMuMuGamma","tMuMuGamma","M_dimuon:ProbOfCommonMuonVertex:eta_photon:deltaR_dimuon_photon:minPCA_distance:M_dimuonGamma:minFlightPath");
+    tMuMuGamma = new TNtupleD("tMuMuGamma","tMuMuGamma",
+      "M_dimuon:ProbOfCommonMuonVertex:eta_photon:deltaR_dimuon_photon:minPCA_distance:M_dimuonGamma:flightLength:triggerBit");
     
     cout << "HERE JpsiGammaGenMatched::beginJob()" << endl;
 }
@@ -302,7 +303,7 @@ void JpsiGammaGenMatched::analyze(
   RefCountedKinematicParticle fitParticle = vertexFitTree->currentParticle();
   RefCountedKinematicVertex fitVertex = vertexFitTree->currentDecayVertex();
   if (!fitVertex->vertexIsValid()) return;
-  double commonVertexProb = TMath::Prob(fitVertex->chiSquared(), fitVertex->degreesOfFreedom());  // potential problem: degreesOfFreedom type
+  double commonVertexProb = TMath::Prob(fitVertex->chiSquared(), fitVertex->degreesOfFreedom());
   if (commonVertexProb < 0.1) return; // cut on the common vertex prob. of two muons
 
   double M_dimuon = fitParticle->currentState().mass(); // invariant mass of the fitted dimuon
@@ -330,20 +331,23 @@ void JpsiGammaGenMatched::analyze(
         
   double closestAppDistance = TMath::Sqrt((bestPVposition-bestPCA).Mag2());
   double M_dimuonGamma = lFitDimuonRecoPhotonVector.M();
-  double minFlightPath = Tools::minDistPV(fittedSV, primaryVertices);
+  double flightLength = TMath::Sqrt((fittedSV - bestPVposition).Mag2());
 
-  // fill the Ntuple
-  tMuMuGamma->Fill(M_dimuon, commonVertexProb, photonCaloEta, deltaR_fitDimuon_recoPhoton, closestAppDistance, M_dimuonGamma, minFlightPath);
-
-  /*
-  // print the trigger info
+  // find the trigger info
+  std::string triggerName = "HLT_DoubleMu4_3_LowMass_v1";
+  bool hasAccepted = false;
   for (unsigned int i=0; i < triggerResults.size();i++)
   {
-    if (triggerResults.accept(i))
-      std::cout << triggerNames.triggerName(i) << std::endl;
+    if (triggerNames.triggerName(i) == triggerName)
+      {
+        hasAccepted = triggerResults.accept(i);
+        break;
+      }  
   }
-  */
 
+  // fill the Ntuple
+  tMuMuGamma->Fill(M_dimuon, commonVertexProb, photonCaloEta, deltaR_fitDimuon_recoPhoton, closestAppDistance, M_dimuonGamma, flightLength, (double)hasAccepted);
+  
 
   cout <<"*** Analyze event: " << ev.id() <<" analysed event count:" << ++theEventCount << endl;
 }
