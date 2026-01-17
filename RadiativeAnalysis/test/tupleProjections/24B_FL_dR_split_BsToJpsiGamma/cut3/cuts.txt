@@ -1,0 +1,1 @@
+((deltaR_dimuon_photon < 0.4)&&(minFlightPath > 0.01))&&(maxProb_MuMuNotGamma < 0.9)

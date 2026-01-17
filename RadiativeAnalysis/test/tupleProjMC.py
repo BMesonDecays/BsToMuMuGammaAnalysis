@@ -8,7 +8,7 @@ import numpy as np
 datasetName = "MC_triggerBit"
 
 # Prepare a directory for the output histograms
-dirPath = 'tupleProjections/'+datasetName+'/cut0'
+dirPath = 'tupleProjections/'+datasetName+'/cut2'
 if not os.access(dirPath[:-5], os.F_OK):    # '/cut?' has 5 chars
     os.mkdir(dirPath[:-5])
 if os.access(dirPath, os.F_OK):
@@ -26,7 +26,7 @@ for branch in ntuple.GetListOfBranches():
 
 # Define the cuts
 cutList = []
-#cutList.append(r.TCut("triggered","triggerBit == 1.00"))
+cutList.append(r.TCut("triggered","triggerBit == 1.00"))
 
 totalCut = r.TCut()
 for cut in cutList:
@@ -45,7 +45,7 @@ binInfo = {
     branchNames[3] : (100,0.,0.5),
     branchNames[4] : (100,0.,0.05),
     branchNames[5] : (100,3.,10.),
-    branchNames[6] : (100,0.,4.0),
+    branchNames[6] : (100,0.,0.3),
     branchNames[7] : (2,0.,2.)
 }
 
