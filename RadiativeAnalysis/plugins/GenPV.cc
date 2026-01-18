@@ -114,7 +114,9 @@ private:
     
   std::vector<int> MuMuG = {22, 13, -13};
 
-  TH1D* hRecoPCA_GenPV_z;
+  TH1D* hDist_genPV;
+  TH1D* hDist_bestPV;
+  TH1I* hTriggered;
 
 };
 
@@ -155,9 +157,11 @@ bool GenPV::isSameDecay(const std::vector<int>& dec1, const std::vector<int>& de
 
 void GenPV::beginJob()
 {
-    hRecoPCA_GenPV_z = new TH1D("hRecoPCA_GenPV_z","hRecoPCA_GenPV_z",100,0.,0.012);
+  hDist_genPV = new TH1D("hDist_genPV","hDist_genPV",100,0.,0.1);
+  hDist_bestPV = new TH1D("hDist_bestPV","hDist_bestPV",100,0.,0.1);
+  hTriggered = new TH1I("hTriggered","hTriggered",2,0,2);
     
-    cout << "HERE GenPV::beginJob()" << endl;
+  cout << "HERE GenPV::beginJob()" << endl;
 }
 
 void GenPV::endJob()
@@ -166,11 +170,15 @@ void GenPV::endJob()
   TFile myRootFile( theConfig.getParameter<std::string>("outHist").c_str(), "RECREATE");
 
   //write histogram data
-  hRecoPCA_GenPV_z->Write();
+  hDist_genPV->Write();
+  hDist_bestPV->Write();
+  hTriggered->Write();
 
   myRootFile.Close();
 
-  delete hRecoPCA_GenPV_z;
+  delete hDist_genPV;
+  delete hDist_bestPV;
+  delete hTriggered;
   
   cout << "HERE GenPV::endJob()" << endl;
 }
@@ -184,6 +192,10 @@ void GenPV::analyze(
   const std::vector<reco::Muon> & recoMuons = ev.get(theMuonToken);
   const std::vector<reco::Photon> & recoPhotons = ev.get(thePhotonToken);
   const std::vector<reco::Vertex> & primaryVertices = ev.get(theVertexToken);
+
+  // trigger info
+  const edm::TriggerResults & triggerResults = ev.get(theTriggerResultsToken);
+  edm::TriggerNames triggerNames = ev.triggerNames(triggerResults);
 
   auto const& field = es.getData(m_fieldToken);
 
@@ -320,9 +332,23 @@ void GenPV::analyze(
 
   GlobalVector dimuonMomentum = fitParticle->currentState().kinematicParameters().momentum();
   math::XYZVector dimuonMomentum_math(dimuonMomentum.x(),dimuonMomentum.y(),dimuonMomentum.z());
-  
 
-  //////////////PCA(mmg)_reco to the genPV////////////////////////////
+  // find the trigger info
+  std::string triggerName = "HLT_DoubleMu4_3_LowMass_v1";
+  bool hasAccepted = false;
+  for (unsigned int i=0; i < triggerResults.size();i++)
+  {
+    if (triggerNames.triggerName(i) == triggerName)
+      {
+        hasAccepted = triggerResults.accept(i);
+        break;
+      }  
+  }
+  hTriggered->Fill((int)hasAccepted);
+  if (! hasAccepted)  return;
+
+
+  //////////////PCA(mmg)_reco to the genPV and bestRecoPV////////////////////////////
 
   const reco::Candidate* firstB0sPtr = Tools::findFirstB0s(genB0sPtr);    //first produced B0s
   const math::XYZPoint genPV = firstB0sPtr->vertex();
@@ -330,12 +356,31 @@ void GenPV::analyze(
   reco::Photon recoPhoton = *recoMatchedPhotons.at(0);
   recoPhoton.setVertex(reco::Candidate::Point(fittedSV.x(), fittedSV.y(), fittedSV.z()));
 
-  // find the PCA
+  // find the PCA to genPV
   math::XYZVector fitDimuonRecoPhotonMomentum = dimuonMomentum_math + recoPhoton.momentum();
-  math::XYZPoint pca = Tools::pca(genPV, fittedSV, fitDimuonRecoPhotonMomentum);
+  math::XYZPoint pcaGen = Tools::pca(genPV, fittedSV, fitDimuonRecoPhotonMomentum);
+  double dist_genPV = TMath::Sqrt((pcaGen - genPV).Mag2());
+  hDist_genPV->Fill(dist_genPV);
 
-  hRecoPCA_GenPV_z->Fill(std::abs(pca.z() - genPV.z()));  
+  // find the best recoPV
+  double minDistPcaPV = 1000.0;
+  unsigned int bestPrimVertexIndex = 0;
+  math::XYZPoint pcaBest(0.,0.,0.);
+  for(long unsigned int i=0; i<primaryVertices.size(); i++)
+  {
+    math::XYZPoint tempPca = Tools::pca(primaryVertices.at(i).position(), fittedSV, fitDimuonRecoPhotonMomentum);
+    math::XYZVector tempDiffPcaPV = tempPca - primaryVertices.at(i).position();
+    double tempDistPcaPV = TMath::Sqrt(tempDiffPcaPV.mag2());
 
+    if (tempDistPcaPV < minDistPcaPV)
+    {
+      minDistPcaPV = tempDistPcaPV;
+      bestPrimVertexIndex = i;
+      pcaBest = tempPca;
+    }
+  }
+  reco::Vertex bestPV = primaryVertices.at(bestPrimVertexIndex);
+  hDist_bestPV->Fill(minDistPcaPV);
 
 
 
