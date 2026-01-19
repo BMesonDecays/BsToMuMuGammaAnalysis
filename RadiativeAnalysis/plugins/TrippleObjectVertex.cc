@@ -680,7 +680,7 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
 //////////////////////////////////////////////////////////////////
 
             for (size_t i = 0; i < photons.size(); ++i) {
-            dcv.vertexFitFlag = 2;
+            dcv.vertexFitFlag_mmrecog = 2;
             std::cout<<" The vertex fit flag is set to 2 for the reco photons : "<<dcv.vertexFitFlag<<"\n";
             const reco::Photon& photon = photons[i];
             if (photon.superCluster().isNull()) continue;
@@ -723,7 +723,7 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
             GlobalError gigibs=kvfbsvertex.positionError();
             double vtxprob_Bs = TMath::Prob(vertexbskalman.chi2(),(int)vertexbskalman.ndof());
             if (vtxprob_Bs < 1e-5) continue;
-            dcv.BsVtxProb = vtxprob_Bs;
+            dcv.bsvtxprob_mmrecog = vtxprob_Bs;
             //std::cout<<"RecoPhoton : vtxprob_Bs: "<<vtxprob_Bs<<"\n";
             KinematicConstrainedFit BCandFitter;
             bool fitSuccess = BCandFitter.TrippleObjectVertexFitRecoPhoton(ttrk_muons, photonTT, dcv.dimuonMass, 0.001, photons, *covPtr);
@@ -731,10 +731,10 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
             //std::cout<<"print the fit sucess : "<< fitSuccess<< "\n";
             dcv.fittedBmassRecoPhoton = BCandFitter.getBhadronMass();
             std::cout<<"fitted B mass reco photon case: "<<dcv.fittedBmassRecoPhoton<<"\n";
-            dcv.BsMass = BCand.M();
-            dcv.BsPt   = BCand.Pt();
-            dcv.BsEta  = BCand.Eta();
-            dcv.BsPhi  = BCand.Phi();
+            dcv.fourvectorbsmass_mmrecog = BCand.M();
+            dcv.fourvectorbspt_mmrecog   = BCand.Pt();
+            dcv.fourvectorbseta_mmrecog  = BCand.Eta();
+            dcv.fourvectorbsphi_mmrecog  = BCand.Phi();
             RefCountedKinematicParticle bs = BCandFitter.getBhardon();
             RefCountedKinematicVertex bVertex = BCandFitter.getVertex();
             AlgebraicVector7 b_par = bs->currentState().kinematicParameters().vector();
@@ -745,21 +745,21 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
             reco::Vertex PVvtxHightestPt;//:wq = recVtxs[bsAndVtxInfo.VtxIndex];
             //Need input to solve the problem of multiple primary vertex
             //std::cout<<"Primary vertex HightestPt"<<PVvtxHightestPt.x()<< "\t"<<PVvtxHightestPt.y()<< "\t"<<PVvtxHightestPt.z() <<"\n";
-            dcv.BsCt3D = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*Bsvec.x()+
+            dcv.bsct3d_mmrecog = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*Bsvec.x()+
             (kvfbsvertex.position().y()-PVvtxHightestPt.y())*Bsvec.y()+
             (kvfbsvertex.position().z()-PVvtxHightestPt.z())*Bsvec.z())/
             (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y()+Bsvec.z()*Bsvec.z());
             //std::cout << " the decay time 3D : " << dcv.BsCt3D << "\n";
-            dcv.BsCt2D = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*Bsvec.x()+
+            dcv.bsct2d_mmrecog = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*Bsvec.x()+
             (kvfbsvertex.position().y()-PVvtxHightestPt.y())*Bsvec.y())/
             (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y());
             //std::cout << " the decay time 2D : " << dcv.BsCt3D << "\n";
-            dcv.BsCt2DBS = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-bsAndVtxInfo.bs_x)*Bsvec.x()+
+            dcv.bsct2dbs_mmrecog = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-bsAndVtxInfo.bs_x)*Bsvec.x()+
             (kvfbsvertex.position().y()-bsAndVtxInfo.bs_y)*Bsvec.y())/
             (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y());  
             //std::cout << " the decay time 2D BS : " << dcv.BsCt3D << "\n";
             }//end of reco photon loop 
-            std::cout << " vertex fit flag :"<< dcv.vertexFitFlag << "\n";
+            std::cout << " vertex fit flag :"<< dcv.vertexFitFlag_mmrecog << "\n";
         
 	}
     }
