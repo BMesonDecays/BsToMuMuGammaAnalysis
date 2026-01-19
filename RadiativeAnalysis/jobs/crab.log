@@ -2450,3 +2450,117 @@ WARNING 2026-01-19 17:21:13.251 UTC: 	 ATTENTION return value for 'tasks' has be
  format is {'commandStatus': 'SUCCESS' or 'FAILED',
             'tasklist': list of [task, status] lists as before}
 INFO 2026-01-19 17:21:13.259 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-01-19 18:04:40.722 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-01-19 18:04:40.723 UTC: 	 Running on: Linux lxplus973.cern.ch 5.14.0-611.11.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Tue Nov 25 05:13:22 EST 2025 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-01-19 18:04:40.723 UTC: 	 Not using Singularity
+DEBUG 2026-01-19 18:04:40.723 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-01-19 18:04:40.723 UTC: 	 Executing command: 'tasks'
+DEBUG 2026-01-19 18:04:40.723 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+DEBUG 2026-01-19 18:04:40.724 UTC: 	 Checking credentials
+DEBUG 2026-01-19 18:04:40.724 UTC: 	 Found proxy file /tmp/x509up_u183200
+DEBUG 2026-01-19 18:04:40.724 UTC: 	 Making sure it has proper VOMS extension
+DEBUG 2026-01-19 18:04:40.725 UTC: 	 Executing command :
+ voms-proxy-info --vo --file /tmp/x509up_u183200
+DEBUG 2026-01-19 18:04:40.748 UTC: 	 output : cms
+
+ error: 
+ retcode : 0
+DEBUG 2026-01-19 18:04:40.748 UTC: 	 Getting proxy life time left
+DEBUG 2026-01-19 18:04:40.748 UTC: 	 Executing command :
+ voms-proxy-info --actimeleft --timeleft --file /tmp/x509up_u183200
+DEBUG 2026-01-19 18:04:40.768 UTC: 	 output : 39020
+39020
+
+ error: 
+ retcode : 0
+DEBUG 2026-01-19 18:04:40.768 UTC: 	 Proxy valid for 10:50:20 hours
+DEBUG 2026-01-19 18:04:40.768 UTC: 	 Encoded data for curl request: subresource=delegatedn
+DEBUG 2026-01-19 18:04:40.815 UTC: 	 Registering user credentials on myproxy for /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=cmscrab/CN=(817881|373708)/CN=Robot: cms crab|/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=crabint1/CN=373708/CN=Robot: CMS CRAB Integration 1
+DEBUG 2026-01-19 18:04:40.815 UTC: 	 Executing command :
+ voms-proxy-info --identity --file /tmp/x509up_u183200
+DEBUG 2026-01-19 18:04:40.844 UTC: 	 output : /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=psajdak/CN=887534/CN=Pawel Sajdak
+
+ error: 
+ retcode : 0
+DEBUG 2026-01-19 18:04:40.844 UTC: 	 Getting myproxy life time left for 2ad9106fd7ae4a9b1ce4cb184f94cae618d249f1
+DEBUG 2026-01-19 18:04:40.844 UTC: 	 Executing command :
+ myproxy-info -s myproxy.cern.ch -l 2ad9106fd7ae4a9b1ce4cb184f94cae618d249f1
+DEBUG 2026-01-19 18:04:41.135 UTC: 	 output : username: 2ad9106fd7ae4a9b1ce4cb184f94cae618d249f1
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=psajdak/CN=887534/CN=Pawel Sajdak
+  renewal policy: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=cmscrab/CN=(817881|373708)/CN=Robot: cms crab|/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=crabint1/CN=373708/CN=Robot: CMS CRAB Integration 1
+  trusted retrieval policy: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=cmscrab/CN=(817881|373708)/CN=Robot: cms crab|/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=crabint1/CN=373708/CN=Robot: CMS CRAB Integration 1
+  timeleft: 575:41:36  (24.0 days)
+
+ error: 
+ retcode : 0
+DEBUG 2026-01-19 18:04:41.136 UTC: 	 Myproxy is valid: 2072460
+DEBUG 2026-01-19 18:04:41.136 UTC: 	 Result of myproxy credential check:
+  Credential exists on myproxy: username: 2ad9106fd7ae4a9b1ce4cb184f94cae618d249f1  - validity: 23 days, 23:41:00
+DEBUG 2026-01-19 18:04:41.136 UTC: 	 Command use: tasks
+DEBUG 2026-01-19 18:04:41.136 UTC: 	 Options use: ['--days=2']
+DEBUG 2026-01-19 18:04:41.136 UTC: 	 Encoded data for curl request: subresource=version
+DEBUG 2026-01-19 18:04:41.172 UTC: 	 CRABClient version: v3.251020
+DEBUG 2026-01-19 18:04:41.172 UTC: 	 Instance is prod
+DEBUG 2026-01-19 18:04:41.172 UTC: 	 Server base url is cmsweb.cern.ch
+DEBUG 2026-01-19 18:04:41.172 UTC: 	 Command api workflow
+DEBUG 2026-01-19 18:04:41.172 UTC: 	 Encoded data for curl request: timestamp=2026-01-17
+INFO 2026-01-19 18:04:41.250 UTC: 	 
+List of tasks from 2026-01-17 until 2026-01-19
+INFO 2026-01-19 18:04:41.250 UTC: 	 Beware that STATUS here does not include information from grid jobs
+INFO 2026-01-19 18:04:41.250 UTC: 	 ================================================================================
+INFO 2026-01-19 18:04:41.251 UTC: 	 NAME								STATUS
+INFO 2026-01-19 18:04:41.251 UTC: 	 ================================================================================
+INFO 2026-01-19 18:04:41.251 UTC: 	 260117_120620:psajdak_crab_FL_dR_3perJob_dset7
+								KILLED
+INFO 2026-01-19 18:04:41.251 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-01-19 18:04:41.251 UTC: 	 260117_120555:psajdak_crab_FL_dR_3perJob_dset6
+								KILLED
+INFO 2026-01-19 18:04:41.251 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-01-19 18:04:41.251 UTC: 	 260117_120534:psajdak_crab_FL_dR_3perJob_dset5
+								KILLED
+INFO 2026-01-19 18:04:41.251 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-01-19 18:04:41.251 UTC: 	 260117_120515:psajdak_crab_FL_dR_3perJob_dset4
+								KILLED
+INFO 2026-01-19 18:04:41.251 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-01-19 18:04:41.251 UTC: 	 260117_120453:psajdak_crab_FL_dR_3perJob_dset3
+								KILLED
+INFO 2026-01-19 18:04:41.251 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-01-19 18:04:41.251 UTC: 	 260117_120433:psajdak_crab_FL_dR_3perJob_dset2
+								KILLED
+INFO 2026-01-19 18:04:41.251 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-01-19 18:04:41.251 UTC: 	 260117_120413:psajdak_crab_FL_dR_3perJob_dset1
+								KILLED
+INFO 2026-01-19 18:04:41.251 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-01-19 18:04:41.251 UTC: 	 260117_120353:psajdak_crab_FL_dR_3perJob_dset0
+								KILLED
+INFO 2026-01-19 18:04:41.251 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-01-19 18:04:41.251 UTC: 	 260117_120334:psajdak_crab_FL_dR_3perJob_dset7
+								KILLED
+INFO 2026-01-19 18:04:41.251 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-01-19 18:04:41.251 UTC: 	 260117_120314:psajdak_crab_FL_dR_3perJob_dset6
+								SUBMITTED
+INFO 2026-01-19 18:04:41.251 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-01-19 18:04:41.251 UTC: 	 260117_120254:psajdak_crab_FL_dR_3perJob_dset5
+								SUBMITTED
+INFO 2026-01-19 18:04:41.251 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-01-19 18:04:41.252 UTC: 	 260117_120234:psajdak_crab_FL_dR_3perJob_dset4
+								KILLED
+INFO 2026-01-19 18:04:41.252 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-01-19 18:04:41.252 UTC: 	 260117_120213:psajdak_crab_FL_dR_3perJob_dset3
+								SUBMITTED
+INFO 2026-01-19 18:04:41.252 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-01-19 18:04:41.252 UTC: 	 260117_120152:psajdak_crab_FL_dR_3perJob_dset2
+								SUBMITTED
+INFO 2026-01-19 18:04:41.252 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-01-19 18:04:41.252 UTC: 	 260117_120132:psajdak_crab_FL_dR_3perJob_dset1
+								SUBMITTED
+INFO 2026-01-19 18:04:41.252 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-01-19 18:04:41.252 UTC: 	 260117_120111:psajdak_crab_FL_dR_3perJob_dset0
+								SUBMITTED
+INFO 2026-01-19 18:04:41.252 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-01-19 18:04:41.252 UTC: 	 
+
+WARNING 2026-01-19 18:04:41.252 UTC: 	 ATTENTION return value for 'tasks' has been changed to a dictionary
+ format is {'commandStatus': 'SUCCESS' or 'FAILED',
+            'tasklist': list of [task, status] lists as before}
+INFO 2026-01-19 18:04:41.260 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log

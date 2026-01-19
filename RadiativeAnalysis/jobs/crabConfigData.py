@@ -21,7 +21,7 @@ config.Data.inputDBS = 'global'
 config.Data.splitting = 'LumiBased'
 #config.Data.splitting = 'Automatic'
 #config.Data.splitting = 'EventAwareLumiBased'
-config.Data.unitsPerJob = 3 #number of files per jobs
+config.Data.unitsPerJob = 2 #number of files per jobs
 config.Data.totalUnits =  -1 #number of event
 #config.Data.outLFNDirBase = '/store/user/konec/crabout/'
 config.Data.outLFNDirBase = '/store/user/psajdak/crab_out/'
@@ -32,6 +32,8 @@ config.JobType.pluginName = 'Analysis'
 config.JobType.psetName = '../test/analysis.py'
 #config.JobType.disableAutomaticOutputCollection = True
 config.JobType.outputFiles = ['BsToJpsiGammaData.root']
+config.JobType.maxJobRuntimeMin = 60
+#config.JobType.maxMemoryMB = 3000
 
 config.section_("Site")
 #config.Site.whitelist = ['T3_CH_CERNCAF']
