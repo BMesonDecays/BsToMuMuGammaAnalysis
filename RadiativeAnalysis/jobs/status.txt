@@ -1,0 +1,224 @@
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_FL_dR_3perJob_BsToJpsiGamma/crab_FL_dR_3perJob_dset0
+Task name:			260117_120353:psajdak_crab_FL_dR_3perJob_dset0
+Grid scheduler - Task Worker:	crab3@vocms0194.cern.ch - crab-prod-tw02
+Status on the CRAB server:	KILLED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260117_120353%3Apsajdak_crab_FL_dR_3perJob_dset0
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260117_120353%3Apsajdak_crab_FL_dR_3perJob_dset0&from=1768647833000&to=now
+Status on the scheduler:	FAILED (KILLED)
+
+Jobs status:                    failed       		 17.8% (1381/7741)
+				finished     		 70.9% (5487/7741)
+				unsubmitted  		 11.3% ( 873/7741)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-b7ec131819c36a95cff8d04d26f93fe0/USER
+
+No publication information available yet
+
+Error Summary: (use crab status --verboseErrors for details about the errors)
+
+   1 jobs failed with exit code 0
+
+Could not find exit code details for 1380 jobs.
+
+Have a look at https://twiki.cern.ch/twiki/bin/viewauth/CMSPublic/JobExitCodes for a description of the exit codes.
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value for failed jobs (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 0MB min, 2721MB max, 1084MB ave
+ * Runtime: 0:00:00 min, 4:19:16 max, 0:06:59 ave
+ * CPU eff: 0% min, 135% max, 66% ave
+ * Waste: 278:41:58 (26% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_FL_dR_3perJob_BsToJpsiGamma/crab_FL_dR_3perJob_dset0/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_FL_dR_3perJob_BsToJpsiGamma/crab_FL_dR_3perJob_dset1
+Task name:			260117_120413:psajdak_crab_FL_dR_3perJob_dset1
+Grid scheduler - Task Worker:	crab3@vocms0195.cern.ch - crab-prod-tw01
+Status on the CRAB server:	KILLED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260117_120413%3Apsajdak_crab_FL_dR_3perJob_dset1
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260117_120413%3Apsajdak_crab_FL_dR_3perJob_dset1&from=1768647853000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (7737/7737)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-74268039ac41929d72032f20486ba7fa/USER
+
+No publication information available yet
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value for failed jobs (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 55MB min, 2483MB max, 1171MB ave
+ * Runtime: 0:01:02 min, 3:34:52 max, 0:06:01 ave
+ * CPU eff: 2% min, 181% max, 55% ave
+ * Waste: 523:41:23 (40% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_FL_dR_3perJob_BsToJpsiGamma/crab_FL_dR_3perJob_dset1/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_FL_dR_3perJob_BsToJpsiGamma/crab_FL_dR_3perJob_dset2
+Task name:			260117_120433:psajdak_crab_FL_dR_3perJob_dset2
+Grid scheduler - Task Worker:	crab3@vocms0198.cern.ch - crab-prod-tw01
+Status on the CRAB server:	KILLED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260117_120433%3Apsajdak_crab_FL_dR_3perJob_dset2
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260117_120433%3Apsajdak_crab_FL_dR_3perJob_dset2&from=1768647873000&to=now
+Status on the scheduler:	SUBMITTED
+
+Jobs status:                    finished     		  7.8% ( 600/7737)
+				idle         		 14.5% (1121/7737)
+				running      		  0.2% (  16/7737)
+				transferring 		  0.4% (  32/7737)
+				unsubmitted  		 77.1% (5968/7737)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-4efcfbc227450456f5857372a6fe8a1c/USER
+
+No publication information available yet
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value for failed jobs (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 0MB min, 1464MB max, 1281MB ave
+ * Runtime: 0:00:00 min, 0:27:17 max, 0:11:23 ave
+ * CPU eff: 26% min, 84% max, 66% ave
+ * Waste: 27:06:36 (18% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_FL_dR_3perJob_BsToJpsiGamma/crab_FL_dR_3perJob_dset2/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_FL_dR_3perJob_BsToJpsiGamma/crab_FL_dR_3perJob_dset3
+Task name:			260117_120453:psajdak_crab_FL_dR_3perJob_dset3
+Grid scheduler - Task Worker:	crab3@vocms0194.cern.ch - crab-prod-tw01
+Status on the CRAB server:	KILLED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260117_120453%3Apsajdak_crab_FL_dR_3perJob_dset3
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260117_120453%3Apsajdak_crab_FL_dR_3perJob_dset3&from=1768647893000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (7737/7737)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-78f5b5fc5aa8c83121ad1588d1a8e325/USER
+
+No publication information available yet
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value for failed jobs (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 62MB min, 2572MB max, 1165MB ave
+ * Runtime: 0:01:03 min, 2:02:04 max, 0:06:25 ave
+ * CPU eff: 3% min, 208% max, 57% ave
+ * Waste: 490:37:02 (37% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_FL_dR_3perJob_BsToJpsiGamma/crab_FL_dR_3perJob_dset3/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_FL_dR_3perJob_BsToJpsiGamma/crab_FL_dR_3perJob_dset4
+Task name:			260117_120515:psajdak_crab_FL_dR_3perJob_dset4
+Grid scheduler - Task Worker:	crab3@vocms0199.cern.ch - crab-prod-tw01
+Status on the CRAB server:	KILLED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260117_120515%3Apsajdak_crab_FL_dR_3perJob_dset4
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260117_120515%3Apsajdak_crab_FL_dR_3perJob_dset4&from=1768647915000&to=now
+Status on the scheduler:	SUBMITTED
+
+Jobs status:                    finished     		  5.6% ( 431/7738)
+				idle         		 13.7% (1060/7738)
+				unsubmitted  		 80.7% (6247/7738)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-a888f6a1533194b988bb0a6852a58ec7/USER
+
+No publication information available yet
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value for failed jobs (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 0MB min, 1502MB max, 1398MB ave
+ * Runtime: 0:00:00 min, 0:14:15 max, 0:09:14 ave
+ * CPU eff: 39% min, 78% max, 69% ave
+ * Waste: 19:15:44 (22% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_FL_dR_3perJob_BsToJpsiGamma/crab_FL_dR_3perJob_dset4/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_FL_dR_3perJob_BsToJpsiGamma/crab_FL_dR_3perJob_dset5
+Task name:			260117_120534:psajdak_crab_FL_dR_3perJob_dset5
+Grid scheduler - Task Worker:	crab3@vocms0199.cern.ch - crab-prod-tw01
+Status on the CRAB server:	KILLED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260117_120534%3Apsajdak_crab_FL_dR_3perJob_dset5
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260117_120534%3Apsajdak_crab_FL_dR_3perJob_dset5&from=1768647934000&to=now
+Status on the scheduler:	FAILED (KILLED)
+
+Jobs status:                    failed       		  0.1% (   4/7742)
+				finished     		 99.9% (7738/7742)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-05819f3b3ac35a18e6a7f3e1577c7ff0/USER
+
+No publication information available yet
+
+Error Summary: (use crab status --verboseErrors for details about the errors)
+
+   3 jobs failed with exit code 8901
+
+   1 jobs failed with exit code 50664
+
+Have a look at https://twiki.cern.ch/twiki/bin/viewauth/CMSPublic/JobExitCodes for a description of the exit codes.
+
+Warning: the average jobs CPU efficiency is less than 50%, please consider to improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task
+
+Summary of run jobs:
+ * Memory: 49MB min, 2557MB max, 1055MB ave
+ * Runtime: 0:01:03 min, 20:47:12 max, 0:09:53 ave
+ * CPU eff: 0% min, 189% max, 41% ave
+ * Waste: 691:45:01 (35% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_FL_dR_3perJob_BsToJpsiGamma/crab_FL_dR_3perJob_dset5/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_FL_dR_3perJob_BsToJpsiGamma/crab_FL_dR_3perJob_dset6
+Task name:			260117_120555:psajdak_crab_FL_dR_3perJob_dset6
+Grid scheduler - Task Worker:	crab3@vocms0198.cern.ch - crab-prod-tw01
+Status on the CRAB server:	KILLED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260117_120555%3Apsajdak_crab_FL_dR_3perJob_dset6
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260117_120555%3Apsajdak_crab_FL_dR_3perJob_dset6&from=1768647955000&to=now
+Status on the scheduler:	FAILED (KILLED)
+
+Jobs status:                    failed       		  0.1% (   6/7742)
+				finished     		 99.9% (7736/7742)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-d781b82f076cbb8cb0010c26b58aa115/USER
+
+No publication information available yet
+
+Error Summary: (use crab status --verboseErrors for details about the errors)
+
+   6 jobs failed with exit code 8002
+
+Have a look at https://twiki.cern.ch/twiki/bin/viewauth/CMSPublic/JobExitCodes for a description of the exit codes.
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value for failed jobs (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 35MB min, 2556MB max, 1219MB ave
+ * Runtime: 0:01:06 min, 1:07:44 max, 0:07:20 ave
+ * CPU eff: 0% min, 598% max, 65% ave
+ * Waste: 372:24:37 (28% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_FL_dR_3perJob_BsToJpsiGamma/crab_FL_dR_3perJob_dset6/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_FL_dR_3perJob_BsToJpsiGamma/crab_FL_dR_3perJob_dset7
+Task name:			260117_120620:psajdak_crab_FL_dR_3perJob_dset7
+Grid scheduler - Task Worker:	crab3@vocms0107.cern.ch - crab-prod-tw01
+Status on the CRAB server:	KILLED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260117_120620%3Apsajdak_crab_FL_dR_3perJob_dset7
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260117_120620%3Apsajdak_crab_FL_dR_3perJob_dset7&from=1768647980000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (7738/7738)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-8d79a55db4baf258d84483bf2c83cc7c/USER
+
+No publication information available yet
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value for failed jobs (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 1MB min, 1464MB max, 1232MB ave
+ * Runtime: 0:01:40 min, 0:20:31 max, 0:07:17 ave
+ * CPU eff: 10% min, 84% max, 74% ave
+ * Waste: 383:24:33 (29% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_FL_dR_3perJob_BsToJpsiGamma/crab_FL_dR_3perJob_dset7/crab.log

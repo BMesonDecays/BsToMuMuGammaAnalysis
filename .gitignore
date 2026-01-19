@@ -1,6 +1,6 @@
 [!ht]*.root
 histos*.root
 board.txt
-jobs/
+**/jobs/*/
 __*
-*/.gitignore
+**/.gitignore
