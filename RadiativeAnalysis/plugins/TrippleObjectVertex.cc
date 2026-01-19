@@ -590,7 +590,7 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
                              sqrt((bVertex->position().x() - PVvtxHightestPt.x())*(bVertex->position().x() - PVvtxHightestPt.x())+
                              (bVertex->position().y() - PVvtxHightestPt.y())*(bVertex->position().y() - PVvtxHightestPt.y())+
                              (bVertex->position().z() - PVvtxHightestPt.z())*(bVertex->position().z() - PVvtxHightestPt.z())));
-                    dcv.vertexfitBsCtErr3Drefit_mmconvg = mlim.BsPDGMass*(error3D2*abs(scale12))/sqrt(Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y()+Bsvec.z()*Bsvec.z());
+                    dcv.vertexfitBsCtErr3Drefit_mmconvg = m_lim.BsPDGMass*(error3D2*abs(scale12))/sqrt(Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y()+Bsvec.z()*Bsvec.z());
                     //Error on catu 2D
                     VertexDistanceXY dist22;
                     Measurement1D measurement22 = dist22.distance(VertexState(SVpos2,SVerr2),VertexState(PVpos2,PVerr2));
