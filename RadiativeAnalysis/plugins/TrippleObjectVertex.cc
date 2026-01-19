@@ -445,8 +445,10 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
 
                     // Now use it - clean and compact!
                     // Beam spot with fitted momentum
-                    const GlobalPoint myBeamSpot(bsAndVtxInfo.bs_x, bsAndVtxInfo.bs_y, bsAndVtxInfo.bs_z);
-                    dcv.vertexfitBsCtErr2DBS_mmconvg = calculateCtError(myBeamSpot, bsAndVtxInfo.BeamSpot_cov2d, Bsvec, "BS_fitted");
+
+                    // commenting out, because it doesn't work
+                    // const GlobalPoint myBeamSpot(bsAndVtxInfo.bs_x, bsAndVtxInfo.bs_y, bsAndVtxInfo.bs_z);
+                    // dcv.vertexfitBsCtErr2DBS_mmconvg = calculateCtError(myBeamSpot, bsAndVtxInfo.BeamSpot_cov2d, Bsvec, "BS_fitted");
 
                     // PV variants with fitted momentum
                     dcv.vertexfitBsCtErr2D_mmconvg = calculateCtError(
@@ -476,8 +478,9 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
                         GlobalPoint(PVvtxCosTheta.x(), PVvtxCosTheta.y(), PVvtxCosTheta.z()),
                         PVvtxCosTheta.covariance(), BsVecNonFitted, "PV_costheta_old");
 
-                    dcv.vertexfitBsCtErr2DBSOld_mmconvg = calculateCtError(
-                        myBeamSpot, bsAndVtxInfo.BeamSpot_cov2d, BsVecNonFitted, "BS_old");
+                    // commenting out, because it doesn't work
+                    // dcv.vertexfitBsCtErr2DBSOld_mmconvg = calculateCtError(
+                    //     myBeamSpot, bsAndVtxInfo.BeamSpot_cov2d, BsVecNonFitted, "BS_old");
 
                     
                     AlgebraicMatrix31 pB;
@@ -592,11 +595,12 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
                     VertexDistanceXY dist22;
                     Measurement1D measurement22 = dist22.distance(VertexState(SVpos2,SVerr2),VertexState(PVpos2,PVerr2));
                     double error2D2 = measurement22.error();
-                    double scale22 = ((bVertex->position().x() - reFitVertex.x())*Bsvec.x()+
-                    (bVertex->position().y() - reFitVertex.y())*Bsvec.y())/(sqrt(Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y())*
-                    sqrt((bVertex->position().x() - reFitVertex.x())*(bVertex->position().x() - reFitVertex.x())+
-                    (bVertex->position().y() - reFitVertex.y())*(bVertex->position().y() - reFitVertex.y())));
-                    dcv.vertexfitBsCtErr2Drefit_mmconvg= mlim.BsPDGMass*(error2D2*abs(scale22))/sqrt(Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y());
+                    // commenting out, because it doesn't work
+                    // double scale22 = ((bVertex->position().x() - reFitVertex.x())*Bsvec.x()+
+                    // (bVertex->position().y() - reFitVertex.y())*Bsvec.y())/(sqrt(Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y())*
+                    // sqrt((bVertex->position().x() - reFitVertex.x())*(bVertex->position().x() - reFitVertex.x())+
+                    // (bVertex->position().y() - reFitVertex.y())*(bVertex->position().y() - reFitVertex.y())));
+                    // dcv.vertexfitBsCtErr2Drefit_mmconvg= mlim.BsPDGMass*(error2D2*abs(scale22))/sqrt(Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y());
                     if(Bsvec.perp()!=0) {
                         dcv.vertexfitBsLxy_mmconvg = dist22.distance(VertexState(SVpos2,SVerr2),VertexState(PVpos2,PVerr2)).value();
                         dcv.vertexfitBsLxyErr_mmconvg = error2D2;
