@@ -21,6 +21,7 @@ histo.SetStats(0)
 
 # Draw and save the histogram
 canvas = r.TCanvas("c"+str(histo.GetTitle()))
+canvas.SetLogy(1)
 canvas.cd()
 histo.Draw()
 

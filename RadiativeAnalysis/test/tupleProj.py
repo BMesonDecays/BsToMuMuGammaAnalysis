@@ -72,6 +72,7 @@ histoList = []
 for bname in branchNames:
     binning = binInfo[bname]
     histo = r.TH1D("h"+bname,bname, binning[0],binning[1],binning[2])
+    #histo.SetAxisRange(7.e2,5.e4,"Y")
     ntuple.Project("h"+bname,bname, str(totalCut))
     histo.SetDirectory(0)
     histoList.append(histo)
