@@ -1,0 +1,1 @@
+((((TMath::Abs(M_dimuon - 3.0969) < 0.04)&&(deltaR_dimuon_photon < 0.4))&&(minFlightPath > 0.15))&&(maxProb_MuMuNotGamma < 0.3))&&(minPCA_distance < 0.01)
