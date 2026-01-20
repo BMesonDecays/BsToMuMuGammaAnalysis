@@ -6,20 +6,19 @@ from ROOT import *
 
 
 print ("Hello ROOT")
-fileName = "histos.root"
+fileName = "outputData/hMMGgen_bestPV_dist.root"
 
 print ('Read data from: ', fileName)
 gROOT.Reset()
 f = TFile(fileName);
 f.ls();
 
-histoname = "hRecoPCA_GenPV_z"
+histoname = "hTriggered"
 
-'''
 c1 = TCanvas('cHisto','cHisto',1000,600)
 histo = gROOT.FindObject(histoname)
+#histo.SetAxisRange(0.,0.03,"X")
 #histo.SetTitle("ScaledRecoVsGenPhotonEnergy (PV[0])")
 histo.Draw()
-c1.Print("images/"+histoname+"_012.pdf")
+c1.Print("images/"+histoname+".pdf")
 input('press enter to exit')
-'''
