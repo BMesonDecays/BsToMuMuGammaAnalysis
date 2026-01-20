@@ -1,8 +1,8 @@
 #!/usr/bin/bash
 
-tag='FL_dR_3perJob'
-run='24C'
+tag='FL_dR_resub'
+run='24D'
 
-for i in {4,7} ; do
+for i in {0..7} ; do
     crab report --dir ${run}_${tag}_BsToJpsiGamma/crab_${tag}_dset${i} --outputdir reports/${tag}/${run}${i}
 done
