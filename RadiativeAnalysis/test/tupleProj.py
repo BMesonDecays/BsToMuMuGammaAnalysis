@@ -7,7 +7,7 @@ import numpy as np
 datasetName = "24BCD_full_BsToJpsiGamma_FL_dR"
 
 # Prepare a directory for the output histograms
-dirPath = 'tupleProjections/'+datasetName+'/cut2'
+dirPath = 'tupleProjections/'+datasetName+'/cut2_log_range'
 if not os.access(dirPath[:-5], os.F_OK):    # '/cut?' has 5 chars
     os.mkdir(dirPath[:-5])
 if os.access(dirPath, os.F_OK):
@@ -60,7 +60,7 @@ binInfo = {
     branchNames[3] : (100,0.,0.5),
     branchNames[4] : (100,0.,0.05),
     branchNames[5] : (100,3.,10.),
-    branchNames[6] : (100,0.,5.),
+    branchNames[6] : (100,0.,0.1),
     branchNames[7] : (100,0.,1.0),
     branchNames[8] : (10,0.,5.),
     branchNames[9] : (10,0.,5.),
