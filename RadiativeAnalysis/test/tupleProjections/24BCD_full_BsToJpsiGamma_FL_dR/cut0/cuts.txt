@@ -1,0 +1,1 @@
+deltaR_dimuon_photon < 0.4

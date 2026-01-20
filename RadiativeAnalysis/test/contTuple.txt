@@ -1,0 +1,49 @@
+******************************************************************************
+*Tree    :tMuMuGamma: tMuMuGamma                                             *
+*Entries : 29432964 : Total =      2780634175 bytes  File  Size = 1959536181 *
+*        :          : Tree compression factor =   1.41                       *
+******************************************************************************
+*Br    0 :M_dimuon  : M_dimuon/D                                             *
+*Entries : 29432964 : Total  Size=  251621411 bytes  File Size  =  215580834 *
+*Baskets :   159974 : Basket Size=      32000 bytes  Compression=   1.15     *
+*............................................................................*
+*Br    1 :ProbOfCommonMuonVertex : ProbOfCommonMuonVertex/D                  *
+*Entries : 29432964 : Total  Size=  253861103 bytes  File Size  =  226362370 *
+*Baskets :   159974 : Basket Size=      32000 bytes  Compression=   1.11     *
+*............................................................................*
+*Br    2 :eta_photon : eta_photon/D                                          *
+*Entries : 29432964 : Total  Size=  251941367 bytes  File Size  =  243887219 *
+*Baskets :   159974 : Basket Size=      32000 bytes  Compression=   1.02     *
+*............................................................................*
+*Br    3 :deltaR_dimuon_photon : deltaR_dimuon_photon/D                      *
+*Entries : 29432964 : Total  Size=  253541147 bytes  File Size  =  246163881 *
+*Baskets :   159974 : Basket Size=      32000 bytes  Compression=   1.02     *
+*............................................................................*
+*Br    4 :minPCA_distance : minPCA_distance/D                                *
+*Entries : 29432964 : Total  Size=  252741257 bytes  File Size  =  243607412 *
+*Baskets :   159974 : Basket Size=      32000 bytes  Compression=   1.02     *
+*............................................................................*
+*Br    5 :M_dimuonGamma : M_dimuonGamma/D                                    *
+*Entries : 29432964 : Total  Size=  252421301 bytes  File Size  =  242218751 *
+*Baskets :   159974 : Basket Size=      32000 bytes  Compression=   1.03     *
+*............................................................................*
+*Br    6 :minFlightPath : minFlightPath/D                                    *
+*Entries : 29432964 : Total  Size=  252421301 bytes  File Size  =  232258656 *
+*Baskets :   159974 : Basket Size=      32000 bytes  Compression=   1.07     *
+*............................................................................*
+*Br    7 :maxProb_MuMuNotGamma : maxProb_MuMuNotGamma/D                      *
+*Entries : 29432964 : Total  Size=  253541147 bytes  File Size  =  223053368 *
+*Baskets :   159974 : Basket Size=      32000 bytes  Compression=   1.12     *
+*............................................................................*
+*Br    8 :nOfPhotons0_4 : nOfPhotons0_4/D                                    *
+*Entries : 29432964 : Total  Size=  252421301 bytes  File Size  =   24866761 *
+*Baskets :   159974 : Basket Size=      32000 bytes  Compression=  10.02     *
+*............................................................................*
+*Br    9 :nOfPhotons0_1_0_4 : nOfPhotons0_1_0_4/D                            *
+*Entries : 29432964 : Total  Size=  253061213 bytes  File Size  =   23509304 *
+*Baskets :   159974 : Basket Size=      32000 bytes  Compression=  10.63     *
+*............................................................................*
+*Br   10 :nOfPhotons0_2_0_4 : nOfPhotons0_2_0_4/D                            *
+*Entries : 29432964 : Total  Size=  253061213 bytes  File Size  =   21916345 *
+*Baskets :   159974 : Basket Size=      32000 bytes  Compression=  11.40     *
+*............................................................................*

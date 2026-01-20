@@ -9,7 +9,7 @@ ntuple.Print()
 
 # Create a histogram
 branchName = "flightLength"
-histo = r.TH1D("h"+branchName, branchName+" 2024BC", 100, 0.,5.)
+histo = r.TH1D("h"+branchName, branchName+" 2024BC", 100, 0.,0.5)
 ntuple.Project("h"+branchName, branchName, "triggerBit == 1")
 histo.SetDirectory(0)
 

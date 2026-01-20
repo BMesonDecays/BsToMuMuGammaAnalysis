@@ -4,11 +4,10 @@ import sys
 import os
 import numpy as np
 
-
-datasetName = "24B_FL_dR_split_BsToJpsiGamma"
+datasetName = "24BCD_full_BsToJpsiGamma_FL_dR"
 
 # Prepare a directory for the output histograms
-dirPath = 'tupleProjections/'+datasetName+'/cut5'
+dirPath = 'tupleProjections/'+datasetName+'/cut2'
 if not os.access(dirPath[:-5], os.F_OK):    # '/cut?' has 5 chars
     os.mkdir(dirPath[:-5])
 if os.access(dirPath, os.F_OK):
@@ -16,7 +15,7 @@ if os.access(dirPath, os.F_OK):
 os.mkdir(dirPath)
 
 # Get the tuple
-tupleFile = r.TFile("./outputData/FL_dR_split_BsToJpsiGamma/"+datasetName+".root","READ")
+tupleFile = r.TFile("./outputData/"+datasetName+".root","READ")
 ntuple = tupleFile.Get("tMuMuGamma")
 
 # Make a list with branch names
@@ -26,12 +25,12 @@ for branch in ntuple.GetListOfBranches():
 
 # Define the cuts
 cutList = []
-#cutList.append(r.TCut("M_dimuonCut","TMath::Abs(M_dimuon - 3.0969) < 0.15"))    #Jpsi mass constraint
+cutList.append(r.TCut("M_dimuonCut","TMath::Abs(M_dimuon - 3.0969) < 0.04"))    #Jpsi mass constraint
 #cutList.append(r.TCut("commonMuonVrtxProbCut","ProbOfCommonMuonVertex > 0.1"))
 cutList.append(r.TCut("deltaR_dimuon_photonCut","deltaR_dimuon_photon < 0.4"))#&& deltaR_dimuon_photon > 0.1"))  #based on GenMatched tuple
-cutList.append(r.TCut("flightLengthCut","minFlightPath > 0.03"))
-cutList.append(r.TCut("maxProb_MuMuNotGammaCut","maxProb_MuMuNotGamma < 0.9"))
-cutList.append(r.TCut("minPCA_distanceCut","minPCA_distance < 0.01"))
+cutList.append(r.TCut("flightLengthCut","minFlightPath > 0.07"))
+#cutList.append(r.TCut("maxProb_MuMuNotGammaCut","maxProb_MuMuNotGamma < 0.9"))
+#cutList.append(r.TCut("minPCA_distanceCut","minPCA_distance < 0.01"))
 
 totalCut = r.TCut()
 for cut in cutList:
@@ -40,10 +39,10 @@ totalCut.Print()
 
 '''
 # Copy the ntuple limited by the cuts
-outputFile = r.TFile("./outputData/BsToJpsiGamma"+datasetName+"prunedNew.root","RECREATE")
+outputFile = r.TFile("./outputData/"+datasetName+"_dR0_4.root","RECREATE")
 totalCut.Write()
 newNtuple = ntuple.CopyTree(str(totalCut))
-newNtuple.Write()
+newNtuple.Write("new")
 outputFile.Close()
 tupleFile.Close()
 '''
@@ -55,17 +54,17 @@ with open(dirPath+'/cuts.txt','w') as of:
 
 # Define the binnings
 binInfo = {
-    branchNames[0] : (100,2.,5.),
+    branchNames[0] : (100,2.8,3.4),
     branchNames[1] : (100,0.,1.),
     branchNames[2] : (100,-3.,3.),
     branchNames[3] : (100,0.,0.5),
     branchNames[4] : (100,0.,0.05),
     branchNames[5] : (100,3.,10.),
-    branchNames[6] : (100,0.,0.1),
+    branchNames[6] : (100,0.,5.),
     branchNames[7] : (100,0.,1.0),
-    branchNames[8] : (10,0.,10.),
-    branchNames[9] : (10,0.,10.),
-    branchNames[10] : (10,0.,10.)
+    branchNames[8] : (10,0.,5.),
+    branchNames[9] : (10,0.,5.),
+    branchNames[10] : (10,0.,5.)
 }
 
 # Create and fill the histograms
@@ -82,6 +81,7 @@ tupleFile.Close()
 # Draw histograms and save the images
 for histo in histoList:
     canvas = r.TCanvas("c"+str(histo.GetTitle()))
+    #canvas.SetLogy(1)
     canvas.cd()
     histo.Draw()
     canvas.Print(dirPath+'/'+str(histo.GetName())+".pdf")
