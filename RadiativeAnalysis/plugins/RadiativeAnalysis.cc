@@ -386,16 +386,17 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 		bmmgRootTree_->DiMuon_mu2Cat_alone_      = decayVariables.diMuon_mu2Cat;
 		bmmgRootTree_->DiMuon_mu1nPixHits_alone_ = decayVariables.diMuon_mu1PixelHits;
 		bmmgRootTree_->DiMuon_mu2nPixHits_alone_ = decayVariables.diMuon_mu2PixelHits;
-		bmmgRootTree_->BsM_beffit_               = decayVariables.BsMass;
-		bmmgRootTree_->BsEta_beffit_             = decayVariables.BsEta;
-		bmmgRootTree_->BsPhi_beffit_             = decayVariables.BsPhi;
-		bmmgRootTree_->BsPt_beffit_              = decayVariables.BsPt;
+		// mu mu conv gamma variables
+		bmmgRootTree_->FourvectorBsMass_mmconvg_               = decayVariables.fourvectorbsmass_mmconvg;
+		bmmgRootTree_->FourvectorBsEta_mmconvg_             = decayVariables.fourvectorbseta_mmconvg;
+		bmmgRootTree_->FourvectorBsPhi_mmconvg_             = decayVariables.fourvectorbsphi_mmconvg;
+		bmmgRootTree_->FourvectorBsPt_mmconvg_              = decayVariables.fourvectorbspt_mmconvg;
 		bmmgRootTree_->HadronMass_fromVertexFitConPhoton_  = decayVariables.fittedBmassConvertedPhoton;
 		bmmgRootTree_->HadronMass_fromVertexFitRecoPhoton_ = decayVariables.fittedBmassRecoPhoton;
-		bmmgRootTree_->Bs_vtxProb_               = decayVariables.BsVtxProb;
-		bmmgRootTree_->BsCt3D_                   = decayVariables.BsCt3D;
-		bmmgRootTree_->BsCt2D_    	             = decayVariables.BsCt2D;
-		bmmgRootTree_->BsCt2DBS_    	         = decayVariables.BsCt2DBS;
+		bmmgRootTree_->BsVtxProb_mmconvg_               = decayVariables.bsvtxprob_mmconvg;
+		bmmgRootTree_->BsCt3D_mmconvg_                   = decayVariables.bsct3d_mmconvg;
+		bmmgRootTree_->BsCt2D_mmconvg_    	             = decayVariables.bsct2dbs_mmconvg;
+		bmmgRootTree_->BsCt2DBS_mmconvg_    	         = decayVariables.bsct2d_mmconvg;
 	
 		  /*Task reminder here*/
 		//1. for soft MVA we need L1 info in the samples , this will exploit composite candidate instead regional muon candidates + muons 
