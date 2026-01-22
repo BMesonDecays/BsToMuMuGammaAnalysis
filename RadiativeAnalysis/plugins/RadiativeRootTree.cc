@@ -100,7 +100,7 @@ void RadiativeRootTree::createTree(const std::string filename)
   bmmgTree_->Branch("DiMuon_mu2nPixHits_alone", &DiMuon_mu2nPixHits_alone_,"DiMuon_mu2nPixHits_alone/I");
   bmmgTree_->Branch("DiMuon_NumberOfCandidates", &DiMuon_NumberOfCandidates_,"DiMuon_NumberOfCandidates/I");
 
-
+// Tripple object converted photon vertex variables
 bmmgTree_->Branch("FourvectorBsMass_mmconvg", &FourvectorBsMass_mmconvg_, "FourvectorBsMass_mmconvg/D");
 bmmgTree_->Branch("FourvectorBsPt_mmconvg", &FourvectorBsPt_mmconvg_, "FourvectorBsPt_mmconvg/D");
 bmmgTree_->Branch("FourvectorBsEta_mmconvg", &FourvectorBsEta_mmconvg_, "FourvectorBsEta_mmconvg/D");
@@ -128,8 +128,6 @@ bmmgTree_->Branch("VertexfitPVxRefitClosestZ_mmconvg", &VertexfitPVxRefitClosest
 bmmgTree_->Branch("VertexfitPVyRefitClosestZ_mmconvg", &VertexfitPVyRefitClosestZ_mmconvg_, "VertexfitPVyRefitClosestZ_mmconvg/D");
 bmmgTree_->Branch("VertexfitPVzRefitClosestZ_mmconvg", &VertexfitPVzRefitClosestZ_mmconvg_, "VertexfitPVzRefitClosestZ_mmconvg/D");
 
-
-
 bmmgTree_->Branch("VertexfitBsCt3DPVClosestZ_mmconvg", &VertexfitBsCt3DPVClosestZ_mmconvg_, "VertexfitBsCt3DPVClosestZ_mmconvg/D");
 bmmgTree_->Branch("VertexfitBsCt2DPVClosestZ_mmconvg", &VertexfitBsCt2DPVClosestZ_mmconvg_, "VertexfitBsCt2DPVClosestZ_mmconvg/D");
 bmmgTree_->Branch("VertexfitBsCt3DPVCosTheta_mmconvg", &VertexfitBsCt3DPVCosTheta_mmconvg_, "VertexfitBsCt3DPVCosTheta_mmconvg/D");
@@ -147,12 +145,183 @@ bmmgTree_->Branch("BsVtxProb_mmconvg", &BsVtxProb_mmconvg_, "BsVtxProb_mmconvg/D
 bmmgTree_->Branch("BsCt2D_mmconvg", &BsCt2D_mmconvg_, "BsCt2D_mmconvg/D");
 bmmgTree_->Branch("BsCt3D_mmconvg", &BsCt3D_mmconvg_, "BsCt3D_mmconvg/D");
 
+// Tripple object reco photon vertex variables
+bmmgTree_->Branch("FourvectorBsMass_mmrecog", &FourvectorBsMass_mmrecog_, "FourvectorBsMass_mmrecog/D");
+bmmgTree_->Branch("FourvectorBsPt_mmrecog", &FourvectorBsPt_mmrecog_, "FourvectorBsPt_mmrecog/D");
+bmmgTree_->Branch("FourvectorBsEta_mmrecog", &FourvectorBsEta_mmrecog_, "FourvectorBsEta_mmrecog/D");
+bmmgTree_->Branch("FourvectorBsPhi_mmrecog", &FourvectorBsPhi_mmrecog_, "FourvectorBsPhi_mmrecog/D");
 
-bmmgTree_->Branch("DeltaRPhoton1DiMuon_mmconvg", &DeltaRPhoton1DiMuon_mmconvg_, "DeltaRPhoton1DiMuon_mmconvg/D");
-bmmgTree_->Branch("DeltaRPhoton2DiMuon_mmconvg", &DeltaRPhoton2DiMuon_mmconvg_, "DeltaRPhoton2DiMuon_mmconvg/D");
+bmmgTree_->Branch("VertexfitBsMass_mmrecog", &VertexfitBsMass_mmrecog_, "VertexfitBsMass_mmrecog/D");
+bmmgTree_->Branch("VertexfitBsPt_mmrecog", &VertexfitBsPt_mmrecog_, "VertexfitBsPt_mmrecog/D");
+bmmgTree_->Branch("VertexfitBsEta_mmrecog", &VertexfitBsEta_mmrecog_, "VertexfitBsEta_mmrecog/D");
+bmmgTree_->Branch("VertexfitBsPhi_mmrecog", &VertexfitBsPhi_mmrecog_, "VertexfitBsPhi_mmrecog/D");
+bmmgTree_->Branch("VertexfitBsPz_mmrecog", &VertexfitBsPz_mmrecog_, "VertexfitBsPz_mmrecog/D");
 
-bmmgTree_->Branch("BsHelicity_mmconvg", &BsHelicity_mmconvg_, "BsHelicity_mmconvg/D");
-bmmgTree_->Branch("BsCoplanarity_mmconvg", &BsCoplanarity_mmconvg_, "BsCoplanarity_mmconvg/D");
+bmmgTree_->Branch("VertexfitBsSVx_mmrecog", &VertexfitBsSVx_mmrecog_, "VertexfitBsSVx_mmrecog/D");
+bmmgTree_->Branch("VertexfitBsSVy_mmrecog", &VertexfitBsSVy_mmrecog_, "VertexfitBsSVy_mmrecog/D");
+bmmgTree_->Branch("VertexfitBsSVz_mmrecog", &VertexfitBsSVz_mmrecog_, "VertexfitBsSVz_mmrecog/D");
+
+bmmgTree_->Branch("FourvectorGammaPt_mmrecog", &FourvectorGammaPt_mmrecog_, "FourvectorGammaPt_mmrecog/D");
+bmmgTree_->Branch("FourvectorGammaEta_mmrecog", &FourvectorGammaEta_mmrecog_, "FourvectorGammaEta_mmrecog/D");
+bmmgTree_->Branch("FourvectorGammaPhi_mmrecog", &FourvectorGammaPhi_mmrecog_, "FourvectorGammaPhi_mmrecog/D");
+
+bmmgTree_->Branch("VertexfitPVxRefitCosTheta_mmrecog", &VertexfitPVxRefitCosTheta_mmrecog_, "VertexfitPVxRefitCosTheta_mmrecog/D");
+bmmgTree_->Branch("VertexfitPVyRefitCosTheta_mmrecog", &VertexfitPVyRefitCosTheta_mmrecog_, "VertexfitPVyRefitCosTheta_mmrecog/D");
+bmmgTree_->Branch("VertexfitPVzRefitCosTheta_mmrecog", &VertexfitPVzRefitCosTheta_mmrecog_, "VertexfitPVzRefitCosTheta_mmrecog/D");
+
+bmmgTree_->Branch("VertexfitPVxRefitClosestZ_mmrecog", &VertexfitPVxRefitClosestZ_mmrecog_, "VertexfitPVxRefitClosestZ_mmrecog/D");
+bmmgTree_->Branch("VertexfitPVyRefitClosestZ_mmrecog", &VertexfitPVyRefitClosestZ_mmrecog_, "VertexfitPVyRefitClosestZ_mmrecog/D");
+bmmgTree_->Branch("VertexfitPVzRefitClosestZ_mmrecog", &VertexfitPVzRefitClosestZ_mmrecog_, "VertexfitPVzRefitClosestZ_mmrecog/D");
+
+bmmgTree_->Branch("VertexfitBsCt3DPVClosestZ_mmrecog", &VertexfitBsCt3DPVClosestZ_mmrecog_, "VertexfitBsCt3DPVClosestZ_mmrecog/D");
+bmmgTree_->Branch("VertexfitBsCt2DPVClosestZ_mmrecog", &VertexfitBsCt2DPVClosestZ_mmrecog_, "VertexfitBsCt2DPVClosestZ_mmrecog/D");
+bmmgTree_->Branch("VertexfitBsCt3DPVCosTheta_mmrecog", &VertexfitBsCt3DPVCosTheta_mmrecog_, "VertexfitBsCt3DPVCosTheta_mmrecog/D");
+bmmgTree_->Branch("VertexfitBsCt2DPVCosTheta_mmrecog", &VertexfitBsCt2DPVCosTheta_mmrecog_, "VertexfitBsCt2DPVCosTheta_mmrecog/D");
+
+bmmgTree_->Branch("VertexfitBsCtErr2D_mmrecog", &VertexfitBsCtErr2D_mmrecog_, "VertexfitBsCtErr2D_mmrecog/D");
+bmmgTree_->Branch("VertexfitBsCtErr3D_mmrecog", &VertexfitBsCtErr3D_mmrecog_, "VertexfitBsCtErr3D_mmrecog/D");
+
+bmmgTree_->Branch("VertexfitBsDist3D_mmrecog", &VertexfitBsDist3D_mmrecog_, "VertexfitBsDist3D_mmrecog/D");
+bmmgTree_->Branch("VertexfitBsDist3DErr_mmrecog", &VertexfitBsDist3DErr_mmrecog_, "VertexfitBsDist3DErr_mmrecog/D");
+bmmgTree_->Branch("VertexfitBsDist2D_mmrecog", &VertexfitBsDist2D_mmrecog_, "VertexfitBsDist2D_mmrecog/D");
+bmmgTree_->Branch("VertexfitBsDist2DErr_mmrecog", &VertexfitBsDist2DErr_mmrecog_, "VertexfitBsDist2DErr_mmrecog/D");
+
+bmmgTree_->Branch("BsVtxProb_mmrecog", &BsVtxProb_mmrecog_, "BsVtxProb_mmrecog/D");
+bmmgTree_->Branch("BsCt2D_mmrecog", &BsCt2D_mmrecog_, "BsCt2D_mmrecog/D");
+bmmgTree_->Branch("BsCt3D_mmrecog", &BsCt3D_mmrecog_, "BsCt3D_mmrecog/D");
+
+
+bmmgTree_->Branch("DeltaRPhoton1DiMuon_mmrecog", &DeltaRPhoton1DiMuon_mmrecog_, "DeltaRPhoton1DiMuon_mmrecog/D");
+bmmgTree_->Branch("DeltaRPhoton2DiMuon_mmrecog", &DeltaRPhoton2DiMuon_mmrecog_, "DeltaRPhoton2DiMuon_mmrecog/D");
+
+bmmgTree_->Branch("BsHelicity_mmrecog", &BsHelicity_mmrecog_, "BsHelicity_mmrecog/D");
+bmmgTree_->Branch("BsCoplanarity_mmrecog", &BsCoplanarity_mmrecog_, "BsCoplanarity_mmrecog/D");
+
+
+bmmgTree_->Branch("DeltaRPhoton1DiMuon_mmrecog", &DeltaRPhoton1DiMuon_mmrecog_, "DeltaRPhoton1DiMuon_mmrecog/D");
+bmmgTree_->Branch("DeltaRPhoton2DiMuon_mmrecog", &DeltaRPhoton2DiMuon_mmrecog_, "DeltaRPhoton2DiMuon_mmrecog/D");
+
+bmmgTree_->Branch("BsHelicity_mmrecog", &BsHelicity_mmrecog_, "BsHelicity_mmrecog/D");
+bmmgTree_->Branch("BsCoplanarity_mmrecog", &BsCoplanarity_mmrecog_, "BsCoplanarity_mmrecog/D");
+
+
+// Tetra object converted photon vertex variables
+bmmgTree_->Branch("FourvectorBsMass_mmconvgg", &FourvectorBsMass_mmconvgg_, "FourvectorBsMass_mmconvgg/D");
+bmmgTree_->Branch("FourvectorBsPt_mmconvgg", &FourvectorBsPt_mmconvgg_, "FourvectorBsPt_mmconvgg/D");
+bmmgTree_->Branch("FourvectorBsEta_mmconvgg", &FourvectorBsEta_mmconvgg_, "FourvectorBsEta_mmconvgg/D");
+bmmgTree_->Branch("FourvectorBsPhi_mmconvgg", &FourvectorBsPhi_mmconvgg_, "FourvectorBsPhi_mmconvgg/D");
+
+bmmgTree_->Branch("VertexfitBsMass_mmconvgg", &VertexfitBsMass_mmconvgg_, "VertexfitBsMass_mmconvgg/D");
+bmmgTree_->Branch("VertexfitBsPt_mmconvgg", &VertexfitBsPt_mmconvgg_, "VertexfitBsPt_mmconvgg/D");
+bmmgTree_->Branch("VertexfitBsEta_mmconvgg", &VertexfitBsEta_mmconvgg_, "VertexfitBsEta_mmconvgg/D");
+bmmgTree_->Branch("VertexfitBsPhi_mmconvgg", &VertexfitBsPhi_mmconvgg_, "VertexfitBsPhi_mmconvgg/D");
+bmmgTree_->Branch("VertexfitBsPz_mmconvgg", &VertexfitBsPz_mmconvgg_, "VertexfitBsPz_mmconvgg/D");
+
+bmmgTree_->Branch("VertexfitBsSVx_mmconvgg", &VertexfitBsSVx_mmconvgg_, "VertexfitBsSVx_mmconvgg/D");
+bmmgTree_->Branch("VertexfitBsSVy_mmconvgg", &VertexfitBsSVy_mmconvgg_, "VertexfitBsSVy_mmconvgg/D");
+bmmgTree_->Branch("VertexfitBsSVz_mmconvgg", &VertexfitBsSVz_mmconvgg_, "VertexfitBsSVz_mmconvgg/D");
+
+bmmgTree_->Branch("FourvectorConvGammaPt_mmconvgg", &FourvectorConvGammaPt_mmconvgg_, "FourvectorConvGammaPt_mmconvgg/D");
+bmmgTree_->Branch("FourvectorConvGammaEta_mmconvgg", &FourvectorConvGammaEta_mmconvgg_, "FourvectorConvGammaEta_mmconvgg/D");
+bmmgTree_->Branch("FourvectorConvGammaPhi_mmconvgg", &FourvectorConvGammaPhi_mmconvgg_, "FourvectorConvGammaPhi_mmconvgg/D");
+
+bmmgTree_->Branch("VertexfitPVxRefitCosTheta_mmconvgg", &VertexfitPVxRefitCosTheta_mmconvgg_, "VertexfitPVxRefitCosTheta_mmconvgg/D");
+bmmgTree_->Branch("VertexfitPVyRefitCosTheta_mmconvgg", &VertexfitPVyRefitCosTheta_mmconvgg_, "VertexfitPVyRefitCosTheta_mmconvgg/D");
+bmmgTree_->Branch("VertexfitPVzRefitCosTheta_mmconvgg", &VertexfitPVzRefitCosTheta_mmconvgg_, "VertexfitPVzRefitCosTheta_mmconvgg/D");
+
+bmmgTree_->Branch("VertexfitPVxRefitClosestZ_mmconvgg", &VertexfitPVxRefitClosestZ_mmconvgg_, "VertexfitPVxRefitClosestZ_mmconvgg/D");
+bmmgTree_->Branch("VertexfitPVyRefitClosestZ_mmconvgg", &VertexfitPVyRefitClosestZ_mmconvgg_, "VertexfitPVyRefitClosestZ_mmconvgg/D");
+bmmgTree_->Branch("VertexfitPVzRefitClosestZ_mmconvgg", &VertexfitPVzRefitClosestZ_mmconvgg_, "VertexfitPVzRefitClosestZ_mmconvgg/D");
+
+bmmgTree_->Branch("VertexfitBsCt3DPVClosestZ_mmconvgg", &VertexfitBsCt3DPVClosestZ_mmconvgg_, "VertexfitBsCt3DPVClosestZ_mmconvgg/D");
+bmmgTree_->Branch("VertexfitBsCt2DPVClosestZ_mmconvgg", &VertexfitBsCt2DPVClosestZ_mmconvgg_, "VertexfitBsCt2DPVClosestZ_mmconvgg/D");
+bmmgTree_->Branch("VertexfitBsCt3DPVCosTheta_mmconvgg", &VertexfitBsCt3DPVCosTheta_mmconvgg_, "VertexfitBsCt3DPVCosTheta_mmconvgg/D");
+bmmgTree_->Branch("VertexfitBsCt2DPVCosTheta_mmconvgg", &VertexfitBsCt2DPVCosTheta_mmconvgg_, "VertexfitBsCt2DPVCosTheta_mmconvgg/D");
+
+bmmgTree_->Branch("VertexfitBsCtErr2D_mmconvgg", &VertexfitBsCtErr2D_mmconvgg_, "VertexfitBsCtErr2D_mmconvgg/D");
+bmmgTree_->Branch("VertexfitBsCtErr3D_mmconvgg", &VertexfitBsCtErr3D_mmconvgg_, "VertexfitBsCtErr3D_mmconvgg/D");
+
+bmmgTree_->Branch("VertexfitBsDist3D_mmconvgg", &VertexfitBsDist3D_mmconvgg_, "VertexfitBsDist3D_mmconvgg/D");
+bmmgTree_->Branch("VertexfitBsDist3DErr_mmconvgg", &VertexfitBsDist3DErr_mmconvgg_, "VertexfitBsDist3DErr_mmconvgg/D");
+bmmgTree_->Branch("VertexfitBsDist2D_mmconvgg", &VertexfitBsDist2D_mmconvgg_, "VertexfitBsDist2D_mmconvgg/D");
+bmmgTree_->Branch("VertexfitBsDist2DErr_mmconvgg", &VertexfitBsDist2DErr_mmconvgg_, "VertexfitBsDist2DErr_mmconvgg/D");
+
+bmmgTree_->Branch("BsVtxProb_mmconvgg", &BsVtxProb_mmconvgg_, "BsVtxProb_mmconvgg/D");
+bmmgTree_->Branch("BsCt2D_mmconvgg", &BsCt2D_mmconvgg_, "BsCt2D_mmconvgg/D");
+bmmgTree_->Branch("BsCt3D_mmconvgg", &BsCt3D_mmconvgg_, "BsCt3D_mmconvgg/D");
+
+
+bmmgTree_->Branch("DeltaRPhoton1DiMuon_mmconvgg", &DeltaRPhoton1DiMuon_mmconvgg_, "DeltaRPhoton1DiMuon_mmconvgg/D");
+bmmgTree_->Branch("DeltaRPhoton2DiMuon_mmconvgg", &DeltaRPhoton2DiMuon_mmconvgg_, "DeltaRPhoton2DiMuon_mmconvgg/D");
+
+bmmgTree_->Branch("BsHelicity_mmconvgg", &BsHelicity_mmconvgg_, "BsHelicity_mmconvgg/D");
+bmmgTree_->Branch("BsCoplanarity_mmconvgg", &BsCoplanarity_mmconvgg_, "BsCoplanarity_mmconvgg/D");
+
+
+bmmgTree_->Branch("DeltaRPhoton1DiMuon_mmconvgg", &DeltaRPhoton1DiMuon_mmconvgg_, "DeltaRPhoton1DiMuon_mmconvgg/D");
+bmmgTree_->Branch("DeltaRPhoton2DiMuon_mmconvgg", &DeltaRPhoton2DiMuon_mmconvgg_, "DeltaRPhoton2DiMuon_mmconvgg/D");
+
+bmmgTree_->Branch("BsHelicity_mmconvgg", &BsHelicity_mmconvgg_, "BsHelicity_mmconvgg/D");
+bmmgTree_->Branch("BsCoplanarity_mmconvgg", &BsCoplanarity_mmconvgg_, "BsCoplanarity_mmconvgg/D");
+
+// Tetra object reco photon vertex variables
+bmmgTree_->Branch("FourvectorBsMass_mmrecogg", &FourvectorBsMass_mmrecogg_, "FourvectorBsMass_mmrecogg/D");
+bmmgTree_->Branch("FourvectorBsPt_mmrecogg", &FourvectorBsPt_mmrecogg_, "FourvectorBsPt_mmrecogg/D");
+bmmgTree_->Branch("FourvectorBsEta_mmrecogg", &FourvectorBsEta_mmrecogg_, "FourvectorBsEta_mmrecogg/D");
+bmmgTree_->Branch("FourvectorBsPhi_mmrecogg", &FourvectorBsPhi_mmrecogg_, "FourvectorBsPhi_mmrecogg/D");
+
+bmmgTree_->Branch("VertexfitBsMass_mmrecogg", &VertexfitBsMass_mmrecogg_, "VertexfitBsMass_mmrecogg/D");
+bmmgTree_->Branch("VertexfitBsPt_mmrecogg", &VertexfitBsPt_mmrecogg_, "VertexfitBsPt_mmrecogg/D");
+bmmgTree_->Branch("VertexfitBsEta_mmrecogg", &VertexfitBsEta_mmrecogg_, "VertexfitBsEta_mmrecogg/D");
+bmmgTree_->Branch("VertexfitBsPhi_mmrecogg", &VertexfitBsPhi_mmrecogg_, "VertexfitBsPhi_mmrecogg/D");
+bmmgTree_->Branch("VertexfitBsPz_mmrecogg", &VertexfitBsPz_mmrecogg_, "VertexfitBsPz_mmrecogg/D");
+
+bmmgTree_->Branch("VertexfitBsSVx_mmrecogg", &VertexfitBsSVx_mmrecogg_, "VertexfitBsSVx_mmrecogg/D");
+bmmgTree_->Branch("VertexfitBsSVy_mmrecogg", &VertexfitBsSVy_mmrecogg_, "VertexfitBsSVy_mmrecogg/D");
+bmmgTree_->Branch("VertexfitBsSVz_mmrecogg", &VertexfitBsSVz_mmrecogg_, "VertexfitBsSVz_mmrecogg/D");
+
+bmmgTree_->Branch("FourvectorGammaPt_mmrecogg", &FourvectorGammaPt_mmrecogg_, "FourvectorGammaPt_mmrecogg/D");
+bmmgTree_->Branch("FourvectorGammaEta_mmrecogg", &FourvectorGammaEta_mmrecogg_, "FourvectorGammaEta_mmrecogg/D");
+bmmgTree_->Branch("FourvectorGammaPhi_mmrecogg", &FourvectorGammaPhi_mmrecogg_, "FourvectorGammaPhi_mmrecogg/D");
+
+bmmgTree_->Branch("VertexfitPVxRefitCosTheta_mmrecogg", &VertexfitPVxRefitCosTheta_mmrecogg_, "VertexfitPVxRefitCosTheta_mmrecogg/D");
+bmmgTree_->Branch("VertexfitPVyRefitCosTheta_mmrecogg", &VertexfitPVyRefitCosTheta_mmrecogg_, "VertexfitPVyRefitCosTheta_mmrecogg/D");
+bmmgTree_->Branch("VertexfitPVzRefitCosTheta_mmrecogg", &VertexfitPVzRefitCosTheta_mmrecogg_, "VertexfitPVzRefitCosTheta_mmrecogg/D");
+
+bmmgTree_->Branch("VertexfitPVxRefitClosestZ_mmrecogg", &VertexfitPVxRefitClosestZ_mmrecogg_, "VertexfitPVxRefitClosestZ_mmrecogg/D");
+bmmgTree_->Branch("VertexfitPVyRefitClosestZ_mmrecogg", &VertexfitPVyRefitClosestZ_mmrecogg_, "VertexfitPVyRefitClosestZ_mmrecogg/D");
+bmmgTree_->Branch("VertexfitPVzRefitClosestZ_mmrecogg", &VertexfitPVzRefitClosestZ_mmrecogg_, "VertexfitPVzRefitClosestZ_mmrecogg/D");
+
+bmmgTree_->Branch("VertexfitBsCt3DPVClosestZ_mmrecogg", &VertexfitBsCt3DPVClosestZ_mmrecogg_, "VertexfitBsCt3DPVClosestZ_mmrecogg/D");
+bmmgTree_->Branch("VertexfitBsCt2DPVClosestZ_mmrecogg", &VertexfitBsCt2DPVClosestZ_mmrecogg_, "VertexfitBsCt2DPVClosestZ_mmrecogg/D");
+bmmgTree_->Branch("VertexfitBsCt3DPVCosTheta_mmrecogg", &VertexfitBsCt3DPVCosTheta_mmrecogg_, "VertexfitBsCt3DPVCosTheta_mmrecogg/D");
+bmmgTree_->Branch("VertexfitBsCt2DPVCosTheta_mmrecogg", &VertexfitBsCt2DPVCosTheta_mmrecogg_, "VertexfitBsCt2DPVCosTheta_mmrecogg/D");
+
+bmmgTree_->Branch("VertexfitBsCtErr2D_mmrecogg", &VertexfitBsCtErr2D_mmrecogg_, "VertexfitBsCtErr2D_mmrecogg/D");
+bmmgTree_->Branch("VertexfitBsCtErr3D_mmrecogg", &VertexfitBsCtErr3D_mmrecogg_, "VertexfitBsCtErr3D_mmrecogg/D");
+
+bmmgTree_->Branch("VertexfitBsDist3D_mmrecogg", &VertexfitBsDist3D_mmrecogg_, "VertexfitBsDist3D_mmrecogg/D");
+bmmgTree_->Branch("VertexfitBsDist3DErr_mmrecogg", &VertexfitBsDist3DErr_mmrecogg_, "VertexfitBsDist3DErr_mmrecogg/D");
+bmmgTree_->Branch("VertexfitBsDist2D_mmrecogg", &VertexfitBsDist2D_mmrecogg_, "VertexfitBsDist2D_mmrecogg/D");
+bmmgTree_->Branch("VertexfitBsDist2DErr_mmrecogg", &VertexfitBsDist2DErr_mmrecogg_, "VertexfitBsDist2DErr_mmrecogg/D");
+
+bmmgTree_->Branch("BsVtxProb_mmrecogg", &BsVtxProb_mmrecogg_, "BsVtxProb_mmrecogg/D");
+bmmgTree_->Branch("BsCt2D_mmrecogg", &BsCt2D_mmrecogg_, "BsCt2D_mmrecogg/D");
+bmmgTree_->Branch("BsCt3D_mmrecogg", &BsCt3D_mmrecogg_, "BsCt3D_mmrecogg/D");
+
+
+bmmgTree_->Branch("DeltaRPhoton1DiMuon_mmrecogg", &DeltaRPhoton1DiMuon_mmrecogg_, "DeltaRPhoton1DiMuon_mmrecogg/D");
+bmmgTree_->Branch("DeltaRPhoton2DiMuon_mmrecogg", &DeltaRPhoton2DiMuon_mmrecogg_, "DeltaRPhoton2DiMuon_mmrecogg/D");
+
+bmmgTree_->Branch("BsHelicity_mmrecogg", &BsHelicity_mmrecogg_, "BsHelicity_mmrecogg/D");
+bmmgTree_->Branch("BsCoplanarity_mmrecogg", &BsCoplanarity_mmrecogg_, "BsCoplanarity_mmrecogg/D");
+
+
+bmmgTree_->Branch("DeltaRPhoton1DiMuon_mmrecogg", &DeltaRPhoton1DiMuon_mmrecogg_, "DeltaRPhoton1DiMuon_mmrecogg/D");
+bmmgTree_->Branch("DeltaRPhoton2DiMuon_mmrecogg", &DeltaRPhoton2DiMuon_mmrecogg_, "DeltaRPhoton2DiMuon_mmrecogg/D");
+
+bmmgTree_->Branch("BsHelicity_mmrecogg", &BsHelicity_mmrecogg_, "BsHelicity_mmrecogg/D");
+bmmgTree_->Branch("BsCoplanarity_mmrecogg", &BsCoplanarity_mmrecogg_, "BsCoplanarity_mmrecogg/D");
 
 bmmgTree_->Branch("DiMuonMass_Jpsi", &DiMuonMass_Jpsi_, "DiMuonMass_Jpsi/D");
 bmmgTree_->Branch("DiMuonEta_Jpsi", &DiMuonEta_Jpsi_, "DiMuonEta_Jpsi/D");
@@ -611,6 +780,163 @@ DeltaRPhoton2DiMuon_mmconvg_ = -9999999;
 
 BsHelicity_mmconvg_    = -9999999;
 BsCoplanarity_mmconvg_ = -9999999;
+
+// ---- Reco photon mmrecog ----
+FourvectorBsMass_mmrecog_ = -9999999;
+FourvectorBsPt_mmrecog_   = -9999999;
+FourvectorBsEta_mmrecog_  = -9999999;
+FourvectorBsPhi_mmrecog_  = -9999999;
+
+VertexfitBsMass_mmrecog_ = -9999999;
+VertexfitBsPt_mmrecog_   = -9999999;
+VertexfitBsEta_mmrecog_  = -9999999;
+VertexfitBsPhi_mmrecog_  = -9999999;
+VertexfitBsPz_mmrecog_   = -9999999;
+
+VertexfitBsSVx_mmrecog_ = -9999999;
+VertexfitBsSVy_mmrecog_ = -9999999;
+VertexfitBsSVz_mmrecog_ = -9999999;
+
+FourvectorGammaPt_mmrecog_  = -9999999;
+FourvectorGammaEta_mmrecog_ = -9999999;
+FourvectorGammaPhi_mmrecog_ = -9999999;
+
+VertexfitPVxRefitCosTheta_mmrecog_ = -9999999;
+VertexfitPVyRefitCosTheta_mmrecog_ = -9999999;
+VertexfitPVzRefitCosTheta_mmrecog_ = -9999999;
+
+VertexfitPVxRefitClosestZ_mmrecog_ = -9999999;
+VertexfitPVyRefitClosestZ_mmrecog_ = -9999999;
+VertexfitPVzRefitClosestZ_mmrecog_ = -9999999;
+
+VertexfitBsCt3DPVClosestZ_mmrecog_ = -9999999;
+VertexfitBsCt2DPVClosestZ_mmrecog_ = -9999999;
+VertexfitBsCt3DPVCosTheta_mmrecog_ = -9999999;
+VertexfitBsCt2DPVCosTheta_mmrecog_ = -9999999;
+
+VertexfitBsCtErr2D_mmrecog_ = -9999999;
+VertexfitBsCtErr3D_mmrecog_ = -9999999;
+
+VertexfitBsDist3D_mmrecog_     = -9999999;
+VertexfitBsDist3DErr_mmrecog_  = -9999999;
+VertexfitBsDist2D_mmrecog_     = -9999999;
+VertexfitBsDist2DErr_mmrecog_  = -9999999;
+
+BsVtxProb_mmrecog_ = -9999999;
+BsCt2D_mmrecog_    = -9999999;
+BsCt3D_mmrecog_    = -9999999;
+
+DeltaRPhoton1DiMuon_mmrecog_ = -9999999;
+DeltaRPhoton2DiMuon_mmrecog_ = -9999999;
+
+BsHelicity_mmrecog_    = -9999999;
+BsCoplanarity_mmrecog_ = -9999999;
+
+// ---- Converted photon mmconvgg ----
+FourvectorBsMass_mmconvgg_ = -9999999;
+FourvectorBsPt_mmconvgg_   = -9999999;
+FourvectorBsEta_mmconvgg_  = -9999999;
+FourvectorBsPhi_mmconvgg_  = -9999999;
+
+VertexfitBsMass_mmconvgg_ = -9999999;
+VertexfitBsPt_mmconvgg_   = -9999999;
+VertexfitBsEta_mmconvgg_  = -9999999;
+VertexfitBsPhi_mmconvgg_  = -9999999;
+VertexfitBsPz_mmconvgg_   = -9999999;
+
+VertexfitBsSVx_mmconvgg_ = -9999999;
+VertexfitBsSVy_mmconvgg_ = -9999999;
+VertexfitBsSVz_mmconvgg_ = -9999999;
+
+FourvectorConvGammaPt_mmconvgg_  = -9999999;
+FourvectorConvGammaEta_mmconvgg_ = -9999999;
+FourvectorConvGammaPhi_mmconvgg_ = -9999999;
+
+VertexfitPVxRefitCosTheta_mmconvgg_ = -9999999;
+VertexfitPVyRefitCosTheta_mmconvgg_ = -9999999;
+VertexfitPVzRefitCosTheta_mmconvgg_ = -9999999;
+
+VertexfitPVxRefitClosestZ_mmconvgg_ = -9999999;
+VertexfitPVyRefitClosestZ_mmconvgg_ = -9999999;
+VertexfitPVzRefitClosestZ_mmconvgg_ = -9999999;
+
+VertexfitBsCt3DPVClosestZ_mmconvgg_ = -9999999;
+VertexfitBsCt2DPVClosestZ_mmconvgg_ = -9999999;
+VertexfitBsCt3DPVCosTheta_mmconvgg_ = -9999999;
+VertexfitBsCt2DPVCosTheta_mmconvgg_ = -9999999;
+
+VertexfitBsCtErr2D_mmconvgg_ = -9999999;
+VertexfitBsCtErr3D_mmconvgg_ = -9999999;
+
+VertexfitBsDist3D_mmconvgg_     = -9999999;
+VertexfitBsDist3DErr_mmconvgg_  = -9999999;
+VertexfitBsDist2D_mmconvgg_     = -9999999;
+VertexfitBsDist2DErr_mmconvgg_  = -9999999;
+
+BsVtxProb_mmconvgg_ = -9999999;
+BsCt2D_mmconvgg_    = -9999999;
+BsCt3D_mmconvgg_    = -9999999;
+
+DeltaRPhoton1DiMuon_mmconvgg_ = -9999999;
+DeltaRPhoton2DiMuon_mmconvgg_ = -9999999;
+
+BsHelicity_mmconvgg_    = -9999999;
+BsCoplanarity_mmconvgg_ = -9999999;
+
+// ---- Reco photon mmrecogg ----
+FourvectorBsMass_mmrecogg_ = -9999999;
+FourvectorBsPt_mmrecogg_   = -9999999;
+FourvectorBsEta_mmrecogg_  = -9999999;
+FourvectorBsPhi_mmrecogg_  = -9999999;
+
+VertexfitBsMass_mmrecogg_ = -9999999;
+VertexfitBsPt_mmrecogg_   = -9999999;
+VertexfitBsEta_mmrecogg_  = -9999999;
+VertexfitBsPhi_mmrecogg_  = -9999999;
+VertexfitBsPz_mmrecogg_   = -9999999;
+
+VertexfitBsSVx_mmrecogg_ = -9999999;
+VertexfitBsSVy_mmrecogg_ = -9999999;
+VertexfitBsSVz_mmrecogg_ = -9999999;
+
+FourvectorGammaPt_mmrecogg_  = -9999999;
+FourvectorGammaEta_mmrecogg_ = -9999999;
+FourvectorGammaPhi_mmrecogg_ = -9999999;
+
+VertexfitPVxRefitCosTheta_mmrecogg_ = -9999999;
+VertexfitPVyRefitCosTheta_mmrecogg_ = -9999999;
+VertexfitPVzRefitCosTheta_mmrecogg_ = -9999999;
+
+VertexfitPVxRefitClosestZ_mmrecogg_ = -9999999;
+VertexfitPVyRefitClosestZ_mmrecogg_ = -9999999;
+VertexfitPVzRefitClosestZ_mmrecogg_ = -9999999;
+
+VertexfitBsCt3DPVClosestZ_mmrecogg_ = -9999999;
+VertexfitBsCt2DPVClosestZ_mmrecogg_ = -9999999;
+VertexfitBsCt3DPVCosTheta_mmrecogg_ = -9999999;
+VertexfitBsCt2DPVCosTheta_mmrecogg_ = -9999999;
+
+VertexfitBsCtErr2D_mmrecogg_ = -9999999;
+VertexfitBsCtErr3D_mmrecogg_ = -9999999;
+
+VertexfitBsDist3D_mmrecogg_     = -9999999;
+VertexfitBsDist3DErr_mmrecogg_  = -9999999;
+VertexfitBsDist2D_mmrecogg_     = -9999999;
+VertexfitBsDist2DErr_mmrecogg_  = -9999999;
+
+BsVtxProb_mmrecogg_ = -9999999;
+BsCt2D_mmrecogg_    = -9999999;
+BsCt3D_mmrecogg_    = -9999999;
+
+DeltaRPhoton1DiMuon_mmrecogg_ = -9999999;
+DeltaRPhoton2DiMuon_mmrecogg_ = -9999999;
+
+BsHelicity_mmrecogg_    = -9999999;
+BsCoplanarity_mmrecogg_ = -9999999;
+
+DiMuon_mu1nPixHits_alone_ = -9999999;
+DiMuon_mu2nPixHits_alone_ = -9999999;
+DiMuon_NumberOfCandidates_ = -9999999;
 
 // ===============================
 // Reset variables (DiMuon blocks)
@@ -1115,6 +1441,157 @@ bmmgTree_->SetBranchAddress("DeltaRPhoton2DiMuon_mmconvg", &DeltaRPhoton2DiMuon_
 
 bmmgTree_->SetBranchAddress("BsHelicity_mmconvg", &BsHelicity_mmconvg_);
 bmmgTree_->SetBranchAddress("BsCoplanarity_mmconvg", &BsCoplanarity_mmconvg_);
+
+bmmgTree_->SetBranchAddress("FourvectorBsMass_mmrecog", &FourvectorBsMass_mmrecog_);
+bmmgTree_->SetBranchAddress("FourvectorBsPt_mmrecog", &FourvectorBsPt_mmrecog_);
+bmmgTree_->SetBranchAddress("FourvectorBsEta_mmrecog", &FourvectorBsEta_mmrecog_);
+bmmgTree_->SetBranchAddress("FourvectorBsPhi_mmrecog", &FourvectorBsPhi_mmrecog_);
+
+bmmgTree_->SetBranchAddress("VertexfitBsMass_mmrecog", &VertexfitBsMass_mmrecog_);
+bmmgTree_->SetBranchAddress("VertexfitBsPt_mmrecog", &VertexfitBsPt_mmrecog_);
+bmmgTree_->SetBranchAddress("VertexfitBsEta_mmrecog", &VertexfitBsEta_mmrecog_);
+bmmgTree_->SetBranchAddress("VertexfitBsPhi_mmrecog", &VertexfitBsPhi_mmrecog_);
+bmmgTree_->SetBranchAddress("VertexfitBsPz_mmrecog", &VertexfitBsPz_mmrecog_);
+
+bmmgTree_->SetBranchAddress("VertexfitBsSVx_mmrecog", &VertexfitBsSVx_mmrecog_);
+bmmgTree_->SetBranchAddress("VertexfitBsSVy_mmrecog", &VertexfitBsSVy_mmrecog_);
+bmmgTree_->SetBranchAddress("VertexfitBsSVz_mmrecog", &VertexfitBsSVz_mmrecog_);
+
+bmmgTree_->SetBranchAddress("FourvectorGammaPt_mmrecog", &FourvectorGammaPt_mmrecog_);
+bmmgTree_->SetBranchAddress("FourvectorGammaEta_mmrecog", &FourvectorGammaEta_mmrecog_);
+bmmgTree_->SetBranchAddress("FourvectorGammaPhi_mmrecog", &FourvectorGammaPhi_mmrecog_);
+
+bmmgTree_->SetBranchAddress("VertexfitPVxRefitCosTheta_mmrecog", &VertexfitPVxRefitCosTheta_mmrecog_);
+bmmgTree_->SetBranchAddress("VertexfitPVyRefitCosTheta_mmrecog", &VertexfitPVyRefitCosTheta_mmrecog_);
+bmmgTree_->SetBranchAddress("VertexfitPVzRefitCosTheta_mmrecog", &VertexfitPVzRefitCosTheta_mmrecog_);
+
+bmmgTree_->SetBranchAddress("VertexfitPVxRefitClosestZ_mmrecog", &VertexfitPVxRefitClosestZ_mmrecog_);
+bmmgTree_->SetBranchAddress("VertexfitPVyRefitClosestZ_mmrecog", &VertexfitPVyRefitClosestZ_mmrecog_);
+bmmgTree_->SetBranchAddress("VertexfitPVzRefitClosestZ_mmrecog", &VertexfitPVzRefitClosestZ_mmrecog_);
+
+bmmgTree_->SetBranchAddress("VertexfitBsCt3DPVClosestZ_mmrecog", &VertexfitBsCt3DPVClosestZ_mmrecog_);
+bmmgTree_->SetBranchAddress("VertexfitBsCt2DPVClosestZ_mmrecog", &VertexfitBsCt2DPVClosestZ_mmrecog_);
+bmmgTree_->SetBranchAddress("VertexfitBsCt3DPVCosTheta_mmrecog", &VertexfitBsCt3DPVCosTheta_mmrecog_);
+bmmgTree_->SetBranchAddress("VertexfitBsCt2DPVCosTheta_mmrecog", &VertexfitBsCt2DPVCosTheta_mmrecog_);
+
+bmmgTree_->SetBranchAddress("VertexfitBsCtErr2D_mmrecog", &VertexfitBsCtErr2D_mmrecog_);
+bmmgTree_->SetBranchAddress("VertexfitBsCtErr3D_mmrecog", &VertexfitBsCtErr3D_mmrecog_);
+
+bmmgTree_->SetBranchAddress("VertexfitBsDist3D_mmrecog", &VertexfitBsDist3D_mmrecog_);
+bmmgTree_->SetBranchAddress("VertexfitBsDist3DErr_mmrecog", &VertexfitBsDist3DErr_mmrecog_);
+bmmgTree_->SetBranchAddress("VertexfitBsDist2D_mmrecog", &VertexfitBsDist2D_mmrecog_);
+bmmgTree_->SetBranchAddress("VertexfitBsDist2DErr_mmrecog", &VertexfitBsDist2DErr_mmrecog_);
+
+bmmgTree_->SetBranchAddress("BsVtxProb_mmrecog", &BsVtxProb_mmrecog_);
+bmmgTree_->SetBranchAddress("BsCt2D_mmrecog", &BsCt2D_mmrecog_);
+bmmgTree_->SetBranchAddress("BsCt3D_mmrecog", &BsCt3D_mmrecog_);
+
+bmmgTree_->SetBranchAddress("DeltaRPhoton1DiMuon_mmrecog", &DeltaRPhoton1DiMuon_mmrecog_);
+bmmgTree_->SetBranchAddress("DeltaRPhoton2DiMuon_mmrecog", &DeltaRPhoton2DiMuon_mmrecog_);
+
+bmmgTree_->SetBranchAddress("BsHelicity_mmrecog", &BsHelicity_mmrecog_);
+bmmgTree_->SetBranchAddress("BsCoplanarity_mmrecog", &BsCoplanarity_mmrecog_);
+
+bmmgTree_->SetBranchAddress("FourvectorBsMass_mmconvgg", &FourvectorBsMass_mmconvgg_);
+bmmgTree_->SetBranchAddress("FourvectorBsPt_mmconvgg", &FourvectorBsPt_mmconvgg_);
+bmmgTree_->SetBranchAddress("FourvectorBsEta_mmconvgg", &FourvectorBsEta_mmconvgg_);
+bmmgTree_->SetBranchAddress("FourvectorBsPhi_mmconvgg", &FourvectorBsPhi_mmconvgg_);
+
+bmmgTree_->SetBranchAddress("VertexfitBsMass_mmconvgg", &VertexfitBsMass_mmconvgg_);
+bmmgTree_->SetBranchAddress("VertexfitBsPt_mmconvgg", &VertexfitBsPt_mmconvgg_);
+bmmgTree_->SetBranchAddress("VertexfitBsEta_mmconvgg", &VertexfitBsEta_mmconvgg_);
+bmmgTree_->SetBranchAddress("VertexfitBsPhi_mmconvgg", &VertexfitBsPhi_mmconvgg_);
+bmmgTree_->SetBranchAddress("VertexfitBsPz_mmconvgg", &VertexfitBsPz_mmconvgg_);
+
+bmmgTree_->SetBranchAddress("VertexfitBsSVx_mmconvgg", &VertexfitBsSVx_mmconvgg_);
+bmmgTree_->SetBranchAddress("VertexfitBsSVy_mmconvgg", &VertexfitBsSVy_mmconvgg_);
+bmmgTree_->SetBranchAddress("VertexfitBsSVz_mmconvgg", &VertexfitBsSVz_mmconvgg_);
+
+bmmgTree_->SetBranchAddress("FourvectorConvGammaPt_mmconvgg", &FourvectorConvGammaPt_mmconvgg_);
+bmmgTree_->SetBranchAddress("FourvectorConvGammaEta_mmconvgg", &FourvectorConvGammaEta_mmconvgg_);
+bmmgTree_->SetBranchAddress("FourvectorConvGammaPhi_mmconvgg", &FourvectorConvGammaPhi_mmconvgg_);
+
+bmmgTree_->SetBranchAddress("VertexfitPVxRefitCosTheta_mmconvgg", &VertexfitPVxRefitCosTheta_mmconvgg_);
+bmmgTree_->SetBranchAddress("VertexfitPVyRefitCosTheta_mmconvgg", &VertexfitPVyRefitCosTheta_mmconvgg_);
+bmmgTree_->SetBranchAddress("VertexfitPVzRefitCosTheta_mmconvgg", &VertexfitPVzRefitCosTheta_mmconvgg_);
+
+bmmgTree_->SetBranchAddress("VertexfitPVxRefitClosestZ_mmconvgg", &VertexfitPVxRefitClosestZ_mmconvgg_);
+bmmgTree_->SetBranchAddress("VertexfitPVyRefitClosestZ_mmconvgg", &VertexfitPVyRefitClosestZ_mmconvgg_);
+bmmgTree_->SetBranchAddress("VertexfitPVzRefitClosestZ_mmconvgg", &VertexfitPVzRefitClosestZ_mmconvgg_);
+
+bmmgTree_->SetBranchAddress("VertexfitBsCt3DPVClosestZ_mmconvgg", &VertexfitBsCt3DPVClosestZ_mmconvgg_);
+bmmgTree_->SetBranchAddress("VertexfitBsCt2DPVClosestZ_mmconvgg", &VertexfitBsCt2DPVClosestZ_mmconvgg_);
+bmmgTree_->SetBranchAddress("VertexfitBsCt3DPVCosTheta_mmconvgg", &VertexfitBsCt3DPVCosTheta_mmconvgg_);
+bmmgTree_->SetBranchAddress("VertexfitBsCt2DPVCosTheta_mmconvgg", &VertexfitBsCt2DPVCosTheta_mmconvgg_);
+
+bmmgTree_->SetBranchAddress("VertexfitBsCtErr2D_mmconvgg", &VertexfitBsCtErr2D_mmconvgg_);
+bmmgTree_->SetBranchAddress("VertexfitBsCtErr3D_mmconvgg", &VertexfitBsCtErr3D_mmconvgg_);
+
+bmmgTree_->SetBranchAddress("VertexfitBsDist3D_mmconvgg", &VertexfitBsDist3D_mmconvgg_);
+bmmgTree_->SetBranchAddress("VertexfitBsDist3DErr_mmconvgg", &VertexfitBsDist3DErr_mmconvgg_);
+bmmgTree_->SetBranchAddress("VertexfitBsDist2D_mmconvgg", &VertexfitBsDist2D_mmconvgg_);
+bmmgTree_->SetBranchAddress("VertexfitBsDist2DErr_mmconvgg", &VertexfitBsDist2DErr_mmconvgg_);
+
+bmmgTree_->SetBranchAddress("BsVtxProb_mmconvgg", &BsVtxProb_mmconvgg_);
+bmmgTree_->SetBranchAddress("BsCt2D_mmconvgg", &BsCt2D_mmconvgg_);
+bmmgTree_->SetBranchAddress("BsCt3D_mmconvgg", &BsCt3D_mmconvgg_);
+
+bmmgTree_->SetBranchAddress("DeltaRPhoton1DiMuon_mmconvgg", &DeltaRPhoton1DiMuon_mmconvgg_);
+bmmgTree_->SetBranchAddress("DeltaRPhoton2DiMuon_mmconvgg", &DeltaRPhoton2DiMuon_mmconvgg_);
+
+bmmgTree_->SetBranchAddress("BsHelicity_mmconvgg", &BsHelicity_mmconvgg_);
+bmmgTree_->SetBranchAddress("BsCoplanarity_mmconvgg", &BsCoplanarity_mmconvgg_);
+
+bmmgTree_->SetBranchAddress("FourvectorBsMass_mmrecogg", &FourvectorBsMass_mmrecogg_);
+bmmgTree_->SetBranchAddress("FourvectorBsPt_mmrecogg", &FourvectorBsPt_mmrecogg_);
+bmmgTree_->SetBranchAddress("FourvectorBsEta_mmrecogg", &FourvectorBsEta_mmrecogg_);
+bmmgTree_->SetBranchAddress("FourvectorBsPhi_mmrecogg", &FourvectorBsPhi_mmrecogg_);
+
+bmmgTree_->SetBranchAddress("VertexfitBsMass_mmrecogg", &VertexfitBsMass_mmrecogg_);
+bmmgTree_->SetBranchAddress("VertexfitBsPt_mmrecogg", &VertexfitBsPt_mmrecogg_);
+bmmgTree_->SetBranchAddress("VertexfitBsEta_mmrecogg", &VertexfitBsEta_mmrecogg_);
+bmmgTree_->SetBranchAddress("VertexfitBsPhi_mmrecogg", &VertexfitBsPhi_mmrecogg_);
+bmmgTree_->SetBranchAddress("VertexfitBsPz_mmrecogg", &VertexfitBsPz_mmrecogg_);
+
+bmmgTree_->SetBranchAddress("VertexfitBsSVx_mmrecogg", &VertexfitBsSVx_mmrecogg_);
+bmmgTree_->SetBranchAddress("VertexfitBsSVy_mmrecogg", &VertexfitBsSVy_mmrecogg_);
+bmmgTree_->SetBranchAddress("VertexfitBsSVz_mmrecogg", &VertexfitBsSVz_mmrecogg_);
+
+bmmgTree_->SetBranchAddress("FourvectorGammaPt_mmrecogg", &FourvectorGammaPt_mmrecogg_);
+bmmgTree_->SetBranchAddress("FourvectorGammaEta_mmrecogg", &FourvectorGammaEta_mmrecogg_);
+bmmgTree_->SetBranchAddress("FourvectorGammaPhi_mmrecogg", &FourvectorGammaPhi_mmrecogg_);
+
+bmmgTree_->SetBranchAddress("VertexfitPVxRefitCosTheta_mmrecogg", &VertexfitPVxRefitCosTheta_mmrecogg_);
+bmmgTree_->SetBranchAddress("VertexfitPVyRefitCosTheta_mmrecogg", &VertexfitPVyRefitCosTheta_mmrecogg_);
+bmmgTree_->SetBranchAddress("VertexfitPVzRefitCosTheta_mmrecogg", &VertexfitPVzRefitCosTheta_mmrecogg_);
+
+bmmgTree_->SetBranchAddress("VertexfitPVxRefitClosestZ_mmrecogg", &VertexfitPVxRefitClosestZ_mmrecogg_);
+bmmgTree_->SetBranchAddress("VertexfitPVyRefitClosestZ_mmrecogg", &VertexfitPVyRefitClosestZ_mmrecogg_);
+bmmgTree_->SetBranchAddress("VertexfitPVzRefitClosestZ_mmrecogg", &VertexfitPVzRefitClosestZ_mmrecogg_);
+
+bmmgTree_->SetBranchAddress("VertexfitBsCt3DPVClosestZ_mmrecogg", &VertexfitBsCt3DPVClosestZ_mmrecogg_);
+bmmgTree_->SetBranchAddress("VertexfitBsCt2DPVClosestZ_mmrecogg", &VertexfitBsCt2DPVClosestZ_mmrecogg_);
+bmmgTree_->SetBranchAddress("VertexfitBsCt3DPVCosTheta_mmrecogg", &VertexfitBsCt3DPVCosTheta_mmrecogg_);
+bmmgTree_->SetBranchAddress("VertexfitBsCt2DPVCosTheta_mmrecogg", &VertexfitBsCt2DPVCosTheta_mmrecogg_);
+
+bmmgTree_->SetBranchAddress("VertexfitBsCtErr2D_mmrecogg", &VertexfitBsCtErr2D_mmrecogg_);
+bmmgTree_->SetBranchAddress("VertexfitBsCtErr3D_mmrecogg", &VertexfitBsCtErr3D_mmrecogg_);
+
+bmmgTree_->SetBranchAddress("VertexfitBsDist3D_mmrecogg", &VertexfitBsDist3D_mmrecogg_);
+bmmgTree_->SetBranchAddress("VertexfitBsDist3DErr_mmrecogg", &VertexfitBsDist3DErr_mmrecogg_);
+bmmgTree_->SetBranchAddress("VertexfitBsDist2D_mmrecogg", &VertexfitBsDist2D_mmrecogg_);
+bmmgTree_->SetBranchAddress("VertexfitBsDist2DErr_mmrecogg", &VertexfitBsDist2DErr_mmrecogg_);
+
+bmmgTree_->SetBranchAddress("BsVtxProb_mmrecogg", &BsVtxProb_mmrecogg_);
+bmmgTree_->SetBranchAddress("BsCt2D_mmrecogg", &BsCt2D_mmrecogg_);
+bmmgTree_->SetBranchAddress("BsCt3D_mmrecogg", &BsCt3D_mmrecogg_);
+
+bmmgTree_->SetBranchAddress("DeltaRPhoton1DiMuon_mmrecogg", &DeltaRPhoton1DiMuon_mmrecogg_);
+bmmgTree_->SetBranchAddress("DeltaRPhoton2DiMuon_mmrecogg", &DeltaRPhoton2DiMuon_mmrecogg_);
+
+bmmgTree_->SetBranchAddress("BsHelicity_mmrecogg", &BsHelicity_mmrecogg_);
+bmmgTree_->SetBranchAddress("BsCoplanarity_mmrecogg", &BsCoplanarity_mmrecogg_);
+
 
 bmmgTree_->SetBranchAddress("DiMuonMass_Jpsi", &DiMuonMass_Jpsi_);
 bmmgTree_->SetBranchAddress("DiMuonEta_Jpsi", &DiMuonEta_Jpsi_);

@@ -202,6 +202,268 @@ double DeltaRPhoton2DiMuon_mmconvg_;
 double BsHelicity_mmconvg_;
 double BsCoplanarity_mmconvg_;
 
+	// Tripple object reco photon vertex variables
+
+double FourvectorBsMass_mmrecog_;
+double FourvectorBsPt_mmrecog_;
+double FourvectorBsEta_mmrecog_;
+double FourvectorBsPhi_mmrecog_;
+
+double VertexfitBsMass_mmrecog_;
+double VertexfitBsPt_mmrecog_;
+double VertexfitBsEta_mmrecog_;
+double VertexfitBsPhi_mmrecog_;
+double VertexfitBsPz_mmrecog_;
+
+double VertexfitBsSVx_mmrecog_;
+double VertexfitBsSVy_mmrecog_;
+double VertexfitBsSVz_mmrecog_;
+
+double FourvectorGammaPt_mmrecog_;
+double FourvectorGammaEta_mmrecog_;
+double FourvectorGammaPhi_mmrecog_;
+
+double VertexfitPVxRefitCosTheta_mmrecog_;
+double VertexfitPVyRefitCosTheta_mmrecog_;
+double VertexfitPVzRefitCosTheta_mmrecog_;
+
+double VertexfitPVxRefitClosestZ_mmrecog_;
+double VertexfitPVyRefitClosestZ_mmrecog_;
+double VertexfitPVzRefitClosestZ_mmrecog_;
+
+double VertexfitBsCt3DPVClosestZ_mmrecog_;
+double VertexfitBsCt2DPVClosestZ_mmrecog_;
+double VertexfitBsCt3DPVCosTheta_mmrecog_;
+double VertexfitBsCt2DPVCosTheta_mmrecog_;
+double VertexfitBsCt2DPVCosThetaOld_mmrecog_;
+double VertexfitBsCt2DPVClosestZOld_mmrecog_;
+double VertexfitBsCt2DBSOld_mmrecog_;
+double VertexfitBsCt2DOld_mmrecog_;
+
+double VertexfitBsCtErr2DBS_mmrecog_;
+double VertexfitBsCtErr2D_mmrecog_;
+double VertexfitBsCtErr2DClosestZ_mmrecog_;
+double VertexfitBsCtErr2DCosTheta_mmrecog_;
+double VertexfitBsCtErr2DCosThetaOld_mmrecog_;
+double VertexfitBsCtErr2DBSOld_mmrecog_;
+double VertexfitBsCtErr2DOld_mmrecog_;
+double VertexfitBsCtErr2DClosestZOld_mmrecog_;
+double VertexfitBsCtErr3D_mmrecog_;
+double VertexfitBsCtErr2D2_mmrecog_;
+double VertexfitBsCtErrMPV_mmrecog_;
+
+double VertexfitBsCt3DRefit_mmrecog_;
+double VertexfitBsCt2DRefit_mmrecog_;
+double VertexfitBsCtMPVRefit_mmrecog_;
+double VertexfitBsCtErr3DRefit_mmrecog_;
+double VertexfitBsCtErr2DRefit_mmrecog_;
+double VertexfitBsCtErrMPVRefit_mmrecog_;
+
+double VertexfitBsLxy_mmrecog_;
+double VertexfitBsLxyErr_mmrecog_;
+double VertexfitBsCt_mmrecog_;
+double VertexfitBsCtErr_mmrecog_;
+
+double VertexfitBsErrX_mmrecog_;
+double VertexfitBsErrY_mmrecog_;
+double VertexfitBsErrXY_mmrecog_;
+
+double VertexfitBsDist3D_mmrecog_;
+double VertexfitBsDist3DErr_mmrecog_;
+double VertexfitBsTime3D_mmrecog_;
+double VertexfitBsTime3DErr_mmrecog_;
+
+double VertexfitBsDist2D_mmrecog_;
+double VertexfitBsDist2DErr_mmrecog_;
+double VertexfitBsTime2D_mmrecog_;
+double VertexfitBsTime2DErr_mmrecog_;
+
+double BsVtxProb_mmrecog_;
+double BsCt2D_mmrecog_;
+double BsCt2DBS_mmrecog_;
+double BsCt3D_mmrecog_;
+
+double DeltaRPhoton1DiMuon_mmrecog_;
+double DeltaRPhoton2DiMuon_mmrecog_;
+
+double BsHelicity_mmrecog_;
+double BsCoplanarity_mmrecog_;
+
+	// Tetra object converted photon vertex variables
+
+double FourvectorBsMass_mmconvgg_;
+double FourvectorBsPt_mmconvgg_;
+double FourvectorBsEta_mmconvgg_;
+double FourvectorBsPhi_mmconvgg_;
+
+double VertexfitBsMass_mmconvgg_;
+double VertexfitBsPt_mmconvgg_;
+double VertexfitBsEta_mmconvgg_;
+double VertexfitBsPhi_mmconvgg_;
+double VertexfitBsPz_mmconvgg_;
+
+double VertexfitBsSVx_mmconvgg_;
+double VertexfitBsSVy_mmconvgg_;
+double VertexfitBsSVz_mmconvgg_;
+
+double FourvectorConvGammaPt_mmconvgg_;
+double FourvectorConvGammaEta_mmconvgg_;
+double FourvectorConvGammaPhi_mmconvgg_;
+
+double VertexfitPVxRefitCosTheta_mmconvgg_;
+double VertexfitPVyRefitCosTheta_mmconvgg_;
+double VertexfitPVzRefitCosTheta_mmconvgg_;
+
+double VertexfitPVxRefitClosestZ_mmconvgg_;
+double VertexfitPVyRefitClosestZ_mmconvgg_;
+double VertexfitPVzRefitClosestZ_mmconvgg_;
+
+double VertexfitBsCt3DPVClosestZ_mmconvgg_;
+double VertexfitBsCt2DPVClosestZ_mmconvgg_;
+double VertexfitBsCt3DPVCosTheta_mmconvgg_;
+double VertexfitBsCt2DPVCosTheta_mmconvgg_;
+double VertexfitBsCt2DPVCosThetaOld_mmconvgg_;
+double VertexfitBsCt2DPVClosestZOld_mmconvgg_;
+double VertexfitBsCt2DBSOld_mmconvgg_;
+double VertexfitBsCt2DOld_mmconvgg_;
+
+double VertexfitBsCtErr2DBS_mmconvgg_;
+double VertexfitBsCtErr2D_mmconvgg_;
+double VertexfitBsCtErr2DClosestZ_mmconvgg_;
+double VertexfitBsCtErr2DCosTheta_mmconvgg_;
+double VertexfitBsCtErr2DCosThetaOld_mmconvgg_;
+double VertexfitBsCtErr2DBSOld_mmconvgg_;
+double VertexfitBsCtErr2DOld_mmconvgg_;
+double VertexfitBsCtErr2DClosestZOld_mmconvgg_;
+double VertexfitBsCtErr3D_mmconvgg_;
+double VertexfitBsCtErr2D2_mmconvgg_;
+double VertexfitBsCtErrMPV_mmconvgg_;
+
+double VertexfitBsCt3DRefit_mmconvgg_;
+double VertexfitBsCt2DRefit_mmconvgg_;
+double VertexfitBsCtMPVRefit_mmconvgg_;
+double VertexfitBsCtErr3DRefit_mmconvgg_;
+double VertexfitBsCtErr2DRefit_mmconvgg_;
+double VertexfitBsCtErrMPVRefit_mmconvgg_;
+
+double VertexfitBsLxy_mmconvgg_;
+double VertexfitBsLxyErr_mmconvgg_;
+double VertexfitBsCt_mmconvgg_;
+double VertexfitBsCtErr_mmconvgg_;
+
+double VertexfitBsErrX_mmconvgg_;
+double VertexfitBsErrY_mmconvgg_;
+double VertexfitBsErrXY_mmconvgg_;
+
+double VertexfitBsDist3D_mmconvgg_;
+double VertexfitBsDist3DErr_mmconvgg_;
+double VertexfitBsTime3D_mmconvgg_;
+double VertexfitBsTime3DErr_mmconvgg_;
+
+double VertexfitBsDist2D_mmconvgg_;
+double VertexfitBsDist2DErr_mmconvgg_;
+double VertexfitBsTime2D_mmconvgg_;
+double VertexfitBsTime2DErr_mmconvgg_;
+
+double BsVtxProb_mmconvgg_;
+double BsCt2D_mmconvgg_;
+double BsCt2DBS_mmconvgg_;
+double BsCt3D_mmconvgg_;
+
+double DeltaRPhoton1DiMuon_mmconvgg_;
+double DeltaRPhoton2DiMuon_mmconvgg_;
+
+double BsHelicity_mmconvgg_;
+double BsCoplanarity_mmconvgg_;
+
+	// Tetra object reco photon vertex variables
+
+double FourvectorBsMass_mmrecogg_;
+double FourvectorBsPt_mmrecogg_;
+double FourvectorBsEta_mmrecogg_;
+double FourvectorBsPhi_mmrecogg_;
+
+double VertexfitBsMass_mmrecogg_;
+double VertexfitBsPt_mmrecogg_;
+double VertexfitBsEta_mmrecogg_;
+double VertexfitBsPhi_mmrecogg_;
+double VertexfitBsPz_mmrecogg_;
+
+double VertexfitBsSVx_mmrecogg_;
+double VertexfitBsSVy_mmrecogg_;
+double VertexfitBsSVz_mmrecogg_;
+
+double FourvectorGammaPt_mmrecogg_;
+double FourvectorGammaEta_mmrecogg_;
+double FourvectorGammaPhi_mmrecogg_;
+
+double VertexfitPVxRefitCosTheta_mmrecogg_;
+double VertexfitPVyRefitCosTheta_mmrecogg_;
+double VertexfitPVzRefitCosTheta_mmrecogg_;
+
+double VertexfitPVxRefitClosestZ_mmrecogg_;
+double VertexfitPVyRefitClosestZ_mmrecogg_;
+double VertexfitPVzRefitClosestZ_mmrecogg_;
+
+double VertexfitBsCt3DPVClosestZ_mmrecogg_;
+double VertexfitBsCt2DPVClosestZ_mmrecogg_;
+double VertexfitBsCt3DPVCosTheta_mmrecogg_;
+double VertexfitBsCt2DPVCosTheta_mmrecogg_;
+double VertexfitBsCt2DPVCosThetaOld_mmrecogg_;
+double VertexfitBsCt2DPVClosestZOld_mmrecogg_;
+double VertexfitBsCt2DBSOld_mmrecogg_;
+double VertexfitBsCt2DOld_mmrecogg_;
+
+double VertexfitBsCtErr2DBS_mmrecogg_;
+double VertexfitBsCtErr2D_mmrecogg_;
+double VertexfitBsCtErr2DClosestZ_mmrecogg_;
+double VertexfitBsCtErr2DCosTheta_mmrecogg_;
+double VertexfitBsCtErr2DCosThetaOld_mmrecogg_;
+double VertexfitBsCtErr2DBSOld_mmrecogg_;
+double VertexfitBsCtErr2DOld_mmrecogg_;
+double VertexfitBsCtErr2DClosestZOld_mmrecogg_;
+double VertexfitBsCtErr3D_mmrecogg_;
+double VertexfitBsCtErr2D2_mmrecogg_;
+double VertexfitBsCtErrMPV_mmrecogg_;
+
+double VertexfitBsCt3DRefit_mmrecogg_;
+double VertexfitBsCt2DRefit_mmrecogg_;
+double VertexfitBsCtMPVRefit_mmrecogg_;
+double VertexfitBsCtErr3DRefit_mmrecogg_;
+double VertexfitBsCtErr2DRefit_mmrecogg_;
+double VertexfitBsCtErrMPVRefit_mmrecogg_;
+
+double VertexfitBsLxy_mmrecogg_;
+double VertexfitBsLxyErr_mmrecogg_;
+double VertexfitBsCt_mmrecogg_;
+double VertexfitBsCtErr_mmrecogg_;
+
+double VertexfitBsErrX_mmrecogg_;
+double VertexfitBsErrY_mmrecogg_;
+double VertexfitBsErrXY_mmrecogg_;
+
+double VertexfitBsDist3D_mmrecogg_;
+double VertexfitBsDist3DErr_mmrecogg_;
+double VertexfitBsTime3D_mmrecogg_;
+double VertexfitBsTime3DErr_mmrecogg_;
+
+double VertexfitBsDist2D_mmrecogg_;
+double VertexfitBsDist2DErr_mmrecogg_;
+double VertexfitBsTime2D_mmrecogg_;
+double VertexfitBsTime2DErr_mmrecogg_;
+
+double BsVtxProb_mmrecogg_;
+double BsCt2D_mmrecogg_;
+double BsCt2DBS_mmrecogg_;
+double BsCt3D_mmrecogg_;
+
+double DeltaRPhoton1DiMuon_mmrecogg_;
+double DeltaRPhoton2DiMuon_mmrecogg_;
+
+double BsHelicity_mmrecogg_;
+double BsCoplanarity_mmrecogg_;
+
+
 
 double DiMuonMass_Jpsi_;
 double DiMuonEta_Jpsi_;
