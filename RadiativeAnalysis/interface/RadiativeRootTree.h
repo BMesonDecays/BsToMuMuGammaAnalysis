@@ -463,7 +463,88 @@ double DeltaRPhoton2DiMuon_mmrecogg_;
 double BsHelicity_mmrecogg_;
 double BsCoplanarity_mmrecogg_;
 
+	// mu mu k k
 
+double FourvectorBsMass_mmkk_;
+double FourvectorBsPt_mmkk_;
+double FourvectorBsEta_mmkk_;
+double FourvectorBsPhi_mmkk_;
+
+double VertexfitBsMass_mmkk_;
+double VertexfitBsPt_mmkk_;
+double VertexfitBsEta_mmkk_;
+double VertexfitBsPhi_mmkk_;
+double VertexfitBsPz_mmkk_;
+
+double VertexfitBsSVx_mmkk_;
+double VertexfitBsSVy_mmkk_;
+double VertexfitBsSVz_mmkk_;
+
+double VertexfitPVxRefitCosTheta_mmkk_;
+double VertexfitPVyRefitCosTheta_mmkk_;
+double VertexfitPVzRefitCosTheta_mmkk_;
+
+double VertexfitPVxRefitClosestZ_mmkk_;
+double VertexfitPVyRefitClosestZ_mmkk_;
+double VertexfitPVzRefitClosestZ_mmkk_;
+
+double VertexfitBsCt3DPVClosestZ_mmkk_;
+double VertexfitBsCt2DPVClosestZ_mmkk_;
+double VertexfitBsCt3DPVCosTheta_mmkk_;
+double VertexfitBsCt2DPVCosTheta_mmkk_;
+double VertexfitBsCt2DPVCosThetaOld_mmkk_;
+double VertexfitBsCt2DPVClosestZOld_mmkk_;
+double VertexfitBsCt2DBSOld_mmkk_;
+double VertexfitBsCt2DOld_mmkk_;
+
+double VertexfitBsCtErr2DBS_mmkk_;
+double VertexfitBsCtErr2D_mmkk_;
+double VertexfitBsCtErr2DClosestZ_mmkk_;
+double VertexfitBsCtErr2DCosTheta_mmkk_;
+double VertexfitBsCtErr2DCosThetaOld_mmkk_;
+double VertexfitBsCtErr2DBSOld_mmkk_;
+double VertexfitBsCtErr2DOld_mmkk_;
+double VertexfitBsCtErr2DClosestZOld_mmkk_;
+double VertexfitBsCtErr3D_mmkk_;
+double VertexfitBsCtErr2D2_mmkk_;
+double VertexfitBsCtErrMPV_mmkk_;
+
+double VertexfitBsCt3DRefit_mmkk_;
+double VertexfitBsCt2DRefit_mmkk_;
+double VertexfitBsCtMPVRefit_mmkk_;
+double VertexfitBsCtErr3DRefit_mmkk_;
+double VertexfitBsCtErr2DRefit_mmkk_;
+double VertexfitBsCtErrMPVRefit_mmkk_;
+
+double VertexfitBsLxy_mmkk_;
+double VertexfitBsLxyErr_mmkk_;
+double VertexfitBsCt_mmkk_;
+double VertexfitBsCtErr_mmkk_;
+
+double VertexfitBsErrX_mmkk_;
+double VertexfitBsErrY_mmkk_;
+double VertexfitBsErrXY_mmkk_;
+
+double VertexfitBsDist3D_mmkk_;
+double VertexfitBsDist3DErr_mmkk_;
+double VertexfitBsTime3D_mmkk_;
+double VertexfitBsTime3DErr_mmkk_;
+
+double VertexfitBsDist2D_mmkk_;
+double VertexfitBsDist2DErr_mmkk_;
+double VertexfitBsTime2D_mmkk_;
+double VertexfitBsTime2DErr_mmkk_;
+
+double BsVtxProb_mmkk_;
+double BsCt2D_mmkk_;
+double BsCt2DBS_mmkk_;
+double BsCt3D_mmkk_;
+
+double DeltaRKaon1DiMuon_mmkk_;
+double DeltaRKaon2DiMuon_mmkk_;
+
+double BsHelicity_mmkk_;
+double BsCoplanarity_mmkk_;
 
 double DiMuonMass_Jpsi_;
 double DiMuonEta_Jpsi_;
