@@ -333,7 +333,7 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 		if(muons->size()==2 && tracks->size()>=2){
 			ReferenceModeratorVertex refmodvtxObservables;
 			decayVariables = refmodvtxObservables.ReferenceModeratorVertexObservables(*muons, *tracks, bsandvtxVar, theBField, 
-			nominalMuonMass, nominalKaonMass);
+			nominalMuonMass, nominalKaonMass, bmmgRootTree_);
 			bmmgRootTree_->vertexTypeFlag_ = 3;
 		}
 

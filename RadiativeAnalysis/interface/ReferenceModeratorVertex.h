@@ -9,6 +9,7 @@
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/ReferenceResonance.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/MuonClosestApproachCalculator.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/DecayChainVariables.h"
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/RadiativeRootTree.h"
 
 
 
@@ -63,7 +64,8 @@ class ReferenceModeratorVertex{
                 const BeamSpotAndVertex::BSAndVtxVariables& bsAndVtxInfo,
                 const MagneticField& bField,
                 const double nominalMuonMass,
-                const double nominalKaonMass);
+                const double nominalKaonMass,
+                RadiativeRootTree* rrt);
 
 
 };

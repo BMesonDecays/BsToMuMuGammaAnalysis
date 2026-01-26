@@ -45,7 +45,8 @@ DecayChainVariables ReferenceModeratorVertex::ReferenceModeratorVertexObservable
     const BeamSpotAndVertex::BSAndVtxVariables& bsAndVtxInfo,
     const MagneticField& bField,
     const double nominalMuonMass,
-    const double nominalKaonMass){
+    const double nominalKaonMass,
+    RadiativeRootTree* rrt){
 
         bool verbose = true;
         DecayChainVariables dcv;
@@ -229,16 +230,16 @@ DecayChainVariables ReferenceModeratorVertex::ReferenceModeratorVertexObservable
               GlobalError gigibs=kvfbsvertex.positionError();
               double vtxprob_Bs = TMath::Prob(vertexbskalman.chi2(),(int)vertexbskalman.ndof());
               if (vtxprob_Bs < 1e-5) continue;
-              dcv.BsVtxProb = vtxprob_Bs;
+              rrt->BsVtxProb_mmkk_ = vtxprob_Bs;
               //std::cout<<"vtxprob_Bs: "<<vtxprob_Bs<<"\n";
               KinematicConstrainedFit BCandFitter;
               bool fitSuccess = BCandFitter.BsToJpsiPhiFit(t_tracks, nominalMuonMass, nominalKaonMass, nominalKaonMass);
               if (!fitSuccess) continue;
               dcv.fittedBmassConvertedPhoton = BCandFitter.getBhadronMass();
-                dcv.BsMass = BCand.M();
-                dcv.BsPt   = BCand.Pt();
-                dcv.BsEta  = BCand.Eta();
-                dcv.BsPhi  = BCand.Phi();
+                rrt->FourvectorBsMass_mmkk_ = BCand.M();
+                rrt->FourvectorBsPt_mmkk_   = BCand.Pt();
+                rrt->FourvectorBsEta_mmkk_  = BCand.Eta();
+                rrt->FourvectorBsPhi_mmkk_  = BCand.Phi();
                 RefCountedKinematicParticle bs = BCandFitter.getBhardon();
 	  		    RefCountedKinematicVertex bVertex = BCandFitter.getVertex();
 	  		    AlgebraicVector7 b_par = bs->currentState().kinematicParameters().vector();
@@ -250,19 +251,18 @@ DecayChainVariables ReferenceModeratorVertex::ReferenceModeratorVertexObservable
                 /*Need input to solve the problem of multiple primary vertex*/
                 //std::cout<<"Primary vertex HightestPt BsTojpsiPhicase"<<PVvtxHightestPt.x()<< "\t"<<PVvtxHightestPt.y()<< "\t"<<PVvtxHightestPt.z() <<"\n";
                 
-                dcv.BsCt3D = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*Bsvec.x()+
+                rrt->BsCt3D_mmkk_ = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*Bsvec.x()+
                 (kvfbsvertex.position().y()-PVvtxHightestPt.y())*Bsvec.y()+
                 (kvfbsvertex.position().z()-PVvtxHightestPt.z())*Bsvec.z())/
                 (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y()+Bsvec.z()*Bsvec.z());
-                //std::cout << " the decay time 3D BsTojpsiPhicase: " << dcv.BsCt3D << "\n";
-                dcv.BsCt2D = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*Bsvec.x()+
+                
+                rrt->BsCt2D_mmkk_ = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*Bsvec.x()+
                 (kvfbsvertex.position().y()-PVvtxHightestPt.y())*Bsvec.y())/
                 (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y());
-                //std::cout << " the decay time 2D BsTojpsiPhicase : " << dcv.BsCt3D << "\n";
-                dcv.BsCt2DBS = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-bsAndVtxInfo.bs_x)*Bsvec.x()+
+
+                rrt->BsCt2DBS_mmkk_ = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-bsAndVtxInfo.bs_x)*Bsvec.x()+
                 (kvfbsvertex.position().y()-bsAndVtxInfo.bs_y)*Bsvec.y())/
                 (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y());
-                //std::cout << " the decay time 2D BS BsTojpsiPhicase : " << dcv.BsCt3D << "\n";
 
 
 
