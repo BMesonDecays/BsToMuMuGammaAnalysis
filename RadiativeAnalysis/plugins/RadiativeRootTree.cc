@@ -197,14 +197,6 @@ bmmgTree_->Branch("DeltaRPhoton2DiMuon_mmrecog", &DeltaRPhoton2DiMuon_mmrecog_, 
 bmmgTree_->Branch("BsHelicity_mmrecog", &BsHelicity_mmrecog_, "BsHelicity_mmrecog/D");
 bmmgTree_->Branch("BsCoplanarity_mmrecog", &BsCoplanarity_mmrecog_, "BsCoplanarity_mmrecog/D");
 
-
-bmmgTree_->Branch("DeltaRPhoton1DiMuon_mmrecog", &DeltaRPhoton1DiMuon_mmrecog_, "DeltaRPhoton1DiMuon_mmrecog/D");
-bmmgTree_->Branch("DeltaRPhoton2DiMuon_mmrecog", &DeltaRPhoton2DiMuon_mmrecog_, "DeltaRPhoton2DiMuon_mmrecog/D");
-
-bmmgTree_->Branch("BsHelicity_mmrecog", &BsHelicity_mmrecog_, "BsHelicity_mmrecog/D");
-bmmgTree_->Branch("BsCoplanarity_mmrecog", &BsCoplanarity_mmrecog_, "BsCoplanarity_mmrecog/D");
-
-
 // Tetra object converted photon vertex variables
 bmmgTree_->Branch("FourvectorBsMass_mmconvgg", &FourvectorBsMass_mmconvgg_, "FourvectorBsMass_mmconvgg/D");
 bmmgTree_->Branch("FourvectorBsPt_mmconvgg", &FourvectorBsPt_mmconvgg_, "FourvectorBsPt_mmconvgg/D");
@@ -257,13 +249,6 @@ bmmgTree_->Branch("DeltaRPhoton2DiMuon_mmconvgg", &DeltaRPhoton2DiMuon_mmconvgg_
 bmmgTree_->Branch("BsHelicity_mmconvgg", &BsHelicity_mmconvgg_, "BsHelicity_mmconvgg/D");
 bmmgTree_->Branch("BsCoplanarity_mmconvgg", &BsCoplanarity_mmconvgg_, "BsCoplanarity_mmconvgg/D");
 
-
-bmmgTree_->Branch("DeltaRPhoton1DiMuon_mmconvgg", &DeltaRPhoton1DiMuon_mmconvgg_, "DeltaRPhoton1DiMuon_mmconvgg/D");
-bmmgTree_->Branch("DeltaRPhoton2DiMuon_mmconvgg", &DeltaRPhoton2DiMuon_mmconvgg_, "DeltaRPhoton2DiMuon_mmconvgg/D");
-
-bmmgTree_->Branch("BsHelicity_mmconvgg", &BsHelicity_mmconvgg_, "BsHelicity_mmconvgg/D");
-bmmgTree_->Branch("BsCoplanarity_mmconvgg", &BsCoplanarity_mmconvgg_, "BsCoplanarity_mmconvgg/D");
-
 // Tetra object reco photon vertex variables
 bmmgTree_->Branch("FourvectorBsMass_mmrecogg", &FourvectorBsMass_mmrecogg_, "FourvectorBsMass_mmrecogg/D");
 bmmgTree_->Branch("FourvectorBsPt_mmrecogg", &FourvectorBsPt_mmrecogg_, "FourvectorBsPt_mmrecogg/D");
@@ -308,13 +293,6 @@ bmmgTree_->Branch("VertexfitBsDist2DErr_mmrecogg", &VertexfitBsDist2DErr_mmrecog
 bmmgTree_->Branch("BsVtxProb_mmrecogg", &BsVtxProb_mmrecogg_, "BsVtxProb_mmrecogg/D");
 bmmgTree_->Branch("BsCt2D_mmrecogg", &BsCt2D_mmrecogg_, "BsCt2D_mmrecogg/D");
 bmmgTree_->Branch("BsCt3D_mmrecogg", &BsCt3D_mmrecogg_, "BsCt3D_mmrecogg/D");
-
-
-bmmgTree_->Branch("DeltaRPhoton1DiMuon_mmrecogg", &DeltaRPhoton1DiMuon_mmrecogg_, "DeltaRPhoton1DiMuon_mmrecogg/D");
-bmmgTree_->Branch("DeltaRPhoton2DiMuon_mmrecogg", &DeltaRPhoton2DiMuon_mmrecogg_, "DeltaRPhoton2DiMuon_mmrecogg/D");
-
-bmmgTree_->Branch("BsHelicity_mmrecogg", &BsHelicity_mmrecogg_, "BsHelicity_mmrecogg/D");
-bmmgTree_->Branch("BsCoplanarity_mmrecogg", &BsCoplanarity_mmrecogg_, "BsCoplanarity_mmrecogg/D");
 
 
 bmmgTree_->Branch("DeltaRPhoton1DiMuon_mmrecogg", &DeltaRPhoton1DiMuon_mmrecogg_, "DeltaRPhoton1DiMuon_mmrecogg/D");
