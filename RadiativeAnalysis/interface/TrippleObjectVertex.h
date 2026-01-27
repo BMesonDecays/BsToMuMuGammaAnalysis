@@ -8,7 +8,7 @@
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/ReferenceResonance.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/MuonClosestApproachCalculator.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/DecayChainVariables.h"
-
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/RadiativeRootTree.h"
 
 
 
@@ -74,7 +74,8 @@ class TrippleObjectVertex{
 			const MagneticField& bField,
 			const double nominalMuonMass,
 			const double nominalElectronMass, 
-		 	const TransientTrackBuilder& transientTrackBuilder);
+		 	const TransientTrackBuilder& transientTrackBuilder,
+			RadiativeRootTree* rrt);
       
 };
 
