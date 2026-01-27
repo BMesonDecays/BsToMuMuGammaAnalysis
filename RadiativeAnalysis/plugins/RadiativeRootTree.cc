@@ -297,6 +297,7 @@ bmmgTree_->Branch("BsCt3D_mmrecogg", &BsCt3D_mmrecogg_, "BsCt3D_mmrecogg/D");
 
 bmmgTree_->Branch("DeltaRPhoton1DiMuon_mmrecogg", &DeltaRPhoton1DiMuon_mmrecogg_, "DeltaRPhoton1DiMuon_mmrecogg/D");
 bmmgTree_->Branch("DeltaRPhoton2DiMuon_mmrecogg", &DeltaRPhoton2DiMuon_mmrecogg_, "DeltaRPhoton2DiMuon_mmrecogg/D");
+bmmgTree_->Branch("DeltaRPhoton1Photon2_mmrecogg", &DeltaRPhoton1Photon2_mmrecogg_, "DeltaRPhoton1Photon2_mmrecogg/D");
 
 bmmgTree_->Branch("BsHelicity_mmrecogg", &BsHelicity_mmrecogg_, "BsHelicity_mmrecogg/D");
 bmmgTree_->Branch("BsCoplanarity_mmrecogg", &BsCoplanarity_mmrecogg_, "BsCoplanarity_mmrecogg/D");
@@ -957,6 +958,7 @@ BsCt3D_mmrecogg_    = -9999999;
 
 DeltaRPhoton1DiMuon_mmrecogg_ = -9999999;
 DeltaRPhoton2DiMuon_mmrecogg_ = -9999999;
+DeltaRPhoton1Photon2_mmrecogg_ = -9999999;
 
 BsHelicity_mmrecogg_    = -9999999;
 BsCoplanarity_mmrecogg_ = -9999999;
@@ -1662,6 +1664,7 @@ bmmgTree_->SetBranchAddress("BsCt3D_mmrecogg", &BsCt3D_mmrecogg_);
 
 bmmgTree_->SetBranchAddress("DeltaRPhoton1DiMuon_mmrecogg", &DeltaRPhoton1DiMuon_mmrecogg_);
 bmmgTree_->SetBranchAddress("DeltaRPhoton2DiMuon_mmrecogg", &DeltaRPhoton2DiMuon_mmrecogg_);
+bmmgTree_->SetBranchAddress("DeltaRPhoton1Photon2_mmrecogg", &DeltaRPhoton1Photon2_mmrecogg_);
 
 bmmgTree_->SetBranchAddress("BsHelicity_mmrecogg", &BsHelicity_mmrecogg_);
 bmmgTree_->SetBranchAddress("BsCoplanarity_mmrecogg", &BsCoplanarity_mmrecogg_);

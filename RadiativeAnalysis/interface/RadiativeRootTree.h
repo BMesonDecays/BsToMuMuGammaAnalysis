@@ -459,6 +459,7 @@ double BsCt3D_mmrecogg_;
 
 double DeltaRPhoton1DiMuon_mmrecogg_;
 double DeltaRPhoton2DiMuon_mmrecogg_;
+double DeltaRPhoton1Photon2_mmrecogg_;
 
 double BsHelicity_mmrecogg_;
 double BsCoplanarity_mmrecogg_;

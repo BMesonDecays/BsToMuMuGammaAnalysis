@@ -244,9 +244,9 @@ for (size_t i = 0; i < photons.size(); ++i) {
 
         // ΔR between each photon and the dimuon system
         TLorentzVector dimuon = muonTrack1 + muonTrack2;
-        dcv.deltaRphoton1dimuon_mmrecogg = deltaR(dimuon.Eta(), dimuon.Phi(), photon1.eta(), photon1.phi());
-        dcv.deltaRphoton2dimuon_mmrecogg = deltaR(dimuon.Eta(), dimuon.Phi(), photon2.eta(), photon2.phi());
-        dcv.deltaRphoton1photon2_mmrecogg = deltaR(photon1.eta(), photon1.phi(), photon2.eta(), photon2.phi());
+        rrt->DeltaRPhoton1DiMuon_mmrecogg_ = deltaR(dimuon.Eta(), dimuon.Phi(), photon1.eta(), photon1.phi());
+        rrt->DeltaRPhoton2DiMuon_mmrecogg_ = deltaR(dimuon.Eta(), dimuon.Phi(), photon2.eta(), photon2.phi());
+        rrt->DeltaRPhoton1Photon2_mmrecogg_ = deltaR(photon1.eta(), photon1.phi(), photon2.eta(), photon2.phi());
 
         std::vector<reco::TransientTrack> ttrk_photons;
         //TMatrixD* covPtr = nullptr;
