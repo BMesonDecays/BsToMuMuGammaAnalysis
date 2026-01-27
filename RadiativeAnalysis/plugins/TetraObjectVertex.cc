@@ -14,7 +14,8 @@ DecayChainVariables TetraObjectVertex::TetraObjectVertexObservables(
 			const MagneticField& bField,
 			const double nominalMuonMass,
 			const double nominalElectronMass, 
-		 	const TransientTrackBuilder& transientTrackBuilder){
+		 	const TransientTrackBuilder& transientTrackBuilder,
+      RadiativeRootTree* rrt){
                 bool verbose = true;
                 DecayChainVariables dcv;
 
@@ -184,11 +185,11 @@ AlgebraicSymMatrix55 C2 = mu2TS.perigeeError().covarianceMatrix();
                 GlobalError gigibs=kvfbsvertex.positionError();
                 double vtxprob_Bs = TMath::Prob(vertexbskalman.chi2(),(int)vertexbskalman.ndof());
                 if (vtxprob_Bs < 1e-5) continue;
-                dcv.bsvtxprob_mmconvgg = vtxprob_Bs;
+                rrt->BsVtxProb_mmconvgg_ = vtxprob_Bs;
 					KinematicConstrainedFit BCandFitter;
 					bool fitSuccess = BCandFitter.TetraObjectVertexFitConvertedPhoton(ttrk_muons, nominalMuonMass, tttrk_electrons_pair, nominalElectronMass);
 					if (!fitSuccess) continue;
-					dcv.vertexfitbsmass_mmconvgg = BCandFitter.getBhadronMass();
+					rrt->VertexfitBsMass_mmrecogg_ = BCandFitter.getBhadronMass();
           RefCountedKinematicParticle bs = BCandFitter.getBhardon();
 	  		  RefCountedKinematicVertex bVertex = BCandFitter.getVertex();
 	  		  AlgebraicVector7 b_par = bs->currentState().kinematicParameters().vector();
@@ -197,14 +198,16 @@ AlgebraicSymMatrix55 C2 = mu2TS.perigeeError().covarianceMatrix();
                 reco::Vertex PVvtxHightestPt = PVs[bsAndVtxInfo.VtxIndex];
 		            std::cout<<" Tetra Object : Primary vertex HightestPt"<<PVvtxHightestPt.x()<< "\t"<<PVvtxHightestPt.y()<< "\t"<<PVvtxHightestPt.z() <<"\n";
                 MassLimits m_lim;
-                dcv.bsct3d_mmconvgg = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*Bsvec.x()+
+                rrt->BsCt3D_mmconvgg_ = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*Bsvec.x()+
                 (kvfbsvertex.position().y()-PVvtxHightestPt.y())*Bsvec.y()+
                 (kvfbsvertex.position().z()-PVvtxHightestPt.z())*Bsvec.z())/
                 (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y()+Bsvec.z()*Bsvec.z());
-                dcv.bsct2d_mmconvgg = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*Bsvec.x()+
+
+                rrt->BsCt2D_mmconvgg_ = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*Bsvec.x()+
                 (kvfbsvertex.position().y()-PVvtxHightestPt.y())*Bsvec.y())/
                 (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y());
-                dcv.bsct2dbs_mmconvgg = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-bsAndVtxInfo.bs_x)*Bsvec.x()+
+
+                rrt->BsCt2DBS_mmconvgg_ = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-bsAndVtxInfo.bs_x)*Bsvec.x()+
                 (kvfbsvertex.position().y()-bsAndVtxInfo.bs_y)*Bsvec.y())/
                 (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y());
 				}//converted photon loop 1 end 
@@ -290,18 +293,18 @@ for (size_t i = 0; i < photons.size(); ++i) {
         double vtxprob_Bs = TMath::Prob(vertexbskalman.chi2(), (int)vertexbskalman.ndof());
         if (vtxprob_Bs < 1e-5) continue;
 
-        dcv.bsvtxprob_mmrecogg = vtxprob_Bs;
+        rrt->BsVtxProb_mmrecogg_ = vtxprob_Bs;
         std::cout << "Double Photon: vtxprob_Bs: " << vtxprob_Bs << "\n";
 
         KinematicConstrainedFit BCandFitter;
         bool fitSuccess = BCandFitter.TetraObjectVertexFitRecoPhoton(ttrk_muons, ttrk_photons, dcv.dimuonMass, 0.001, {photon1, photon2}, covPtrs);
         if (!fitSuccess) continue;
 
-        dcv.fittedBmassRecoPhoton = BCandFitter.getBhadronMass();
-        dcv.fourvectorbsmass_mmrecogg = BCand.M();
-        dcv.fourvectorbspt_mmrecogg   = BCand.Pt();
-        dcv.fourvectorbseta_mmrecogg  = BCand.Eta();
-        dcv.fourvectorbsphi_mmrecogg  = BCand.Phi();
+        rrt->VertexfitBsMass_mmrecogg_ = BCandFitter.getBhadronMass();
+        rrt->FourvectorBsMass_mmrecogg_ = BCand.M();
+        rrt->FourvectorBsPt_mmrecogg_   = BCand.Pt();
+        rrt->FourvectorBsEta_mmrecogg_  = BCand.Eta();
+        rrt->FourvectorBsPhi_mmrecogg_  = BCand.Phi();
 
         RefCountedKinematicParticle bs = BCandFitter.getBhardon();
         RefCountedKinematicVertex bVertex = BCandFitter.getVertex();
@@ -310,16 +313,16 @@ for (size_t i = 0; i < photons.size(); ++i) {
 
         // 3D and 2D decay length using PV and BS
         reco::Vertex PVvtxHightestPt;
-        dcv.bsct3d_mmrecogg = m_lim.BsPDGMass * ((kvfbsvertex.position().x() - PVvtxHightestPt.x()) * Bsvec.x() +
+        rrt->BsCt3D_mmrecogg_ = m_lim.BsPDGMass * ((kvfbsvertex.position().x() - PVvtxHightestPt.x()) * Bsvec.x() +
                                         (kvfbsvertex.position().y() - PVvtxHightestPt.y()) * Bsvec.y() +
                                         (kvfbsvertex.position().z() - PVvtxHightestPt.z()) * Bsvec.z()) /
                                         Bsvec.mag2();
 
-        dcv.bsct2d_mmrecogg = m_lim.BsPDGMass * ((kvfbsvertex.position().x() - PVvtxHightestPt.x()) * Bsvec.x() +
+        rrt->BsCt2D_mmrecogg_ = m_lim.BsPDGMass * ((kvfbsvertex.position().x() - PVvtxHightestPt.x()) * Bsvec.x() +
                                         (kvfbsvertex.position().y() - PVvtxHightestPt.y()) * Bsvec.y()) /
                                         (Bsvec.x()*Bsvec.x() + Bsvec.y()*Bsvec.y());
 
-        dcv.bsct2dbs_mmrecogg = m_lim.BsPDGMass * ((kvfbsvertex.position().x() - bsAndVtxInfo.bs_x) * Bsvec.x() +
+        rrt->BsCt2DBS_mmrecogg_ = m_lim.BsPDGMass * ((kvfbsvertex.position().x() - bsAndVtxInfo.bs_x) * Bsvec.x() +
                                           (kvfbsvertex.position().y() - bsAndVtxInfo.bs_y) * Bsvec.y()) /
                                           (Bsvec.x()*Bsvec.x() + Bsvec.y()*Bsvec.y());
 

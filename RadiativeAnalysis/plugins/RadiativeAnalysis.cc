@@ -327,7 +327,8 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 				theBField, 
 				nominalMuonMass, 
 				nominalElectronMass, 
-				trackBuilder);
+				trackBuilder,
+				bmmgRootTree_);
 		        bmmgRootTree_->vertexTypeFlag_ = 2;
 		}
 
