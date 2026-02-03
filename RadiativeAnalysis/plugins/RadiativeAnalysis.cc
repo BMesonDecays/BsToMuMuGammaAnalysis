@@ -203,6 +203,11 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
         iEvent.getByToken(PhotonTagTok, photons);
 	edm::Handle<std::vector<reco::PFCandidate>> pfCandidates;
 	iEvent.getByToken(PFCandTagTok, pfCandidates);
+
+	bmmgRootTree_->nMuons_ = muons->size();
+	bmmgRootTree_->nPhotons_ = photons->size();
+	bmmgRootTree_->nConversions_ = conversions->size();
+	bmmgRootTree_->nTracks_ = tracks->size();
     
 
 	BeamSpotAndVertex bsandvtxObservables;

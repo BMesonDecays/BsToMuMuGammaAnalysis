@@ -89,6 +89,11 @@ public:
 	double mu1MVAScore_;
 	double mu2MVAScore_;
 
+	int nMuons_;
+	int nPhotons_;
+	int nConversions_;
+	int nTracks_;
+
 	double DiMuonM_beffit_;
 	double DiMuonEta_beffit_;
 	double DiMuonPhi_beffit_;
