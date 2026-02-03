@@ -243,21 +243,6 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
        	  		add4mom.set(BCand);*/
                 
                 
-
-       	  		std::vector<reco::TransientTrack> t_tracks;
-                t_tracks.push_back(muonTT1);
-                t_tracks.push_back(muonTT2);
-                t_tracks.push_back(tttrk_electrons[0]);
-                t_tracks.push_back(tttrk_electrons[1]);
-                KalmanVertexFitter kvfbs(true);
-                TransientVertex kvfbsvertex = kvfbs.vertex(t_tracks);
-                
-                reco::Vertex vertexbskalman = kvfbsvertex;
-                if (!kvfbsvertex.isValid()) continue;
-                GlobalError gigibs=kvfbsvertex.positionError();
-                double vtxprob_Bs = TMath::Prob(vertexbskalman.chi2(),(int)vertexbskalman.ndof());
-                if (vtxprob_Bs < 1e-5) continue;
-                rrt->BsVtxProb_mmconvg_ = vtxprob_Bs;
                 KinematicConstrainedFit BCandFitter;
                 bool fitSuccess = BCandFitter.TrippleObjectVertexFitConvertedPhoton(ttrk_muons, nominalMuonMass, tttrk_electrons, nominalElectronMass, verbose);
                 if (!fitSuccess) continue;
@@ -270,6 +255,12 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
                 rrt->FourvectorBsPhi_mmconvg_  = BCand.Phi();
                 RefCountedKinematicParticle bs = BCandFitter.getBhardon();
 	  		    RefCountedKinematicVertex bVertex = BCandFitter.getVertex();
+
+                GlobalError gigibs=bVertex->error();
+                double vtxprob_Bs = TMath::Prob(bVertex->chiSquared(),(int)bVertex->degreesOfFreedom());
+                if (vtxprob_Bs < 1e-5) continue;
+                rrt->BsVtxProb_mmconvg_ = vtxprob_Bs;
+
 	  		    AlgebraicVector7 b_par = bs->currentState().kinematicParameters().vector();
                 GlobalVector Bsvec(b_par[3], b_par[4], b_par[5]);
                 reco::Vertex PVvtxHightestPt = PVs[bsAndVtxInfo.VtxIndex];
@@ -295,24 +286,24 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
                 //  Primary vertex methods from old Giacomos code - Alibordi 8th Dec 2025
 
 
-                rrt->BsCt3D_mmconvg_ = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*Bsvec.x()+
-                (kvfbsvertex.position().y()-PVvtxHightestPt.y())*Bsvec.y()+
-                (kvfbsvertex.position().z()-PVvtxHightestPt.z())*Bsvec.z())/
+                rrt->BsCt3D_mmconvg_ = m_lim.BsPDGMass*( (bVertex->position().x()-PVvtxHightestPt.x())*Bsvec.x()+
+                (bVertex->position().y()-PVvtxHightestPt.y())*Bsvec.y()+
+                (bVertex->position().z()-PVvtxHightestPt.z())*Bsvec.z())/
                 (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y()+Bsvec.z()*Bsvec.z());
                 
-                rrt->BsCt2D_mmconvg_ = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*Bsvec.x()+
-                (kvfbsvertex.position().y()-PVvtxHightestPt.y())*Bsvec.y())/
+                rrt->BsCt2D_mmconvg_ = m_lim.BsPDGMass*( (bVertex->position().x()-PVvtxHightestPt.x())*Bsvec.x()+
+                (bVertex->position().y()-PVvtxHightestPt.y())*Bsvec.y())/
                 (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y());
 
-                rrt->BsCt2DBS_mmconvg_ = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-bsAndVtxInfo.bs_x)*Bsvec.x()+
-                (kvfbsvertex.position().y()-bsAndVtxInfo.bs_y)*Bsvec.y())/
+                rrt->BsCt2DBS_mmconvg_ = m_lim.BsPDGMass*( (bVertex->position().x()-bsAndVtxInfo.bs_x)*Bsvec.x()+
+                (bVertex->position().y()-bsAndVtxInfo.bs_y)*Bsvec.y())/
                 (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y());
                 
                 Int_t PVCosThetaIndex = -1;
                 Int_t PVClosestZIndex = -1;
                 double MinDistance  = std::numeric_limits<double>::max();
 	            double MinDistanceZ = std::numeric_limits<double>::max();
-                const double bsZ = kvfbsvertex.position().z();
+                const double bsZ = bVertex->position().z();
                 for (std::size_t i = 0; i < PVs.size(); ++i) {
                     const auto& vtx = PVs[i];
                     if (!vtx.isValid()) continue;
@@ -321,8 +312,8 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
                         MinDistanceZ = dz;
                         PVClosestZIndex = static_cast<int>(i);
                     }
-                    Double_t PVSVvecDotBsPvec=(kvfbsvertex.position().x()-vtx.x())*Bsvec.x()+(kvfbsvertex.position().y()-vtx.y())*Bsvec.y()+(kvfbsvertex.position().z()-vtx.z())*Bsvec.z();
-                    Double_t PVSVlength = TMath::Sqrt( pow((kvfbsvertex.position().x()- vtx.x()), 2.0) + pow((kvfbsvertex.position().y()-vtx.y()), 2.0) + pow((kvfbsvertex.position().z()- vtx.z()), 2.0) );
+                    Double_t PVSVvecDotBsPvec=(bVertex->position().x()-vtx.x())*Bsvec.x()+(bVertex->position().y()-vtx.y())*Bsvec.y()+(bVertex->position().z()-vtx.z())*Bsvec.z();
+                    Double_t PVSVlength = TMath::Sqrt( pow((bVertex->position().x()- vtx.x()), 2.0) + pow((bVertex->position().y()-vtx.y()), 2.0) + pow((bVertex->position().z()- vtx.z()), 2.0) );
                     Double_t BsPlength = TMath::Sqrt(Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y() + Bsvec.z()*Bsvec.z());
                     Double_t BsCosTheta = PVSVvecDotBsPvec / (BsPlength * PVSVlength);
                     Double_t distance = 1-BsCosTheta;
@@ -393,27 +384,27 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
                     rrt->VertexfitPVyRefitClosestZ_mmconvg_ = PVvtxClosestZ.y();
                     rrt->VertexfitPVzRefitClosestZ_mmconvg_ = PVvtxClosestZ.z();
 
-                    rrt->VertexfitBsCt3DPVClosestZ_mmconvg_ = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxClosestZ.x())*Bsvec.x() + 
-                    (kvfbsvertex.position().y()-PVvtxClosestZ.y())*Bsvec.y() + 
-                    (kvfbsvertex.position().z()-PVvtxClosestZ.z())*Bsvec.z() )/( Bsvec.x()*Bsvec.x() + Bsvec.y()*Bsvec.y() +
+                    rrt->VertexfitBsCt3DPVClosestZ_mmconvg_ = m_lim.BsPDGMass*( (bVertex->position().x()-PVvtxClosestZ.x())*Bsvec.x() + 
+                    (bVertex->position().y()-PVvtxClosestZ.y())*Bsvec.y() + 
+                    (bVertex->position().z()-PVvtxClosestZ.z())*Bsvec.z() )/( Bsvec.x()*Bsvec.x() + Bsvec.y()*Bsvec.y() +
                      Bsvec.z()*Bsvec.z() );
 
-                    rrt->VertexfitBsCt2DPVClosestZ_mmconvg_ = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxClosestZ.x())*Bsvec.x() + 
-                    (kvfbsvertex.position().y()-PVvtxClosestZ.y())*Bsvec.y()  )/( Bsvec.x()*Bsvec.x() + Bsvec.y()*Bsvec.y()  ); 
+                    rrt->VertexfitBsCt2DPVClosestZ_mmconvg_ = m_lim.BsPDGMass*( (bVertex->position().x()-PVvtxClosestZ.x())*Bsvec.x() + 
+                    (bVertex->position().y()-PVvtxClosestZ.y())*Bsvec.y()  )/( Bsvec.x()*Bsvec.x() + Bsvec.y()*Bsvec.y()  ); 
 
-                    rrt->VertexfitBsCt3DPVCosTheta_mmconvg_ = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxCosTheta.x())*Bsvec.x() + 
-                    (kvfbsvertex.position().y()-PVvtxCosTheta.y())*Bsvec.y() + 
-                    (kvfbsvertex.position().z()-PVvtxCosTheta.z())*Bsvec.z() )/( Bsvec.x()*Bsvec.x() + Bsvec.y()*Bsvec.y() + Bsvec.z()*Bsvec.z() );
-                    rrt->VertexfitBsCt2DPVCosTheta_mmconvg_ = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxCosTheta.x())*Bsvec.x() + 
-                    (kvfbsvertex.position().y()-PVvtxCosTheta.y())*Bsvec.y() )/( Bsvec.x()*Bsvec.x() + Bsvec.y()*Bsvec.y() );
-                    rrt->VertexfitBsCt2DPVCosThetaOld_mmconvg_ = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxCosTheta.x())*BCand.Px() + 
-                    (kvfbsvertex.position().y()-PVvtxCosTheta.y())*BCand.Py() )/( BCand.Px()*BCand.Px() + BCand.Py()*BCand.Py() );
-                    rrt->VertexfitBsCt2DPVClosestZOld_mmconvg_ = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxClosestZ.x())*BCand.Px() + 
-                    (kvfbsvertex.position().y()-PVvtxClosestZ.y())*BCand.Py() )/( BCand.Px()*BCand.Px() + BCand.Py()*BCand.Py() );
-                    rrt->VertexfitBsCt2DBSOld_mmconvg_ = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-bsAndVtxInfo.bs_x)*BCand.Px() + 
-                    (kvfbsvertex.position().y()-bsAndVtxInfo.bs_y)*BCand.Py() )/( BCand.Px()*BCand.Px() + BCand.Py()*BCand.Py() );  
-                    rrt->VertexfitBsCt2DOld_mmconvg_ = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*BCand.Px() + 
-                    (kvfbsvertex.position().y()-PVvtxHightestPt.y())*BCand.Py() )/( BCand.Px()*BCand.Px() + BCand.Py()*BCand.Py() );
+                    rrt->VertexfitBsCt3DPVCosTheta_mmconvg_ = m_lim.BsPDGMass*( (bVertex->position().x()-PVvtxCosTheta.x())*Bsvec.x() + 
+                    (bVertex->position().y()-PVvtxCosTheta.y())*Bsvec.y() + 
+                    (bVertex->position().z()-PVvtxCosTheta.z())*Bsvec.z() )/( Bsvec.x()*Bsvec.x() + Bsvec.y()*Bsvec.y() + Bsvec.z()*Bsvec.z() );
+                    rrt->VertexfitBsCt2DPVCosTheta_mmconvg_ = m_lim.BsPDGMass*( (bVertex->position().x()-PVvtxCosTheta.x())*Bsvec.x() + 
+                    (bVertex->position().y()-PVvtxCosTheta.y())*Bsvec.y() )/( Bsvec.x()*Bsvec.x() + Bsvec.y()*Bsvec.y() );
+                    rrt->VertexfitBsCt2DPVCosThetaOld_mmconvg_ = m_lim.BsPDGMass*( (bVertex->position().x()-PVvtxCosTheta.x())*BCand.Px() + 
+                    (bVertex->position().y()-PVvtxCosTheta.y())*BCand.Py() )/( BCand.Px()*BCand.Px() + BCand.Py()*BCand.Py() );
+                    rrt->VertexfitBsCt2DPVClosestZOld_mmconvg_ = m_lim.BsPDGMass*( (bVertex->position().x()-PVvtxClosestZ.x())*BCand.Px() + 
+                    (bVertex->position().y()-PVvtxClosestZ.y())*BCand.Py() )/( BCand.Px()*BCand.Px() + BCand.Py()*BCand.Py() );
+                    rrt->VertexfitBsCt2DBSOld_mmconvg_ = m_lim.BsPDGMass*( (bVertex->position().x()-bsAndVtxInfo.bs_x)*BCand.Px() + 
+                    (bVertex->position().y()-bsAndVtxInfo.bs_y)*BCand.Py() )/( BCand.Px()*BCand.Px() + BCand.Py()*BCand.Py() );  
+                    rrt->VertexfitBsCt2DOld_mmconvg_ = m_lim.BsPDGMass*( (bVertex->position().x()-PVvtxHightestPt.x())*BCand.Px() + 
+                    (bVertex->position().y()-PVvtxHightestPt.y())*BCand.Py() )/( BCand.Px()*BCand.Px() + BCand.Py()*BCand.Py() );
 
                     // Smart lambda for ct error calculation - keeps everything inline
                     auto calculateCtError = [&](const GlobalPoint& refVertex, 
@@ -421,8 +412,8 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
                                                const GlobalVector& momentumVec,
                                                const char* outputVarName) -> double {
                         VertexDistanceXY d;
-                        const GlobalPoint mySV(kvfbsvertex.position().x(), kvfbsvertex.position().y(), kvfbsvertex.position().z());
-                        const GlobalError mySVErr = kvfbsvertex.positionError();
+                        const GlobalPoint mySV(bVertex->position().x(), bVertex->position().y(), bVertex->position().z());
+                        const GlobalError mySVErr = bVertex->error();
                         
                         Measurement1D VtxDist = d.distance(VertexState(mySV, mySVErr), VertexState(refVertex, refVertexErr));
                         double VtxDistErr = VtxDist.error();
@@ -430,8 +421,8 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
                         
                         if(transmom == 0 || VtxDist.value() == 0) return -1.0; // sentinel value
                         
-                        double dx = kvfbsvertex.position().x() - refVertex.x();
-                        double dy = kvfbsvertex.position().y() - refVertex.y();
+                        double dx = bVertex->position().x() - refVertex.x();
+                        double dy = bVertex->position().y() - refVertex.y();
                         double cos = (dx*momentumVec.x() + dy*momentumVec.y()) / (transmom * VtxDist.value());
                         
                         TVector LengthVector(2);
@@ -714,7 +705,6 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
             CartesianTrajectoryError photonErr(photonCov);
             photonFTS.setCartesianError(photonErr);
             std::vector<reco::TransientTrack> t_tracks_RecPhoton;
-            t_tracks_RecPhoton.push_back(transientrackforPhotn);
             t_tracks_RecPhoton.push_back(muonTT1);
             t_tracks_RecPhoton.push_back(muonTT2);
             KalmanVertexFitter kvfbs(true);
