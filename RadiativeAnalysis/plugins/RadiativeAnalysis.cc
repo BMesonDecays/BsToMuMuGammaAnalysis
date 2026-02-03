@@ -298,7 +298,7 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 	    //iEvent.getByToken(pfCandTagTok, pfCands);
 	   
 		DecayChainVariables decayVariables;
-		if(muons->size()>=2 && convPhotons->size() >=1 && photons->size() >=1){
+		if(muons->size()>=2 && (convPhotons->size() >=1 || photons->size() >=1)){
 			TrippleObjectVertex  tripvtxObservables;
 			decayVariables = tripvtxObservables.TrippleObjectVertexObservables(
 				*muons, 
@@ -315,7 +315,7 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 		        bmmgRootTree_->vertexTypeFlag_ = 1;
 
 		}
-		if(muons->size()==2 && convPhotons->size() >=2 && photons->size() >=2){
+		if(muons->size()>=2 && (convPhotons->size() >=2 || photons->size() >=2)){
 			TetraObjectVertex tetradcObservables;
 			decayVariables = tetradcObservables.TetraObjectVertexObservables(
 				*muons, 
