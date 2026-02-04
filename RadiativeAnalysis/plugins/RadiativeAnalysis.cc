@@ -17,6 +17,7 @@
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/ReferenceModeratorVertex.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/DecayChainVariables.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/GenChain.h"
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/MuonSelector.h"
 
 
 
@@ -301,12 +302,17 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
         
 	    //edm::Handle<View<pat::PackedCandidate>> pfCands;
 	    //iEvent.getByToken(pfCandTagTok, pfCands);
+
+		// select 2 muons with the highest vertex probability and opposite charge
+		vector<reco::Muon>* selectedMuons = new vector<reco::Muon>();
+		MuonSelector muonSelector;
+		*selectedMuons = muonSelector.selectMuonPair(*muons, trackBuilder);
 	   
 		DecayChainVariables decayVariables;
-		if(muons->size()>=2 && (convPhotons->size() >=1 || photons->size() >=1)){
+		if(selectedMuons->size()>=2 && (convPhotons->size() >=1 || photons->size() >=1)){
 			TrippleObjectVertex  tripvtxObservables;
 			decayVariables = tripvtxObservables.TrippleObjectVertexObservables(
-				*muons, 
+				*selectedMuons, 
 				*photons,
 			    *recVtxs,	
 				lazyTools, 
@@ -320,10 +326,10 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 		        bmmgRootTree_->vertexTypeFlag_ = 1;
 
 		}
-		if(muons->size()>=2 && (convPhotons->size() >=2 || photons->size() >=2)){
+		if(selectedMuons->size()>=2 && (convPhotons->size() >=2 || photons->size() >=2)){
 			TetraObjectVertex tetradcObservables;
 			decayVariables = tetradcObservables.TetraObjectVertexObservables(
-				*muons, 
+				*selectedMuons, 
 				*photons,
 			    *recVtxs,	
 				lazyTools, 
@@ -337,16 +343,16 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 		        bmmgRootTree_->vertexTypeFlag_ = 2;
 		}
 
-		if(muons->size()==2 && tracks->size()>=2){
+		if(selectedMuons->size()==2 && tracks->size()>=2){
 			ReferenceModeratorVertex refmodvtxObservables;
-			decayVariables = refmodvtxObservables.ReferenceModeratorVertexObservables(*muons, *tracks, bsandvtxVar, theBField, 
+			decayVariables = refmodvtxObservables.ReferenceModeratorVertexObservables(*selectedMuons, *tracks, bsandvtxVar, theBField, 
 			nominalMuonMass, nominalKaonMass, bmmgRootTree_);
 			bmmgRootTree_->vertexTypeFlag_ = 3;
 		}
 
-		if(muons->size()==2){
+		if(selectedMuons->size()==2){
 			MuonMVAID muonMVAIDProducer(theConfig_);
-			vector<float> muonMVAIDs = muonMVAIDProducer.produce(*muons);
+			vector<float> muonMVAIDs = muonMVAIDProducer.produce(*selectedMuons);
 			bmmgRootTree_->mu1MVAScore_ = muonMVAIDs[0];
 			bmmgRootTree_->mu2MVAScore_ = muonMVAIDs[1];
 		}
