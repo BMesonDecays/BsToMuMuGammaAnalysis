@@ -169,23 +169,7 @@ AlgebraicSymMatrix55 C2 = mu2TS.perigeeError().covarianceMatrix();
 					std::vector<reco::TransientTrack> tttrk_electrons_pair = tttrk_electrons;  // Copy base tracks
 					tttrk_electrons_pair.emplace_back(*conv2.userData<reco::Track>("track0"), &bField);
 					tttrk_electrons_pair.emplace_back(*conv2.userData<reco::Track>("track1"), &bField);
-          std::vector<reco::TransientTrack> t_tracks;
-                t_tracks.push_back(muonTT1);
-                t_tracks.push_back(muonTT2);
-                t_tracks.push_back(tttrk_electrons[0]);
-                t_tracks.push_back(tttrk_electrons[1]);
-                t_tracks.push_back(tttrk_electrons_pair[0]);
-                t_tracks.push_back(tttrk_electrons_pair[1]);
-                //std::cout << " the size of the t_tracks : " << t_tracks.size() << "\n";
-                KalmanVertexFitter kvfbs(true);
-                TransientVertex kvfbsvertex = kvfbs.vertex(t_tracks);
-                //std::cout<< " the vertex position : "<< kvfbsvertex.position().x() << "\t"<< kvfbsvertex.position().y() << "\t"<< kvfbsvertex.position().z() << "\n";
-                reco::Vertex vertexbskalman = kvfbsvertex;
-                if (!kvfbsvertex.isValid()) continue;
-                GlobalError gigibs=kvfbsvertex.positionError();
-                double vtxprob_Bs = TMath::Prob(vertexbskalman.chi2(),(int)vertexbskalman.ndof());
-                if (vtxprob_Bs < 1e-5) continue;
-                rrt->BsVtxProb_mmconvgg_ = vtxprob_Bs;
+                
 					KinematicConstrainedFit BCandFitter;
 					bool fitSuccess = BCandFitter.TetraObjectVertexFitConvertedPhoton(ttrk_muons, nominalMuonMass, tttrk_electrons_pair, nominalElectronMass);
 					if (!fitSuccess) continue;
@@ -194,21 +178,27 @@ AlgebraicSymMatrix55 C2 = mu2TS.perigeeError().covarianceMatrix();
 	  		  RefCountedKinematicVertex bVertex = BCandFitter.getVertex();
 	  		  AlgebraicVector7 b_par = bs->currentState().kinematicParameters().vector();
                 GlobalVector Bsvec(b_par[3], b_par[4], b_par[5]);
+
+          GlobalError gigibs=bVertex->error();
+          double vtxprob_Bs = TMath::Prob(bVertex->chiSquared(),(int)bVertex->degreesOfFreedom());
+          if (vtxprob_Bs < 1e-5) continue;
+          rrt->BsVtxProb_mmconvgg_ = vtxprob_Bs;
+
                 //std::cout<<"Vertex position after the fit  "<< Bsvec.x() << "\t"<< Bsvec.y() << "\t"<< Bsvec.z() << "\n";
                 reco::Vertex PVvtxHightestPt = PVs[bsAndVtxInfo.VtxIndex];
 		            std::cout<<" Tetra Object : Primary vertex HightestPt"<<PVvtxHightestPt.x()<< "\t"<<PVvtxHightestPt.y()<< "\t"<<PVvtxHightestPt.z() <<"\n";
                 MassLimits m_lim;
-                rrt->BsCt3D_mmconvgg_ = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*Bsvec.x()+
-                (kvfbsvertex.position().y()-PVvtxHightestPt.y())*Bsvec.y()+
-                (kvfbsvertex.position().z()-PVvtxHightestPt.z())*Bsvec.z())/
+                rrt->BsCt3D_mmconvgg_ = m_lim.BsPDGMass*( (bVertex->position().x()-PVvtxHightestPt.x())*Bsvec.x()+
+                (bVertex->position().y()-PVvtxHightestPt.y())*Bsvec.y()+
+                (bVertex->position().z()-PVvtxHightestPt.z())*Bsvec.z())/
                 (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y()+Bsvec.z()*Bsvec.z());
 
-                rrt->BsCt2D_mmconvgg_ = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-PVvtxHightestPt.x())*Bsvec.x()+
-                (kvfbsvertex.position().y()-PVvtxHightestPt.y())*Bsvec.y())/
+                rrt->BsCt2D_mmconvgg_ = m_lim.BsPDGMass*( (bVertex->position().x()-PVvtxHightestPt.x())*Bsvec.x()+
+                (bVertex->position().y()-PVvtxHightestPt.y())*Bsvec.y())/
                 (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y());
 
-                rrt->BsCt2DBS_mmconvgg_ = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-bsAndVtxInfo.bs_x)*Bsvec.x()+
-                (kvfbsvertex.position().y()-bsAndVtxInfo.bs_y)*Bsvec.y())/
+                rrt->BsCt2DBS_mmconvgg_ = m_lim.BsPDGMass*( (bVertex->position().x()-bsAndVtxInfo.bs_x)*Bsvec.x()+
+                (bVertex->position().y()-bsAndVtxInfo.bs_y)*Bsvec.y())/
                 (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y());
 				}//converted photon loop 1 end 
 			}// converted photon loop 2 end
@@ -281,20 +271,6 @@ for (size_t i = 0; i < photons.size(); ++i) {
             ttrk_photons.push_back(transientrackforPhoton);
         }
 
-        // Append muons
-        ttrk_photons.push_back(muonTT1);
-        ttrk_photons.push_back(muonTT2);
-
-        KalmanVertexFitter kvfbs(true);
-        TransientVertex kvfbsvertex = kvfbs.vertex(ttrk_photons);
-        if (!kvfbsvertex.isValid()) continue;
-
-        reco::Vertex vertexbskalman = kvfbsvertex;
-        double vtxprob_Bs = TMath::Prob(vertexbskalman.chi2(), (int)vertexbskalman.ndof());
-        if (vtxprob_Bs < 1e-5) continue;
-
-        rrt->BsVtxProb_mmrecogg_ = vtxprob_Bs;
-        std::cout << "Double Photon: vtxprob_Bs: " << vtxprob_Bs << "\n";
 
         KinematicConstrainedFit BCandFitter;
         bool fitSuccess = BCandFitter.TetraObjectVertexFitRecoPhoton(ttrk_muons, ttrk_photons, dcv.dimuonMass, 0.001, {photon1, photon2}, covPtrs);
@@ -311,19 +287,23 @@ for (size_t i = 0; i < photons.size(); ++i) {
         AlgebraicVector7 b_par = bs->currentState().kinematicParameters().vector();
         GlobalVector Bsvec(b_par[3], b_par[4], b_par[5]);
 
+        double vtxprob_Bs = TMath::Prob(bVertex->chiSquared(), (int)bVertex->degreesOfFreedom());
+        if (vtxprob_Bs < 1e-5) continue;
+        rrt->BsVtxProb_mmrecogg_ = vtxprob_Bs;
+
         // 3D and 2D decay length using PV and BS
         reco::Vertex PVvtxHightestPt;
-        rrt->BsCt3D_mmrecogg_ = m_lim.BsPDGMass * ((kvfbsvertex.position().x() - PVvtxHightestPt.x()) * Bsvec.x() +
-                                        (kvfbsvertex.position().y() - PVvtxHightestPt.y()) * Bsvec.y() +
-                                        (kvfbsvertex.position().z() - PVvtxHightestPt.z()) * Bsvec.z()) /
+        rrt->BsCt3D_mmrecogg_ = m_lim.BsPDGMass * ((bVertex->position().x() - PVvtxHightestPt.x()) * Bsvec.x() +
+                                        (bVertex->position().y() - PVvtxHightestPt.y()) * Bsvec.y() +
+                                        (bVertex->position().z() - PVvtxHightestPt.z()) * Bsvec.z()) /
                                         Bsvec.mag2();
 
-        rrt->BsCt2D_mmrecogg_ = m_lim.BsPDGMass * ((kvfbsvertex.position().x() - PVvtxHightestPt.x()) * Bsvec.x() +
-                                        (kvfbsvertex.position().y() - PVvtxHightestPt.y()) * Bsvec.y()) /
+        rrt->BsCt2D_mmrecogg_ = m_lim.BsPDGMass * ((bVertex->position().x() - PVvtxHightestPt.x()) * Bsvec.x() +
+                                        (bVertex->position().y() - PVvtxHightestPt.y()) * Bsvec.y()) /
                                         (Bsvec.x()*Bsvec.x() + Bsvec.y()*Bsvec.y());
 
-        rrt->BsCt2DBS_mmrecogg_ = m_lim.BsPDGMass * ((kvfbsvertex.position().x() - bsAndVtxInfo.bs_x) * Bsvec.x() +
-                                          (kvfbsvertex.position().y() - bsAndVtxInfo.bs_y) * Bsvec.y()) /
+        rrt->BsCt2DBS_mmrecogg_ = m_lim.BsPDGMass * ((bVertex->position().x() - bsAndVtxInfo.bs_x) * Bsvec.x() +
+                                          (bVertex->position().y() - bsAndVtxInfo.bs_y) * Bsvec.y()) /
                                           (Bsvec.x()*Bsvec.x() + Bsvec.y()*Bsvec.y());
 
     }//reco gamma 2
