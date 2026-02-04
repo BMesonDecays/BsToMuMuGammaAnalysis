@@ -292,7 +292,7 @@ for (size_t i = 0; i < photons.size(); ++i) {
         rrt->BsVtxProb_mmrecogg_ = vtxprob_Bs;
 
         // 3D and 2D decay length using PV and BS
-        reco::Vertex PVvtxHightestPt;
+        reco::Vertex PVvtxHightestPt = PVs[bsAndVtxInfo.VtxIndex];
         rrt->BsCt3D_mmrecogg_ = m_lim.BsPDGMass * ((bVertex->position().x() - PVvtxHightestPt.x()) * Bsvec.x() +
                                         (bVertex->position().y() - PVvtxHightestPt.y()) * Bsvec.y() +
                                         (bVertex->position().z() - PVvtxHightestPt.z()) * Bsvec.z()) /
