@@ -1,5 +1,3 @@
-// filepath: /home/sslawins/eos/CMSSW_14_1_1.bsmmg/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/plugins/MuonSelector.cc
-
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/MuonSelector.h"
 #include "TrackingTools/TransientTrack/interface/TransientTrack.h"
 #include "RecoVertex/VertexPrimitives/interface/TransientVertex.h"
