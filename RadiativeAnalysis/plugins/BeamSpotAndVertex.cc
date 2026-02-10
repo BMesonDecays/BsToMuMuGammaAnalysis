@@ -99,3 +99,44 @@ BeamSpotAndVertex::BSAndVtxVariables BeamSpotAndVertex::BSAndVtxObservables(cons
     
     return bsvtxv;
 }
+
+int BeamSpotAndVertex::ClosestZindex(const std::vector<reco::Vertex>& vertex,
+			RefCountedKinematicVertex bVertex)
+{
+	int PVClosestZIndex = -1;
+	double MinDistanceZ = std::numeric_limits<double>::max();
+	const double bsZ = bVertex->position().z();
+	for (std::size_t i = 0; i < vertex.size(); ++i) {
+		const auto& vtx = vertex[i];
+		if (!vtx.isValid()) continue;
+		const double dz = std::abs(bsZ - vtx.z());
+		if (dz < MinDistanceZ) {
+			MinDistanceZ = dz;
+			PVClosestZIndex = static_cast<int>(i);
+		}
+	}
+	return PVClosestZIndex;
+}
+
+int BeamSpotAndVertex::CosThetaindex(const std::vector<reco::Vertex>& vertex,
+			RefCountedKinematicVertex bVertex,
+			GlobalVector Bsvec)
+{
+	int PVCosThetaIndex = -1;
+	double MinDistance  = std::numeric_limits<double>::max();
+	for (std::size_t i = 0; i < vertex.size(); ++i) {
+		const auto& vtx = vertex[i];
+		if (!vtx.isValid()) continue;
+
+		Double_t PVSVvecDotBsPvec=(bVertex->position().x()-vtx.x())*Bsvec.x()+(bVertex->position().y()-vtx.y())*Bsvec.y()+(bVertex->position().z()-vtx.z())*Bsvec.z();
+		Double_t PVSVlength = TMath::Sqrt( pow((bVertex->position().x()- vtx.x()), 2.0) + pow((bVertex->position().y()-vtx.y()), 2.0) + pow((bVertex->position().z()- vtx.z()), 2.0) );
+		Double_t BsPlength = TMath::Sqrt(Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y() + Bsvec.z()*Bsvec.z());
+		Double_t BsCosTheta = PVSVvecDotBsPvec / (BsPlength * PVSVlength);
+		Double_t distance = 1-BsCosTheta;
+		if(distance < MinDistance){
+			MinDistance = distance;
+			PVCosThetaIndex = static_cast<int>(i);
+		}
+	}
+	return PVCosThetaIndex;
+}

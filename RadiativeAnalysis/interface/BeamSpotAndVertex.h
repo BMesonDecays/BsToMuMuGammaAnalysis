@@ -21,6 +21,7 @@
 #include "SimDataFormats/Vertex/interface/SimVertex.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
+#include "RecoVertex/KinematicFitPrimitives/interface/RefCountedKinematicVertex.h"
 
 
 
@@ -60,10 +61,17 @@ class BeamSpotAndVertex{
 			reco::BeamSpot::CovarianceMatrix BeamSpot_cov2d ;
 			reco::BeamSpot::Covariance3DMatrix  BeamSpot_cov3d;
 			reco::BeamSpot::Point position;
-		};;
+		};
 
 	BSAndVtxVariables BSAndVtxObservables(const reco::BeamSpot& beamSpot, 
 			 const std::vector<reco::Vertex>& vertex);
+
+	static int ClosestZindex(const std::vector<reco::Vertex>& vertex,
+			RefCountedKinematicVertex bVertex);
+
+	static int CosThetaindex(const std::vector<reco::Vertex>& vertex,
+			RefCountedKinematicVertex bVertex,
+			GlobalVector Bsvec);
 	int    NSelectedVertices;
       
 };

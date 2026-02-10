@@ -299,44 +299,13 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
                 (bVertex->position().y()-bsAndVtxInfo.bs_y)*Bsvec.y())/
                 (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y());
                 
-                Int_t PVCosThetaIndex = -1;
-                Int_t PVClosestZIndex = -1;
-                double MinDistance  = std::numeric_limits<double>::max();
-	            double MinDistanceZ = std::numeric_limits<double>::max();
-                const double bsZ = bVertex->position().z();
-                for (std::size_t i = 0; i < PVs.size(); ++i) {
-                    const auto& vtx = PVs[i];
-                    if (!vtx.isValid()) continue;
-                    const double dz = std::abs(bsZ - vtx.z());
-                    if (dz < MinDistanceZ) {
-                        MinDistanceZ = dz;
-                        PVClosestZIndex = static_cast<int>(i);
-                    }
-                    Double_t PVSVvecDotBsPvec=(bVertex->position().x()-vtx.x())*Bsvec.x()+(bVertex->position().y()-vtx.y())*Bsvec.y()+(bVertex->position().z()-vtx.z())*Bsvec.z();
-                    Double_t PVSVlength = TMath::Sqrt( pow((bVertex->position().x()- vtx.x()), 2.0) + pow((bVertex->position().y()-vtx.y()), 2.0) + pow((bVertex->position().z()- vtx.z()), 2.0) );
-                    Double_t BsPlength = TMath::Sqrt(Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y() + Bsvec.z()*Bsvec.z());
-                    Double_t BsCosTheta = PVSVvecDotBsPvec / (BsPlength * PVSVlength);
-                    Double_t distance = 1-BsCosTheta;
-                    if(distance < MinDistance){
-                        MinDistance = distance;
-                        PVCosThetaIndex = static_cast<int>(i);
-                        std::cout << " The index of the primary vertex with cos theta method : " << PVCosThetaIndex << "\n";
-                    }
 
-                }
+                int PVClosestZIndex = BeamSpotAndVertex::ClosestZindex(PVs, bVertex);
+                int PVCosThetaIndex = BeamSpotAndVertex::CosThetaindex(PVs, bVertex, Bsvec);
                 if (PVCosThetaIndex==-1) continue;
                 if (PVClosestZIndex==-1) continue;
-                BsPVVtxInd = PVCosThetaIndex;
                 reco::Vertex PVvtxCosTheta = PVs[PVCosThetaIndex];
                 reco::Vertex PVvtxClosestZ = PVs[PVClosestZIndex]; 
-
-                std::cout << " The index of the primary vertex with cos theta method : " << BsPVVtxInd << "\n";
-                if (BsPVVtxInd >= 0 && BsPVVtxInd < static_cast<int>(PVs.size())) {
-                    const reco::Vertex& bsPV = PVs[BsPVVtxInd];
-                    std::cout<< " number of tracks :               " << bsPV.nTracks() << "\n";
-                    PVvtxCosTheta  = bsPV;
-                }
-                
 
 
                 /*std::vector<reco::TransientTrack> pvRefitTracks;
