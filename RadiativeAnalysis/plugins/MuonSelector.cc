@@ -13,7 +13,6 @@ std::vector<reco::Muon> MuonSelector::selectMuonPair(
     const std::vector<reco::Muon>& muons,
     const TransientTrackBuilder& transientTrackBuilder) {
     
-    std::vector<reco::Muon> selectedPair;
     
     // Filter muons passing selection criteria
     std::vector<reco::Muon> selectedMuons;
@@ -60,7 +59,7 @@ std::vector<reco::Muon> MuonSelector::selectMuonPair(
         }
     }
     
-    return selectedPair;
+    return bestPair;
 }
 
 bool MuonSelector::passMuonSelection(const reco::Muon& muon) const {
