@@ -18,6 +18,7 @@
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/DecayChainVariables.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/GenChain.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/MuonSelector.h"
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/PhotonSelector.h"
 
 
 
@@ -307,16 +308,23 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 		vector<reco::Muon>* selectedMuons = new vector<reco::Muon>();
 		MuonSelector muonSelector;
 		*selectedMuons = muonSelector.selectMuonPair(*muons, trackBuilder);
+
+		PhotonSelector photonSelector;
+		vector<pat::CompositeCandidate>* selectedConvPhoton = new vector<pat::CompositeCandidate>();
+		*selectedConvPhoton = photonSelector.selectConvertedPhoton(*convPhotons, *selectedMuons, trackBuilder);
+
+		vector<reco::Photon>* selectedPhoton = new vector<reco::Photon>();
+		*selectedPhoton = photonSelector.selectPhoton(*photons, *selectedMuons, trackBuilder);
 	   
 		DecayChainVariables decayVariables;
 		if(selectedMuons->size()>=2 && (convPhotons->size() >=1 || photons->size() >=1)){
 			TrippleObjectVertex  tripvtxObservables;
 			decayVariables = tripvtxObservables.TrippleObjectVertexObservables(
 				*selectedMuons, 
-				*photons,
+				*selectedPhoton,
 			    *recVtxs,	
 				lazyTools, 
-				*conversions, 
+				*selectedConvPhoton, 
 				bsandvtxVar, 
 				theBField, 
 				nominalMuonMass, 
@@ -326,14 +334,19 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 		        bmmgRootTree_->vertexTypeFlag_ = 1;
 
 		}
+
+		vector<pat::CompositeCandidate>* selectedConvPhotons = new vector<pat::CompositeCandidate>();
+		*selectedConvPhotons = photonSelector.selectConvertedPhotons(*convPhotons, *selectedMuons, trackBuilder);
+		vector<reco::Photon>* selectedPhotons = new vector<reco::Photon>();
+		*selectedPhotons = photonSelector.selectPhotons(*photons, *selectedMuons, trackBuilder);
 		if(selectedMuons->size()>=2 && (convPhotons->size() >=2 || photons->size() >=2)){
 			TetraObjectVertex tetradcObservables;
 			decayVariables = tetradcObservables.TetraObjectVertexObservables(
 				*selectedMuons, 
-				*photons,
+				*selectedPhotons,
 			    *recVtxs,	
 				lazyTools, 
-				*conversions, 
+				*selectedConvPhotons, 
 				bsandvtxVar, 
 				theBField, 
 				nominalMuonMass, 
