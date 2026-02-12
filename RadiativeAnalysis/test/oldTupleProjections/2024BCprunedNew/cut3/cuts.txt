@@ -1,1 +1,0 @@
-(((TMath::Abs(M_dimuon - 3.0969) < 0.15)&&(ProbOfCommonMuonVertex > 0.1))&&(deltaR_dimuon_photon < 0.4 && deltaR_dimuon_photon > 0.1))&&(minPCA_distance < 0.007)

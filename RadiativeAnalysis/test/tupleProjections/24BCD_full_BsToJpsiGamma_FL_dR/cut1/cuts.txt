@@ -1,1 +1,0 @@
-(TMath::Abs(M_dimuon - 3.0969) < 0.04)&&(deltaR_dimuon_photon < 0.4)

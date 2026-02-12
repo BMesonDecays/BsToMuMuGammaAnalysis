@@ -1,3 +1,0 @@
-((TMath::Abs(M_dimuon - 3.0969) < 0.06)&&(ProbOfCommonMuonVertex > 0.5))&&(deltaR_dimuon_photon < 0.35 && deltaR_dimuon_photon > 0.15)
-
-exactly the cuts applied to obtained the pruned data from 2024BC

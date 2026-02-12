@@ -1,1 +1,0 @@
-triggerBit == 1.00
