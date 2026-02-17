@@ -774,8 +774,8 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 		            
 
 
-	                   for (size_t i = 0; i < photons->size() && i < 4; ++i) {
-                        const reco::Photon& myphoton = (*photons)[i];
+	for (size_t i = 0; i < photons->size() && i < 4; ++i) {
+        const reco::Photon& myphoton = (*photons)[i];
         
         
         auto photonMatch = gen.matchPhotonToGen(myphoton);
@@ -790,9 +790,9 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
     }
     
     // Topology matching
-    if (muons->size() >= 2 && photons->size() >= 1) {
-        const reco::Muon& mu1 = (*muons)[0];
-        const reco::Muon& mu2 = (*muons)[1];
+    if (selectedMuons->size() >= 2 && photons->size() >= 1) {
+        const reco::Muon& mu1 = (*selectedMuons)[0];
+        const reco::Muon& mu2 = (*selectedMuons)[1];
         
         // Build photon pointer vector
         std::vector<const reco::Photon*> photonPtrs;
@@ -815,9 +815,9 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
     }
     
     
-    if (muons->size() >= 2) {
-        const reco::Muon& mu1 = (*muons)[0];
-        const reco::Muon& mu2 = (*muons)[1];
+    if (selectedMuons->size() >= 2) {
+        const reco::Muon& mu1 = (*selectedMuons)[0];
+        const reco::Muon& mu2 = (*selectedMuons)[1];
         
         // Muons from J/psi (443) from Bs (531)
         auto mu1JpsiMatch = gen.matchToGen(mu1, 13, 443, 531, 0.05, 0.5);
