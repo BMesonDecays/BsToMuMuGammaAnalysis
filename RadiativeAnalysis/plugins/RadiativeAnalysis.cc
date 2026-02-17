@@ -135,14 +135,19 @@ edm::LogInfo("BsToMuMuGammaAnalysis/RadiativeAnalysis")<< "Initializing Bs to Mu
 }
 
 RadiativeAnalysis::~RadiativeAnalysis() {}
+
 void RadiativeAnalysis::beginJob() {
   bmmgRootTree_ = new RadiativeRootTree();
   bmmgRootTree_->createTree(outputFile_);
+
+  muonMVAIDProducer_ = new MuonMVAID(theConfig_);
 }
 
 void RadiativeAnalysis::endJob() {
   bmmgRootTree_->writeFile();
   delete bmmgRootTree_;
+
+  delete muonMVAIDProducer_;
   cout << "Total number of Events          : " << event_counter_ << endl;
   cout << "Total number of Tagged muons    : " << muoncounter_   << endl;
   cout << "Total number of Tagged electrons: " << elecounter_    << endl;
@@ -364,8 +369,7 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 		}
 
 		if(selectedMuons->size()==2){
-			MuonMVAID muonMVAIDProducer(theConfig_);
-			vector<float> muonMVAIDs = muonMVAIDProducer.produce(*selectedMuons);
+			vector<float> muonMVAIDs = muonMVAIDProducer_->produce(*selectedMuons);
 			bmmgRootTree_->mu1MVAScore_ = muonMVAIDs[0];
 			bmmgRootTree_->mu2MVAScore_ = muonMVAIDs[1];
 		}
