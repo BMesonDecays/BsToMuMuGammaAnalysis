@@ -87,8 +87,7 @@ public:
         TVector3 Bvtx;
         TVector3 Bdecayvtx;
         float BLxy;
-        float Bct;
-        float BctError;
+        float Bct2D;
        
         bool hasMuonPlus;
         bool hasMuonMinus;
@@ -134,7 +133,7 @@ public:
        
         GenInfo() :
             motherPdgId(0),
-            BLxy(-999), Bct(-999), BctError(-999),
+            BLxy(-999), Bct2D(-999),
             hasMuonPlus(false), hasMuonMinus(false),
             muPlusMotherId(0), muMinusMotherId(0),
             jpsiPdgId(0), neutralMesonId(0), vectorMesonId(0),

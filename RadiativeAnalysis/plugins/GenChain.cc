@@ -233,8 +233,7 @@ void GenDecayChain::computeLifetimeVariables() {
     float ptB = info_.Bp4.Pt();
    
     if (ptB > 0 && mB > 0) {
-        info_.Bct = info_.BLxy * mB / ptB;
-        info_.BctError = 0.01 * info_.Bct;  // 1% uncertainty placeholder
+        info_.Bct2D = info_.BLxy * mB / ptB;
     }
 }
 

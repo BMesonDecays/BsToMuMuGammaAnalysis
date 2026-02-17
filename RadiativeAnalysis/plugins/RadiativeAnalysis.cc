@@ -693,10 +693,8 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 					 bmmgRootTree_->GenB_mass_    = G.Bp4.M();
 					 std::cout<<" Gen B Mass : "<< G.Bp4.M() << "Gen B Pt : "<< G.Bp4.Pt() << "\n";
 
-					 // Lifetime variables : wronng now 
 					 bmmgRootTree_->GenBLxy_      = G.BLxy;
-					 bmmgRootTree_->GenBct_       = G.Bct;
-					 bmmgRootTree_->GenBctErr_    = G.BctError;
+					 bmmgRootTree_->GenBct2D_       = G.Bct2D;
 
 					 
 					 if (G.hasMuonPlus) {
@@ -749,9 +747,9 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 					 bmmgRootTree_->GenIsHardProcess_ = G.isHardProcess;
 					 bmmgRootTree_->GenIsSignal_ = gen.isSignalLike();
 
-					 if (muons->size() >= 2) {
-        const reco::Muon& mu1 = (*muons)[0];
-        const reco::Muon& mu2 = (*muons)[1];
+					 if (selectedMuons->size() >= 2) {
+        const reco::Muon& mu1 = (*selectedMuons)[0];
+        const reco::Muon& mu2 = (*selectedMuons)[1];
         
         // Clean! No redundant parameters
         auto mu1Match = gen.matchMuonToGen(mu1);
