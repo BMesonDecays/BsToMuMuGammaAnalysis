@@ -17,7 +17,8 @@ process.MessageLogger.suppressWarning  = cms.untracked.vstring('Geometry','After
 process.options = cms.untracked.PSet(wantSummary = cms.untracked.bool(False))
 
 
-process.source = cms.Source('PoolSource', fileNames = cms.untracked.vstring("file:/eos/user/p/psajdak/data/BsToMuMuGamma_filtered.root"))
+process.source = cms.Source('PoolSource', fileNames = cms.untracked.vstring(
+    "/store/data/Run2024B/ParkingDoubleMuonLowMass6/MINIAOD/PromptReco-v1/000/379/011/00000/c4ece3b8-b80c-4165-9617-bde69ea117de.root"))
 process.source.skipEvents = cms.untracked.uint32(0)
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1))
 
@@ -33,8 +34,8 @@ process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_data', '')
 #process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_mc_FULL','')
 
 
-process.analiza= cms.EDAnalyzer("JpsiGammaMiniAOD",
-  outHist = cms.string('BsToJpsiGammaData.root'),
+process.analiza= cms.EDAnalyzer("impJpsiG",
+  outHist = cms.string('out.root'),
 )
 
 
