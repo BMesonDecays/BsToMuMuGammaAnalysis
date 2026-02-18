@@ -115,7 +115,7 @@ private:
 
   edm::ESGetToken<MagneticField, IdealMagneticFieldRecord> m_fieldToken;
 
-  TH1D* hdRCheck;
+  TH1D* hLxySignificance;
 
 };
 
@@ -141,7 +141,7 @@ impJpsiG::~impJpsiG()
 
 void impJpsiG::beginJob()
 {
-  hdRCheck = new TH1D("hdRCheck","hdRCheck",1000,0.,0.001);
+  hLxySignificance = new TH1D("hLxySignificance","hLxySignificance",100,0.,1000);
 
   cout << "HERE impJpsiG::beginJob()" << endl;
 }
@@ -152,11 +152,11 @@ void impJpsiG::endJob()
   TFile myRootFile( theConfig.getParameter<std::string>("outHist").c_str(), "RECREATE");
 
   //write histogram data
-  hdRCheck->Write();
+  hLxySignificance->Write();
 
   myRootFile.Close();
 
-  delete hdRCheck;
+  delete hLxySignificance;
   
   cout << "HERE impJpsiG::endJob()" << endl;
 }
@@ -168,7 +168,7 @@ void impJpsiG::analyze(
 
   const std::vector<pat::Muon> & recoMuons = ev.get(theMuonToken);
   const std::vector<pat::Photon> & recoPhotons = ev.get(thePhotonToken);
-  //const std::vector<reco::Vertex> & primaryVertices = ev.get(theVertexToken);
+  const std::vector<reco::Vertex> & primaryVertices = ev.get(theVertexToken);
   const std::vector<pat::PackedCandidate> & packedCandidates = ev.get(thePackedCandidateToken);
   
   auto const& field = es.getData(m_fieldToken);  
@@ -179,6 +179,7 @@ void impJpsiG::analyze(
 
   KalmanVertexFitter kvf(false);
   double jpsiMass = 3.097;
+  double bsMass = 5.367;
 
   // take two oppositely charged recoMuons
   for (std::vector<pat::Muon>::const_iterator im1 = recoMuons.begin(); im1 < recoMuons.end(); im1++)
@@ -217,7 +218,6 @@ void impJpsiG::analyze(
         const reco::Track candTrack = icand->pseudoTrack();
 
         // deltaR check to eliminate the already used two muons
-        hdRCheck->Fill(std::min(reco::deltaR(candTrack,*mu1Track),reco::deltaR(candTrack,*mu2Track)));
         if(std::min(reco::deltaR(candTrack,*mu1Track),reco::deltaR(candTrack,*mu2Track))<0.0003) continue;
 
         reco::TransientTrack candTT = reco::TransientTrack(candTrack, &field);
@@ -244,14 +244,33 @@ void impJpsiG::analyze(
         }
       }
       if (min_dR_photon_twoMuons > 0.4) continue;
+      math::XYZTLorentzVector photonLV = min_dR_photon->p4();
+      // got Lorentz vector of the selected photon
 
-      math::XYZTLorentzVector twoMuonsPhotonLV = twoMuonsLV + min_dR_photon->p4();
-      std::cout << twoMuonsPhotonLV.M() << std::endl;
+      math::XYZTLorentzVector twoMuonsPhotonLV = twoMuonsLV + photonLV;
+      if (std::fabs(twoMuonsPhotonLV.M() - bsMass) > 0.5)  continue;
+      // got twoMuonsPhoton Lorentz vector - candidate for B0s
 
-    }
+      // PV selection
+      const reco::Vertex & bestPV = Tools::bestPV(primaryVertices, muonsKalmanVertex.position(), 
+                            twoMuonsPhotonLV.Vect());
+      
+      // muonsKalmanVertex 2D displacement from bestPV
+      math::XYZVector lXY_muonsKalman_PV_Vector = muonsKalmanVertex.position() - bestPV.position();
+      double lXY_muonsKalman_PV = TMath::Sqrt(lXY_muonsKalman_PV_Vector.Mag2());
+      double lXY_muonsKalman_PV_error = Tools::displacementError(muonsKalmanVertex, bestPV);
+      double lXY_muonsKalman_PV_significance = lXY_muonsKalman_PV / lXY_muonsKalman_PV_error;
+
+      hLxySignificance->Fill(lXY_muonsKalman_PV_significance);
 
 
-  }
+
+
+
+    } // muon2
+    
+
+  } // muon1
 
 
 }

@@ -61,6 +61,46 @@ namespace Tools{
     }
 
 
+    // same as above, but returns the reco::Vertex*
+    const reco::Vertex & bestPV (const std::vector<reco::Vertex> & primaryVertices,
+                                math::XYZPoint svPosition, math::XYZVector momentum)
+    {
+        double minDistance = 999.0;
+        const reco::Vertex* bestPV_ptr = &primaryVertices.at(0);
+        math::XYZPoint bestPCA = primaryVertices.at(0).position();
+
+        for (const auto & pv : primaryVertices)
+        {
+            const math::XYZPoint & pvPosition = pv.position();
+            double s = ((pvPosition - svPosition).Dot(momentum)) / momentum.Mag2();
+            math::XYZPoint tempPCA = svPosition + s*momentum;
+            double tempDistance = TMath::Sqrt((pvPosition-tempPCA).Mag2());
+
+            if (tempDistance < minDistance)
+            {
+                minDistance = tempDistance;
+                bestPV_ptr = &pv;
+                bestPCA = tempPCA;
+            }
+        }
+
+        return *bestPV_ptr;
+    }
+
+
+    double displacementError (const reco::Vertex & v1, const reco::Vertex & v2)
+    {
+        double error2 = 0;
+        error2 += TMath::Sq(2*(v1.x() - v2.x())) * (v1.xError()*v1.xError() + v2.xError()*v2.xError());
+        error2 += TMath::Sq(2*(v1.y() - v2.y())) * (v1.yError()*v1.yError() + v2.yError()*v2.yError());
+        error2 += 2*2*(v1.x() - v2.x())*2*(v1.y() - v2.y()) * (v1.covariance(0,1) + v2.covariance(0,1));
+
+        error2 /= 4*((v1.position() - v2.position()).Mag2());
+
+        return TMath::Sqrt(error2);
+    }
+
+
     // find the minimal 3D distance to any PV
     double minDistPV (math::XYZPoint point, const std::vector<reco::Vertex> & primaryVertices)
     {
