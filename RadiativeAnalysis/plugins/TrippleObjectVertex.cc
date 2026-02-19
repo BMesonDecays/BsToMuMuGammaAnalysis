@@ -375,35 +375,6 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
                     rrt->VertexfitBsCt2DOld_mmconvg_ = m_lim.BsPDGMass*( (bVertex->position().x()-PVvtxHightestPt.x())*BCand.Px() + 
                     (bVertex->position().y()-PVvtxHightestPt.y())*BCand.Py() )/( BCand.Px()*BCand.Px() + BCand.Py()*BCand.Py() );
 
-                    // Smart lambda for ct error calculation - keeps everything inline
-                    auto calculateCtError = [&](const GlobalPoint& refVertex, 
-                                               const GlobalError& refVertexErr,
-                                               const GlobalVector& momentumVec,
-                                               const char* outputVarName) -> double {
-                        VertexDistanceXY d;
-                        const GlobalPoint mySV(bVertex->position().x(), bVertex->position().y(), bVertex->position().z());
-                        const GlobalError mySVErr = bVertex->error();
-                        
-                        Measurement1D VtxDist = d.distance(VertexState(mySV, mySVErr), VertexState(refVertex, refVertexErr));
-                        double VtxDistErr = VtxDist.error();
-                        double transmom = std::sqrt(momentumVec.y()*momentumVec.y() + momentumVec.x()*momentumVec.x());
-                        
-                        if(transmom == 0 || VtxDist.value() == 0) return -1.0; // sentinel value
-                        
-                        double dx = bVertex->position().x() - refVertex.x();
-                        double dy = bVertex->position().y() - refVertex.y();
-                        double cos = (dx*momentumVec.x() + dy*momentumVec.y()) / (transmom * VtxDist.value());
-                        
-                        TVector LengthVector(2);
-                        LengthVector(0) = dx;
-                        LengthVector(1) = dy;
-                        
-                        double firstTerm2 = std::pow(m_lim.BsPDGMass * VtxDistErr * std::abs(cos) / transmom, 2.);
-                        double secondTerm2 = std::pow(m_lim.BsPDGMass * std::abs(cos) / (transmom*transmom), 2.) * cova.Similarity(LengthVector);
-                        
-                        return std::sqrt(firstTerm2 + secondTerm2);
-                    };
-
                     // Now use it - clean and compact!
                     // Beam spot with fitted momentum
 
@@ -414,30 +385,30 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
                     // PV variants with fitted momentum
                     rrt->VertexfitBsCtErr2D_mmconvg_ = calculateCtError(
                         GlobalPoint(PVvtxHightestPt.x(), PVvtxHightestPt.y(), PVvtxHightestPt.z()),
-                        PVvtxHightestPt.covariance(), Bsvec, "PV_highestPt");
+                        PVvtxHightestPt.covariance(), Bsvec, bVertex, "PV_highestPt");
 
                     rrt->VertexfitBsCtErr2DClosestZ_mmconvg_ = calculateCtError(
                         GlobalPoint(PVvtxClosestZ.x(), PVvtxClosestZ.y(), PVvtxClosestZ.z()),
-                        PVvtxClosestZ.covariance(), Bsvec, "PV_closestZ");
+                        PVvtxClosestZ.covariance(), Bsvec, bVertex, "PV_closestZ");
 
                     rrt->VertexfitBsCtErr2DCosTheta_mmconvg_ = calculateCtError(
                         GlobalPoint(PVvtxCosTheta.x(), PVvtxCosTheta.y(), PVvtxCosTheta.z()),
-                        PVvtxCosTheta.covariance(), Bsvec, "PV_costheta");
+                        PVvtxCosTheta.covariance(), Bsvec, bVertex, "PV_costheta");
 
                     // Same vertices with non-fitted momentum
                     GlobalVector BsVecNonFitted(BCand.Px(), BCand.Py(), BCand.Pz());
 
                     rrt->VertexfitBsCtErr2DOld_mmconvg_ = calculateCtError(
                         GlobalPoint(PVvtxHightestPt.x(), PVvtxHightestPt.y(), PVvtxHightestPt.z()),
-                        PVvtxHightestPt.covariance(), BsVecNonFitted, "PV_highestPt_old");
+                        PVvtxHightestPt.covariance(), BsVecNonFitted, bVertex, "PV_highestPt_old");
 
                     rrt->VertexfitBsCtErr2DClosestZOld_mmconvg_ = calculateCtError(
                         GlobalPoint(PVvtxClosestZ.x(), PVvtxClosestZ.y(), PVvtxClosestZ.z()),
-                        PVvtxClosestZ.covariance(), BsVecNonFitted, "PV_closestZ_old");
+                        PVvtxClosestZ.covariance(), BsVecNonFitted, bVertex, "PV_closestZ_old");
 
                     rrt->VertexfitBsCtErr2DOld_mmconvg_ = calculateCtError(
                         GlobalPoint(PVvtxCosTheta.x(), PVvtxCosTheta.y(), PVvtxCosTheta.z()),
-                        PVvtxCosTheta.covariance(), BsVecNonFitted, "PV_costheta_old");
+                        PVvtxCosTheta.covariance(), BsVecNonFitted, bVertex, "PV_costheta_old");
 
                     // commenting out, because it doesn't work
                     // dcv.vertexfitBsCtErr2DBSOld_mmconvg = calculateCtError(
@@ -707,7 +678,45 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
             (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y());
             rrt->BsCt2DBS_mmrecog_ = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-bsAndVtxInfo.bs_x)*Bsvec.x()+
             (kvfbsvertex.position().y()-bsAndVtxInfo.bs_y)*Bsvec.y())/
-            (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y());  
+            (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y());
+
+
+                int PVClosestZIndex = BeamSpotAndVertex::ClosestZindex(PVs, bVertex);
+                int PVCosThetaIndex = BeamSpotAndVertex::CosThetaindex(PVs, bVertex, Bsvec);
+                if (PVCosThetaIndex==-1) continue;
+                if (PVClosestZIndex==-1) continue;
+                reco::Vertex PVvtxCosTheta = PVs[PVCosThetaIndex];
+                reco::Vertex PVvtxClosestZ = PVs[PVClosestZIndex]; 
+
+                            // PV variants with fitted momentum
+                rrt->VertexfitBsCtErr2D_mmrecog_ = calculateCtError(
+                    GlobalPoint(PVvtxHightestPt.x(), PVvtxHightestPt.y(), PVvtxHightestPt.z()),
+                    PVvtxHightestPt.covariance(), Bsvec, bVertex, "PV_highestPt");
+
+                rrt->VertexfitBsCtErr2DClosestZ_mmrecog_ = calculateCtError(
+                    GlobalPoint(PVvtxClosestZ.x(), PVvtxClosestZ.y(), PVvtxClosestZ.z()),
+                    PVvtxClosestZ.covariance(), Bsvec, bVertex, "PV_closestZ");
+
+                rrt->VertexfitBsCtErr2DCosTheta_mmrecog_ = calculateCtError(
+                    GlobalPoint(PVvtxCosTheta.x(), PVvtxCosTheta.y(), PVvtxCosTheta.z()),
+                    PVvtxCosTheta.covariance(), Bsvec, bVertex, "PV_costheta");
+
+                // Same vertices with non-fitted momentum
+                GlobalVector BsVecNonFitted(BCand.Px(), BCand.Py(), BCand.Pz());
+
+                rrt->VertexfitBsCtErr2DOld_mmrecog_ = calculateCtError(
+                    GlobalPoint(PVvtxHightestPt.x(), PVvtxHightestPt.y(), PVvtxHightestPt.z()),
+                    PVvtxHightestPt.covariance(), BsVecNonFitted, bVertex, "PV_highestPt_old");
+
+                rrt->VertexfitBsCtErr2DClosestZOld_mmrecog_ = calculateCtError(
+                    GlobalPoint(PVvtxClosestZ.x(), PVvtxClosestZ.y(), PVvtxClosestZ.z()),
+                    PVvtxClosestZ.covariance(), BsVecNonFitted, bVertex, "PV_closestZ_old");
+
+                rrt->VertexfitBsCtErr2DOld_mmrecog_ = calculateCtError(
+                    GlobalPoint(PVvtxCosTheta.x(), PVvtxCosTheta.y(), PVvtxCosTheta.z()),
+                    PVvtxCosTheta.covariance(), BsVecNonFitted, bVertex, "PV_costheta_old");
+
+
             }//end of reco photon loop 
             std::cout << " vertex fit flag :"<< dcv.vertexFitFlag_mmrecog << "\n";
         
@@ -717,3 +726,42 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
 
 
 } //Here is the brace of the main funtion 
+
+
+double TrippleObjectVertex::calculateCtError(const GlobalPoint& refVertex, 
+                                               const GlobalError& refVertexErr,
+                                               const GlobalVector& momentumVec,
+											   const RefCountedKinematicVertex& bVertex,
+                                               const char* outputVarName)
+{
+    MassLimits m_lim;
+    VertexDistanceXY d;
+    const GlobalPoint mySV(bVertex->position().x(), bVertex->position().y(), bVertex->position().z());
+    const GlobalError mySVErr = bVertex->error();
+
+    TMatrix cova(2,2);
+    cova.IsSymmetric();
+    cova(0,0)=mySVErr.cxx();
+    cova(1,1)=mySVErr.cyy();
+    cova(0,1)=mySVErr.cyx();
+    cova(1,0)=mySVErr.cyx();
+    
+    Measurement1D VtxDist = d.distance(VertexState(mySV, mySVErr), VertexState(refVertex, refVertexErr));
+    double VtxDistErr = VtxDist.error();
+    double transmom = std::sqrt(momentumVec.y()*momentumVec.y() + momentumVec.x()*momentumVec.x());
+    
+    if(transmom == 0 || VtxDist.value() == 0) return -1.0; // sentinel value
+    
+    double dx = bVertex->position().x() - refVertex.x();
+    double dy = bVertex->position().y() - refVertex.y();
+    double cos = (dx*momentumVec.x() + dy*momentumVec.y()) / (transmom * VtxDist.value());
+    
+    TVector LengthVector(2);
+    LengthVector(0) = dx;
+    LengthVector(1) = dy;
+    
+    double firstTerm2 = std::pow(m_lim.BsPDGMass * VtxDistErr * std::abs(cos) / transmom, 2.);
+    double secondTerm2 = std::pow(m_lim.BsPDGMass * std::abs(cos) / (transmom*transmom), 2.) * cova.Similarity(LengthVector);
+    
+    return std::sqrt(firstTerm2 + secondTerm2);
+}

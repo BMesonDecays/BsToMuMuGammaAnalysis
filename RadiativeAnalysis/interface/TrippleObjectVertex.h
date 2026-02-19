@@ -76,6 +76,13 @@ class TrippleObjectVertex{
 			const double nominalElectronMass, 
 		 	const TransientTrackBuilder& transientTrackBuilder,
 			RadiativeRootTree* rrt);
+
+	private:
+	double calculateCtError(const GlobalPoint& refVertex, 
+							const GlobalError& refVertexErr,
+							const GlobalVector& momentumVec,
+							const RefCountedKinematicVertex& bVertex,
+							const char* outputVarName);
       
 };
 
