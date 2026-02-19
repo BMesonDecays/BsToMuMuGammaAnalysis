@@ -320,9 +320,11 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 
 		vector<reco::Photon>* selectedPhoton = new vector<reco::Photon>();
 		*selectedPhoton = photonSelector.selectPhoton(*photons, *selectedMuons, trackBuilder);
+
+		std::cout << "Selected Muons: " << selectedMuons->size() << ", Selected Photons: " << selectedPhoton->size() << std::endl;
 	   
 		DecayChainVariables decayVariables;
-		if(selectedMuons->size()>=2 && (convPhotons->size() >=1 || photons->size() >=1)){
+		if(selectedMuons->size()>=2 && (selectedConvPhoton->size() >=1 || selectedPhoton->size() >=1)){
 			TrippleObjectVertex  tripvtxObservables;
 			decayVariables = tripvtxObservables.TrippleObjectVertexObservables(
 				*selectedMuons, 
@@ -344,7 +346,7 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 		*selectedConvPhotons = photonSelector.selectConvertedPhotons(*convPhotons, *selectedMuons, trackBuilder);
 		vector<reco::Photon>* selectedPhotons = new vector<reco::Photon>();
 		*selectedPhotons = photonSelector.selectPhotons(*photons, *selectedMuons, trackBuilder);
-		if(selectedMuons->size()>=2 && (convPhotons->size() >=2 || photons->size() >=2)){
+		if(selectedMuons->size()>=2 && (selectedConvPhotons->size() >=2 || selectedPhotons->size() >=2)){
 			TetraObjectVertex tetradcObservables;
 			decayVariables = tetradcObservables.TetraObjectVertexObservables(
 				*selectedMuons, 
@@ -483,9 +485,7 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 				excludedPhotons.insert(iPhoton);
 			}
 		}
-			if (photonVar.size() - excludedPhotons.size() < 1) {
-				return;
-			}
+
 			// Store photon kinematics (up to 2 photons)
 			for (size_t iPhoton = 0; iPhoton < photonVar.size(); ++iPhoton) {
 				if (excludedPhotons.count(iPhoton)) continue;
