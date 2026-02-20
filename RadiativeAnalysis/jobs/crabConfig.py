@@ -6,8 +6,8 @@ nEvents = -1
 
 config = config()
 
-config.General.requestName = 'triggerBit'
-config.General.workArea = 'BsToJpsiGamma_MC_GenMatched'
+config.General.requestName = 'bsLifetime'
+config.General.workArea = 'BsToJpsiGamma_MC'
 config.General.transferOutputs = True
 
 config.JobType.pluginName = 'ANALYSIS'
@@ -22,8 +22,8 @@ config.Data.unitsPerJob     = 5#5000
 config.Data.totalUnits      = 70000000
 config.Data.splitting       = 'FileBased'
 config.Data.publication = False
-config.Data.outputDatasetTag = 'BsToJpsiGamma_MC_triggerBit'
-config.Data.outputPrimaryDataset = 'BsToJpsiGamma_analysis'
+config.Data.outputDatasetTag = 'BsToJpsiGamma_MC_bsLifetime'
+config.Data.outputPrimaryDataset = 'BsToJpsiGamma_analysis_MC'
 
 config.Site.storageSite = 'T3_CH_CERNBOX'
 config.Site.whitelist = ['T2_CH_CERN']

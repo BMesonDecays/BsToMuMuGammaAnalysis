@@ -88,16 +88,29 @@ namespace Tools{
     }
 
 
-    double displacementError (const reco::Vertex & v1, const reco::Vertex & v2)
+    // XY displacement for two reco::Vertex, with uncertainty
+    struct displacementXY
     {
+        math::XYZVector vector;
+        double error;
+    };
+
+    Tools::displacementXY getDisplXY (const reco::Vertex & v1, const reco::Vertex & v2)
+    {
+        Tools::displacementXY displ;
+        math::XYZVector displ3DVec = v1.position() - v2.position();
+        math::XYZVector displ2DVec (displ3DVec.x(), displ3DVec.y(), 0);
+        displ.vector = displ2DVec;
+
         double error2 = 0;
         error2 += TMath::Sq(2*(v1.x() - v2.x())) * (v1.xError()*v1.xError() + v2.xError()*v2.xError());
         error2 += TMath::Sq(2*(v1.y() - v2.y())) * (v1.yError()*v1.yError() + v2.yError()*v2.yError());
         error2 += 2*2*(v1.x() - v2.x())*2*(v1.y() - v2.y()) * (v1.covariance(0,1) + v2.covariance(0,1));
 
-        error2 /= 4*((v1.position() - v2.position()).Mag2());
+        error2 /= 4*(displ2DVec.Mag2());
+        displ.error = TMath::Sqrt(error2);
 
-        return TMath::Sqrt(error2);
+        return displ;
     }
 
 

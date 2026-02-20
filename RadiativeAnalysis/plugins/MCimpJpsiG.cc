@@ -89,14 +89,14 @@ using namespace std;
 
 
 //object definition
-class impJpsiG : public edm::one::EDAnalyzer<> {
+class MCimpJpsiG : public edm::one::EDAnalyzer<> {
 public:
 
   //constructor, function is called when new object is created
-  explicit impJpsiG(const edm::ParameterSet& conf);
+  explicit MCimpJpsiG(const edm::ParameterSet& conf);
 
   //destructor, function is called when object is destroyed
-  ~impJpsiG();
+  ~MCimpJpsiG();
 
   //edm filter plugin specific functions
   virtual void beginJob();
@@ -108,47 +108,49 @@ private:
   edm::ParameterSet theConfig;
   unsigned int theEventCount;
 
-  edm::EDGetTokenT < vector<pat::Muon> > theMuonToken;
-  edm::EDGetTokenT < vector<pat::Photon> > thePhotonToken;
+  edm::EDGetTokenT < vector<reco::Muon> > theMuonToken;
+  edm::EDGetTokenT < vector<reco::Photon> > thePhotonToken;
   edm::EDGetTokenT < vector<reco::Vertex> > theVertexToken; 
-  edm::EDGetTokenT < vector<pat::PackedCandidate> > thePackedCandidateToken;
+  //edm::EDGetTokenT < vector<reco::PackedCandidate> > thePackedCandidateToken;
 
   edm::ESGetToken<MagneticField, IdealMagneticFieldRecord> m_fieldToken;
 
   TH1D* hLxySignificance;
   TH1D* hLifetime_ps;
+  TH1D* hCosPointingAngle;
 
 };
 
 
-impJpsiG::impJpsiG(const edm::ParameterSet& conf)
+MCimpJpsiG::MCimpJpsiG(const edm::ParameterSet& conf)
   : theConfig(conf), theEventCount(0)
 {
   cout <<" CTORXX" << endl;
 
-  theMuonToken = consumes< vector<pat::Muon>  >( edm::InputTag("slimmedMuons"));
-  thePhotonToken = consumes< vector<pat::Photon>  >( edm::InputTag("slimmedPhotons"));
-  theVertexToken = consumes< vector<reco::Vertex>  >( edm::InputTag("offlineSlimmedPrimaryVertices"));
-  thePackedCandidateToken = consumes< vector<pat::PackedCandidate> >(edm::InputTag("packedPFCandidates"));
+  theMuonToken = consumes< vector<reco::Muon>  >( edm::InputTag("muons"));
+  thePhotonToken = consumes< vector<reco::Photon>  >( edm::InputTag("photons"));
+  theVertexToken = consumes< vector<reco::Vertex>  >( edm::InputTag("offlinePrimaryVertices"));
+  //thePackedCandidateToken = consumes< vector<reco::PackedCandidate> >(edm::InputTag("packedPFCandidates"));
 
   m_fieldToken = esConsumes<MagneticField, IdealMagneticFieldRecord>();
 
 }
 
-impJpsiG::~impJpsiG()
+MCimpJpsiG::~MCimpJpsiG()
 {
   cout <<" DTOR" << endl;
 }
 
-void impJpsiG::beginJob()
+void MCimpJpsiG::beginJob()
 {
   hLxySignificance = new TH1D("hLxySignificance","hLxySignificance",100,0.,1000);
   hLifetime_ps = new TH1D("hLifetime_ps","hLifetime [ps]",1000,0.,20.);
+  hCosPointingAngle = new TH1D("hCosPointingAngle","hCosPointingAngle",1000,-1.,1.);
 
-  cout << "HERE impJpsiG::beginJob()" << endl;
+  cout << "HERE MCimpJpsiG::beginJob()" << endl;
 }
 
-void impJpsiG::endJob()
+void MCimpJpsiG::endJob()
 {
   //make a new Root file
   TFile myRootFile( theConfig.getParameter<std::string>("outHist").c_str(), "RECREATE");
@@ -156,24 +158,26 @@ void impJpsiG::endJob()
   //write histogram data
   hLxySignificance->Write();
   hLifetime_ps->Write();
+  hCosPointingAngle->Write();
 
   myRootFile.Close();
 
   delete hLxySignificance;
   delete hLifetime_ps;
+  delete hCosPointingAngle;
   
-  cout << "HERE impJpsiG::endJob()" << endl;
+  cout << "HERE MCimpJpsiG::endJob()" << endl;
 }
 
-void impJpsiG::analyze(
+void MCimpJpsiG::analyze(
     const edm::Event& ev, const edm::EventSetup& es)
 {
-  std::cout << " -------------------------------- HERE impJpsiG::analyze "<< std::endl;
+  std::cout << " -------------------------------- HERE MCimpJpsiG::analyze "<< std::endl;
 
-  const std::vector<pat::Muon> & recoMuons = ev.get(theMuonToken);
-  const std::vector<pat::Photon> & recoPhotons = ev.get(thePhotonToken);
+  const std::vector<reco::Muon> & recoMuons = ev.get(theMuonToken);
+  const std::vector<reco::Photon> & recoPhotons = ev.get(thePhotonToken);
   const std::vector<reco::Vertex> & primaryVertices = ev.get(theVertexToken);
-  const std::vector<pat::PackedCandidate> & packedCandidates = ev.get(thePackedCandidateToken);
+  //const std::vector<reco::PackedCandidate> & packedCandidates = ev.get(thePackedCandidateToken);
   
   auto const& field = es.getData(m_fieldToken);  
   
@@ -186,13 +190,13 @@ void impJpsiG::analyze(
   double bsMass = 5.367;
 
   // take two oppositely charged recoMuons
-  for (std::vector<pat::Muon>::const_iterator im1 = recoMuons.begin(); im1 < recoMuons.end(); im1++)
+  for (std::vector<reco::Muon>::const_iterator im1 = recoMuons.begin(); im1 < recoMuons.end(); im1++)
   {
     reco::TrackRef mu1Track = im1->track();
     if (!mu1Track)  continue;
     reco::TransientTrack muon1TT = reco::TransientTrack(mu1Track, &field);
 
-    for (std::vector<pat::Muon>::const_iterator im2 = im1+1; im2 < recoMuons.end(); im2++)
+    for (std::vector<reco::Muon>::const_iterator im2 = im1+1; im2 < recoMuons.end(); im2++)
     {
       if (im1->charge() * im2->charge() != -1)  continue;
 
@@ -214,29 +218,11 @@ void impJpsiG::analyze(
 
       // got two muons Lorentz Vector - candidate for J/psi
 
-      // check if no other packed candidate is compatible with the two muons vertex (get the maximal probability)
-      double maxVertexProb = 0.0;
-      for (std::vector<pat::PackedCandidate>::const_iterator icand = packedCandidates.begin(); icand < packedCandidates.end(); icand++)
-      {
-        if (! icand->hasTrackDetails()) continue;
-        const reco::Track candTrack = icand->pseudoTrack();
-
-        // deltaR check to eliminate the already used two muons
-        if(std::min(reco::deltaR(candTrack,*mu1Track),reco::deltaR(candTrack,*mu2Track))<0.0003) continue;
-
-        reco::TransientTrack candTT = reco::TransientTrack(candTrack, &field);
-        trackTTs.push_back(candTT);
-        reco::Vertex v3part (TransientVertex(kvf.vertex(trackTTs)));
-        double prob3part = TMath::Prob(v3part.chi2(),v3part.ndof());
-        if (prob3part > maxVertexProb)
-          maxVertexProb = prob3part;
-        
-        trackTTs.pop_back();
-      }
+      
 
       // find the photon closest in dR to the two muons LV
       // (however dR > 0.05)
-      const pat::Photon* min_dR_photon = &recoPhotons.at(0);
+      const reco::Photon* min_dR_photon = &recoPhotons.at(0);
       double min_dR_photon_twoMuons = 99.0;
       for (const auto& photon : recoPhotons)
       {
@@ -270,10 +256,11 @@ void impJpsiG::analyze(
       math::XYZVector lXYZ_muonsKalman_PV_Vector = muonsKalmanVertex.position() - bestPV.position();
       double lXYZ_muonsKalman_PV = TMath::Sqrt(lXYZ_muonsKalman_PV_Vector.Mag2());
       double cosPointingAngle_muonsKalman_PV = twoMuonsPhotonLV.Vect().unit().Dot(lXYZ_muonsKalman_PV_Vector.unit());
+      hCosPointingAngle->Fill(cosPointingAngle_muonsKalman_PV);
 
       // B0s lifetime based on lXY
       double lifetimeB0s = (lXY_muonsKalman_PV * bsMass) / twoMuonsPhotonLV.Vect().Rho();
-      hLifetime_ps->Fill(lifetimeB0s*100/3);
+      hLifetime_ps->Fill(lifetimeB0s*10/3); // should be 100, not 10
 
 
 
@@ -286,4 +273,4 @@ void impJpsiG::analyze(
 
 }
 
-DEFINE_FWK_MODULE(impJpsiG);
+DEFINE_FWK_MODULE(MCimpJpsiG);
