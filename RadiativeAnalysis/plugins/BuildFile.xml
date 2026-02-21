@@ -34,8 +34,6 @@
 <library name="impJpsiG" file="impJpsiG.cc">
 </library>
 
-<library name="MCimpJpsiG" file="MCimpJpsiG.cc">
-</library>
 
 
 

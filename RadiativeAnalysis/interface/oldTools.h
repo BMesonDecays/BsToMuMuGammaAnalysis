@@ -12,6 +12,23 @@
 
 namespace Tools{
 
+    // Klara's method
+    inline math::XYZPoint pca(math::XYZPoint pv, math::XYZPoint sv, math::XYZVector mom){
+        //s = (PV - SV) * (mom) / |mom|^2 
+        double s = ((pv - sv).Dot(mom)) / mom.Mag2();
+        //pca = sv + s*mom
+        math::XYZPoint PCA = sv + s*mom;
+
+        return PCA;
+    }
+    // tutaj znajdowany jest punkt najbliższego podejścia (PCA) dla danego primary i secondary vertex oraz wektora pędu
+    // w moim przypadku był to pęd cząstki rozpadającej się w tym secondary vertexie
+    // PCA ma być na przedłużeniu kierunku pędu
+    // s*|mom| to odległość od SV do PCA; tutaj s jest od razu dzielone przez wartość pędu (|mom|)
+    // s powinno wyjść z odpowiednim znakiem
+    // do wektora położenia SV dodawany jest wektor łączący SV z PCA: s*mom (gdyby wcześniej s nie było dzielone przez |mom|, tutaj byłoby s*(mom/|mom|))
+
+
     // find the smallest distance of closest approach of a momentum line to the best (closest) PV, (SV point needed)
     // return two points: best PV position and the PCA point
     std::vector<math::XYZPoint> points_PV_pca (const std::vector<reco::Vertex> & primaryVertices,
@@ -44,7 +61,7 @@ namespace Tools{
     }
 
 
-    // same as above, but returns the reco::Vertex
+    // same as above, but returns the reco::Vertex*
     const reco::Vertex & bestPV (const std::vector<reco::Vertex> & primaryVertices,
                                 math::XYZPoint svPosition, math::XYZVector momentum)
     {
@@ -97,6 +114,22 @@ namespace Tools{
     }
 
 
+    // find the minimal 3D distance to any PV
+    double minDistPV (math::XYZPoint point, const std::vector<reco::Vertex> & primaryVertices)
+    {
+        double minDist = 999.;
+        for (auto & pv : primaryVertices)
+        {
+            math::XYZVector displ = point - pv.position();
+            double tempDist = TMath::Sqrt(displ.Mag2());
+            if (tempDist < minDist)
+                minDist = tempDist;
+        }
+        
+        return minDist;
+    }
+
+
     // find first produced B0s in MC sample
     const reco::Candidate* findFirstB0s(const reco::Candidate* partB0s)
     {
@@ -135,6 +168,34 @@ namespace Tools{
     }
 
 
+    // UNVERIFIED find two points (one for each line) closest to each other for two lines in 3D
+    std::vector<math::XYZPoint> closestPoints(const math::XYZPoint &refPoint1, const math::XYZVector &dirVector1,
+                                                const math::XYZPoint &refPoint2, const math::XYZVector &dirVector2)
+    {
+        math::XYZVector dirUnit1 = dirVector1.Unit();
+        math::XYZVector dirUnit2 = dirVector2.Unit();
+        math::XYZVector nVector = dirUnit1.Cross(dirUnit2);    //direction of the vector connecting the two desired closest points
+
+        math::XYZVector ref1_ref2 = refPoint2 - refPoint1;
+        math::XYZVector dir1CrossN = dirUnit1.Cross(nVector);
+        math::XYZVector dir2CrossN = dirUnit2.Cross(nVector);
+        double dirUnit1DotDirUnit2 = dirUnit1.Dot(dirUnit2);
+        double sign = std::abs(dirUnit1DotDirUnit2)/dirUnit1DotDirUnit2;
+
+        // closestPoint1 = refPoint1 + t1*dirUnit1
+        // closestPoint2 = refPoint2 + t2*dirUnit2
+        double t1 = sign * (dir2CrossN.Dot(ref1_ref2))/(dirUnit1.Dot(dir2CrossN));
+        double t2 = sign * (dir1CrossN.Dot(ref1_ref2))/(dirUnit2.Dot(dir1CrossN));
+        math::XYZPoint closestPoint1 = refPoint1 + t1*dirUnit1;
+        math::XYZPoint closestPoint2 = refPoint2 + t2*dirUnit2;
+
+        std::vector<math::XYZPoint> outputVector;
+        outputVector.push_back(closestPoint1);
+        outputVector.push_back(closestPoint2);
+
+        return outputVector;
+    }
+
     // check whether the same decay (same PDG ids)
     bool isSameDecay(const std::vector<int>& dec1, const std::vector<int>& dec2) {    
         if (dec1.size() != dec2.size()) {
@@ -148,54 +209,7 @@ namespace Tools{
     }
 
 
-    // check if no other packed candidate is compatible with the two muons vertex (get the maximal probability)
-    double getMaxCompatibility (const std::vector<pat::PackedCandidate> & packedCandidates,
-                                reco::TrackRef mu1Track, reco::TrackRef mu2Track, const MagneticField & field,
-                                std::vector<reco::TransientTrack> & trackTTs)
-    {
-        KalmanVertexFitter kvf(false);
-      double maxVertexProb = 0.0;
-      for (std::vector<pat::PackedCandidate>::const_iterator icand = packedCandidates.begin(); icand < packedCandidates.end(); icand++)
-      {
-        if (! icand->hasTrackDetails()) continue;
-        const reco::Track candTrack = icand->pseudoTrack();
-
-        // deltaR check to eliminate the already used two muons
-        if(std::min(reco::deltaR(candTrack,*mu1Track),reco::deltaR(candTrack,*mu2Track))<0.0003) continue;
-
-        reco::TransientTrack candTT = reco::TransientTrack(candTrack, &field);
-        trackTTs.push_back(candTT);
-        reco::Vertex v3part (TransientVertex(kvf.vertex(trackTTs)));
-        double prob3part = TMath::Prob(v3part.chi2(),v3part.ndof());
-        if (prob3part > maxVertexProb)
-          maxVertexProb = prob3part;
-        
-        trackTTs.pop_back();
-      }
-      return maxVertexProb;
-    }
-
-    // find the photon with the minimal deltaR wrt. the given lorentz vector
-    // however deltaR > minLimit
-    const pat::Photon* findPhotonWithMinDR (const std::vector<pat::Photon> & recoPhotons,
-                        math::XYZTLorentzVector & directionLV, double minLimit)
-    {
-        const pat::Photon* min_dR_photon = &recoPhotons.at(0);
-      double min_dR_val = 99.0;
-      for (const auto& photon : recoPhotons)
-      {
-        math::XYZTLorentzVector recoGammaLV = photon.p4();
-        double dR = reco::deltaR(recoGammaLV, directionLV);
-        if (dR < min_dR_val && dR > minLimit){
-          min_dR_photon = &photon;
-          min_dR_val = dR;
-        }
-      }
-
-      return min_dR_photon;
-    }
-
-
 }
+
 
 #endif

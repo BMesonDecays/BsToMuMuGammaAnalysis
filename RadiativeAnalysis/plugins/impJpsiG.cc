@@ -184,6 +184,8 @@ void impJpsiG::analyze(
   KalmanVertexFitter kvf(false);
   double jpsiMass = 3.097;
   double bsMass = 5.367;
+  const ParticleMass muonMass = 0.105658;
+  float muonMassSigma = 2E-6;
 
   // take two oppositely charged recoMuons
   for (std::vector<pat::Muon>::const_iterator im1 = recoMuons.begin(); im1 < recoMuons.end(); im1++)
@@ -215,42 +217,16 @@ void impJpsiG::analyze(
       // got two muons Lorentz Vector - candidate for J/psi
 
       // check if no other packed candidate is compatible with the two muons vertex (get the maximal probability)
-      double maxVertexProb = 0.0;
-      for (std::vector<pat::PackedCandidate>::const_iterator icand = packedCandidates.begin(); icand < packedCandidates.end(); icand++)
-      {
-        if (! icand->hasTrackDetails()) continue;
-        const reco::Track candTrack = icand->pseudoTrack();
-
-        // deltaR check to eliminate the already used two muons
-        if(std::min(reco::deltaR(candTrack,*mu1Track),reco::deltaR(candTrack,*mu2Track))<0.0003) continue;
-
-        reco::TransientTrack candTT = reco::TransientTrack(candTrack, &field);
-        trackTTs.push_back(candTT);
-        reco::Vertex v3part (TransientVertex(kvf.vertex(trackTTs)));
-        double prob3part = TMath::Prob(v3part.chi2(),v3part.ndof());
-        if (prob3part > maxVertexProb)
-          maxVertexProb = prob3part;
-        
-        trackTTs.pop_back();
-      }
+      double maxMuonsVertexComp = Tools::getMaxCompatibility (packedCandidates, mu1Track, mu2Track, field, trackTTs);      
 
       // find the photon closest in dR to the two muons LV
       // (however dR > 0.05)
-      const pat::Photon* min_dR_photon = &recoPhotons.at(0);
-      double min_dR_photon_twoMuons = 99.0;
-      for (const auto& photon : recoPhotons)
-      {
-        math::XYZTLorentzVector recoGammaLV = photon.p4();
-        double dR = reco::deltaR(recoGammaLV, twoMuonsLV);
-        if (dR < min_dR_photon_twoMuons && dR > 0.05){
-          min_dR_photon = &photon;
-          min_dR_photon_twoMuons = dR;
-        }
-      }
-      if (min_dR_photon_twoMuons > 0.4) continue;
+      const pat::Photon* min_dR_photon = Tools::findPhotonWithMinDR(recoPhotons,twoMuonsLV, 0.05);
       math::XYZTLorentzVector photonLV = min_dR_photon->p4();
-      // got Lorentz vector of the selected photon
-
+      double min_dR_photon_twoMuons = reco::deltaR(photonLV, twoMuonsLV);
+      if (min_dR_photon_twoMuons > 0.4) continue;
+      
+      // add the vectors of the two muons and the photon
       math::XYZTLorentzVector twoMuonsPhotonLV = twoMuonsLV + photonLV;
       if (std::fabs(twoMuonsPhotonLV.M() - bsMass) > 0.5)  continue;
       // got twoMuonsPhoton Lorentz vector - candidate for B0s
@@ -263,8 +239,9 @@ void impJpsiG::analyze(
       Tools::displacementXY displXY_muonsKalman_PV = Tools::getDisplXY (muonsKalmanVertex, bestPV);
       double lXY_muonsKalman_PV = TMath::Sqrt(displXY_muonsKalman_PV.vector.Mag2());
       double lXY_muonsKalman_PV_significance = lXY_muonsKalman_PV / displXY_muonsKalman_PV.error;
-
       hLxySignificance->Fill(lXY_muonsKalman_PV_significance);
+
+      if (lXY_muonsKalman_PV_significance < 3.0)  continue;
 
       // muonsKalmanVertex 3D displacement from bestPV
       math::XYZVector lXYZ_muonsKalman_PV_Vector = muonsKalmanVertex.position() - bestPV.position();
@@ -276,7 +253,51 @@ void impJpsiG::analyze(
       hLifetime_ps->Fill(lifetimeB0s*100/3);
 
 
+      //////////////J/PSI MASS CONSTRAINED KINEMATIC FIT////////////////////
+      // prepare kinematic muons
+      std::vector<RefCountedKinematicParticle> muonKinematicParticles;
+      KinematicParticleFactoryFromTransientTrack pFactory;
+      muonKinematicParticles.push_back(pFactory.particle(muon1TT, muonMass, float(0), float(0), muonMassSigma));
+      muonKinematicParticles.push_back(pFactory.particle(muon2TT, muonMass, float(0), float(0), muonMassSigma));
 
+      // create the fitter and the mass constraint
+      KinematicConstrainedVertexFitter constrainedFitter;
+      MultiTrackMassKinematicConstraint* jpsiMassKinematicConstraint = new MultiTrackMassKinematicConstraint(jpsiMass, 2);  // 2 particles - muons
+
+      // perform the fit
+      RefCountedKinematicTree jpsiFitTree = constrainedFitter.fit(muonKinematicParticles, jpsiMassKinematicConstraint);
+      if (! jpsiFitTree->isValid()) continue;
+
+      // get the fitted J/psi and vertex
+      jpsiFitTree->movePointerToTheTop();
+      RefCountedKinematicParticle fittedJpsi = jpsiFitTree->currentParticle();
+      RefCountedKinematicVertex fittedJpsiVertex = jpsiFitTree->currentDecayVertex();
+      if (! fittedJpsiVertex->vertexIsValid())  continue;
+      GlobalPoint position_GP = fittedJpsiVertex->position();
+      math::XYZPoint fittedJpsiVertexPosition (position_GP.x(),position_GP.y(),position_GP.z());
+
+      // create a Lorentz Vector for the fitted J/psi
+      GlobalVector fittedJpsiMom = fittedJpsi->currentState()->globalMomentum();
+      double fittedJpsiEnergy = fittedJpsi->currentState()->kinematicParameters()->energy();
+      math::XYZTLorentzVector fittedJpsiLV (fittedJpsiMom.x(),fittedJpsiMom.y(),fittedJpsiMom.z(),fittedJpsiEnergy);
+
+      // find the photon again, this time the closest in dR to the fittedJpsi
+      // (however dR > 0.05)
+      const pat::Photon* min_dR_photon_Jpsi = Tools::findPhotonWithMinDR(recoPhotons,fittedJpsiLV, 0.05);
+      math::XYZTLorentzVector photon_JpsiLV = min_dR_photon_Jpsi->p4();
+      double min_dR_photon_Jpsi = reco::deltaR(photon_JpsiLV, fittedJpsiLV);
+      
+      // find the best PV again, based on fittedJpsiLV + photon_JpsiLV
+      math::XYZTLorentzVector fittedJpsiPhotonLV = fittedJpsiLV + photon_JpsiLV;
+      const reco::Vertex & bestPV_Jpsi = Tools::bestPV(primaryVertices, fittedJpsiVertexPosition, 
+                            fittedJpsiPhotonLV.Vect());
+      bool sameBestPV = (bestPV_Jpsi == bestPV);
+      
+      /*
+      add photon, get LV and vertex position
+      find the best PV again
+      global fit with the pointing constraint
+      */
 
     } // muon2
     
