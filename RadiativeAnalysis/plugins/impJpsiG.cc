@@ -56,6 +56,9 @@
 #include "MagneticField/Engine/interface/MagneticField.h"
 #include "MagneticField/Records/interface/IdealMagneticFieldRecord.h"
 
+#include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
+#include "DataFormats/EcalRecHit/interface/EcalRecHitCollections.h"
+#include "FWCore/Framework/interface/ConsumesCollector.h"
 
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/BeamSpot/interface/BeamSpot.h"
@@ -292,8 +295,14 @@ void impJpsiG::analyze(
       const reco::Vertex & bestPV_Jpsi = Tools::bestPV(primaryVertices, fittedJpsiVertexPosition, 
                             fittedJpsiPhotonLV.Vect());
       bool sameBestPV = (bestPV_Jpsi == bestPV);
-      
+
       /*
+      // create the pointing constraint and perform the full global (kinematic) fit
+      GlobalPoint bestPV_JpsiPosition (bestPV_Jpsi.position().x(),bestPV_Jpsi.position().y(),bestPV_Jpsi.position().z());
+      MultiTrackKinematicConstraint* pointingConstraint = new MultiTrackKinematicConstraint(bestPV_JpsiPosition);
+      RefCountedKinematicTree bsFitTree = constrainedFitter
+
+      
       add photon, get LV and vertex position
       find the best PV again
       global fit with the pointing constraint
