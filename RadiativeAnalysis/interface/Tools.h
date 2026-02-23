@@ -96,6 +96,31 @@ namespace Tools{
         return displ;
     }
 
+    // XY displacement for a KinematicVertex and a reco::Vertex, with uncertainty
+    Tools::displacementXY getDisplXY (const KinematicVertex & v1, const reco::Vertex & v2)
+    {
+        Tools::displacementXY displ;
+
+        GlobalPoint v1Position = v1.position();
+        math::XYZPoint v1PositionPoint (v1Position.x(),v1Position.y(),v1Position.z());
+
+        const AlgebraicSymMatrix33 v1CovMatrix = v1.error().matrix();
+
+        math::XYZVector displ3DVec = v1PositionPoint - v2.position();
+        math::XYZVector displ2DVec (displ3DVec.x(), displ3DVec.y(), 0);
+        displ.vector = displ2DVec;
+
+        double error2 = 0;
+        error2 += TMath::Sq(2*(v1Position.x() - v2.x())) * (v1CovMatrix.At(0,0) + v2.xError()*v2.xError());
+        error2 += TMath::Sq(2*(v1Position.y() - v2.y())) * (v1CovMatrix.At(1,1) + v2.yError()*v2.yError());
+        error2 += 2*2*(v1Position.x() - v2.x())*2*(v1Position.y() - v2.y()) * (v1CovMatrix(0,1) + v2.covariance(0,1));
+
+        error2 /= 4*(displ2DVec.Mag2());
+        displ.error = TMath::Sqrt(error2);
+
+        return displ;
+    }
+
 
     // find first produced B0s in MC sample
     const reco::Candidate* findFirstB0s(const reco::Candidate* partB0s)

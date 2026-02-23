@@ -118,8 +118,8 @@ private:
 
   edm::ESGetToken<MagneticField, IdealMagneticFieldRecord> m_fieldToken;
 
-  TH1D* hLxySignificance;
-  TH1D* hLifetime_ps;
+  TNtupleD* tKalman;
+  TNtupleD* tJpsi;
 
 };
 
@@ -145,8 +145,11 @@ impJpsiG::~impJpsiG()
 
 void impJpsiG::beginJob()
 {
-  hLxySignificance = new TH1D("hLxySignificance","hLxySignificance",100,0.,1000);
-  hLifetime_ps = new TH1D("hLifetime_ps","hLifetime [ps]",1000,0.,20.);
+  tKalman = new TNtupleD("tKalman","Unconstrained Kalman fit",
+    "twoMuonsMass:muonsKalmanVxProb:maxMuonsComp:deltaR_photon_twoMuons:twoMuonsPhotonMass:displXY_bestPV:displXY_bestPV_significance:displ3D_bestPV:cosPointingAngle:BsXYlifetime");
+
+  tJpsi = new TNtupleD("tJpsi","J/psi mass constrained fit",
+    "twoMuonsMass:muonsKalmanVxProb:maxMuonsComp:fittedJpsiVxProb:deltaR_photon_Jpsi:fittedJpsiPhotonMass:lXY_fittedJpsi_PV:lXY_fittedJpsi_PV_significance:lXYZ_fittedJpsi_PV:cosPointingAngle:BsXYlifetime");
 
   cout << "HERE impJpsiG::beginJob()" << endl;
 }
@@ -157,14 +160,14 @@ void impJpsiG::endJob()
   TFile myRootFile( theConfig.getParameter<std::string>("outHist").c_str(), "RECREATE");
 
   //write histogram data
-  hLxySignificance->Write();
-  hLifetime_ps->Write();
+  tKalman->Write();
+  tJpsi->Write();
 
   myRootFile.Close();
 
-  delete hLxySignificance;
-  delete hLifetime_ps;
-  
+  delete tKalman;
+  delete tJpsi;
+
   cout << "HERE impJpsiG::endJob()" << endl;
 }
 
@@ -214,46 +217,58 @@ void impJpsiG::analyze(
       trackTTs.push_back(muon2TT);
 
       reco::Vertex muonsKalmanVertex (TransientVertex(kvf.vertex(trackTTs)));
-      double prob = TMath::Prob(muonsKalmanVertex.chi2(), muonsKalmanVertex.ndof());
-      if (prob < 0.1)  continue;
+      double muonsKalmanVxProb = TMath::Prob(muonsKalmanVertex.chi2(), muonsKalmanVertex.ndof());
+      if (muonsKalmanVxProb < 0.01)  continue;
 
       // got two muons Lorentz Vector - candidate for J/psi
 
       // check if no other packed candidate is compatible with the two muons vertex (get the maximal probability)
       double maxMuonsVertexComp = Tools::getMaxCompatibility (packedCandidates, mu1Track, mu2Track, field, trackTTs);      
 
-      // find the photon closest in dR to the two muons LV
-      // (however dR > 0.05)
-      const pat::Photon* min_dR_photon = Tools::findPhotonWithMinDR(recoPhotons,twoMuonsLV, 0.05);
-      math::XYZTLorentzVector photonLV = min_dR_photon->p4();
-      double min_dR_photon_twoMuons = reco::deltaR(photonLV, twoMuonsLV);
-      if (min_dR_photon_twoMuons > 0.4) continue;
-      
-      // add the vectors of the two muons and the photon
-      math::XYZTLorentzVector twoMuonsPhotonLV = twoMuonsLV + photonLV;
-      if (std::fabs(twoMuonsPhotonLV.M() - bsMass) > 0.5)  continue;
-      // got twoMuonsPhoton Lorentz vector - candidate for B0s
+      // photons that have passed the loop
+      std::vector<pat::Photon> passingPhotons;
 
-      // PV selection
-      const reco::Vertex & bestPV = Tools::bestPV(primaryVertices, muonsKalmanVertex.position(), 
-                            twoMuonsPhotonLV.Vect());
-      
-      // muonsKalmanVertex 2D displacement from bestPV
-      Tools::displacementXY displXY_muonsKalman_PV = Tools::getDisplXY (muonsKalmanVertex, bestPV);
-      double lXY_muonsKalman_PV = TMath::Sqrt(displXY_muonsKalman_PV.vector.Mag2());
-      double lXY_muonsKalman_PV_significance = lXY_muonsKalman_PV / displXY_muonsKalman_PV.error;
-      hLxySignificance->Fill(lXY_muonsKalman_PV_significance);
+      // loop over photons
+      for (std::vector<pat::Photon>::const_iterator igamma = recoPhotons.begin(); igamma < recoPhotons.end(); igamma++)
+      {
+        math::XYZTLorentzVector photonLV = igamma->p4();
+        double deltaR_photon_twoMuons = reco::deltaR(twoMuonsLV, photonLV);
+        if (deltaR_photon_twoMuons > 0.4) continue;
+        if (deltaR_photon_twoMuons < 0.05) continue;
 
-      if (lXY_muonsKalman_PV_significance < 3.0)  continue;
+        // add the vectors of the two muons and the photon
+        math::XYZTLorentzVector twoMuonsPhotonLV = twoMuonsLV + photonLV;
+        double twoMuonsPhotonMass = twoMuonsPhotonLV.M();
+        if (std::fabs(twoMuonsPhotonMass - bsMass) > 0.5)  continue;
+        // got twoMuonsPhoton Lorentz vector - candidate for B0s
 
-      // muonsKalmanVertex 3D displacement from bestPV
-      math::XYZVector lXYZ_muonsKalman_PV_Vector = muonsKalmanVertex.position() - bestPV.position();
-      double lXYZ_muonsKalman_PV = TMath::Sqrt(lXYZ_muonsKalman_PV_Vector.Mag2());
-      double cosPointingAngle_muonsKalman_PV = twoMuonsPhotonLV.Vect().unit().Dot(lXYZ_muonsKalman_PV_Vector.unit());
+        // PV selection
+        const reco::Vertex & bestPV = Tools::bestPV(primaryVertices, muonsKalmanVertex.position(), 
+                              twoMuonsPhotonLV.Vect());
+        
+        // muonsKalmanVertex 2D displacement from bestPV
+        Tools::displacementXY displXY_muonsKalman_PV = Tools::getDisplXY (muonsKalmanVertex, bestPV);
+        double lXY_muonsKalman_PV = TMath::Sqrt(displXY_muonsKalman_PV.vector.Mag2());
+        double lXY_muonsKalman_PV_significance = lXY_muonsKalman_PV / displXY_muonsKalman_PV.error;
 
-      // B0s lifetime based on lXY
-      double lifetimeB0s = (lXY_muonsKalman_PV * bsMass) / twoMuonsPhotonLV.Vect().Rho();
-      hLifetime_ps->Fill(lifetimeB0s*100/3);
+        if (lXY_muonsKalman_PV_significance < 3.0)  continue;
+
+        // muonsKalmanVertex 3D displacement from bestPV
+        math::XYZVector lXYZ_muonsKalman_PV_Vector = muonsKalmanVertex.position() - bestPV.position();
+        double lXYZ_muonsKalman_PV = TMath::Sqrt(lXYZ_muonsKalman_PV_Vector.Mag2());
+        double cosPointingAngle_muonsKalman_PV = twoMuonsPhotonLV.Vect().unit().Dot(lXYZ_muonsKalman_PV_Vector.unit());
+
+        // B0s lifetime based on lXY
+        double lifetimeB0s = (lXY_muonsKalman_PV * bsMass) / twoMuonsPhotonLV.Vect().Rho();
+        lifetimeB0s *= 100/3;
+
+        tKalman->Fill(twoMuonsM,muonsKalmanVxProb,maxMuonsVertexComp, deltaR_photon_twoMuons,
+                    twoMuonsPhotonMass,lXY_muonsKalman_PV,lXY_muonsKalman_PV_significance,
+                    lXYZ_muonsKalman_PV,cosPointingAngle_muonsKalman_PV,lifetimeB0s);
+
+        passingPhotons.push_back(*igamma);
+
+      }
 
 
       //////////////J/PSI MASS CONSTRAINED KINEMATIC FIT////////////////////
@@ -276,25 +291,57 @@ void impJpsiG::analyze(
       RefCountedKinematicParticle fittedJpsi = jpsiFitTree->currentParticle();
       RefCountedKinematicVertex fittedJpsiVertex = jpsiFitTree->currentDecayVertex();
       if (! fittedJpsiVertex->vertexIsValid())  continue;
+
+      double fittedJpsiVxProb = TMath::Prob(fittedJpsiVertex->chiSquared(), fittedJpsiVertex->degreesOfFreedom());
+
       GlobalPoint position_GP = fittedJpsiVertex->position();
       math::XYZPoint fittedJpsiVertexPosition (position_GP.x(),position_GP.y(),position_GP.z());
 
       // create a Lorentz Vector for the fitted J/psi
-      GlobalVector fittedJpsiMom = fittedJpsi->currentState()->globalMomentum();
-      double fittedJpsiEnergy = fittedJpsi->currentState()->kinematicParameters()->energy();
+      GlobalVector fittedJpsiMom = fittedJpsi->currentState().globalMomentum();
+      double fittedJpsiEnergy = fittedJpsi->currentState().kinematicParameters().energy();
       math::XYZTLorentzVector fittedJpsiLV (fittedJpsiMom.x(),fittedJpsiMom.y(),fittedJpsiMom.z(),fittedJpsiEnergy);
 
-      // find the photon again, this time the closest in dR to the fittedJpsi
-      // (however dR > 0.05)
-      const pat::Photon* min_dR_photon_Jpsi = Tools::findPhotonWithMinDR(recoPhotons,fittedJpsiLV, 0.05);
-      math::XYZTLorentzVector photon_JpsiLV = min_dR_photon_Jpsi->p4();
-      double min_dR_photon_Jpsi = reco::deltaR(photon_JpsiLV, fittedJpsiLV);
+      // loop over photons that have passed previous stage
+      for (std::vector<pat::Photon>::const_iterator igamma = passingPhotons.begin(); igamma < passingPhotons.end(); igamma++)
+      {
+        math::XYZTLorentzVector photonLV = igamma->p4();
+        double deltaR_photon_Jpsi = reco::deltaR(fittedJpsiLV, photonLV);
+        if (deltaR_photon_Jpsi > 0.4) continue;
+        if (deltaR_photon_Jpsi < 0.05) continue;
+
+        // find the best PV, based on fittedJpsiLV + photon_JpsiLV
+        math::XYZTLorentzVector fittedJpsiPhotonLV = fittedJpsiLV + photonLV;
+        const reco::Vertex & bestPV_Jpsi = Tools::bestPV(primaryVertices, fittedJpsiVertexPosition, 
+                                            fittedJpsiPhotonLV.Vect());
+
+        double fittedJpsiPhotonMass = fittedJpsiPhotonLV.M();
+
+        // fittedJpsiVertex 2D displacement from bestPV_Jpsi
+        Tools::displacementXY displXY_fittedJpsi_PV = Tools::getDisplXY (*fittedJpsiVertex, bestPV_Jpsi);
+        double lXY_fittedJpsi_PV = TMath::Sqrt(displXY_fittedJpsi_PV.vector.Mag2());
+        double lXY_fittedJpsi_PV_significance = lXY_fittedJpsi_PV / displXY_fittedJpsi_PV.error;
+
+        if (lXY_fittedJpsi_PV_significance < 3.0)  continue;
+
+        // fittedJpsiVertex 3D displacement from bestPV_Jpsi
+        math::XYZVector lXYZ_fittedJpsi_PV_Vector = fittedJpsiVertexPosition - bestPV_Jpsi.position();
+        double lXYZ_fittedJpsi_PV = TMath::Sqrt(lXYZ_fittedJpsi_PV_Vector.Mag2());
+        double cosPointingAngle_fittedJpsi_PV = fittedJpsiPhotonLV.Vect().unit().Dot(lXYZ_fittedJpsi_PV_Vector.unit());
+
+        // B0s lifetime based on lXY
+        double lifetimeB0s = (lXY_fittedJpsi_PV * bsMass) / fittedJpsiPhotonLV.Vect().Rho();
+        lifetimeB0s *= 100/3;
+
+
+        tJpsi->Fill(twoMuonsM,muonsKalmanVxProb,maxMuonsVertexComp,fittedJpsiVxProb,
+                    deltaR_photon_Jpsi,fittedJpsiPhotonMass,lXY_fittedJpsi_PV,lXY_fittedJpsi_PV_significance,
+                    lXYZ_fittedJpsi_PV,cosPointingAngle_fittedJpsi_PV,lifetimeB0s);
+
+        
+                                          
+      }
       
-      // find the best PV again, based on fittedJpsiLV + photon_JpsiLV
-      math::XYZTLorentzVector fittedJpsiPhotonLV = fittedJpsiLV + photon_JpsiLV;
-      const reco::Vertex & bestPV_Jpsi = Tools::bestPV(primaryVertices, fittedJpsiVertexPosition, 
-                            fittedJpsiPhotonLV.Vect());
-      bool sameBestPV = (bestPV_Jpsi == bestPV);
 
       /*
       // create the pointing constraint and perform the full global (kinematic) fit
