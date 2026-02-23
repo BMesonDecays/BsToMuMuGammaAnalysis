@@ -262,6 +262,8 @@ private:
     const reco::GenParticle* findMother(const reco::GenParticle* particle) const;
     bool isAncestor(const reco::GenParticle* ancestor, const reco::GenParticle* particle) const;
     void sortPhotonsByPt();
+
+    int countMuonsInDecayChain(const reco::GenParticle* particle) const;
 };
 
 #endif

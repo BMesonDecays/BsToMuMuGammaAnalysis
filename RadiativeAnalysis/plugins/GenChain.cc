@@ -43,15 +43,32 @@ void GenDecayChain::findBMeson() {
    
     for (const auto& p : genParticles_) {
         int absId = abs(p.pdgId());
-        if (absId == 531 || absId == 511 || absId == 111) {
+        if (absId == 531 || absId == 511) {
+            // look for muons in the decay chain
+            int nMuons = countMuonsInDecayChain(&p);
+
+            if (nMuons == 2) {
+                // now find the oldest ancestor B meson in the chain (handle oscillations)
+                const reco::GenParticle* current = &p;
+                while (abs(current->mother()->pdgId()) == absId)
+                {
+                    const reco::GenParticle* mother = dynamic_cast<const reco::GenParticle*>(current->mother());
+                    if (!mother) break;
+                    current = mother;
+                }
+                BMeson_ = current;
+                info_.motherPdgId = current->pdgId();
+                return;
+            }
+        }
+    }
+    for (const auto& p : genParticles_) {
+        int absId = abs(p.pdgId());
+        if (absId == 111) {
             if (p.isHardProcess() || p.fromHardProcessFinalState()) {
                 BMeson_ = &p;
                 info_.motherPdgId = p.pdgId();
                 return;
-            }
-            if (!BMeson_) {
-                BMeson_ = &p;
-                info_.motherPdgId = p.pdgId();
             }
         }
     }
@@ -244,6 +261,11 @@ void GenDecayChain::extractVertexInfo() {
     if (BMeson_->numberOfDaughters() > 0) {
         const reco::GenParticle* firstDau =
             dynamic_cast<const reco::GenParticle*>(BMeson_->daughter(0));
+        // find the first daughter after oscillations
+        while (firstDau && abs(firstDau->pdgId()) == abs(info_.motherPdgId) &&
+               firstDau->numberOfDaughters() > 0) {
+            firstDau = dynamic_cast<const reco::GenParticle*>(firstDau->daughter(0));
+        }
         if (firstDau) {
             info_.Bdecayvtx.SetXYZ(firstDau->vx(), firstDau->vy(), firstDau->vz());
         }
@@ -630,4 +652,22 @@ GenDecayChain::TopologyMatch GenDecayChain::matchTopology(
     }
    
     return topoMatch;
+}
+
+int GenDecayChain::countMuonsInDecayChain(const reco::GenParticle* particle) const {
+    if (!particle) return 0;
+   
+    int count = 0;
+    for (size_t i = 0; i < particle->numberOfDaughters(); ++i) {
+        const reco::GenParticle* dau = dynamic_cast<const reco::GenParticle*>(particle->daughter(i));
+        if (!dau) continue;
+       
+        int absId = abs(dau->pdgId());
+        if (absId == 13) {
+            count++;
+        } else {
+            count += countMuonsInDecayChain(dau);
+        }
+    }
+    return count;
 }
