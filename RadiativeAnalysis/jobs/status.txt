@@ -1,479 +1,156 @@
 Rucio client intialized for account psajdak
-CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24C_JpsiMassConstrained1_BsToJpsiGamma/crab_JpsiMassConstrained1_dset0
-Task name:			260223_130640:psajdak_crab_JpsiMassConstrained1_dset0
-Grid scheduler - Task Worker:	crab3@vocms0120.cern.ch - crab-prod-tw01
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_JpsiMassConstrained1_resubmit1_BsToJpsiGamma/crab_JpsiMassConstrained1_resubmit1_dset0
+Task name:			260223_194923:psajdak_crab_JpsiMassConstrained1_resubmit1_dset0
+Grid scheduler - Task Worker:	crab3@vocms0194.cern.ch - crab-prod-tw01
 Status on the CRAB server:	SUBMITTED
-Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260223_130640%3Apsajdak_crab_JpsiMassConstrained1_dset0
-Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260223_130640%3Apsajdak_crab_JpsiMassConstrained1_dset0&from=1771848400000&to=now
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260223_194923%3Apsajdak_crab_JpsiMassConstrained1_resubmit1_dset0
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260223_194923%3Apsajdak_crab_JpsiMassConstrained1_resubmit1_dset0&from=1771872563000&to=now
 Status on the scheduler:	FAILED
 
-Jobs status:                    failed       		  0.9% (  53/6074)
-				finished     		 99.1% (6021/6074)
+Jobs status:                    failed       		 28.7% ( 35/122)
+				finished     		 71.3% ( 87/122)
 
-Output dataset:			/FakeDataset/fakefile-FakePublish-ec54cbe8880b77f0cf481fd7fa7918dd/USER
+Output dataset:			/FakeDataset/fakefile-FakePublish-d3d6a8270bc39a04e67c19afa2138bd3/USER
 
 No publication information available yet
 
 Error Summary: (use crab status --verboseErrors for details about the errors)
 
-  53 jobs failed with exit code 50664
+ 30 jobs failed with exit code 50664
+
+  5 jobs failed with exit code 8021
 
 Have a look at https://twiki.cern.ch/twiki/bin/viewauth/CMSPublic/JobExitCodes for a description of the exit codes.
 
 Warning: the average jobs CPU efficiency is less than 50%, please consider to improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task
 
 Summary of run jobs:
- * Memory: 73MB min, 1501MB max, 819MB ave
- * Runtime: 0:01:14 min, 1:01:59 max, 0:04:54 ave
- * CPU eff: 0% min, 65% max, 34% ave
- * Waste: 348:37:37 (41% of total)
+ * Memory: 68MB min, 1533MB max, 999MB ave
+ * Runtime: 0:01:27 min, 1:00:16 max, 0:17:42 ave
+ * CPU eff: 0% min, 36% max, 2% ave
+ * Waste: 11:24:48 (24% of total)
 
-Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24C_JpsiMassConstrained1_BsToJpsiGamma/crab_JpsiMassConstrained1_dset0/crab.log
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_JpsiMassConstrained1_resubmit1_BsToJpsiGamma/crab_JpsiMassConstrained1_resubmit1_dset0/crab.log
+Error: 24D_JpsiMassConstrained1_resubmit1_BsToJpsiGamma/crab_JpsiMassConstrained1_resubmit1_dset1 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Error: 24D_JpsiMassConstrained1_resubmit1_BsToJpsiGamma/crab_JpsiMassConstrained1_resubmit1_dset2 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Error: 24D_JpsiMassConstrained1_resubmit1_BsToJpsiGamma/crab_JpsiMassConstrained1_resubmit1_dset3 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Error: 24D_JpsiMassConstrained1_resubmit1_BsToJpsiGamma/crab_JpsiMassConstrained1_resubmit1_dset4 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Error: 24D_JpsiMassConstrained1_resubmit1_BsToJpsiGamma/crab_JpsiMassConstrained1_resubmit1_dset5 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
 Rucio client intialized for account psajdak
-CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24C_JpsiMassConstrained1_BsToJpsiGamma/crab_JpsiMassConstrained1_dset1
-Task name:			260223_130655:psajdak_crab_JpsiMassConstrained1_dset1
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_JpsiMassConstrained1_resubmit1_BsToJpsiGamma/crab_JpsiMassConstrained1_resubmit1_dset6
+Task name:			260223_194946:psajdak_crab_JpsiMassConstrained1_resubmit1_dset6
 Grid scheduler - Task Worker:	crab3@vocms0119.cern.ch - crab-prod-tw01
 Status on the CRAB server:	SUBMITTED
-Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260223_130655%3Apsajdak_crab_JpsiMassConstrained1_dset1
-Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260223_130655%3Apsajdak_crab_JpsiMassConstrained1_dset1&from=1771848415000&to=now
-Status on the scheduler:	COMPLETED
-
-Jobs status:                    finished     		100.0% (6071/6071)
-
-Output dataset:			/FakeDataset/fakefile-FakePublish-74b46d592f863e3d7de6a3a71c430204/USER
-
-No publication information available yet
-
-Warning: the max jobs runtime is less than 30% of the task requested value (60 min), please consider to request a lower value for failed jobs (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
-
-Warning: the average jobs CPU efficiency is less than 50%, please consider to improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task
-
-Summary of run jobs:
- * Memory: 70MB min, 1511MB max, 931MB ave
- * Runtime: 0:01:17 min, 0:08:47 max, 0:04:00 ave
- * CPU eff: 6% min, 182% max, 46% ave
- * Waste: 246:17:42 (38% of total)
-
-Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24C_JpsiMassConstrained1_BsToJpsiGamma/crab_JpsiMassConstrained1_dset1/crab.log
-Rucio client intialized for account psajdak
-CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24C_JpsiMassConstrained1_BsToJpsiGamma/crab_JpsiMassConstrained1_dset2
-Task name:			260223_130711:psajdak_crab_JpsiMassConstrained1_dset2
-Grid scheduler - Task Worker:	crab3@vocms0119.cern.ch - crab-prod-tw01
-Status on the CRAB server:	SUBMITTED
-Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260223_130711%3Apsajdak_crab_JpsiMassConstrained1_dset2
-Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260223_130711%3Apsajdak_crab_JpsiMassConstrained1_dset2&from=1771848431000&to=now
-Status on the scheduler:	COMPLETED
-
-Jobs status:                    finished     		100.0% (6073/6073)
-
-Output dataset:			/FakeDataset/fakefile-FakePublish-5fe19889b991fc64969a2b84c4b85997/USER
-
-No publication information available yet
-
-Warning: the max jobs runtime is less than 30% of the task requested value (60 min), please consider to request a lower value for failed jobs (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
-
-Warning: the average jobs CPU efficiency is less than 50%, please consider to improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task
-
-Summary of run jobs:
- * Memory: 59MB min, 1477MB max, 1092MB ave
- * Runtime: 0:01:04 min, 0:13:31 max, 0:03:38 ave
- * CPU eff: 5% min, 69% max, 39% ave
- * Waste: 228:37:59 (38% of total)
-
-Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24C_JpsiMassConstrained1_BsToJpsiGamma/crab_JpsiMassConstrained1_dset2/crab.log
-Rucio client intialized for account psajdak
-CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24C_JpsiMassConstrained1_BsToJpsiGamma/crab_JpsiMassConstrained1_dset3
-Task name:			260223_130727:psajdak_crab_JpsiMassConstrained1_dset3
-Grid scheduler - Task Worker:	crab3@vocms0121.cern.ch - crab-prod-tw01
-Status on the CRAB server:	SUBMITTED
-Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260223_130727%3Apsajdak_crab_JpsiMassConstrained1_dset3
-Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260223_130727%3Apsajdak_crab_JpsiMassConstrained1_dset3&from=1771848447000&to=now
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260223_194946%3Apsajdak_crab_JpsiMassConstrained1_resubmit1_dset6
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260223_194946%3Apsajdak_crab_JpsiMassConstrained1_resubmit1_dset6&from=1771872586000&to=now
 Status on the scheduler:	FAILED
 
-Jobs status:                    failed       		  1.7% ( 103/6069)
-				finished     		 98.3% (5966/6069)
+Jobs status:                    failed       		 25.0% ( 6/24)
+				finished     		 75.0% (18/24)
 
-Output dataset:			/FakeDataset/fakefile-FakePublish-0365692effca9c80cbb95bd4207fb426/USER
+Output dataset:			/FakeDataset/fakefile-FakePublish-4358d949bac9d30595f443b65c98bdc7/USER
 
 No publication information available yet
 
 Error Summary: (use crab status --verboseErrors for details about the errors)
 
- 103 jobs failed with exit code 50664
+ 6 jobs failed with exit code 50664
 
 Have a look at https://twiki.cern.ch/twiki/bin/viewauth/CMSPublic/JobExitCodes for a description of the exit codes.
 
 Warning: the average jobs CPU efficiency is less than 50%, please consider to improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task
 
 Summary of run jobs:
- * Memory: 0MB min, 2520MB max, 954MB ave
- * Runtime: 0:00:00 min, 1:07:28 max, 0:05:39 ave
- * CPU eff: 0% min, 105% max, 32% ave
- * Waste: 491:31:59 (46% of total)
+ * Memory: 65MB min, 1452MB max, 1117MB ave
+ * Runtime: 0:04:06 min, 1:00:17 max, 0:18:14 ave
+ * CPU eff: 0% min, 25% max, 3% ave
+ * Waste: 2:21:04 (24% of total)
 
-Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24C_JpsiMassConstrained1_BsToJpsiGamma/crab_JpsiMassConstrained1_dset3/crab.log
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_JpsiMassConstrained1_resubmit1_BsToJpsiGamma/crab_JpsiMassConstrained1_resubmit1_dset6/crab.log
+Error: 24D_JpsiMassConstrained1_resubmit1_BsToJpsiGamma/crab_JpsiMassConstrained1_resubmit1_dset7 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Your identity: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=psajdak/CN=887534/CN=Pawel Sajdak
+Contacting voms-cms-auth.cern.ch:443 [/DC=ch/DC=cern/OU=computers/CN=cms-auth.cern.ch] "cms"... Done
+
+Created proxy in /tmp/x509up_u183200.
+
+Your proxy is valid until Wed Mar  4 11:59:49 2026 CET
+
 Rucio client intialized for account psajdak
-CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24C_JpsiMassConstrained1_BsToJpsiGamma/crab_JpsiMassConstrained1_dset4
-Task name:			260223_130743:psajdak_crab_JpsiMassConstrained1_dset4
-Grid scheduler - Task Worker:	crab3@vocms0119.cern.ch - crab-prod-tw01
-Status on the CRAB server:	SUBMITTED
-Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260223_130743%3Apsajdak_crab_JpsiMassConstrained1_dset4
-Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260223_130743%3Apsajdak_crab_JpsiMassConstrained1_dset4&from=1771848464000&to=now
-Status on the scheduler:	FAILED
-
-Jobs status:                    failed       		  0.1% (   5/6074)
-				finished     		 99.9% (6069/6074)
-
-Output dataset:			/FakeDataset/fakefile-FakePublish-bda14c3e7632ef2f488ed34a139ebedc/USER
-
-No publication information available yet
-
-Error Summary: (use crab status --verboseErrors for details about the errors)
-
-   5 jobs failed with exit code 50664
-
-Have a look at https://twiki.cern.ch/twiki/bin/viewauth/CMSPublic/JobExitCodes for a description of the exit codes.
-
-Warning: the average jobs CPU efficiency is less than 50%, please consider to improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task
-
-Summary of run jobs:
- * Memory: 53MB min, 1545MB max, 1066MB ave
- * Runtime: 0:01:04 min, 1:00:29 max, 0:03:34 ave
- * CPU eff: 0% min, 83% max, 35% ave
- * Waste: 406:12:45 (53% of total)
-
-Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24C_JpsiMassConstrained1_BsToJpsiGamma/crab_JpsiMassConstrained1_dset4/crab.log
-Rucio client intialized for account psajdak
-CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24C_JpsiMassConstrained1_BsToJpsiGamma/crab_JpsiMassConstrained1_dset5
-Task name:			260223_130759:psajdak_crab_JpsiMassConstrained1_dset5
-Grid scheduler - Task Worker:	crab3@vocms0195.cern.ch - crab-prod-tw01
-Status on the CRAB server:	SUBMITTED
-Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260223_130759%3Apsajdak_crab_JpsiMassConstrained1_dset5
-Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260223_130759%3Apsajdak_crab_JpsiMassConstrained1_dset5&from=1771848479000&to=now
-Status on the scheduler:	FAILED
-
-Jobs status:                    failed       		 15.7% ( 956/6074)
-				finished     		 84.3% (5118/6074)
-
-Output dataset:			/FakeDataset/fakefile-FakePublish-f5d492d1464b6cfffc800d54d6502b7a/USER
-
-No publication information available yet
-
-Error Summary: (use crab status --verboseErrors for details about the errors)
-
- 956 jobs failed with exit code 50664
-
-Have a look at https://twiki.cern.ch/twiki/bin/viewauth/CMSPublic/JobExitCodes for a description of the exit codes.
-
-Warning: the average jobs CPU efficiency is less than 50%, please consider to improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task
-
-Summary of run jobs:
- * Memory: 0MB min, 2420MB max, 710MB ave
- * Runtime: 0:00:00 min, 1:02:21 max, 0:12:03 ave
- * CPU eff: 0% min, 104% max, 9% ave
- * Waste: 979:54:57 (45% of total)
-
-Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24C_JpsiMassConstrained1_BsToJpsiGamma/crab_JpsiMassConstrained1_dset5/crab.log
-Rucio client intialized for account psajdak
-CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24C_JpsiMassConstrained1_BsToJpsiGamma/crab_JpsiMassConstrained1_dset6
-Task name:			260223_130815:psajdak_crab_JpsiMassConstrained1_dset6
-Grid scheduler - Task Worker:	crab3@vocms0144.cern.ch - crab-prod-tw01
-Status on the CRAB server:	SUBMITTED
-Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260223_130815%3Apsajdak_crab_JpsiMassConstrained1_dset6
-Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260223_130815%3Apsajdak_crab_JpsiMassConstrained1_dset6&from=1771848495000&to=now
-Status on the scheduler:	FAILED
-
-Jobs status:                    failed       		  0.0% (   2/6074)
-				finished     		100.0% (6072/6074)
-
-Output dataset:			/FakeDataset/fakefile-FakePublish-6f93a1a1e789ccf48760ab0397dbef16/USER
-
-No publication information available yet
-
-Error Summary: (use crab status --verboseErrors for details about the errors)
-
-   2 jobs failed with exit code 50664
-
-Have a look at https://twiki.cern.ch/twiki/bin/viewauth/CMSPublic/JobExitCodes for a description of the exit codes.
-
-Warning: the average jobs CPU efficiency is less than 50%, please consider to improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task
-
-Summary of run jobs:
- * Memory: 0MB min, 2587MB max, 951MB ave
- * Runtime: 0:00:00 min, 0:29:43 max, 0:03:57 ave
- * CPU eff: 0% min, 69% max, 39% ave
- * Waste: 575:34:57 (59% of total)
-
-Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24C_JpsiMassConstrained1_BsToJpsiGamma/crab_JpsiMassConstrained1_dset6/crab.log
-Rucio client intialized for account psajdak
-CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24C_JpsiMassConstrained1_BsToJpsiGamma/crab_JpsiMassConstrained1_dset7
-Task name:			260223_130830:psajdak_crab_JpsiMassConstrained1_dset7
-Grid scheduler - Task Worker:	crab3@vocms0155.cern.ch - crab-prod-tw01
-Status on the CRAB server:	SUBMITTED
-Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260223_130830%3Apsajdak_crab_JpsiMassConstrained1_dset7
-Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260223_130830%3Apsajdak_crab_JpsiMassConstrained1_dset7&from=1771848510000&to=now
-Status on the scheduler:	FAILED
-
-Jobs status:                    failed       		  0.1% (   7/6069)
-				finished     		 99.9% (6062/6069)
-
-Output dataset:			/FakeDataset/fakefile-FakePublish-fc510a17d67070d2f154700dd4a9aea8/USER
-
-No publication information available yet
-
-Error Summary: (use crab status --verboseErrors for details about the errors)
-
-   7 jobs failed with exit code 50664
-
-Have a look at https://twiki.cern.ch/twiki/bin/viewauth/CMSPublic/JobExitCodes for a description of the exit codes.
-
-Warning: the average jobs CPU efficiency is less than 50%, please consider to improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task
-
-Summary of run jobs:
- * Memory: 52MB min, 2591MB max, 1016MB ave
- * Runtime: 0:01:07 min, 1:01:10 max, 0:03:29 ave
- * CPU eff: 0% min, 117% max, 40% ave
- * Waste: 408:33:17 (54% of total)
-
-Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24C_JpsiMassConstrained1_BsToJpsiGamma/crab_JpsiMassConstrained1_dset7/crab.log
-Rucio client intialized for account psajdak
-CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_JpsiMassConstrained1_BsToJpsiGamma/crab_JpsiMassConstrained1_dset0
-Task name:			260223_131827:psajdak_crab_JpsiMassConstrained1_dset0
-Grid scheduler - Task Worker:	crab3@vocms0195.cern.ch - crab-prod-tw01
-Status on the CRAB server:	SUBMITTED
-Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260223_131827%3Apsajdak_crab_JpsiMassConstrained1_dset0
-Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260223_131827%3Apsajdak_crab_JpsiMassConstrained1_dset0&from=1771849107000&to=now
-Status on the scheduler:	FAILED
-
-Jobs status:                    failed       		  1.7% (  98/5809)
-				finished     		 98.3% (5711/5809)
-
-Output dataset:			/FakeDataset/fakefile-FakePublish-4776a71f0e1d5ad90c7e4cc2d0faeff2/USER
-
-No publication information available yet
-
-Error Summary: (use crab status --verboseErrors for details about the errors)
-
-  95 jobs failed with exit code 50664
-
-   3 jobs failed with exit code 8021
-
-Have a look at https://twiki.cern.ch/twiki/bin/viewauth/CMSPublic/JobExitCodes for a description of the exit codes.
-
-Warning: the average jobs CPU efficiency is less than 50%, please consider to improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task
-
-Summary of run jobs:
- * Memory: 49MB min, 2563MB max, 1123MB ave
- * Runtime: 0:01:01 min, 1:01:02 max, 0:11:15 ave
- * CPU eff: 0% min, 69% max, 13% ave
- * Waste: 379:50:06 (26% of total)
-
-Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_JpsiMassConstrained1_BsToJpsiGamma/crab_JpsiMassConstrained1_dset0/crab.log
-Rucio client intialized for account psajdak
-CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_JpsiMassConstrained1_BsToJpsiGamma/crab_JpsiMassConstrained1_dset1
-Task name:			260223_131843:psajdak_crab_JpsiMassConstrained1_dset1
-Grid scheduler - Task Worker:	crab3@vocms0155.cern.ch - crab-prod-tw01
-Status on the CRAB server:	SUBMITTED
-Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260223_131843%3Apsajdak_crab_JpsiMassConstrained1_dset1
-Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260223_131843%3Apsajdak_crab_JpsiMassConstrained1_dset1&from=1771849123000&to=now
-Status on the scheduler:	FAILED
-
-Jobs status:                    failed       		  1.8% ( 103/5803)
-				finished     		 98.2% (5700/5803)
-
-Output dataset:			/FakeDataset/fakefile-FakePublish-11eff2c8bef3ebe8d9d530b4544c8b70/USER
-
-No publication information available yet
-
-Error Summary: (use crab status --verboseErrors for details about the errors)
-
- 103 jobs failed with exit code 50664
-
-Have a look at https://twiki.cern.ch/twiki/bin/viewauth/CMSPublic/JobExitCodes for a description of the exit codes.
-
-Warning: the average jobs CPU efficiency is less than 50%, please consider to improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task
-
-Summary of run jobs:
- * Memory: 0MB min, 1531MB max, 971MB ave
- * Runtime: 0:00:00 min, 1:05:11 max, 0:05:22 ave
- * CPU eff: 0% min, 115% max, 33% ave
- * Waste: 441:43:36 (46% of total)
-
-Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_JpsiMassConstrained1_BsToJpsiGamma/crab_JpsiMassConstrained1_dset1/crab.log
-Rucio client intialized for account psajdak
-CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_JpsiMassConstrained1_BsToJpsiGamma/crab_JpsiMassConstrained1_dset2
-Task name:			260223_131900:psajdak_crab_JpsiMassConstrained1_dset2
-Grid scheduler - Task Worker:	crab3@vocms0119.cern.ch - crab-prod-tw02
-Status on the CRAB server:	SUBMITTED
-Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260223_131900%3Apsajdak_crab_JpsiMassConstrained1_dset2
-Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260223_131900%3Apsajdak_crab_JpsiMassConstrained1_dset2&from=1771849140000&to=now
-Status on the scheduler:	COMPLETED
-
-Jobs status:                    finished     		100.0% (5803/5803)
-
-Output dataset:			/FakeDataset/fakefile-FakePublish-fc23eb2105bfc14e8d94bf6c9ee595a5/USER
-
-No publication information available yet
-
-Warning: the max jobs runtime is less than 30% of the task requested value (60 min), please consider to request a lower value for failed jobs (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
-
-Warning: the average jobs CPU efficiency is less than 50%, please consider to improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task
-
-Summary of run jobs:
- * Memory: 74MB min, 1484MB max, 916MB ave
- * Runtime: 0:01:30 min, 0:08:32 max, 0:03:31 ave
- * CPU eff: 6% min, 69% max, 44% ave
- * Waste: 387:59:14 (53% of total)
-
-Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_JpsiMassConstrained1_BsToJpsiGamma/crab_JpsiMassConstrained1_dset2/crab.log
-Rucio client intialized for account psajdak
-CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_JpsiMassConstrained1_BsToJpsiGamma/crab_JpsiMassConstrained1_dset3
-Task name:			260223_131918:psajdak_crab_JpsiMassConstrained1_dset3
-Grid scheduler - Task Worker:	crab3@vocms0119.cern.ch - crab-prod-tw02
-Status on the CRAB server:	SUBMITTED
-Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260223_131918%3Apsajdak_crab_JpsiMassConstrained1_dset3
-Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260223_131918%3Apsajdak_crab_JpsiMassConstrained1_dset3&from=1771849158000&to=now
-Status on the scheduler:	FAILED
-
-Jobs status:                    failed       		  0.9% (  54/5803)
-				finished     		 99.1% (5749/5803)
-
-Output dataset:			/FakeDataset/fakefile-FakePublish-01a9fc66f3771d543b008a4b77322dfd/USER
-
-No publication information available yet
-
-Error Summary: (use crab status --verboseErrors for details about the errors)
-
-  54 jobs failed with exit code 50664
-
-Have a look at https://twiki.cern.ch/twiki/bin/viewauth/CMSPublic/JobExitCodes for a description of the exit codes.
-
-Warning: the average jobs CPU efficiency is less than 50%, please consider to improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task
-
-Summary of run jobs:
- * Memory: 0MB min, 2743MB max, 1064MB ave
- * Runtime: 0:00:00 min, 1:01:16 max, 0:04:29 ave
- * CPU eff: 0% min, 104% max, 34% ave
- * Waste: 299:50:45 (41% of total)
-
-Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_JpsiMassConstrained1_BsToJpsiGamma/crab_JpsiMassConstrained1_dset3/crab.log
-Rucio client intialized for account psajdak
-CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_JpsiMassConstrained1_BsToJpsiGamma/crab_JpsiMassConstrained1_dset4
-Task name:			260223_131936:psajdak_crab_JpsiMassConstrained1_dset4
-Grid scheduler - Task Worker:	crab3@vocms0194.cern.ch - crab-prod-tw02
-Status on the CRAB server:	SUBMITTED
-Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260223_131936%3Apsajdak_crab_JpsiMassConstrained1_dset4
-Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260223_131936%3Apsajdak_crab_JpsiMassConstrained1_dset4&from=1771849176000&to=now
-Status on the scheduler:	COMPLETED
-
-Jobs status:                    finished     		100.0% (5804/5804)
-
-Output dataset:			/FakeDataset/fakefile-FakePublish-bf84d693553898d87c3decfe9ea8a122/USER
-
-No publication information available yet
-
-Warning: the max jobs runtime is less than 30% of the task requested value (60 min), please consider to request a lower value for failed jobs (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
-
-Warning: the average jobs CPU efficiency is less than 50%, please consider to improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task
-
-Summary of run jobs:
- * Memory: 18MB min, 2557MB max, 718MB ave
- * Runtime: 0:01:13 min, 0:09:21 max, 0:03:43 ave
- * CPU eff: 7% min, 67% max, 46% ave
- * Waste: 378:21:55 (51% of total)
-
-Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_JpsiMassConstrained1_BsToJpsiGamma/crab_JpsiMassConstrained1_dset4/crab.log
-Rucio client intialized for account psajdak
-CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_JpsiMassConstrained1_BsToJpsiGamma/crab_JpsiMassConstrained1_dset5
-Task name:			260223_131955:psajdak_crab_JpsiMassConstrained1_dset5
-Grid scheduler - Task Worker:	crab3@vocms0120.cern.ch - crab-prod-tw02
-Status on the CRAB server:	SUBMITTED
-Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260223_131955%3Apsajdak_crab_JpsiMassConstrained1_dset5
-Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260223_131955%3Apsajdak_crab_JpsiMassConstrained1_dset5&from=1771849195000&to=now
-Status on the scheduler:	FAILED
-
-Jobs status:                    failed       		  3.1% ( 178/5808)
-				finished     		 96.9% (5630/5808)
-
-Output dataset:			/FakeDataset/fakefile-FakePublish-ca75ac0d8d03561a2d7d395a9d5b4c7f/USER
-
-No publication information available yet
-
-Error Summary: (use crab status --verboseErrors for details about the errors)
-
- 171 jobs failed with exit code 50664
-
-   5 jobs failed in postprocessing step
-
-   2 jobs failed with exit code 7002
-
-Have a look at https://twiki.cern.ch/twiki/bin/viewauth/CMSPublic/JobExitCodes for a description of the exit codes.
-
-Warning: the average jobs CPU efficiency is less than 50%, please consider to improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task
-
-Summary of run jobs:
- * Memory: 0MB min, 2673MB max, 824MB ave
- * Runtime: 0:00:00 min, 1:34:03 max, 0:05:53 ave
- * CPU eff: 0% min, 147% max, 30% ave
- * Waste: 419:38:10 (42% of total)
-
-Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_JpsiMassConstrained1_BsToJpsiGamma/crab_JpsiMassConstrained1_dset5/crab.log
-Rucio client intialized for account psajdak
-CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_JpsiMassConstrained1_BsToJpsiGamma/crab_JpsiMassConstrained1_dset6
-Task name:			260223_132023:psajdak_crab_JpsiMassConstrained1_dset6
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_JpsiMassConstrained1_resubmit2_BsToJpsiGamma/crab_JpsiMassConstrained1_resubmit2_dset0
+Task name:			260223_214330:psajdak_crab_JpsiMassConstrained1_resubmit2_dset0
 Grid scheduler - Task Worker:	crab3@vocms0137.cern.ch - crab-prod-tw01
 Status on the CRAB server:	SUBMITTED
-Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260223_132023%3Apsajdak_crab_JpsiMassConstrained1_dset6
-Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260223_132023%3Apsajdak_crab_JpsiMassConstrained1_dset6&from=1771849223000&to=now
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260223_214330%3Apsajdak_crab_JpsiMassConstrained1_resubmit2_dset0
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260223_214330%3Apsajdak_crab_JpsiMassConstrained1_resubmit2_dset0&from=1771879410000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (35/35)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-874748cf04f5e2c9c6e2ee7d37ff5f76/USER
+
+No publication information available yet
+
+Warning: the max jobs runtime is less than 30% of the task requested value (120 min), please consider to request a lower value for failed jobs (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Warning: the average jobs CPU efficiency is less than 50%, please consider to improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task
+
+Summary of run jobs:
+ * Memory: 62MB min, 1504MB max, 1145MB ave
+ * Runtime: 0:01:48 min, 0:06:42 max, 0:03:27 ave
+ * CPU eff: 5% min, 25% max, 14% ave
+ * Waste: 2:13:09 (52% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_JpsiMassConstrained1_resubmit2_BsToJpsiGamma/crab_JpsiMassConstrained1_resubmit2_dset0/crab.log
+Error: 24D_JpsiMassConstrained1_resubmit2_BsToJpsiGamma/crab_JpsiMassConstrained1_resubmit2_dset1 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Error: 24D_JpsiMassConstrained1_resubmit2_BsToJpsiGamma/crab_JpsiMassConstrained1_resubmit2_dset2 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Error: 24D_JpsiMassConstrained1_resubmit2_BsToJpsiGamma/crab_JpsiMassConstrained1_resubmit2_dset3 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Error: 24D_JpsiMassConstrained1_resubmit2_BsToJpsiGamma/crab_JpsiMassConstrained1_resubmit2_dset4 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Error: 24D_JpsiMassConstrained1_resubmit2_BsToJpsiGamma/crab_JpsiMassConstrained1_resubmit2_dset5 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_JpsiMassConstrained1_resubmit2_BsToJpsiGamma/crab_JpsiMassConstrained1_resubmit2_dset6
+Task name:			260223_214352:psajdak_crab_JpsiMassConstrained1_resubmit2_dset6
+Grid scheduler - Task Worker:	crab3@vocms0144.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260223_214352%3Apsajdak_crab_JpsiMassConstrained1_resubmit2_dset6
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260223_214352%3Apsajdak_crab_JpsiMassConstrained1_resubmit2_dset6&from=1771879432000&to=now
 Status on the scheduler:	FAILED
 
-Jobs status:                    failed       		  0.4% (  22/5807)
-				finished     		 99.6% (5785/5807)
+Jobs status:                    failed       		 16.7% (1/6)
+				finished     		 83.3% (5/6)
 
-Output dataset:			/FakeDataset/fakefile-FakePublish-9482ce083cb3775dac7b41785f5e4eaf/USER
+Output dataset:			/FakeDataset/fakefile-FakePublish-3461ecf781786e2f39f95d3e7007e1ec/USER
 
 No publication information available yet
 
 Error Summary: (use crab status --verboseErrors for details about the errors)
 
-  20 jobs failed with exit code 50664
-
-   2 jobs failed with exit code 8002
+1 jobs failed with exit code 50664
 
 Have a look at https://twiki.cern.ch/twiki/bin/viewauth/CMSPublic/JobExitCodes for a description of the exit codes.
 
 Warning: the average jobs CPU efficiency is less than 50%, please consider to improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task
 
 Summary of run jobs:
- * Memory: 51MB min, 2679MB max, 1021MB ave
- * Runtime: 0:01:01 min, 1:00:18 max, 0:04:13 ave
- * CPU eff: 0% min, 351% max, 39% ave
- * Waste: 348:03:42 (46% of total)
+ * Memory: 1292MB min, 1330MB max, 1244MB ave
+ * Runtime: 0:01:50 min, 2:00:23 max, 0:22:02 ave
+ * CPU eff: 0% min, 41% max, 3% ave
+ * Waste: 0:34:39 (21% of total)
 
-Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_JpsiMassConstrained1_BsToJpsiGamma/crab_JpsiMassConstrained1_dset6/crab.log
-Rucio client intialized for account psajdak
-CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_JpsiMassConstrained1_BsToJpsiGamma/crab_JpsiMassConstrained1_dset7
-Task name:			260223_132041:psajdak_crab_JpsiMassConstrained1_dset7
-Grid scheduler - Task Worker:	crab3@vocms0155.cern.ch - crab-prod-tw01
-Status on the CRAB server:	SUBMITTED
-Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260223_132041%3Apsajdak_crab_JpsiMassConstrained1_dset7
-Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260223_132041%3Apsajdak_crab_JpsiMassConstrained1_dset7&from=1771849241000&to=now
-Status on the scheduler:	COMPLETED
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_JpsiMassConstrained1_resubmit2_BsToJpsiGamma/crab_JpsiMassConstrained1_resubmit2_dset6/crab.log
+Error: 24D_JpsiMassConstrained1_resubmit2_BsToJpsiGamma/crab_JpsiMassConstrained1_resubmit2_dset7 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
 
-Jobs status:                    finished     		100.0% (5804/5804)
 
-Output dataset:			/FakeDataset/fakefile-FakePublish-fcf1ec74c500fb79f30eb3b79baab1f0/USER
 
-No publication information available yet
 
-Warning: the max jobs runtime is less than 30% of the task requested value (60 min), please consider to request a lower value for failed jobs (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
-
-Warning: the average jobs CPU efficiency is less than 50%, please consider to improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task
-
-Summary of run jobs:
- * Memory: 90MB min, 1494MB max, 900MB ave
- * Runtime: 0:01:35 min, 0:09:15 max, 0:03:55 ave
- * CPU eff: 4% min, 71% max, 44% ave
- * Waste: 499:57:27 (57% of total)
-
-Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_JpsiMassConstrained1_BsToJpsiGamma/crab_JpsiMassConstrained1_dset7/crab.log

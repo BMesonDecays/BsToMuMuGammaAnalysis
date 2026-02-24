@@ -1,0 +1,1 @@
+(((fittedJpsiVxProb > 0.1)&&(muonsKalmanVxProb > 0.1))&&(lXY_fittedJpsi_PV > 0.1))&&(maxMuonsComp < 0.3)
