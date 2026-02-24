@@ -1,0 +1,214 @@
+++Event     1 contains 105 products with friendlyClassName, moduleLabel, productInstanceName and processName:
+++edmHLTPathStatus "MyPath" "" "analysis" (productId = 3:1)
+++edmTriggerResults "TriggerResults" "" "analysis" (productId = 3:2)
+++CSCDetIdCSCSegmentsOwnedRangeMap "slimmedDisplacedMuons" "" "RECO" (productId = 2:18)
+++CSCDetIdCSCSegmentsOwnedRangeMap "slimmedMuons" "" "RECO" (productId = 2:19)
+++CTPPSLocalTrackLites "ctppsLocalTrackLiteProducer" "" "RECO" (productId = 2:30)
+++DTChamberIdDTRecSegment4DsOwnedRangeMap "slimmedDisplacedMuons" "" "RECO" (productId = 2:195)
+++DTChamberIdDTRecSegment4DsOwnedRangeMap "slimmedMuons" "" "RECO" (productId = 2:196)
+++EcalRecHitsSorted "reducedEgamma" "reducedEBRecHits" "RECO" (productId = 2:289)
+++EcalRecHitsSorted "reducedEgamma" "reducedEERecHits" "RECO" (productId = 2:290)
+++EcalRecHitsSorted "reducedEgamma" "reducedESRecHits" "RECO" (productId = 2:291)
+++GlobalAlgBlkBXVector "gtStage2Digis" "" "RECO" (productId = 2:316)
+++GlobalExtBlkBXVector "gtStage2Digis" "" "RECO" (productId = 2:318)
+++GlobalExtBlkBXVector "simGtExtUnprefireable" "" "RECO" (productId = 2:320)
+++HBHERecHitsSorted "reducedEgamma" "reducedHBHEHits" "RECO" (productId = 2:324)
+++HBHERecHitsSorted "slimmedHcalRecHits" "reducedHcalRecHits" "RECO" (productId = 2:326)
+++HFRecHitsSorted "slimmedHcalRecHits" "reducedHcalRecHits" "RECO" (productId = 2:331)
+++HORecHitsSorted "slimmedHcalRecHits" "reducedHcalRecHits" "RECO" (productId = 2:335)
+++HcalNoiseSummary "hcalnoise" "" "RECO" (productId = 2:338)
+++L1GlobalTriggerReadoutRecord "gtDigis" "" "RECO" (productId = 2:397)
+++LumiScalerss "scalersRawToDigi" "" "RECO" (productId = 2:418)
+++SiPixelClusteredmNewDetSetVector "slimmedDisplacedMuonTrackExtras" "" "RECO" (productId = 2:536)
+++SiPixelClusteredmNewDetSetVector "slimmedMuonTrackExtras" "" "RECO" (productId = 2:537)
+++SiStripClusteredmNewDetSetVector "slimmedDisplacedMuonTrackExtras" "" "RECO" (productId = 2:565)
+++SiStripClusteredmNewDetSetVector "slimmedMuonTrackExtras" "" "RECO" (productId = 2:566)
+++Strings "slimmedPatTrigger" "filterLabels" "RECO" (productId = 2:677)
+++TrackingRecHitsOwned "slimmedDisplacedMuonTrackExtras" "" "RECO" (productId = 2:781)
+++TrackingRecHitsOwned "slimmedMuonTrackExtras" "" "RECO" (productId = 2:782)
+++double "fixedGridRhoAll" "" "RECO" (productId = 2:1128)
+++double "fixedGridRhoFastjetAll" "" "RECO" (productId = 2:1129)
+++double "fixedGridRhoFastjetAllCalo" "" "RECO" (productId = 2:1130)
+++double "fixedGridRhoFastjetAllTmp" "" "RECO" (productId = 2:1131)
+++double "fixedGridRhoFastjetCentral" "" "RECO" (productId = 2:1132)
+++double "fixedGridRhoFastjetCentralCalo" "" "RECO" (productId = 2:1133)
+++double "fixedGridRhoFastjetCentralChargedPileUp" "" "RECO" (productId = 2:1134)
+++double "fixedGridRhoFastjetCentralNeutral" "" "RECO" (productId = 2:1135)
+++edmTriggerResults "TriggerResults" "" "HLT" (productId = 1:1918)
+++edmTriggerResults "TriggerResults" "" "RECO" (productId = 2:1471)
+++edmTriggerResults "l1bits" "" "RECO" (productId = 2:1472)
+++floatedmValueMap "offlineSlimmedPrimaryVertices" "" "RECO" (productId = 2:1712)
+++floatedmValueMap "offlineSlimmedPrimaryVerticesWithBS" "" "RECO" (productId = 2:1713)
+++l1tEGammaBXVector "caloStage2Digis" "EGamma" "RECO" (productId = 2:1919)
+++l1tEtSumBXVector "caloStage2Digis" "EtSum" "RECO" (productId = 2:1938)
+++l1tJetBXVector "caloStage2Digis" "Jet" "RECO" (productId = 2:1967)
+++l1tMuonBXVector "gmtStage2Digis" "Muon" "RECO" (productId = 2:1981)
+++l1tTauBXVector "caloStage2Digis" "Tau" "RECO" (productId = 2:2036)
+++patCompositeCandidates "oniaPhotonCandidates" "conversions" "RECO" (productId = 2:2101)
+++patElectrons "slimmedElectrons" "" "RECO" (productId = 2:2109)
+++patElectrons "slimmedLowPtElectrons" "" "RECO" (productId = 2:2111)
+++patIsolatedTracks "isolatedTracks" "" "RECO" (productId = 2:2118)
+++patJets "slimmedJets" "" "RECO" (productId = 2:2191)
+++patJets "slimmedJetsAK8" "" "RECO" (productId = 2:2192)
+++patJets "slimmedJetsAK8PFPuppiSoftDropPacked" "SubJets" "RECO" (productId = 2:2195)
+++patJets "slimmedJetsPuppi" "" "RECO" (productId = 2:2198)
+++patMETs "slimmedMETs" "" "RECO" (productId = 2:2401)
+++patMETs "slimmedMETsNoHF" "" "RECO" (productId = 2:2402)
+++patMETs "slimmedMETsPuppi" "" "RECO" (productId = 2:2403)
+++patMuons "slimmedDisplacedMuons" "" "RECO" (productId = 2:2409)
+++patMuons "slimmedMuons" "" "RECO" (productId = 2:2410)
+++patPackedCandidates "lostTracks" "" "RECO" (productId = 2:2417)
+++patPackedCandidates "lostTracks" "eleTracks" "RECO" (productId = 2:2418)
+++patPackedCandidates "packedPFCandidates" "" "RECO" (productId = 2:2419)
+++patPackedTriggerPrescales "patTrigger" "" "RECO" (productId = 2:2426)
+++patPackedTriggerPrescales "patTrigger" "l1max" "RECO" (productId = 2:2427)
+++patPackedTriggerPrescales "patTrigger" "l1min" "RECO" (productId = 2:2428)
+++patPhotons "slimmedOOTPhotons" "" "RECO" (productId = 2:2434)
+++patPhotons "slimmedPhotons" "" "RECO" (productId = 2:2435)
+++patTaus "slimmedTaus" "" "RECO" (productId = 2:2444)
+++patTaus "slimmedTausBoosted" "" "RECO" (productId = 2:2445)
+++patTriggerObjectStandAlones "slimmedPatTrigger" "" "RECO" (productId = 2:2455)
+++recoBaseTagInfosOwned "slimmedJets" "tagInfos" "RECO" (productId = 2:2630)
+++recoBaseTagInfosOwned "slimmedJetsPuppi" "tagInfos" "RECO" (productId = 2:2632)
+++recoBeamHaloSummary "BeamHaloSummary" "" "RECO" (productId = 2:2645)
+++recoBeamSpot "offlineBeamSpot" "" "RECO" (productId = 2:2646)
+++recoCSCHaloData "CSCHaloData" "" "RECO" (productId = 2:2649)
+++recoCaloClusters "reducedEgamma" "reducedEBEEClusters" "RECO" (productId = 2:2681)
+++recoCaloClusters "reducedEgamma" "reducedESClusters" "RECO" (productId = 2:2682)
+++recoCaloClusters "reducedEgamma" "reducedOOTEBEEClusters" "RECO" (productId = 2:2683)
+++recoCaloClusters "reducedEgamma" "reducedOOTESClusters" "RECO" (productId = 2:2684)
+++recoCaloJets "slimmedCaloJets" "" "RECO" (productId = 2:2691)
+++recoCaloJets "slimmedJPTJets" "" "RECO" (productId = 2:2692)
+++recoConversions "gsfTracksOpenConversions" "gsfTracksOpenConversions" "RECO" (productId = 2:2818)
+++recoConversions "reducedEgamma" "reducedConversions" "RECO" (productId = 2:2820)
+++recoConversions "reducedEgamma" "reducedSingleLegConversions" "RECO" (productId = 2:2821)
+++recoDeDxHitInfos "isolatedTracks" "" "RECO" (productId = 2:2832)
+++recoDeDxHitInfosedmAssociation "isolatedTracks" "" "RECO" (productId = 2:2834)
+++recoForwardProtons "ctppsProtons" "multiRP" "RECO" (productId = 2:2841)
+++recoForwardProtons "ctppsProtons" "singleRP" "RECO" (productId = 2:2842)
+++recoGsfElectronCores "reducedEgamma" "reducedGedGsfElectronCores" "RECO" (productId = 2:2906)
+++recoGsfTracks "reducedEgamma" "reducedGsfTracks" "RECO" (productId = 2:2929)
+++recoJPTJets "slimmedJPTJets" "" "RECO" (productId = 2:2998)
+++recoPhotonCores "reducedEgamma" "reducedGedPhotonCores" "RECO" (productId = 2:3596)
+++recoPhotonCores "reducedEgamma" "reducedOOTPhotonCores" "RECO" (productId = 2:3597)
+++recoSuperClusters "reducedEgamma" "reducedOOTSuperClusters" "RECO" (productId = 2:3666)
+++recoSuperClusters "reducedEgamma" "reducedSuperClusters" "RECO" (productId = 2:3667)
+++recoTrackExtras "slimmedDisplacedMuonTrackExtras" "" "RECO" (productId = 2:3726)
+++recoTrackExtras "slimmedMuonTrackExtras" "" "RECO" (productId = 2:3727)
+++recoTracks "displacedGlobalMuons" "" "RECO" (productId = 2:3762)
+++recoTracks "displacedStandAloneMuons" "" "RECO" (productId = 2:3765)
+++recoTracks "displacedTracks" "" "RECO" (productId = 2:3767)
+++recoVertexCompositePtrCandidates "slimmedKshortVertices" "" "RECO" (productId = 2:3838)
+++recoVertexCompositePtrCandidates "slimmedLambdaVertices" "" "RECO" (productId = 2:3839)
+++recoVertexCompositePtrCandidates "slimmedSecondaryVertices" "" "RECO" (productId = 2:3840)
+++recoVertexs "offlineSlimmedPrimaryVertices" "" "RECO" (productId = 2:3859)
+++recoVertexs "offlineSlimmedPrimaryVerticesWithBS" "" "RECO" (productId = 2:3860)
+++uint "bunchSpacingProducer" "" "RECO" (productId = 2:3920)
+24-Feb-2026 21:34:41 CET  Closed file root://xrootd-cms.infn.it//store/data/Run2024C/ParkingDoubleMuonLowMass0/MINIAOD/PromptReco-v1/000/379/416/00000/0134a8bc-c8d4-400e-9508-2a4b222c5431.root
+
+Summary for key being the concatenation of friendlyClassName, moduleLabel, productInstanceName and processName
+     1 occurrences of key CSCDetIdCSCSegmentsOwnedRangeMap + "slimmedDisplacedMuons" + "" "RECO"
+     1 occurrences of key CSCDetIdCSCSegmentsOwnedRangeMap + "slimmedMuons" + "" "RECO"
+     1 occurrences of key CTPPSLocalTrackLites + "ctppsLocalTrackLiteProducer" + "" "RECO"
+     1 occurrences of key DTChamberIdDTRecSegment4DsOwnedRangeMap + "slimmedDisplacedMuons" + "" "RECO"
+     1 occurrences of key DTChamberIdDTRecSegment4DsOwnedRangeMap + "slimmedMuons" + "" "RECO"
+     1 occurrences of key EcalRecHitsSorted + "reducedEgamma" + "reducedEBRecHits" "RECO"
+     1 occurrences of key EcalRecHitsSorted + "reducedEgamma" + "reducedEERecHits" "RECO"
+     1 occurrences of key EcalRecHitsSorted + "reducedEgamma" + "reducedESRecHits" "RECO"
+     1 occurrences of key GlobalAlgBlkBXVector + "gtStage2Digis" + "" "RECO"
+     1 occurrences of key GlobalExtBlkBXVector + "gtStage2Digis" + "" "RECO"
+     1 occurrences of key GlobalExtBlkBXVector + "simGtExtUnprefireable" + "" "RECO"
+     1 occurrences of key HBHERecHitsSorted + "reducedEgamma" + "reducedHBHEHits" "RECO"
+     1 occurrences of key HBHERecHitsSorted + "slimmedHcalRecHits" + "reducedHcalRecHits" "RECO"
+     1 occurrences of key HFRecHitsSorted + "slimmedHcalRecHits" + "reducedHcalRecHits" "RECO"
+     1 occurrences of key HORecHitsSorted + "slimmedHcalRecHits" + "reducedHcalRecHits" "RECO"
+     1 occurrences of key HcalNoiseSummary + "hcalnoise" + "" "RECO"
+     1 occurrences of key L1GlobalTriggerReadoutRecord + "gtDigis" + "" "RECO"
+     1 occurrences of key LumiScalerss + "scalersRawToDigi" + "" "RECO"
+     1 occurrences of key SiPixelClusteredmNewDetSetVector + "slimmedDisplacedMuonTrackExtras" + "" "RECO"
+     1 occurrences of key SiPixelClusteredmNewDetSetVector + "slimmedMuonTrackExtras" + "" "RECO"
+     1 occurrences of key SiStripClusteredmNewDetSetVector + "slimmedDisplacedMuonTrackExtras" + "" "RECO"
+     1 occurrences of key SiStripClusteredmNewDetSetVector + "slimmedMuonTrackExtras" + "" "RECO"
+     1 occurrences of key Strings + "slimmedPatTrigger" + "filterLabels" "RECO"
+     1 occurrences of key TrackingRecHitsOwned + "slimmedDisplacedMuonTrackExtras" + "" "RECO"
+     1 occurrences of key TrackingRecHitsOwned + "slimmedMuonTrackExtras" + "" "RECO"
+     1 occurrences of key double + "fixedGridRhoAll" + "" "RECO"
+     1 occurrences of key double + "fixedGridRhoFastjetAll" + "" "RECO"
+     1 occurrences of key double + "fixedGridRhoFastjetAllCalo" + "" "RECO"
+     1 occurrences of key double + "fixedGridRhoFastjetAllTmp" + "" "RECO"
+     1 occurrences of key double + "fixedGridRhoFastjetCentral" + "" "RECO"
+     1 occurrences of key double + "fixedGridRhoFastjetCentralCalo" + "" "RECO"
+     1 occurrences of key double + "fixedGridRhoFastjetCentralChargedPileUp" + "" "RECO"
+     1 occurrences of key double + "fixedGridRhoFastjetCentralNeutral" + "" "RECO"
+     1 occurrences of key edmHLTPathStatus + "MyPath" + "" "analysis"
+     1 occurrences of key edmTriggerResults + "TriggerResults" + "" "HLT"
+     1 occurrences of key edmTriggerResults + "TriggerResults" + "" "RECO"
+     1 occurrences of key edmTriggerResults + "TriggerResults" + "" "analysis"
+     1 occurrences of key edmTriggerResults + "l1bits" + "" "RECO"
+     1 occurrences of key floatedmValueMap + "offlineSlimmedPrimaryVertices" + "" "RECO"
+     1 occurrences of key floatedmValueMap + "offlineSlimmedPrimaryVerticesWithBS" + "" "RECO"
+     1 occurrences of key l1tEGammaBXVector + "caloStage2Digis" + "EGamma" "RECO"
+     1 occurrences of key l1tEtSumBXVector + "caloStage2Digis" + "EtSum" "RECO"
+     1 occurrences of key l1tJetBXVector + "caloStage2Digis" + "Jet" "RECO"
+     1 occurrences of key l1tMuonBXVector + "gmtStage2Digis" + "Muon" "RECO"
+     1 occurrences of key l1tTauBXVector + "caloStage2Digis" + "Tau" "RECO"
+     1 occurrences of key patCompositeCandidates + "oniaPhotonCandidates" + "conversions" "RECO"
+     1 occurrences of key patElectrons + "slimmedElectrons" + "" "RECO"
+     1 occurrences of key patElectrons + "slimmedLowPtElectrons" + "" "RECO"
+     1 occurrences of key patIsolatedTracks + "isolatedTracks" + "" "RECO"
+     1 occurrences of key patJets + "slimmedJets" + "" "RECO"
+     1 occurrences of key patJets + "slimmedJetsAK8" + "" "RECO"
+     1 occurrences of key patJets + "slimmedJetsAK8PFPuppiSoftDropPacked" + "SubJets" "RECO"
+     1 occurrences of key patJets + "slimmedJetsPuppi" + "" "RECO"
+     1 occurrences of key patMETs + "slimmedMETs" + "" "RECO"
+     1 occurrences of key patMETs + "slimmedMETsNoHF" + "" "RECO"
+     1 occurrences of key patMETs + "slimmedMETsPuppi" + "" "RECO"
+     1 occurrences of key patMuons + "slimmedDisplacedMuons" + "" "RECO"
+     1 occurrences of key patMuons + "slimmedMuons" + "" "RECO"
+     1 occurrences of key patPackedCandidates + "lostTracks" + "" "RECO"
+     1 occurrences of key patPackedCandidates + "lostTracks" + "eleTracks" "RECO"
+     1 occurrences of key patPackedCandidates + "packedPFCandidates" + "" "RECO"
+     1 occurrences of key patPackedTriggerPrescales + "patTrigger" + "" "RECO"
+     1 occurrences of key patPackedTriggerPrescales + "patTrigger" + "l1max" "RECO"
+     1 occurrences of key patPackedTriggerPrescales + "patTrigger" + "l1min" "RECO"
+     1 occurrences of key patPhotons + "slimmedOOTPhotons" + "" "RECO"
+     1 occurrences of key patPhotons + "slimmedPhotons" + "" "RECO"
+     1 occurrences of key patTaus + "slimmedTaus" + "" "RECO"
+     1 occurrences of key patTaus + "slimmedTausBoosted" + "" "RECO"
+     1 occurrences of key patTriggerObjectStandAlones + "slimmedPatTrigger" + "" "RECO"
+     1 occurrences of key recoBaseTagInfosOwned + "slimmedJets" + "tagInfos" "RECO"
+     1 occurrences of key recoBaseTagInfosOwned + "slimmedJetsPuppi" + "tagInfos" "RECO"
+     1 occurrences of key recoBeamHaloSummary + "BeamHaloSummary" + "" "RECO"
+     1 occurrences of key recoBeamSpot + "offlineBeamSpot" + "" "RECO"
+     1 occurrences of key recoCSCHaloData + "CSCHaloData" + "" "RECO"
+     1 occurrences of key recoCaloClusters + "reducedEgamma" + "reducedEBEEClusters" "RECO"
+     1 occurrences of key recoCaloClusters + "reducedEgamma" + "reducedESClusters" "RECO"
+     1 occurrences of key recoCaloClusters + "reducedEgamma" + "reducedOOTEBEEClusters" "RECO"
+     1 occurrences of key recoCaloClusters + "reducedEgamma" + "reducedOOTESClusters" "RECO"
+     1 occurrences of key recoCaloJets + "slimmedCaloJets" + "" "RECO"
+     1 occurrences of key recoCaloJets + "slimmedJPTJets" + "" "RECO"
+     1 occurrences of key recoConversions + "gsfTracksOpenConversions" + "gsfTracksOpenConversions" "RECO"
+     1 occurrences of key recoConversions + "reducedEgamma" + "reducedConversions" "RECO"
+     1 occurrences of key recoConversions + "reducedEgamma" + "reducedSingleLegConversions" "RECO"
+     1 occurrences of key recoDeDxHitInfos + "isolatedTracks" + "" "RECO"
+     1 occurrences of key recoDeDxHitInfosedmAssociation + "isolatedTracks" + "" "RECO"
+     1 occurrences of key recoForwardProtons + "ctppsProtons" + "multiRP" "RECO"
+     1 occurrences of key recoForwardProtons + "ctppsProtons" + "singleRP" "RECO"
+     1 occurrences of key recoGsfElectronCores + "reducedEgamma" + "reducedGedGsfElectronCores" "RECO"
+     1 occurrences of key recoGsfTracks + "reducedEgamma" + "reducedGsfTracks" "RECO"
+     1 occurrences of key recoJPTJets + "slimmedJPTJets" + "" "RECO"
+     1 occurrences of key recoPhotonCores + "reducedEgamma" + "reducedGedPhotonCores" "RECO"
+     1 occurrences of key recoPhotonCores + "reducedEgamma" + "reducedOOTPhotonCores" "RECO"
+     1 occurrences of key recoSuperClusters + "reducedEgamma" + "reducedOOTSuperClusters" "RECO"
+     1 occurrences of key recoSuperClusters + "reducedEgamma" + "reducedSuperClusters" "RECO"
+     1 occurrences of key recoTrackExtras + "slimmedDisplacedMuonTrackExtras" + "" "RECO"
+     1 occurrences of key recoTrackExtras + "slimmedMuonTrackExtras" + "" "RECO"
+     1 occurrences of key recoTracks + "displacedGlobalMuons" + "" "RECO"
+     1 occurrences of key recoTracks + "displacedStandAloneMuons" + "" "RECO"
+     1 occurrences of key recoTracks + "displacedTracks" + "" "RECO"
+     1 occurrences of key recoVertexCompositePtrCandidates + "slimmedKshortVertices" + "" "RECO"
+     1 occurrences of key recoVertexCompositePtrCandidates + "slimmedLambdaVertices" + "" "RECO"
+     1 occurrences of key recoVertexCompositePtrCandidates + "slimmedSecondaryVertices" + "" "RECO"
+     1 occurrences of key recoVertexs + "offlineSlimmedPrimaryVertices" + "" "RECO"
+     1 occurrences of key recoVertexs + "offlineSlimmedPrimaryVerticesWithBS" + "" "RECO"
+     1 occurrences of key uint + "bunchSpacingProducer" + "" "RECO"

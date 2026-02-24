@@ -18,9 +18,9 @@ process.options = cms.untracked.PSet(wantSummary = cms.untracked.bool(False))
 
 
 process.source = cms.Source('PoolSource', fileNames = cms.untracked.vstring(
-    "/store/data/Run2024C/ParkingDoubleMuonLowMass0/AOD/PromptReco-v1/000/379/416/00000/0fe76545-a00e-4b10-8158-aa47c5ebac7a.root"))
+    "/store/data/Run2024C/ParkingDoubleMuonLowMass0/MINIAOD/PromptReco-v1/000/379/416/00000/0134a8bc-c8d4-400e-9508-2a4b222c5431.root"))
 process.source.skipEvents = cms.untracked.uint32(0)
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1))
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1))
 
 process.load("TrackingTools/TransientTrack/TransientTrackBuilder_cfi")
 process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
@@ -34,12 +34,8 @@ process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_data', '')
 #process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_mc_FULL','')
 
 
-process.analiza= cms.EDAnalyzer("fullFitJpsiG",
-  outHist = cms.string('BsToJpsiGammaData.root'),
-)
+process.dump=cms.EDAnalyzer('EventContentAnalyzer')
 
-
-
-process.MyPath = cms.Path(process.analiza)
+process.MyPath = cms.Path(process.dump)
 
 print("All files set for analysis.")

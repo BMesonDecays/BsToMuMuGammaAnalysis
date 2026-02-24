@@ -1389,3 +1389,9 @@ Traceback (most recent call last):
     raise ConfigurationException(msg)
 CRABClient.ClientExceptions.ConfigurationException: [91mError[0m: 24D_JpsiMassConstrained1_resubmit2_BsToJpsiGamma/crab_JpsiMassConstrained1_resubmit2_dset7 is not a valid CRAB project directory.
 INFO 2026-02-24 11:04:10.768 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-02-24 15:19:09.159 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-02-24 15:19:09.159 UTC: 	 Running on: Linux lxplus911.cern.ch 5.14.0-611.26.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sat Jan 17 05:14:35 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-02-24 15:19:09.160 UTC: 	 Not using Singularity
+DEBUG 2026-02-24 15:19:09.160 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-02-24 15:19:09.160 UTC: 	 Executing command: 'kill'
+DEBUG 2026-02-24 15:19:09.160 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
