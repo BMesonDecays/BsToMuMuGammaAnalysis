@@ -65,11 +65,9 @@ void GenDecayChain::findBMeson() {
     for (const auto& p : genParticles_) {
         int absId = abs(p.pdgId());
         if (absId == 111) {
-            if (p.isHardProcess() || p.fromHardProcessFinalState()) {
-                BMeson_ = &p;
-                info_.motherPdgId = p.pdgId();
-                return;
-            }
+            BMeson_ = &p;
+            info_.motherPdgId = p.pdgId();
+            return;
         }
     }
 }
