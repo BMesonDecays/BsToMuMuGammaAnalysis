@@ -31,7 +31,7 @@
 
 
 
-<library name="fullFitJpsiG" file="fullFitJpsiG.cc">
+<library name="impJpsiG_MC" file="impJpsiG_MC.cc">
 </library>
 
 

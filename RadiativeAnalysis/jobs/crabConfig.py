@@ -6,7 +6,7 @@ nEvents = -1
 
 config = config()
 
-config.General.requestName = 'bsLifetime'
+config.General.requestName = 'JpsiMassConstrained'
 config.General.workArea = 'BsToJpsiGamma_MC'
 config.General.transferOutputs = True
 
@@ -22,7 +22,7 @@ config.Data.unitsPerJob     = 5#5000
 config.Data.totalUnits      = 70000000
 config.Data.splitting       = 'FileBased'
 config.Data.publication = False
-config.Data.outputDatasetTag = 'BsToJpsiGamma_MC_bsLifetime'
+config.Data.outputDatasetTag = 'BsToJpsiGamma_MC_JpsiMassConstrained'
 config.Data.outputPrimaryDataset = 'BsToJpsiGamma_analysis_MC'
 
 config.Site.storageSite = 'T3_CH_CERNBOX'

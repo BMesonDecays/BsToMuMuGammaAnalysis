@@ -34,7 +34,7 @@ process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_data', '')
 #process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_mc_FULL','')
 
 
-process.analiza= cms.EDAnalyzer("fullFitJpsiG",
+process.analiza= cms.EDAnalyzer("impJpsiG_MC",
   outHist = cms.string('BsToJpsiGammaData.root'),
 )
 
