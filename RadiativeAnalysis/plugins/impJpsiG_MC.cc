@@ -83,6 +83,7 @@
 #include <iomanip> 
 #include <utility>
 #include <numeric>
+#include <string>
 
 
 using namespace std;
@@ -115,6 +116,8 @@ private:
   edm::EDGetTokenT < vector<reco::Vertex> > theVertexToken; 
   //edm::EDGetTokenT < vector<reco::PackedCandidate> > thePackedCandidateToken;
 
+  edm::EDGetTokenT < edm::TriggerResults > theTriggerResultsToken;
+
   edm::ESGetToken<MagneticField, IdealMagneticFieldRecord> m_fieldToken;
 
   std::vector<int> JpsiG = {443, 22};
@@ -122,6 +125,16 @@ private:
 
   TNtupleD* tKalman;
   TNtupleD* tJpsi;
+
+  // HLT paths
+  std::string path0 = "HLT_DoubleMu2_Jpsi_LowPt_v";
+  std::string path1 = "HLT_DoubleMu4_3_Jpsi_v";
+  std::string path2 = "HLT_DoubleMu4_3_LowMass_v";
+  std::string path3 = "HLT_DoubleMu4_JpsiTrkTrk_Displaced_v";
+  std::string path4 = "HLT_DoubleMu4_Jpsi_Displaced_v";
+  std::string path5 = "HLT_DoubleMu4_Jpsi_NoVertexing_v";
+  std::string path6 = "HLT_DoubleMu4_LowMass_Displaced_v";
+  std::string path7 = "HLT_DoubleMu4_MuMuTrk_Displaced_v";
 
 };
 
@@ -136,6 +149,7 @@ impJpsiG_MC::impJpsiG_MC(const edm::ParameterSet& conf)
   thePhotonToken = consumes< vector<reco::Photon>  >( edm::InputTag("photons"));
   theVertexToken = consumes< vector<reco::Vertex>  >( edm::InputTag("offlinePrimaryVertices"));
   //thePackedCandidateToken = consumes< vector<reco::PackedCandidate> >(edm::InputTag("packedPFCandidates"));
+  theTriggerResultsToken = consumes< edm::TriggerResults > (edm::InputTag("TriggerResults","","HLT"));
 
   m_fieldToken = esConsumes<MagneticField, IdealMagneticFieldRecord>();
 
@@ -149,10 +163,10 @@ impJpsiG_MC::~impJpsiG_MC()
 void impJpsiG_MC::beginJob()
 {
   tKalman = new TNtupleD("tKalman","Unconstrained Kalman fit",
-    "twoMuonsMass:muonsKalmanVxProb:deltaR_photon_twoMuons:twoMuonsPhotonMass:displXY_bestPV:displXY_bestPV_significance:displ3D_bestPV:cosPointingAngle:BsXYlifetime");
+    "hltPaths:twoMuonsMass:muonsKalmanVxProb:deltaR_photon_twoMuons:twoMuonsPhotonMass:displXY_bestPV:displXY_bestPV_significance:displ3D_bestPV:cosPointingAngle:BsXYlifetime");
 
   tJpsi = new TNtupleD("tJpsi","J/psi mass constrained fit",
-    "twoMuonsMass:muonsKalmanVxProb:fittedJpsiVxProb:deltaR_photon_Jpsi:fittedJpsiPhotonMass:lXY_fittedJpsi_PV:lXY_fittedJpsi_PV_significance:lXYZ_fittedJpsi_PV:cosPointingAngle:BsXYlifetime");
+    "hltPaths:twoMuonsMass:muonsKalmanVxProb:fittedJpsiVxProb:deltaR_photon_Jpsi:fittedJpsiPhotonMass:lXY_fittedJpsi_PV:lXY_fittedJpsi_PV_significance:lXYZ_fittedJpsi_PV:cosPointingAngle:BsXYlifetime");
 
   cout << "HERE impJpsiG_MC::beginJob()" << endl;
 }
@@ -183,9 +197,14 @@ void impJpsiG_MC::analyze(
   const std::vector<reco::Muon> & recoMuons = ev.get(theMuonToken);
   const std::vector<reco::Photon> & recoPhotons = ev.get(thePhotonToken);
   const std::vector<reco::Vertex> & primaryVertices = ev.get(theVertexToken);
+
   //const std::vector<reco::PackedCandidate> & packedCandidates = ev.get(thePackedCandidateToken);
   
   auto const& field = es.getData(m_fieldToken);  
+
+  // trigger info
+  const edm::TriggerResults & triggerResults = ev.get(theTriggerResultsToken);
+  edm::TriggerNames triggerNames = ev.triggerNames(triggerResults);
 
   //////////////////BEGINNING OF THE GENPARTICLE SECTION//////////////////////
 
@@ -362,7 +381,26 @@ void impJpsiG_MC::analyze(
         double lifetimeB0s = (lXY_muonsKalman_PV * bsMass) / twoMuonsPhotonLV.Vect().Rho();
         lifetimeB0s *= 100/3;
 
-        tKalman->Fill(twoMuonsM,muonsKalmanVxProb, deltaR_photon_twoMuons,
+        // HLT paths
+        double triggerRes = 0.0;
+        for (unsigned int i=0; i < triggerResults.size();i++)
+        {
+          if (!triggerResults.accept(i))  continue;
+          std::string name = triggerNames.triggerName(i);
+          
+          if(name.compare(0,26,path0))  triggerRes += 1.E0;
+          else if (name.compare(0,22,path1))  triggerRes += 1.E1;
+          else if (name.compare(0,25,path2))  triggerRes += 1.E2;
+          else if (name.compare(0,36,path3))  triggerRes += 1.E3;
+          else if (name.compare(0,30,path4))  triggerRes += 1.E4;
+          else if (name.compare(0,32,path5))  triggerRes += 1.E5;
+          else if (name.compare(0,33,path6))  triggerRes += 1.E6;
+          else if (name.compare(0,33,path7))  triggerRes += 1.E7;      
+        }
+
+
+
+        tKalman->Fill(triggerRes,twoMuonsM,muonsKalmanVxProb, deltaR_photon_twoMuons,
                     twoMuonsPhotonMass,lXY_muonsKalman_PV,lXY_muonsKalman_PV_significance,
                     lXYZ_muonsKalman_PV,cosPointingAngle_muonsKalman_PV,lifetimeB0s);
 
@@ -433,8 +471,24 @@ void impJpsiG_MC::analyze(
         lifetimeB0s = (lXY_fittedJpsi_PV * bsMass) / fittedJpsiPhotonLV.Vect().Rho();
         lifetimeB0s *= 100/3;
 
+        // HLT paths
+        triggerRes = 0.0;
+        for (unsigned int i=0; i < triggerResults.size();i++)
+        {
+          if (!triggerResults.accept(i))  continue;
+          std::string name = triggerNames.triggerName(i);
+          
+          if(name.compare(0,26,path0))  triggerRes += 1.E0;
+          else if (name.compare(0,22,path1))  triggerRes += 1.E1;
+          else if (name.compare(0,25,path2))  triggerRes += 1.E2;
+          else if (name.compare(0,36,path3))  triggerRes += 1.E3;
+          else if (name.compare(0,30,path4))  triggerRes += 1.E4;
+          else if (name.compare(0,32,path5))  triggerRes += 1.E5;
+          else if (name.compare(0,33,path6))  triggerRes += 1.E6;
+          else if (name.compare(0,33,path7))  triggerRes += 1.E7;      
+        }
 
-        tJpsi->Fill(twoMuonsM,muonsKalmanVxProb,fittedJpsiVxProb,
+        tJpsi->Fill(triggerRes,twoMuonsM,muonsKalmanVxProb,fittedJpsiVxProb,
                     deltaR_photon_Jpsi,fittedJpsiPhotonMass,lXY_fittedJpsi_PV,lXY_fittedJpsi_PV_significance,
                     lXYZ_fittedJpsi_PV,cosPointingAngle_fittedJpsi_PV,lifetimeB0s);
 
@@ -443,19 +497,6 @@ void impJpsiG_MC::analyze(
       
       
 
-      /*
-      // create the pointing constraint and perform the full global (kinematic) fit
-      GlobalPoint bestPV_JpsiPosition (bestPV_Jpsi.position().x(),bestPV_Jpsi.position().y(),bestPV_Jpsi.position().z());
-      MultiTrackKinematicConstraint* pointingConstraint = new MultiTrackKinematicConstraint(bestPV_JpsiPosition);
-      RefCountedKinematicTree bsFitTree = constrainedFitter
-
-      
-      add photon, get LV and vertex position
-      find the best PV again
-      global fit with the pointing constraint
-      */
-
-  
 
 }
 
