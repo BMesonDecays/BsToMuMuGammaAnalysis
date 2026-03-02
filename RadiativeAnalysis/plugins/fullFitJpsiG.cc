@@ -137,8 +137,8 @@ fullFitJpsiG::fullFitJpsiG(const edm::ParameterSet& conf)
 
   m_fieldToken = esConsumes<MagneticField, IdealMagneticFieldRecord>();
 
-  ebRecHitsToken_ = consumes<EcalRecHitCollection>(edm::InputTag("reducedEcalRecHitsEB"));
-  eeRecHitsToken_ = consumes<EcalRecHitCollection>(edm::InputTag("reducedEcalRecHitsEB"));
+  ebRecHitsToken_ = consumes<EcalRecHitCollection>(edm::InputTag("reducedEgamma","reducedEBRecHits"));
+  eeRecHitsToken_ = consumes<EcalRecHitCollection>(edm::InputTag("reducedEgamma","reducedEERecHits"));
 
   esGetTokens = make_unique<EcalClusterLazyToolsBase::ESGetTokens>(consumesCollector());
 
