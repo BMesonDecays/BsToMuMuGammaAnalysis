@@ -388,14 +388,14 @@ void impJpsiG_MC::analyze(
           if (!triggerResults.accept(i))  continue;
           std::string name = triggerNames.triggerName(i);
           
-          if(name.compare(0,26,path0))  triggerRes += 1.E0;
-          else if (name.compare(0,22,path1))  triggerRes += 1.E1;
-          else if (name.compare(0,25,path2))  triggerRes += 1.E2;
-          else if (name.compare(0,36,path3))  triggerRes += 1.E3;
-          else if (name.compare(0,30,path4))  triggerRes += 1.E4;
-          else if (name.compare(0,32,path5))  triggerRes += 1.E5;
-          else if (name.compare(0,33,path6))  triggerRes += 1.E6;
-          else if (name.compare(0,33,path7))  triggerRes += 1.E7;      
+          if (!name.compare(0,26,path0))  triggerRes += 1.E0;
+          else if (!name.compare(0,22,path1))  triggerRes += 1.E1;
+          else if (!name.compare(0,25,path2))  triggerRes += 1.E2;
+          else if (!name.compare(0,36,path3))  triggerRes += 1.E3;
+          else if (!name.compare(0,30,path4))  triggerRes += 1.E4;
+          else if (!name.compare(0,32,path5))  triggerRes += 1.E5;
+          else if (!name.compare(0,33,path6))  triggerRes += 1.E6;
+          else if (!name.compare(0,33,path7))  triggerRes += 1.E7;      
         }
 
 
@@ -478,14 +478,14 @@ void impJpsiG_MC::analyze(
           if (!triggerResults.accept(i))  continue;
           std::string name = triggerNames.triggerName(i);
           
-          if(name.compare(0,26,path0))  triggerRes += 1.E0;
-          else if (name.compare(0,22,path1))  triggerRes += 1.E1;
-          else if (name.compare(0,25,path2))  triggerRes += 1.E2;
-          else if (name.compare(0,36,path3))  triggerRes += 1.E3;
-          else if (name.compare(0,30,path4))  triggerRes += 1.E4;
-          else if (name.compare(0,32,path5))  triggerRes += 1.E5;
-          else if (name.compare(0,33,path6))  triggerRes += 1.E6;
-          else if (name.compare(0,33,path7))  triggerRes += 1.E7;      
+          if (!name.compare(0,26,path0))  triggerRes += 1.E0;
+          else if (!name.compare(0,22,path1))  triggerRes += 1.E1;
+          else if (!name.compare(0,25,path2))  triggerRes += 1.E2;
+          else if (!name.compare(0,36,path3))  triggerRes += 1.E3;
+          else if (!name.compare(0,30,path4))  triggerRes += 1.E4;
+          else if (!name.compare(0,32,path5))  triggerRes += 1.E5;
+          else if (!name.compare(0,33,path6))  triggerRes += 1.E6;
+          else if (!name.compare(0,33,path7))  triggerRes += 1.E7;      
         }
 
         tJpsi->Fill(triggerRes,twoMuonsM,muonsKalmanVxProb,fittedJpsiVxProb,
