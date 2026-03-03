@@ -31,7 +31,7 @@
 
 
 
-<library name="impJpsiG_MC" file="impJpsiG_MC.cc">
+<library name="countEvents" file="countEvents.cc">
 </library>
 
 

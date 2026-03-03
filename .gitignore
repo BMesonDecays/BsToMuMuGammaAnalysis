@@ -5,3 +5,4 @@ board.txt
 __*
 **/.gitignore
 archive/
+.git_old/

@@ -13,18 +13,18 @@ histo.SetDirectory(0)
 histfile.Close()
 
 # Fitting function
-expression = "[0]*exp((-(x-[1])**2)/(2*[2]**2)) + [3]*exp((-(x-[1])**2)/(2*[4]**2))"
-fitFunc = r.TF1("fitFunc",expression,xmin,xmax,5)
-fitFunc.SetParameters(50.,5.4,0.1,20.,0.1)
+expression = "0.5*[0]*(exp((-(x-[1])**2)/(2*[2]**2))/([2]*TMath::Sqrt(2*TMath::Pi())) + exp((-(x-[1])**2)/(2*[3]**2))/([3]*TMath::Sqrt(2*TMath::Pi())))"
+fitFunc = r.TF1("fitFunc",expression,xmin,xmax,4)
+fitFunc.SetParameters(80.,5.4,0.1,0.1)
 
 results = histo.Fit(fitFunc,"ERSLB")
 
 #'''
-funcFile = r.TFile.Open(histname+"_fitFunc.root","RECREATE")
+funcFile = r.TFile.Open(histname+"new"+"_fitFunc.root","RECREATE")
 fitFunc.Write()
 funcFile.Close()
 
-with open(histname+'_fitResults.txt','a') as of:
+with open(histname+"new"+'_fitResults.txt','a') as of:
     print(results, file=of)
 #'''
     
@@ -41,5 +41,5 @@ histo.Draw("h")
 fitFunc.Draw("same")
 
 
-canvas.Print(histname+"_Fit.pdf")
+canvas.Print(histname+"new"+"_Fit.pdf")
 input('press enter to exit')
