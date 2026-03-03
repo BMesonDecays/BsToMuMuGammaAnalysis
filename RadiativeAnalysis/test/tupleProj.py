@@ -4,11 +4,11 @@ import sys
 import os
 import numpy as np
 
-datasetName = "24BC_BsToJpsiGamma_JpsiMassConstrained"
+datasetName = "24BCD_BsToJpsiGamma_JpsiMassConstrained"
 tupleName = "tJpsi"
 
 # Prepare a directory for the output histograms
-dirPath = 'tupleProjections/'+tupleName+'/'+datasetName+'/cut5'
+dirPath = 'tupleProjections/'+tupleName+'/'+datasetName+'/cut3'
 if not os.access(dirPath[:-5], os.F_OK):    # '/cut?' has 5 chars
     os.mkdir(dirPath[:-5])
 if os.access(dirPath, os.F_OK):
@@ -27,10 +27,12 @@ for branch in ntuple.GetListOfBranches():
 # Define the cuts
 cutList = []
 
+cutList.append(r.TCut("cosPointingAngleCut","cosPointingAngle > 0.9"))
 cutList.append(r.TCut("fittedJpsiVxProbCut","fittedJpsiVxProb > 0.1"))
 cutList.append(r.TCut("muonsKalmanVxProbCut","muonsKalmanVxProb > 0.1"))
 cutList.append(r.TCut("lXY_fittedJpsi_PVCut","lXY_fittedJpsi_PV > 0.1"))
-cutList.append(r.TCut("maxMuonsCompCut","maxMuonsComp < 0.7"))
+cutList.append(r.TCut("BsXYlifetimeCut","BsXYlifetime < 9.0"))
+cutList.append(r.TCut("maxMuonsCompCut","maxMuonsComp < 0.4"))
 '''
 cutList.append(r.TCut("M_dimuonCut","TMath::Abs(M_dimuon - 3.0969) < 0.04"))    #Jpsi mass constraint
 #cutList.append(r.TCut("commonMuonVrtxProbCut","ProbOfCommonMuonVertex > 0.1"))
@@ -45,20 +47,8 @@ for cut in cutList:
     totalCut += cut
 totalCut.Print()
 
-'''
-# Copy the ntuple limited by the cuts
-outputFile = r.TFile("./outputData/"+datasetName+"_dR0_4.root","RECREATE")
-totalCut.Write()
-newNtuple = ntuple.CopyTree(str(totalCut))
-newNtuple.Write("new")
-outputFile.Close()
-tupleFile.Close()
-'''
-
-
 with open(dirPath+'/cuts.txt','w') as of:
     print(totalCut.GetTitle(), file=of)
-
 
 # Define the binnings
 binInfo = {
@@ -94,3 +84,14 @@ for histo in histoList:
     canvas.cd()
     histo.Draw()
     canvas.Print(dirPath+'/'+str(histo.GetName())+".pdf")
+
+
+'''
+# Copy the ntuple limited by the cuts
+outputFile = r.TFile("./outputData/"+datasetName+"_dR0_4.root","RECREATE")
+totalCut.Write()
+newNtuple = ntuple.CopyTree(str(totalCut))
+newNtuple.Write("new")
+outputFile.Close()
+tupleFile.Close()
+'''

@@ -1,0 +1,1 @@
+(((((cosPointingAngle > 0.9)&&(fittedJpsiVxProb > 0.1))&&(muonsKalmanVxProb > 0.1))&&(lXY_fittedJpsi_PV > 0.1))&&(BsXYlifetime < 9.0))&&(hltPaths % 1.E3 >= 1.E2)
