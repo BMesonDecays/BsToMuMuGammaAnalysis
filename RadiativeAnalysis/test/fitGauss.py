@@ -2,11 +2,11 @@
 import ROOT as r
 import sys
 
-histname = "h100JpsiGMass"
+histname = "hMMGMass"
 xmin = 4.8
 xmax = 6.0
 ##########################################
-histfilename = "cut2finalMass_BsToJpsiGammaMC_JpsiMassConstrained_HLT.root"
+histfilename = "cut2_Kalman_MCfinalMass_BsToJpsiGammaMC_JpsiMassConstrained.root"
 histfile = r.TFile.Open(histfilename,"READ")
 histo = histfile.Get(histname)
 histo.SetDirectory(0)
