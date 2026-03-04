@@ -6,7 +6,7 @@ nEvents = -1
 
 config = config()
 
-config.General.requestName = 'eventCount1'
+config.General.requestName = 'eventCount3'
 config.General.workArea = 'BsToJpsiGamma_MC'
 config.General.transferOutputs = True
 
@@ -18,7 +18,7 @@ config.JobType.numCores = 1
 config.JobType.maxMemoryMB = 2500
 
 config.Data.userInputFiles = open("../JpsiGammaData/BsToJpsiGammaFileList.txt").readlines()
-config.Data.unitsPerJob     = 1500
+config.Data.unitsPerJob     = 15
 config.Data.totalUnits      = 70000000
 config.Data.splitting       = 'FileBased'
 config.Data.publication = False

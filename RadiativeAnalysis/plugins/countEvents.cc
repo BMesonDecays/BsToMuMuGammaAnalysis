@@ -11,6 +11,7 @@
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/PackedCandidate.h"
 #include "DataFormats/PatCandidates/interface/CompositeCandidate.h"
+#include "DataFormats/PatCandidates/interface/Photon.h"
 
 #include "DataFormats/Candidate/interface/Candidate.h"
 
@@ -38,6 +39,8 @@
 #include "RecoVertex/KinematicFit/interface/MultiTrackMassKinematicConstraint.h"
 #include "RecoVertex/KinematicFit/interface/KinematicConstrainedVertexFitter.h"
 
+#include "RecoVertex/VertexPrimitives/interface/TransientVertex.h"
+#include "RecoVertex/KalmanVertexFit/interface/KalmanVertexFitter.h"
 
 #include "TrackingTools/TrajectoryState/interface/FreeTrajectoryState.h"
 #include "TrackingTools/TrajectoryParametrization/interface/CartesianTrajectoryError.h"
@@ -49,10 +52,15 @@
 #include "MagneticField/Engine/interface/MagneticField.h"
 #include "MagneticField/Records/interface/IdealMagneticFieldRecord.h"
 
+#include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
+#include "DataFormats/EcalRecHit/interface/EcalRecHitCollections.h"
+#include "FWCore/Framework/interface/ConsumesCollector.h"
 
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/BeamSpot/interface/BeamSpot.h"
 #include "DataFormats/Math/interface/LorentzVector.h"
+
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/Tools.h"
 
 #include "TH1D.h"
 #include "TH2D.h"
@@ -66,12 +74,15 @@
 #include "Math/SVector.h"
 #include "TTree.h"
 #include "TBranch.h"
+#include "TNtupleD.h"
 
 
 #include <sstream>
 #include <iomanip> 
 #include <utility>
 #include <numeric>
+#include <string>
+
 
 using namespace std;
 
@@ -96,7 +107,7 @@ private:
   edm::ParameterSet theConfig;
   unsigned int theEventCount;
 
- 
+  TNtupleD* tevCount;
     
 };
 
@@ -116,10 +127,21 @@ countEvents::~countEvents()
 void countEvents::beginJob()
 {    
   cout << "HERE countEvents::beginJob()" << endl;
+
+  tevCount = new TNtupleD("tevCount","event count","evCount1:evCount2");
 }
 
 void countEvents::endJob()
 {
+  //make a new Root file
+  TFile myRootFile( theConfig.getParameter<std::string>("outHist").c_str(), "RECREATE");
+
+  tevCount->Write();
+
+  myRootFile.Close();
+
+  delete tevCount;
+
   cout << "HERE countEvents::endJob()" << endl;
 }
 
@@ -129,7 +151,8 @@ void countEvents::analyze(
   std::cout << " -------------------------------- HERE countEvents::analyze "<< std::endl;
 
  
- 
+  double one = 1.0;
+  tevCount->Fill(one,one);
 
   cout <<"*** Analyze event: " << ev.id() <<" analysed event count:" << ++theEventCount << endl;
 
