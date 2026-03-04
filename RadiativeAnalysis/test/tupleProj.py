@@ -8,7 +8,7 @@ datasetName = "24BCD_BsToJpsiGamma_JpsiMassConstrained"
 tupleName = "tJpsi"
 
 # Prepare a directory for the output histograms
-dirPath = 'tupleProjections/'+tupleName+'/'+datasetName+'/cut0_log'
+dirPath = 'tupleProjections/'+tupleName+'/'+datasetName+'/cut2'
 if not os.access(dirPath[:-5], os.F_OK):    # '/cut?' has 5 chars
     os.mkdir(dirPath[:-5])
 if os.access(dirPath, os.F_OK):
@@ -27,11 +27,11 @@ for branch in ntuple.GetListOfBranches():
 # Define the cuts
 cutList = []
 
-#cutList.append(r.TCut("cosPointingAngleCut","cosPointingAngle > 0.9"))
-#cutList.append(r.TCut("fittedJpsiVxProbCut","fittedJpsiVxProb > 0.1"))
-#cutList.append(r.TCut("muonsKalmanVxProbCut","muonsKalmanVxProb > 0.1"))
-#cutList.append(r.TCut("lXY_fittedJpsi_PVCut","lXY_fittedJpsi_PV > 0.1"))
-#cutList.append(r.TCut("BsXYlifetimeCut","BsXYlifetime < 9.0"))
+cutList.append(r.TCut("cosPointingAngleCut","cosPointingAngle > 0.9"))
+cutList.append(r.TCut("fittedJpsiVxProbCut","fittedJpsiVxProb > 0.1"))
+cutList.append(r.TCut("muonsKalmanVxProbCut","muonsKalmanVxProb > 0.1"))
+cutList.append(r.TCut("lXY_fittedJpsi_PVCut","lXY_fittedJpsi_PV > 0.1"))
+cutList.append(r.TCut("BsXYlifetimeCut","BsXYlifetime < 9.0"))
 #cutList.append(r.TCut("maxMuonsCompCut","maxMuonsComp < 0.4"))
 '''
 cutList.append(r.TCut("M_dimuonCut","TMath::Abs(M_dimuon - 3.0969) < 0.04"))    #Jpsi mass constraint
@@ -80,7 +80,7 @@ tupleFile.Close()
 # Draw histograms and save the images
 for histo in histoList:
     canvas = r.TCanvas("c"+str(histo.GetTitle()))
-    canvas.SetLogy(1)
+    #canvas.SetLogy(1)
     canvas.cd()
     histo.Draw()
     canvas.Print(dirPath+'/'+str(histo.GetName())+".pdf")
