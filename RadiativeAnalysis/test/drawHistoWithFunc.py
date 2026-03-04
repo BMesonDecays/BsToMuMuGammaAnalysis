@@ -4,7 +4,7 @@ import sys
 
 
 # Get the histogram
-histfilename = "cut2_Kalman_24BCD_finalMass_BsToJpsiGammaMC_JpsiMassConstrained.root"
+histfilename = "cut3_Kalman_24BCD_finalMass_BsToJpsiGammaMC_JpsiMassConstrained.root"
 histname = "hMMGMass"
 histfile = r.TFile.Open(histfilename,"READ")
 histo = histfile.Get(histname)
@@ -18,13 +18,13 @@ funcFile = r.TFile.Open(funcFileName,"READ")
 func = funcFile.Get(funcName)
 
 # Set the function parameters
-func.SetParameter(0,12.5)
+func.SetParameter(0,0.125)
 
 # Draw and save
 canvas = r.TCanvas("canvas")
 canvas.cd()
 histo.Draw()
 func.Draw("same")
-canvas.Print("cut2KalmanSignalTimes100.pdf")
+canvas.Print("cut3KalmanSignal.pdf")
 
 funcFile.Close()
