@@ -34,6 +34,9 @@
 <library name="JpsiMassG" file="JpsiMassG.cc">
 </library>
 
+<library name="fullFitJpsiG_MC" file="fullFitJpsiG_MC.cc">
+</library>
+
 
 
 

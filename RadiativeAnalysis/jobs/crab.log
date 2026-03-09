@@ -1494,3 +1494,1419 @@ ERROR 2026-03-03 20:58:44.636 UTC:
 ERROR 2026-03-03 20:58:44.637 UTC: 	   If you can't figure out the problem, please send email to
 ERROR 2026-03-03 20:58:44.637 UTC: 	 	cmstalk+computing-tools@dovecotmta.cern.ch with the crab.log file or crab.log URL.
 ERROR 2026-03-03 20:58:44.637 UTC: 	   Please use 'crab uploadlog' to upload the log file /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log to the CRAB cache.
+DEBUG 2026-03-09 09:49:45.277 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-03-09 09:49:45.277 UTC: 	 Running on: Linux lxplus978.cern.ch 5.14.0-611.16.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sun Dec 7 05:52:24 EST 2025 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-03-09 09:49:45.277 UTC: 	 Not using Singularity
+DEBUG 2026-03-09 09:49:45.277 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-03-09 09:49:45.277 UTC: 	 Executing command: 'status'
+DEBUG 2026-03-09 09:49:45.277 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-03-09 09:49:45.285 UTC: 	 Error: 24D_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_dset7 is not a valid CRAB project directory.
+ERROR 2026-03-09 09:49:45.285 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: [91mError[0m: 24D_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_dset7 is not a valid CRAB project directory.
+INFO 2026-03-09 09:49:45.294 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-03-09 09:57:55.279 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-03-09 09:57:55.279 UTC: 	 Running on: Linux lxplus978.cern.ch 5.14.0-611.16.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sun Dec 7 05:52:24 EST 2025 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-03-09 09:57:55.279 UTC: 	 Not using Singularity
+DEBUG 2026-03-09 09:57:55.279 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-03-09 09:57:55.279 UTC: 	 Executing command: 'tasks'
+DEBUG 2026-03-09 09:57:55.279 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+DEBUG 2026-03-09 09:57:55.280 UTC: 	 Checking credentials
+DEBUG 2026-03-09 09:57:55.280 UTC: 	 Found proxy file /tmp/x509up_u183200
+DEBUG 2026-03-09 09:57:55.280 UTC: 	 Making sure it has proper VOMS extension
+DEBUG 2026-03-09 09:57:55.280 UTC: 	 Executing command :
+ voms-proxy-info --vo --file /tmp/x509up_u183200
+DEBUG 2026-03-09 09:57:55.307 UTC: 	 output : cms
+
+ error: 
+ retcode : 0
+DEBUG 2026-03-09 09:57:55.307 UTC: 	 Getting proxy life time left
+DEBUG 2026-03-09 09:57:55.307 UTC: 	 Executing command :
+ voms-proxy-info --actimeleft --timeleft --file /tmp/x509up_u183200
+DEBUG 2026-03-09 09:57:55.334 UTC: 	 output : 688380
+688380
+
+ error: 
+ retcode : 0
+DEBUG 2026-03-09 09:57:55.334 UTC: 	 Proxy valid for 191:13:00 hours
+DEBUG 2026-03-09 09:57:55.335 UTC: 	 Encoded data for curl request: subresource=delegatedn
+DEBUG 2026-03-09 09:57:55.416 UTC: 	 Registering user credentials on myproxy for /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=cmscrab/CN=(817881|373708)/CN=Robot: cms crab|/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=crabint1/CN=373708/CN=Robot: CMS CRAB Integration 1
+DEBUG 2026-03-09 09:57:55.416 UTC: 	 Executing command :
+ voms-proxy-info --identity --file /tmp/x509up_u183200
+DEBUG 2026-03-09 09:57:55.447 UTC: 	 output : /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=psajdak/CN=887534/CN=Pawel Sajdak
+
+ error: 
+ retcode : 0
+DEBUG 2026-03-09 09:57:55.448 UTC: 	 Getting myproxy life time left for 2ad9106fd7ae4a9b1ce4cb184f94cae618d249f1
+DEBUG 2026-03-09 09:57:55.448 UTC: 	 Executing command :
+ myproxy-info -s myproxy.cern.ch -l 2ad9106fd7ae4a9b1ce4cb184f94cae618d249f1
+DEBUG 2026-03-09 09:57:56.126 UTC: 	 output : username: 2ad9106fd7ae4a9b1ce4cb184f94cae618d249f1
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=psajdak/CN=887534/CN=Pawel Sajdak
+  renewal policy: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=cmscrab/CN=(817881|373708)/CN=Robot: cms crab|/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=crabint1/CN=373708/CN=Robot: CMS CRAB Integration 1
+  trusted retrieval policy: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=cmscrab/CN=(817881|373708)/CN=Robot: cms crab|/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=crabint1/CN=373708/CN=Robot: CMS CRAB Integration 1
+  timeleft: 706:14:35  (29.4 days)
+
+ error: 
+ retcode : 0
+DEBUG 2026-03-09 09:57:56.127 UTC: 	 Myproxy is valid: 2542440
+DEBUG 2026-03-09 09:57:56.127 UTC: 	 Result of myproxy credential check:
+  Credential exists on myproxy: username: 2ad9106fd7ae4a9b1ce4cb184f94cae618d249f1  - validity: 29 days, 10:14:00
+DEBUG 2026-03-09 09:57:56.127 UTC: 	 Command use: tasks
+DEBUG 2026-03-09 09:57:56.127 UTC: 	 Options use: []
+DEBUG 2026-03-09 09:57:56.127 UTC: 	 Encoded data for curl request: subresource=version
+DEBUG 2026-03-09 09:57:56.179 UTC: 	 CRABClient version: v3.251020
+DEBUG 2026-03-09 09:57:56.179 UTC: 	 Instance is prod
+DEBUG 2026-03-09 09:57:56.179 UTC: 	 Server base url is cmsweb.cern.ch
+DEBUG 2026-03-09 09:57:56.180 UTC: 	 Command api workflow
+DEBUG 2026-03-09 09:57:56.180 UTC: 	 Encoded data for curl request: timestamp=2026-02-07
+INFO 2026-03-09 09:57:56.284 UTC: 	 
+List of tasks from 2026-02-07 until 2026-03-09
+INFO 2026-03-09 09:57:56.284 UTC: 	 Beware that STATUS here does not include information from grid jobs
+INFO 2026-03-09 09:57:56.284 UTC: 	 ================================================================================
+INFO 2026-03-09 09:57:56.284 UTC: 	 NAME								STATUS
+INFO 2026-03-09 09:57:56.284 UTC: 	 ================================================================================
+INFO 2026-03-09 09:57:56.284 UTC: 	 260309_093107:psajdak_crab_JpsiMassG_resub_dset5
+								NEW
+INFO 2026-03-09 09:57:56.284 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.285 UTC: 	 260309_093020:psajdak_crab_JpsiMassG_resub_dset4
+								NEW
+INFO 2026-03-09 09:57:56.285 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.285 UTC: 	 260309_092936:psajdak_crab_JpsiMassG_resub_dset3
+								NEW
+INFO 2026-03-09 09:57:56.285 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.285 UTC: 	 260309_092903:psajdak_crab_JpsiMassG_resub_dset1
+								NEW
+INFO 2026-03-09 09:57:56.285 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.285 UTC: 	 260309_092833:psajdak_crab_JpsiMassG_resub_dset0
+								NEW
+INFO 2026-03-09 09:57:56.286 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.286 UTC: 	 260309_092803:psajdak_crab_JpsiMassG_resub_dset7
+								NEW
+INFO 2026-03-09 09:57:56.286 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.286 UTC: 	 260309_092734:psajdak_crab_JpsiMassG_resub_dset5
+								QUEUED
+INFO 2026-03-09 09:57:56.286 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.286 UTC: 	 260309_092702:psajdak_crab_JpsiMassG_resub_dset4
+								QUEUED
+INFO 2026-03-09 09:57:56.286 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.286 UTC: 	 260309_092631:psajdak_crab_JpsiMassG_resub_dset0
+								QUEUED
+INFO 2026-03-09 09:57:56.287 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.287 UTC: 	 260309_092600:psajdak_crab_JpsiMassG_resub_dset3
+								QUEUED
+INFO 2026-03-09 09:57:56.287 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.287 UTC: 	 260309_092530:psajdak_crab_JpsiMassG_resub_dset0
+								QUEUED
+INFO 2026-03-09 09:57:56.287 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.287 UTC: 	 260308_203837:psajdak_crab_JpsiMassG_dset7
+								SUBMITTED
+INFO 2026-03-09 09:57:56.287 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.287 UTC: 	 260308_203806:psajdak_crab_JpsiMassG_dset6
+								SUBMITTED
+INFO 2026-03-09 09:57:56.288 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.288 UTC: 	 260308_203735:psajdak_crab_JpsiMassG_dset5
+								SUBMITTED
+INFO 2026-03-09 09:57:56.288 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.288 UTC: 	 260308_203706:psajdak_crab_JpsiMassG_dset4
+								SUBMITTED
+INFO 2026-03-09 09:57:56.288 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.288 UTC: 	 260308_203638:psajdak_crab_JpsiMassG_dset3
+								SUBMITTED
+INFO 2026-03-09 09:57:56.288 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.288 UTC: 	 260308_203611:psajdak_crab_JpsiMassG_dset2
+								SUBMITTED
+INFO 2026-03-09 09:57:56.288 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.288 UTC: 	 260308_203542:psajdak_crab_JpsiMassG_dset1
+								SUBMITTED
+INFO 2026-03-09 09:57:56.288 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.289 UTC: 	 260308_203446:psajdak_crab_JpsiMassG_dset0
+								SUBMITTED
+INFO 2026-03-09 09:57:56.289 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.289 UTC: 	 260308_203415:psajdak_crab_JpsiMassG_dset7
+								SUBMITTED
+INFO 2026-03-09 09:57:56.289 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.289 UTC: 	 260308_203344:psajdak_crab_JpsiMassG_dset6
+								SUBMITTED
+INFO 2026-03-09 09:57:56.289 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.289 UTC: 	 260308_203313:psajdak_crab_JpsiMassG_dset5
+								SUBMITTED
+INFO 2026-03-09 09:57:56.289 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.289 UTC: 	 260308_203245:psajdak_crab_JpsiMassG_dset4
+								SUBMITTED
+INFO 2026-03-09 09:57:56.289 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.289 UTC: 	 260308_203217:psajdak_crab_JpsiMassG_dset3
+								SUBMITTED
+INFO 2026-03-09 09:57:56.289 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.289 UTC: 	 260308_203146:psajdak_crab_JpsiMassG_dset2
+								SUBMITTED
+INFO 2026-03-09 09:57:56.289 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.290 UTC: 	 260308_203111:psajdak_crab_JpsiMassG_dset1
+								SUBMITTED
+INFO 2026-03-09 09:57:56.290 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.290 UTC: 	 260308_203034:psajdak_crab_JpsiMassG_dset0
+								SUBMITTED
+INFO 2026-03-09 09:57:56.290 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.290 UTC: 	 260308_201820:psajdak_crab_JpsiMassG_dset7
+								SUBMITTED
+INFO 2026-03-09 09:57:56.290 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.290 UTC: 	 260308_201744:psajdak_crab_JpsiMassG_dset6
+								SUBMITTED
+INFO 2026-03-09 09:57:56.290 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.290 UTC: 	 260308_201714:psajdak_crab_JpsiMassG_dset5
+								SUBMITTED
+INFO 2026-03-09 09:57:56.290 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.290 UTC: 	 260308_201644:psajdak_crab_JpsiMassG_dset4
+								SUBMITTED
+INFO 2026-03-09 09:57:56.290 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.290 UTC: 	 260308_201615:psajdak_crab_JpsiMassG_dset3
+								SUBMITTED
+INFO 2026-03-09 09:57:56.290 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.291 UTC: 	 260308_201547:psajdak_crab_JpsiMassG_dset2
+								SUBMITTED
+INFO 2026-03-09 09:57:56.291 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.291 UTC: 	 260308_201516:psajdak_crab_JpsiMassG_dset1
+								SUBMITTED
+INFO 2026-03-09 09:57:56.291 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.291 UTC: 	 260308_201442:psajdak_crab_JpsiMassG_dset0
+								SUBMITTED
+INFO 2026-03-09 09:57:56.291 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.291 UTC: 	 260304_095856:psajdak_crab_eventCount3
+								SUBMITTED
+INFO 2026-03-09 09:57:56.291 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.291 UTC: 	 260303_235533:psajdak_crab_eventCount2
+								SUBMITTED
+INFO 2026-03-09 09:57:56.291 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.291 UTC: 	 260303_215341:psajdak_crab_eventCount1
+								KILLED
+INFO 2026-03-09 09:57:56.291 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.291 UTC: 	 260303_210242:psajdak_crab_eventCount
+								SUBMITTED
+INFO 2026-03-09 09:57:56.291 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.292 UTC: 	 260302_215356:psajdak_crab_JpsiMassConstrained_hlt_fixed
+								SUBMITTED
+INFO 2026-03-09 09:57:56.292 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.292 UTC: 	 260302_203722:psajdak_crab_JpsiMassConstrained_hlt
+								SUBMITTED
+INFO 2026-03-09 09:57:56.292 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.292 UTC: 	 260226_140825:psajdak_crab_JpsiMassConstrained
+								SUBMITTED
+INFO 2026-03-09 09:57:56.294 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.294 UTC: 	 260224_151329:psajdak_crab_JpsiGtestAOD_dset0
+								KILLED
+INFO 2026-03-09 09:57:56.294 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.294 UTC: 	 260224_110601:psajdak_crab_JpsiMassConstrained1_resubmit3_dset6
+								SUBMITTED
+INFO 2026-03-09 09:57:56.294 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.294 UTC: 	 260223_214352:psajdak_crab_JpsiMassConstrained1_resubmit2_dset6
+								SUBMITTED
+INFO 2026-03-09 09:57:56.294 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.294 UTC: 	 260223_214330:psajdak_crab_JpsiMassConstrained1_resubmit2_dset0
+								SUBMITTED
+INFO 2026-03-09 09:57:56.294 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.295 UTC: 	 260223_194946:psajdak_crab_JpsiMassConstrained1_resubmit1_dset6
+								SUBMITTED
+INFO 2026-03-09 09:57:56.295 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.295 UTC: 	 260223_194923:psajdak_crab_JpsiMassConstrained1_resubmit1_dset0
+								SUBMITTED
+INFO 2026-03-09 09:57:56.295 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.295 UTC: 	 260223_192426:psajdak_crab_JpsiMassConstrained1_resubmit1_dset6
+								SUBMITTED
+INFO 2026-03-09 09:57:56.295 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.295 UTC: 	 260223_192403:psajdak_crab_JpsiMassConstrained1_resubmit1_dset5
+								SUBMITTED
+INFO 2026-03-09 09:57:56.295 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.295 UTC: 	 260223_175605:psajdak_crab_JpsiMassConstrained1_resubmit_dset6
+								SUBMITTED
+INFO 2026-03-09 09:57:56.295 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.295 UTC: 	 260223_175550:psajdak_crab_JpsiMassConstrained1_resubmit_dset5
+								SUBMITTED
+INFO 2026-03-09 09:57:56.295 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.295 UTC: 	 260223_175534:psajdak_crab_JpsiMassConstrained1_resubmit_dset3
+								SUBMITTED
+INFO 2026-03-09 09:57:56.295 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.296 UTC: 	 260223_175517:psajdak_crab_JpsiMassConstrained1_resubmit_dset1
+								SUBMITTED
+INFO 2026-03-09 09:57:56.296 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.296 UTC: 	 260223_175502:psajdak_crab_JpsiMassConstrained1_resubmit_dset0
+								SUBMITTED
+INFO 2026-03-09 09:57:56.296 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.296 UTC: 	 260223_175446:psajdak_crab_JpsiMassConstrained1_resubmit_dset7
+								SUBMITTED
+INFO 2026-03-09 09:57:56.296 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.296 UTC: 	 260223_175430:psajdak_crab_JpsiMassConstrained1_resubmit_dset6
+								SUBMITTED
+INFO 2026-03-09 09:57:56.296 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.296 UTC: 	 260223_175412:psajdak_crab_JpsiMassConstrained1_resubmit_dset5
+								SUBMITTED
+INFO 2026-03-09 09:57:56.296 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.296 UTC: 	 260223_175357:psajdak_crab_JpsiMassConstrained1_resubmit_dset4
+								SUBMITTED
+INFO 2026-03-09 09:57:56.296 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.296 UTC: 	 260223_175341:psajdak_crab_JpsiMassConstrained1_resubmit_dset3
+								SUBMITTED
+INFO 2026-03-09 09:57:56.296 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.296 UTC: 	 260223_175325:psajdak_crab_JpsiMassConstrained1_resubmit_dset0
+								SUBMITTED
+INFO 2026-03-09 09:57:56.296 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.296 UTC: 	 260223_173730:psajdak_crab_JpsiMassConstrained0_resubmit1_dset2
+								SUBMITTED
+INFO 2026-03-09 09:57:56.297 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.297 UTC: 	 260223_172708:psajdak_crab_JpsiMassConstrained0_resubmit1_dset3
+								SUBMITTED
+INFO 2026-03-09 09:57:56.297 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.297 UTC: 	 260223_132041:psajdak_crab_JpsiMassConstrained1_dset7
+								SUBMITTED
+INFO 2026-03-09 09:57:56.297 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.297 UTC: 	 260223_132023:psajdak_crab_JpsiMassConstrained1_dset6
+								SUBMITTED
+INFO 2026-03-09 09:57:56.297 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.297 UTC: 	 260223_131955:psajdak_crab_JpsiMassConstrained1_dset5
+								SUBMITTED
+INFO 2026-03-09 09:57:56.297 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.297 UTC: 	 260223_131936:psajdak_crab_JpsiMassConstrained1_dset4
+								SUBMITTED
+INFO 2026-03-09 09:57:56.297 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.297 UTC: 	 260223_131918:psajdak_crab_JpsiMassConstrained1_dset3
+								SUBMITTED
+INFO 2026-03-09 09:57:56.297 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.297 UTC: 	 260223_131900:psajdak_crab_JpsiMassConstrained1_dset2
+								SUBMITTED
+INFO 2026-03-09 09:57:56.297 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.298 UTC: 	 260223_131843:psajdak_crab_JpsiMassConstrained1_dset1
+								SUBMITTED
+INFO 2026-03-09 09:57:56.298 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.298 UTC: 	 260223_131827:psajdak_crab_JpsiMassConstrained1_dset0
+								SUBMITTED
+INFO 2026-03-09 09:57:56.298 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.298 UTC: 	 260223_131558:psajdak_crab_JpsiMassConstrained0_resubmit_dset7
+								SUBMITTED
+INFO 2026-03-09 09:57:56.298 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.298 UTC: 	 260223_131542:psajdak_crab_JpsiMassConstrained0_resubmit_dset3
+								SUBMITTED
+INFO 2026-03-09 09:57:56.298 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.298 UTC: 	 260223_131525:psajdak_crab_JpsiMassConstrained0_resubmit_dset2
+								SUBMITTED
+INFO 2026-03-09 09:57:56.298 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.298 UTC: 	 260223_130830:psajdak_crab_JpsiMassConstrained1_dset7
+								SUBMITTED
+INFO 2026-03-09 09:57:56.298 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.298 UTC: 	 260223_130815:psajdak_crab_JpsiMassConstrained1_dset6
+								SUBMITTED
+INFO 2026-03-09 09:57:56.298 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.298 UTC: 	 260223_130759:psajdak_crab_JpsiMassConstrained1_dset5
+								SUBMITTED
+INFO 2026-03-09 09:57:56.298 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.299 UTC: 	 260223_130743:psajdak_crab_JpsiMassConstrained1_dset4
+								SUBMITTED
+INFO 2026-03-09 09:57:56.299 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.299 UTC: 	 260223_130727:psajdak_crab_JpsiMassConstrained1_dset3
+								SUBMITTED
+INFO 2026-03-09 09:57:56.299 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.299 UTC: 	 260223_130711:psajdak_crab_JpsiMassConstrained1_dset2
+								SUBMITTED
+INFO 2026-03-09 09:57:56.299 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.299 UTC: 	 260223_130655:psajdak_crab_JpsiMassConstrained1_dset1
+								SUBMITTED
+INFO 2026-03-09 09:57:56.299 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.299 UTC: 	 260223_130640:psajdak_crab_JpsiMassConstrained1_dset0
+								SUBMITTED
+INFO 2026-03-09 09:57:56.299 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.299 UTC: 	 260222_211501:psajdak_crab_JpsiMassConstrained0_dset7
+								SUBMITREFUSED
+INFO 2026-03-09 09:57:56.299 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.299 UTC: 	 260222_211446:psajdak_crab_JpsiMassConstrained0_dset6
+								SUBMITREFUSED
+INFO 2026-03-09 09:57:56.299 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.299 UTC: 	 260222_211425:psajdak_crab_JpsiMassConstrained0_dset5
+								SUBMITREFUSED
+INFO 2026-03-09 09:57:56.300 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.300 UTC: 	 260222_211409:psajdak_crab_JpsiMassConstrained0_dset4
+								SUBMITREFUSED
+INFO 2026-03-09 09:57:56.300 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.300 UTC: 	 260222_211353:psajdak_crab_JpsiMassConstrained0_dset3
+								SUBMITREFUSED
+INFO 2026-03-09 09:57:56.300 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.300 UTC: 	 260222_211337:psajdak_crab_JpsiMassConstrained0_dset2
+								SUBMITREFUSED
+INFO 2026-03-09 09:57:56.300 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.300 UTC: 	 260222_211321:psajdak_crab_JpsiMassConstrained0_dset1
+								SUBMITREFUSED
+INFO 2026-03-09 09:57:56.300 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.300 UTC: 	 260222_211305:psajdak_crab_JpsiMassConstrained0_dset0
+								SUBMITREFUSED
+INFO 2026-03-09 09:57:56.300 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.300 UTC: 	 260222_211249:psajdak_crab_JpsiMassConstrained0_dset7
+								SUBMITREFUSED
+INFO 2026-03-09 09:57:56.300 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.300 UTC: 	 260222_211233:psajdak_crab_JpsiMassConstrained0_dset6
+								SUBMITREFUSED
+INFO 2026-03-09 09:57:56.300 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.301 UTC: 	 260222_211217:psajdak_crab_JpsiMassConstrained0_dset5
+								SUBMITREFUSED
+INFO 2026-03-09 09:57:56.301 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.301 UTC: 	 260222_211201:psajdak_crab_JpsiMassConstrained0_dset4
+								SUBMITREFUSED
+INFO 2026-03-09 09:57:56.301 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.301 UTC: 	 260222_211145:psajdak_crab_JpsiMassConstrained0_dset3
+								SUBMITREFUSED
+INFO 2026-03-09 09:57:56.301 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.301 UTC: 	 260222_211128:psajdak_crab_JpsiMassConstrained0_dset2
+								SUBMITREFUSED
+INFO 2026-03-09 09:57:56.301 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.301 UTC: 	 260222_211112:psajdak_crab_JpsiMassConstrained0_dset1
+								SUBMITREFUSED
+INFO 2026-03-09 09:57:56.301 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.301 UTC: 	 260222_211056:psajdak_crab_JpsiMassConstrained0_dset0
+								SUBMITREFUSED
+INFO 2026-03-09 09:57:56.301 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.301 UTC: 	 260222_210552:psajdak_crab_JpsiMassConstrained0_dset7
+								SUBMITTED
+INFO 2026-03-09 09:57:56.301 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.301 UTC: 	 260222_210535:psajdak_crab_JpsiMassConstrained0_dset6
+								SUBMITTED
+INFO 2026-03-09 09:57:56.301 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.302 UTC: 	 260222_210519:psajdak_crab_JpsiMassConstrained0_dset5
+								SUBMITTED
+INFO 2026-03-09 09:57:56.302 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.302 UTC: 	 260222_210502:psajdak_crab_JpsiMassConstrained0_dset4
+								SUBMITTED
+INFO 2026-03-09 09:57:56.302 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.302 UTC: 	 260222_210446:psajdak_crab_JpsiMassConstrained0_dset3
+								SUBMITTED
+INFO 2026-03-09 09:57:56.302 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.302 UTC: 	 260222_210429:psajdak_crab_JpsiMassConstrained0_dset2
+								SUBMITTED
+INFO 2026-03-09 09:57:56.302 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.302 UTC: 	 260222_210414:psajdak_crab_JpsiMassConstrained0_dset1
+								SUBMITTED
+INFO 2026-03-09 09:57:56.302 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.302 UTC: 	 260222_210358:psajdak_crab_JpsiMassConstrained0_dset0
+								SUBMITTED
+INFO 2026-03-09 09:57:56.302 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.302 UTC: 	 260220_131318:psajdak_crab_bsLifetime
+								SUBMITTED
+INFO 2026-03-09 09:57:56.302 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 09:57:56.302 UTC: 	 
+
+WARNING 2026-03-09 09:57:56.303 UTC: 	 ATTENTION return value for 'tasks' has been changed to a dictionary
+ format is {'commandStatus': 'SUCCESS' or 'FAILED',
+            'tasklist': list of [task, status] lists as before}
+INFO 2026-03-09 09:57:56.349 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-03-09 10:01:52.905 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-03-09 10:01:52.906 UTC: 	 Running on: Linux lxplus978.cern.ch 5.14.0-611.16.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sun Dec 7 05:52:24 EST 2025 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-03-09 10:01:52.906 UTC: 	 Not using Singularity
+DEBUG 2026-03-09 10:01:52.906 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-03-09 10:01:52.906 UTC: 	 Executing command: 'kill'
+DEBUG 2026-03-09 10:01:52.906 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+DEBUG 2026-03-09 10:04:15.810 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-03-09 10:04:15.810 UTC: 	 Running on: Linux lxplus978.cern.ch 5.14.0-611.16.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sun Dec 7 05:52:24 EST 2025 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-03-09 10:04:15.810 UTC: 	 Not using Singularity
+DEBUG 2026-03-09 10:04:15.810 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-03-09 10:04:15.810 UTC: 	 Executing command: 'status'
+DEBUG 2026-03-09 10:04:15.810 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-03-09 10:04:15.818 UTC: 	 Error: 24B_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset1 is not a valid CRAB project directory.
+ERROR 2026-03-09 10:04:15.818 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 24B_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset1 is not a valid CRAB project directory.
+INFO 2026-03-09 10:04:15.823 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-03-09 10:04:18.510 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-03-09 10:04:18.510 UTC: 	 Running on: Linux lxplus978.cern.ch 5.14.0-611.16.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sun Dec 7 05:52:24 EST 2025 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-03-09 10:04:18.511 UTC: 	 Not using Singularity
+DEBUG 2026-03-09 10:04:18.511 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-03-09 10:04:18.511 UTC: 	 Executing command: 'status'
+DEBUG 2026-03-09 10:04:18.511 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-03-09 10:04:18.513 UTC: 	 Error: 24B_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset2 is not a valid CRAB project directory.
+ERROR 2026-03-09 10:04:18.513 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 24B_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset2 is not a valid CRAB project directory.
+INFO 2026-03-09 10:04:18.519 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-03-09 10:04:27.420 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-03-09 10:04:27.420 UTC: 	 Running on: Linux lxplus978.cern.ch 5.14.0-611.16.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sun Dec 7 05:52:24 EST 2025 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-03-09 10:04:27.420 UTC: 	 Not using Singularity
+DEBUG 2026-03-09 10:04:27.420 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-03-09 10:04:27.420 UTC: 	 Executing command: 'status'
+DEBUG 2026-03-09 10:04:27.420 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-03-09 10:04:27.422 UTC: 	 Error: 24B_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset4 is not a valid CRAB project directory.
+ERROR 2026-03-09 10:04:27.422 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 24B_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset4 is not a valid CRAB project directory.
+INFO 2026-03-09 10:04:27.429 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-03-09 10:04:29.935 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-03-09 10:04:29.936 UTC: 	 Running on: Linux lxplus978.cern.ch 5.14.0-611.16.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sun Dec 7 05:52:24 EST 2025 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-03-09 10:04:29.936 UTC: 	 Not using Singularity
+DEBUG 2026-03-09 10:04:29.936 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-03-09 10:04:29.936 UTC: 	 Executing command: 'status'
+DEBUG 2026-03-09 10:04:29.936 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-03-09 10:04:29.938 UTC: 	 Error: 24B_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset5 is not a valid CRAB project directory.
+ERROR 2026-03-09 10:04:29.938 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 24B_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset5 is not a valid CRAB project directory.
+INFO 2026-03-09 10:04:29.944 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-03-09 10:04:32.487 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-03-09 10:04:32.488 UTC: 	 Running on: Linux lxplus978.cern.ch 5.14.0-611.16.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sun Dec 7 05:52:24 EST 2025 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-03-09 10:04:32.488 UTC: 	 Not using Singularity
+DEBUG 2026-03-09 10:04:32.488 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-03-09 10:04:32.488 UTC: 	 Executing command: 'status'
+DEBUG 2026-03-09 10:04:32.488 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-03-09 10:04:32.490 UTC: 	 Error: 24B_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset6 is not a valid CRAB project directory.
+ERROR 2026-03-09 10:04:32.491 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 24B_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset6 is not a valid CRAB project directory.
+INFO 2026-03-09 10:04:32.496 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-03-09 10:04:34.972 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-03-09 10:04:34.973 UTC: 	 Running on: Linux lxplus978.cern.ch 5.14.0-611.16.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sun Dec 7 05:52:24 EST 2025 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-03-09 10:04:34.973 UTC: 	 Not using Singularity
+DEBUG 2026-03-09 10:04:34.973 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-03-09 10:04:34.973 UTC: 	 Executing command: 'status'
+DEBUG 2026-03-09 10:04:34.973 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-03-09 10:04:34.975 UTC: 	 Error: 24B_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset7 is not a valid CRAB project directory.
+ERROR 2026-03-09 10:04:34.975 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 24B_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset7 is not a valid CRAB project directory.
+INFO 2026-03-09 10:04:34.980 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-03-09 10:04:42.239 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-03-09 10:04:42.240 UTC: 	 Running on: Linux lxplus978.cern.ch 5.14.0-611.16.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sun Dec 7 05:52:24 EST 2025 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-03-09 10:04:42.240 UTC: 	 Not using Singularity
+DEBUG 2026-03-09 10:04:42.240 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-03-09 10:04:42.240 UTC: 	 Executing command: 'status'
+DEBUG 2026-03-09 10:04:42.240 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-03-09 10:04:42.242 UTC: 	 Error: 24C_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset1 is not a valid CRAB project directory.
+ERROR 2026-03-09 10:04:42.242 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 24C_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset1 is not a valid CRAB project directory.
+INFO 2026-03-09 10:04:42.250 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-03-09 10:04:44.555 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-03-09 10:04:44.555 UTC: 	 Running on: Linux lxplus978.cern.ch 5.14.0-611.16.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sun Dec 7 05:52:24 EST 2025 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-03-09 10:04:44.556 UTC: 	 Not using Singularity
+DEBUG 2026-03-09 10:04:44.556 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-03-09 10:04:44.556 UTC: 	 Executing command: 'status'
+DEBUG 2026-03-09 10:04:44.556 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-03-09 10:04:44.712 UTC: 	 Error: 24C_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset2 is not a valid CRAB project directory.
+ERROR 2026-03-09 10:04:44.712 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 24C_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset2 is not a valid CRAB project directory.
+INFO 2026-03-09 10:04:44.736 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-03-09 10:04:46.908 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-03-09 10:04:46.908 UTC: 	 Running on: Linux lxplus978.cern.ch 5.14.0-611.16.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sun Dec 7 05:52:24 EST 2025 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-03-09 10:04:46.908 UTC: 	 Not using Singularity
+DEBUG 2026-03-09 10:04:46.908 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-03-09 10:04:46.909 UTC: 	 Executing command: 'status'
+DEBUG 2026-03-09 10:04:46.909 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-03-09 10:04:46.911 UTC: 	 Error: 24C_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset3 is not a valid CRAB project directory.
+ERROR 2026-03-09 10:04:46.911 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 24C_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset3 is not a valid CRAB project directory.
+INFO 2026-03-09 10:04:46.916 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-03-09 10:04:58.964 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-03-09 10:04:58.964 UTC: 	 Running on: Linux lxplus978.cern.ch 5.14.0-611.16.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sun Dec 7 05:52:24 EST 2025 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-03-09 10:04:58.964 UTC: 	 Not using Singularity
+DEBUG 2026-03-09 10:04:58.964 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-03-09 10:04:58.964 UTC: 	 Executing command: 'status'
+DEBUG 2026-03-09 10:04:58.964 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-03-09 10:04:58.967 UTC: 	 Error: 24C_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset6 is not a valid CRAB project directory.
+ERROR 2026-03-09 10:04:58.967 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 24C_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset6 is not a valid CRAB project directory.
+INFO 2026-03-09 10:04:58.973 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-03-09 10:05:16.966 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-03-09 10:05:16.966 UTC: 	 Running on: Linux lxplus978.cern.ch 5.14.0-611.16.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sun Dec 7 05:52:24 EST 2025 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-03-09 10:05:16.966 UTC: 	 Not using Singularity
+DEBUG 2026-03-09 10:05:16.966 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-03-09 10:05:16.966 UTC: 	 Executing command: 'status'
+DEBUG 2026-03-09 10:05:16.966 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-03-09 10:05:16.969 UTC: 	 Error: 24D_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset2 is not a valid CRAB project directory.
+ERROR 2026-03-09 10:05:16.970 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 24D_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset2 is not a valid CRAB project directory.
+INFO 2026-03-09 10:05:16.975 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-03-09 10:05:33.927 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-03-09 10:05:33.927 UTC: 	 Running on: Linux lxplus978.cern.ch 5.14.0-611.16.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sun Dec 7 05:52:24 EST 2025 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-03-09 10:05:33.928 UTC: 	 Not using Singularity
+DEBUG 2026-03-09 10:05:33.928 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-03-09 10:05:33.928 UTC: 	 Executing command: 'status'
+DEBUG 2026-03-09 10:05:33.928 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-03-09 10:05:33.929 UTC: 	 Error: 24D_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset6 is not a valid CRAB project directory.
+ERROR 2026-03-09 10:05:33.930 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 24D_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset6 is not a valid CRAB project directory.
+INFO 2026-03-09 10:05:33.934 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-03-09 10:05:36.057 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-03-09 10:05:36.057 UTC: 	 Running on: Linux lxplus978.cern.ch 5.14.0-611.16.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sun Dec 7 05:52:24 EST 2025 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-03-09 10:05:36.057 UTC: 	 Not using Singularity
+DEBUG 2026-03-09 10:05:36.057 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-03-09 10:05:36.057 UTC: 	 Executing command: 'status'
+DEBUG 2026-03-09 10:05:36.057 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-03-09 10:05:36.060 UTC: 	 Error: 24D_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset7 is not a valid CRAB project directory.
+ERROR 2026-03-09 10:05:36.060 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 24D_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset7 is not a valid CRAB project directory.
+INFO 2026-03-09 10:05:36.066 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-03-09 13:22:52.883 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-03-09 13:22:52.883 UTC: 	 Running on: Linux lxplus978.cern.ch 5.14.0-611.16.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sun Dec 7 05:52:24 EST 2025 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-03-09 13:22:52.884 UTC: 	 Not using Singularity
+DEBUG 2026-03-09 13:22:52.884 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-03-09 13:22:52.884 UTC: 	 Executing command: 'status'
+DEBUG 2026-03-09 13:22:52.884 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-03-09 13:22:52.888 UTC: 	 Error: 24B_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset1 is not a valid CRAB project directory.
+ERROR 2026-03-09 13:22:52.889 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 24B_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset1 is not a valid CRAB project directory.
+INFO 2026-03-09 13:22:52.902 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-03-09 13:22:56.105 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-03-09 13:22:56.105 UTC: 	 Running on: Linux lxplus978.cern.ch 5.14.0-611.16.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sun Dec 7 05:52:24 EST 2025 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-03-09 13:22:56.105 UTC: 	 Not using Singularity
+DEBUG 2026-03-09 13:22:56.105 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-03-09 13:22:56.105 UTC: 	 Executing command: 'status'
+DEBUG 2026-03-09 13:22:56.106 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-03-09 13:22:56.109 UTC: 	 Error: 24B_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset2 is not a valid CRAB project directory.
+ERROR 2026-03-09 13:22:56.110 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 24B_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset2 is not a valid CRAB project directory.
+INFO 2026-03-09 13:22:56.122 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-03-09 13:23:05.395 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-03-09 13:23:05.395 UTC: 	 Running on: Linux lxplus978.cern.ch 5.14.0-611.16.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sun Dec 7 05:52:24 EST 2025 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-03-09 13:23:05.395 UTC: 	 Not using Singularity
+DEBUG 2026-03-09 13:23:05.395 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-03-09 13:23:05.395 UTC: 	 Executing command: 'status'
+DEBUG 2026-03-09 13:23:05.395 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-03-09 13:23:05.398 UTC: 	 Error: 24B_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset4 is not a valid CRAB project directory.
+ERROR 2026-03-09 13:23:05.398 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 24B_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset4 is not a valid CRAB project directory.
+INFO 2026-03-09 13:23:05.406 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-03-09 13:23:08.680 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-03-09 13:23:08.681 UTC: 	 Running on: Linux lxplus978.cern.ch 5.14.0-611.16.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sun Dec 7 05:52:24 EST 2025 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-03-09 13:23:08.681 UTC: 	 Not using Singularity
+DEBUG 2026-03-09 13:23:08.681 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-03-09 13:23:08.681 UTC: 	 Executing command: 'status'
+DEBUG 2026-03-09 13:23:08.681 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-03-09 13:23:08.684 UTC: 	 Error: 24B_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset5 is not a valid CRAB project directory.
+ERROR 2026-03-09 13:23:08.685 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 24B_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset5 is not a valid CRAB project directory.
+INFO 2026-03-09 13:23:08.695 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-03-09 13:23:11.690 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-03-09 13:23:11.690 UTC: 	 Running on: Linux lxplus978.cern.ch 5.14.0-611.16.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sun Dec 7 05:52:24 EST 2025 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-03-09 13:23:11.690 UTC: 	 Not using Singularity
+DEBUG 2026-03-09 13:23:11.690 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-03-09 13:23:11.690 UTC: 	 Executing command: 'status'
+DEBUG 2026-03-09 13:23:11.690 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-03-09 13:23:11.693 UTC: 	 Error: 24B_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset6 is not a valid CRAB project directory.
+ERROR 2026-03-09 13:23:11.694 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 24B_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset6 is not a valid CRAB project directory.
+INFO 2026-03-09 13:23:11.700 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-03-09 13:23:14.619 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-03-09 13:23:14.620 UTC: 	 Running on: Linux lxplus978.cern.ch 5.14.0-611.16.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sun Dec 7 05:52:24 EST 2025 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-03-09 13:23:14.620 UTC: 	 Not using Singularity
+DEBUG 2026-03-09 13:23:14.620 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-03-09 13:23:14.620 UTC: 	 Executing command: 'status'
+DEBUG 2026-03-09 13:23:14.620 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-03-09 13:23:14.622 UTC: 	 Error: 24B_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset7 is not a valid CRAB project directory.
+ERROR 2026-03-09 13:23:14.623 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 24B_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset7 is not a valid CRAB project directory.
+INFO 2026-03-09 13:23:14.629 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-03-09 13:23:23.539 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-03-09 13:23:23.539 UTC: 	 Running on: Linux lxplus978.cern.ch 5.14.0-611.16.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sun Dec 7 05:52:24 EST 2025 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-03-09 13:23:23.539 UTC: 	 Not using Singularity
+DEBUG 2026-03-09 13:23:23.539 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-03-09 13:23:23.539 UTC: 	 Executing command: 'status'
+DEBUG 2026-03-09 13:23:23.540 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-03-09 13:23:23.543 UTC: 	 Error: 24C_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset1 is not a valid CRAB project directory.
+ERROR 2026-03-09 13:23:23.544 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 24C_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset1 is not a valid CRAB project directory.
+INFO 2026-03-09 13:23:23.551 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-03-09 13:23:26.776 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-03-09 13:23:26.776 UTC: 	 Running on: Linux lxplus978.cern.ch 5.14.0-611.16.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sun Dec 7 05:52:24 EST 2025 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-03-09 13:23:26.776 UTC: 	 Not using Singularity
+DEBUG 2026-03-09 13:23:26.777 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-03-09 13:23:26.777 UTC: 	 Executing command: 'status'
+DEBUG 2026-03-09 13:23:26.777 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-03-09 13:23:26.779 UTC: 	 Error: 24C_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset2 is not a valid CRAB project directory.
+ERROR 2026-03-09 13:23:26.779 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 24C_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset2 is not a valid CRAB project directory.
+INFO 2026-03-09 13:23:26.787 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-03-09 13:23:29.745 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-03-09 13:23:29.746 UTC: 	 Running on: Linux lxplus978.cern.ch 5.14.0-611.16.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sun Dec 7 05:52:24 EST 2025 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-03-09 13:23:29.746 UTC: 	 Not using Singularity
+DEBUG 2026-03-09 13:23:29.746 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-03-09 13:23:29.746 UTC: 	 Executing command: 'status'
+DEBUG 2026-03-09 13:23:29.746 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-03-09 13:23:29.749 UTC: 	 Error: 24C_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset3 is not a valid CRAB project directory.
+ERROR 2026-03-09 13:23:29.749 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 24C_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset3 is not a valid CRAB project directory.
+INFO 2026-03-09 13:23:29.756 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-03-09 13:23:45.629 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-03-09 13:23:45.629 UTC: 	 Running on: Linux lxplus978.cern.ch 5.14.0-611.16.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sun Dec 7 05:52:24 EST 2025 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-03-09 13:23:45.629 UTC: 	 Not using Singularity
+DEBUG 2026-03-09 13:23:45.629 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-03-09 13:23:45.629 UTC: 	 Executing command: 'status'
+DEBUG 2026-03-09 13:23:45.630 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-03-09 13:23:45.632 UTC: 	 Error: 24C_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset6 is not a valid CRAB project directory.
+ERROR 2026-03-09 13:23:45.633 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 24C_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset6 is not a valid CRAB project directory.
+INFO 2026-03-09 13:23:45.639 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-03-09 13:24:06.453 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-03-09 13:24:06.453 UTC: 	 Running on: Linux lxplus978.cern.ch 5.14.0-611.16.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sun Dec 7 05:52:24 EST 2025 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-03-09 13:24:06.453 UTC: 	 Not using Singularity
+DEBUG 2026-03-09 13:24:06.453 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-03-09 13:24:06.453 UTC: 	 Executing command: 'status'
+DEBUG 2026-03-09 13:24:06.453 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-03-09 13:24:06.456 UTC: 	 Error: 24D_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset2 is not a valid CRAB project directory.
+ERROR 2026-03-09 13:24:06.456 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 24D_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset2 is not a valid CRAB project directory.
+INFO 2026-03-09 13:24:06.467 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-03-09 13:24:28.783 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-03-09 13:24:28.783 UTC: 	 Running on: Linux lxplus978.cern.ch 5.14.0-611.16.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sun Dec 7 05:52:24 EST 2025 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-03-09 13:24:28.783 UTC: 	 Not using Singularity
+DEBUG 2026-03-09 13:24:28.783 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-03-09 13:24:28.783 UTC: 	 Executing command: 'status'
+DEBUG 2026-03-09 13:24:28.784 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-03-09 13:24:28.786 UTC: 	 Error: 24D_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset6 is not a valid CRAB project directory.
+ERROR 2026-03-09 13:24:28.786 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 24D_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset6 is not a valid CRAB project directory.
+INFO 2026-03-09 13:24:28.796 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-03-09 13:24:33.709 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-03-09 13:24:33.709 UTC: 	 Running on: Linux lxplus978.cern.ch 5.14.0-611.16.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sun Dec 7 05:52:24 EST 2025 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-03-09 13:24:33.709 UTC: 	 Not using Singularity
+DEBUG 2026-03-09 13:24:33.709 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-03-09 13:24:33.709 UTC: 	 Executing command: 'status'
+DEBUG 2026-03-09 13:24:33.709 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-03-09 13:24:33.711 UTC: 	 Error: 24D_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset7 is not a valid CRAB project directory.
+ERROR 2026-03-09 13:24:33.712 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 24D_JpsiMassG_resub_BsToJpsiGamma/crab_JpsiMassG_resub_dset7 is not a valid CRAB project directory.
+INFO 2026-03-09 13:24:33.722 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-03-09 13:29:45.261 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-03-09 13:29:45.261 UTC: 	 Running on: Linux lxplus978.cern.ch 5.14.0-611.16.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sun Dec 7 05:52:24 EST 2025 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-03-09 13:29:45.261 UTC: 	 Not using Singularity
+DEBUG 2026-03-09 13:29:45.261 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-03-09 13:29:45.261 UTC: 	 Executing command: 'tasks'
+DEBUG 2026-03-09 13:29:45.262 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+DEBUG 2026-03-09 13:29:45.263 UTC: 	 Checking credentials
+DEBUG 2026-03-09 13:29:45.263 UTC: 	 Found proxy file /tmp/x509up_u183200
+DEBUG 2026-03-09 13:29:45.263 UTC: 	 Making sure it has proper VOMS extension
+DEBUG 2026-03-09 13:29:45.263 UTC: 	 Executing command :
+ voms-proxy-info --vo --file /tmp/x509up_u183200
+DEBUG 2026-03-09 13:29:45.292 UTC: 	 output : cms
+
+ error: 
+ retcode : 0
+DEBUG 2026-03-09 13:29:45.292 UTC: 	 Getting proxy life time left
+DEBUG 2026-03-09 13:29:45.292 UTC: 	 Executing command :
+ voms-proxy-info --actimeleft --timeleft --file /tmp/x509up_u183200
+DEBUG 2026-03-09 13:29:45.317 UTC: 	 output : 675670
+675670
+
+ error: 
+ retcode : 0
+DEBUG 2026-03-09 13:29:45.317 UTC: 	 Proxy valid for 187:41:10 hours
+DEBUG 2026-03-09 13:29:45.318 UTC: 	 Encoded data for curl request: subresource=delegatedn
+DEBUG 2026-03-09 13:29:45.384 UTC: 	 Registering user credentials on myproxy for /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=cmscrab/CN=(817881|373708)/CN=Robot: cms crab|/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=crabint1/CN=373708/CN=Robot: CMS CRAB Integration 1
+DEBUG 2026-03-09 13:29:45.385 UTC: 	 Executing command :
+ voms-proxy-info --identity --file /tmp/x509up_u183200
+DEBUG 2026-03-09 13:29:45.417 UTC: 	 output : /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=psajdak/CN=887534/CN=Pawel Sajdak
+
+ error: 
+ retcode : 0
+DEBUG 2026-03-09 13:29:45.417 UTC: 	 Getting myproxy life time left for 2ad9106fd7ae4a9b1ce4cb184f94cae618d249f1
+DEBUG 2026-03-09 13:29:45.417 UTC: 	 Executing command :
+ myproxy-info -s myproxy.cern.ch -l 2ad9106fd7ae4a9b1ce4cb184f94cae618d249f1
+DEBUG 2026-03-09 13:29:45.690 UTC: 	 output : username: 2ad9106fd7ae4a9b1ce4cb184f94cae618d249f1
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=psajdak/CN=887534/CN=Pawel Sajdak
+  renewal policy: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=cmscrab/CN=(817881|373708)/CN=Robot: cms crab|/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=crabint1/CN=373708/CN=Robot: CMS CRAB Integration 1
+  trusted retrieval policy: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=cmscrab/CN=(817881|373708)/CN=Robot: cms crab|/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=crabint1/CN=373708/CN=Robot: CMS CRAB Integration 1
+  timeleft: 702:42:46  (29.3 days)
+
+ error: 
+ retcode : 0
+DEBUG 2026-03-09 13:29:45.691 UTC: 	 Myproxy is valid: 2529720
+DEBUG 2026-03-09 13:29:45.691 UTC: 	 Result of myproxy credential check:
+  Credential exists on myproxy: username: 2ad9106fd7ae4a9b1ce4cb184f94cae618d249f1  - validity: 29 days, 6:42:00
+DEBUG 2026-03-09 13:29:45.691 UTC: 	 Command use: tasks
+DEBUG 2026-03-09 13:29:45.691 UTC: 	 Options use: []
+DEBUG 2026-03-09 13:29:45.691 UTC: 	 Encoded data for curl request: subresource=version
+DEBUG 2026-03-09 13:29:45.753 UTC: 	 CRABClient version: v3.251020
+DEBUG 2026-03-09 13:29:45.753 UTC: 	 Instance is prod
+DEBUG 2026-03-09 13:29:45.753 UTC: 	 Server base url is cmsweb.cern.ch
+DEBUG 2026-03-09 13:29:45.753 UTC: 	 Command api workflow
+DEBUG 2026-03-09 13:29:45.753 UTC: 	 Encoded data for curl request: timestamp=2026-02-07
+INFO 2026-03-09 13:29:45.916 UTC: 	 
+List of tasks from 2026-02-07 until 2026-03-09
+INFO 2026-03-09 13:29:45.916 UTC: 	 Beware that STATUS here does not include information from grid jobs
+INFO 2026-03-09 13:29:45.916 UTC: 	 ================================================================================
+INFO 2026-03-09 13:29:45.916 UTC: 	 NAME								STATUS
+INFO 2026-03-09 13:29:45.916 UTC: 	 ================================================================================
+INFO 2026-03-09 13:29:45.917 UTC: 	 260309_101513:psajdak_crab_JpsiMassG_vol2_dset7
+								SUBMITTED
+INFO 2026-03-09 13:29:45.917 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.917 UTC: 	 260309_101440:psajdak_crab_JpsiMassG_vol2_dset6
+								SUBMITTED
+INFO 2026-03-09 13:29:45.917 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.917 UTC: 	 260309_101408:psajdak_crab_JpsiMassG_vol2_dset5
+								SUBMITTED
+INFO 2026-03-09 13:29:45.917 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.917 UTC: 	 260309_101336:psajdak_crab_JpsiMassG_vol2_dset4
+								SUBMITTED
+INFO 2026-03-09 13:29:45.917 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.917 UTC: 	 260309_101304:psajdak_crab_JpsiMassG_vol2_dset3
+								SUBMITTED
+INFO 2026-03-09 13:29:45.917 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.918 UTC: 	 260309_101234:psajdak_crab_JpsiMassG_vol2_dset2
+								SUBMITTED
+INFO 2026-03-09 13:29:45.918 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.918 UTC: 	 260309_101152:psajdak_crab_JpsiMassG_vol2_dset1
+								SUBMITTED
+INFO 2026-03-09 13:29:45.918 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.918 UTC: 	 260309_101113:psajdak_crab_JpsiMassG_vol2_dset0
+								SUBMITTED
+INFO 2026-03-09 13:29:45.918 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.918 UTC: 	 260309_101043:psajdak_crab_JpsiMassG_vol1_dset7
+								SUBMITTED
+INFO 2026-03-09 13:29:45.918 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.918 UTC: 	 260309_101010:psajdak_crab_JpsiMassG_vol1_dset6
+								SUBMITTED
+INFO 2026-03-09 13:29:45.918 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.918 UTC: 	 260309_100937:psajdak_crab_JpsiMassG_vol1_dset5
+								SUBMITTED
+INFO 2026-03-09 13:29:45.918 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.918 UTC: 	 260309_100906:psajdak_crab_JpsiMassG_vol1_dset4
+								SUBMITTED
+INFO 2026-03-09 13:29:45.918 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.919 UTC: 	 260309_100835:psajdak_crab_JpsiMassG_vol1_dset3
+								SUBMITTED
+INFO 2026-03-09 13:29:45.919 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.919 UTC: 	 260309_100806:psajdak_crab_JpsiMassG_vol1_dset2
+								SUBMITTED
+INFO 2026-03-09 13:29:45.919 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.920 UTC: 	 260309_100736:psajdak_crab_JpsiMassG_vol1_dset1
+								SUBMITTED
+INFO 2026-03-09 13:29:45.920 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.920 UTC: 	 260309_100704:psajdak_crab_JpsiMassG_vol1_dset0
+								SUBMITTED
+INFO 2026-03-09 13:29:45.920 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.920 UTC: 	 260309_093107:psajdak_crab_JpsiMassG_resub_dset5
+								SUBMITTED
+INFO 2026-03-09 13:29:45.920 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.920 UTC: 	 260309_093020:psajdak_crab_JpsiMassG_resub_dset4
+								SUBMITTED
+INFO 2026-03-09 13:29:45.920 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.920 UTC: 	 260309_092936:psajdak_crab_JpsiMassG_resub_dset3
+								SUBMITTED
+INFO 2026-03-09 13:29:45.920 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.920 UTC: 	 260309_092903:psajdak_crab_JpsiMassG_resub_dset1
+								SUBMITTED
+INFO 2026-03-09 13:29:45.920 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.920 UTC: 	 260309_092833:psajdak_crab_JpsiMassG_resub_dset0
+								SUBMITTED
+INFO 2026-03-09 13:29:45.921 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.921 UTC: 	 260309_092803:psajdak_crab_JpsiMassG_resub_dset7
+								SUBMITTED
+INFO 2026-03-09 13:29:45.921 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.921 UTC: 	 260309_092734:psajdak_crab_JpsiMassG_resub_dset5
+								SUBMITTED
+INFO 2026-03-09 13:29:45.921 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.921 UTC: 	 260309_092702:psajdak_crab_JpsiMassG_resub_dset4
+								SUBMITTED
+INFO 2026-03-09 13:29:45.921 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.921 UTC: 	 260309_092631:psajdak_crab_JpsiMassG_resub_dset0
+								SUBMITTED
+INFO 2026-03-09 13:29:45.921 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.921 UTC: 	 260309_092600:psajdak_crab_JpsiMassG_resub_dset3
+								SUBMITTED
+INFO 2026-03-09 13:29:45.921 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.921 UTC: 	 260309_092530:psajdak_crab_JpsiMassG_resub_dset0
+								SUBMITTED
+INFO 2026-03-09 13:29:45.922 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.922 UTC: 	 260308_203837:psajdak_crab_JpsiMassG_dset7
+								SUBMITTED
+INFO 2026-03-09 13:29:45.922 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.922 UTC: 	 260308_203806:psajdak_crab_JpsiMassG_dset6
+								SUBMITTED
+INFO 2026-03-09 13:29:45.922 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.922 UTC: 	 260308_203735:psajdak_crab_JpsiMassG_dset5
+								SUBMITTED
+INFO 2026-03-09 13:29:45.922 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.922 UTC: 	 260308_203706:psajdak_crab_JpsiMassG_dset4
+								SUBMITTED
+INFO 2026-03-09 13:29:45.922 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.922 UTC: 	 260308_203638:psajdak_crab_JpsiMassG_dset3
+								SUBMITTED
+INFO 2026-03-09 13:29:45.922 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.922 UTC: 	 260308_203611:psajdak_crab_JpsiMassG_dset2
+								SUBMITTED
+INFO 2026-03-09 13:29:45.922 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.923 UTC: 	 260308_203542:psajdak_crab_JpsiMassG_dset1
+								SUBMITTED
+INFO 2026-03-09 13:29:45.925 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.926 UTC: 	 260308_203446:psajdak_crab_JpsiMassG_dset0
+								SUBMITTED
+INFO 2026-03-09 13:29:45.926 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.926 UTC: 	 260308_203415:psajdak_crab_JpsiMassG_dset7
+								SUBMITTED
+INFO 2026-03-09 13:29:45.926 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.926 UTC: 	 260308_203344:psajdak_crab_JpsiMassG_dset6
+								SUBMITTED
+INFO 2026-03-09 13:29:45.926 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.926 UTC: 	 260308_203313:psajdak_crab_JpsiMassG_dset5
+								SUBMITTED
+INFO 2026-03-09 13:29:45.927 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.927 UTC: 	 260308_203245:psajdak_crab_JpsiMassG_dset4
+								SUBMITTED
+INFO 2026-03-09 13:29:45.927 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.927 UTC: 	 260308_203217:psajdak_crab_JpsiMassG_dset3
+								SUBMITTED
+INFO 2026-03-09 13:29:45.927 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.927 UTC: 	 260308_203146:psajdak_crab_JpsiMassG_dset2
+								SUBMITTED
+INFO 2026-03-09 13:29:45.928 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.928 UTC: 	 260308_203111:psajdak_crab_JpsiMassG_dset1
+								SUBMITTED
+INFO 2026-03-09 13:29:45.928 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.928 UTC: 	 260308_203034:psajdak_crab_JpsiMassG_dset0
+								SUBMITTED
+INFO 2026-03-09 13:29:45.928 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.928 UTC: 	 260308_201820:psajdak_crab_JpsiMassG_dset7
+								SUBMITTED
+INFO 2026-03-09 13:29:45.928 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.928 UTC: 	 260308_201744:psajdak_crab_JpsiMassG_dset6
+								SUBMITTED
+INFO 2026-03-09 13:29:45.928 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.928 UTC: 	 260308_201714:psajdak_crab_JpsiMassG_dset5
+								SUBMITTED
+INFO 2026-03-09 13:29:45.928 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.929 UTC: 	 260308_201644:psajdak_crab_JpsiMassG_dset4
+								SUBMITTED
+INFO 2026-03-09 13:29:45.929 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.929 UTC: 	 260308_201615:psajdak_crab_JpsiMassG_dset3
+								SUBMITTED
+INFO 2026-03-09 13:29:45.929 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.929 UTC: 	 260308_201547:psajdak_crab_JpsiMassG_dset2
+								SUBMITTED
+INFO 2026-03-09 13:29:45.929 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.929 UTC: 	 260308_201516:psajdak_crab_JpsiMassG_dset1
+								SUBMITTED
+INFO 2026-03-09 13:29:45.929 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.929 UTC: 	 260308_201442:psajdak_crab_JpsiMassG_dset0
+								SUBMITTED
+INFO 2026-03-09 13:29:45.929 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.929 UTC: 	 260304_095856:psajdak_crab_eventCount3
+								SUBMITTED
+INFO 2026-03-09 13:29:45.929 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.929 UTC: 	 260303_235533:psajdak_crab_eventCount2
+								SUBMITTED
+INFO 2026-03-09 13:29:45.930 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.930 UTC: 	 260303_215341:psajdak_crab_eventCount1
+								KILLED
+INFO 2026-03-09 13:29:45.930 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.930 UTC: 	 260303_210242:psajdak_crab_eventCount
+								SUBMITTED
+INFO 2026-03-09 13:29:45.930 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.930 UTC: 	 260302_215356:psajdak_crab_JpsiMassConstrained_hlt_fixed
+								SUBMITTED
+INFO 2026-03-09 13:29:45.930 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.930 UTC: 	 260302_203722:psajdak_crab_JpsiMassConstrained_hlt
+								SUBMITTED
+INFO 2026-03-09 13:29:45.930 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.930 UTC: 	 260226_140825:psajdak_crab_JpsiMassConstrained
+								SUBMITTED
+INFO 2026-03-09 13:29:45.931 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.931 UTC: 	 260224_151329:psajdak_crab_JpsiGtestAOD_dset0
+								KILLED
+INFO 2026-03-09 13:29:45.931 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.931 UTC: 	 260224_110601:psajdak_crab_JpsiMassConstrained1_resubmit3_dset6
+								SUBMITTED
+INFO 2026-03-09 13:29:45.931 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.931 UTC: 	 260223_214352:psajdak_crab_JpsiMassConstrained1_resubmit2_dset6
+								SUBMITTED
+INFO 2026-03-09 13:29:45.931 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.931 UTC: 	 260223_214330:psajdak_crab_JpsiMassConstrained1_resubmit2_dset0
+								SUBMITTED
+INFO 2026-03-09 13:29:45.931 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.931 UTC: 	 260223_194946:psajdak_crab_JpsiMassConstrained1_resubmit1_dset6
+								SUBMITTED
+INFO 2026-03-09 13:29:45.931 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.931 UTC: 	 260223_194923:psajdak_crab_JpsiMassConstrained1_resubmit1_dset0
+								SUBMITTED
+INFO 2026-03-09 13:29:45.931 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.931 UTC: 	 260223_192426:psajdak_crab_JpsiMassConstrained1_resubmit1_dset6
+								SUBMITTED
+INFO 2026-03-09 13:29:45.931 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.931 UTC: 	 260223_192403:psajdak_crab_JpsiMassConstrained1_resubmit1_dset5
+								SUBMITTED
+INFO 2026-03-09 13:29:45.931 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.932 UTC: 	 260223_175605:psajdak_crab_JpsiMassConstrained1_resubmit_dset6
+								SUBMITTED
+INFO 2026-03-09 13:29:45.932 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.932 UTC: 	 260223_175550:psajdak_crab_JpsiMassConstrained1_resubmit_dset5
+								SUBMITTED
+INFO 2026-03-09 13:29:45.932 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.932 UTC: 	 260223_175534:psajdak_crab_JpsiMassConstrained1_resubmit_dset3
+								SUBMITTED
+INFO 2026-03-09 13:29:45.932 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.932 UTC: 	 260223_175517:psajdak_crab_JpsiMassConstrained1_resubmit_dset1
+								SUBMITTED
+INFO 2026-03-09 13:29:45.932 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.932 UTC: 	 260223_175502:psajdak_crab_JpsiMassConstrained1_resubmit_dset0
+								SUBMITTED
+INFO 2026-03-09 13:29:45.932 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.932 UTC: 	 260223_175446:psajdak_crab_JpsiMassConstrained1_resubmit_dset7
+								SUBMITTED
+INFO 2026-03-09 13:29:45.932 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.932 UTC: 	 260223_175430:psajdak_crab_JpsiMassConstrained1_resubmit_dset6
+								SUBMITTED
+INFO 2026-03-09 13:29:45.932 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.932 UTC: 	 260223_175412:psajdak_crab_JpsiMassConstrained1_resubmit_dset5
+								SUBMITTED
+INFO 2026-03-09 13:29:45.932 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.933 UTC: 	 260223_175357:psajdak_crab_JpsiMassConstrained1_resubmit_dset4
+								SUBMITTED
+INFO 2026-03-09 13:29:45.933 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.933 UTC: 	 260223_175341:psajdak_crab_JpsiMassConstrained1_resubmit_dset3
+								SUBMITTED
+INFO 2026-03-09 13:29:45.933 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.933 UTC: 	 260223_175325:psajdak_crab_JpsiMassConstrained1_resubmit_dset0
+								SUBMITTED
+INFO 2026-03-09 13:29:45.933 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.933 UTC: 	 260223_173730:psajdak_crab_JpsiMassConstrained0_resubmit1_dset2
+								SUBMITTED
+INFO 2026-03-09 13:29:45.933 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.933 UTC: 	 260223_172708:psajdak_crab_JpsiMassConstrained0_resubmit1_dset3
+								SUBMITTED
+INFO 2026-03-09 13:29:45.933 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.933 UTC: 	 260223_132041:psajdak_crab_JpsiMassConstrained1_dset7
+								SUBMITTED
+INFO 2026-03-09 13:29:45.933 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.934 UTC: 	 260223_132023:psajdak_crab_JpsiMassConstrained1_dset6
+								SUBMITTED
+INFO 2026-03-09 13:29:45.934 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.934 UTC: 	 260223_131955:psajdak_crab_JpsiMassConstrained1_dset5
+								SUBMITTED
+INFO 2026-03-09 13:29:45.934 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.934 UTC: 	 260223_131936:psajdak_crab_JpsiMassConstrained1_dset4
+								SUBMITTED
+INFO 2026-03-09 13:29:45.934 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.934 UTC: 	 260223_131918:psajdak_crab_JpsiMassConstrained1_dset3
+								SUBMITTED
+INFO 2026-03-09 13:29:45.934 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.934 UTC: 	 260223_131900:psajdak_crab_JpsiMassConstrained1_dset2
+								SUBMITTED
+INFO 2026-03-09 13:29:45.934 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.934 UTC: 	 260223_131843:psajdak_crab_JpsiMassConstrained1_dset1
+								SUBMITTED
+INFO 2026-03-09 13:29:45.935 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.935 UTC: 	 260223_131827:psajdak_crab_JpsiMassConstrained1_dset0
+								SUBMITTED
+INFO 2026-03-09 13:29:45.935 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.935 UTC: 	 260223_131558:psajdak_crab_JpsiMassConstrained0_resubmit_dset7
+								SUBMITTED
+INFO 2026-03-09 13:29:45.935 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.935 UTC: 	 260223_131542:psajdak_crab_JpsiMassConstrained0_resubmit_dset3
+								SUBMITTED
+INFO 2026-03-09 13:29:45.935 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.935 UTC: 	 260223_131525:psajdak_crab_JpsiMassConstrained0_resubmit_dset2
+								SUBMITTED
+INFO 2026-03-09 13:29:45.935 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.935 UTC: 	 260223_130830:psajdak_crab_JpsiMassConstrained1_dset7
+								SUBMITTED
+INFO 2026-03-09 13:29:45.935 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.935 UTC: 	 260223_130815:psajdak_crab_JpsiMassConstrained1_dset6
+								SUBMITTED
+INFO 2026-03-09 13:29:45.935 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.935 UTC: 	 260223_130759:psajdak_crab_JpsiMassConstrained1_dset5
+								SUBMITTED
+INFO 2026-03-09 13:29:45.935 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.935 UTC: 	 260223_130743:psajdak_crab_JpsiMassConstrained1_dset4
+								SUBMITTED
+INFO 2026-03-09 13:29:45.936 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.936 UTC: 	 260223_130727:psajdak_crab_JpsiMassConstrained1_dset3
+								SUBMITTED
+INFO 2026-03-09 13:29:45.936 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.936 UTC: 	 260223_130711:psajdak_crab_JpsiMassConstrained1_dset2
+								SUBMITTED
+INFO 2026-03-09 13:29:45.936 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.936 UTC: 	 260223_130655:psajdak_crab_JpsiMassConstrained1_dset1
+								SUBMITTED
+INFO 2026-03-09 13:29:45.936 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.936 UTC: 	 260223_130640:psajdak_crab_JpsiMassConstrained1_dset0
+								SUBMITTED
+INFO 2026-03-09 13:29:45.936 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.936 UTC: 	 260222_211501:psajdak_crab_JpsiMassConstrained0_dset7
+								SUBMITREFUSED
+INFO 2026-03-09 13:29:45.936 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.936 UTC: 	 260222_211446:psajdak_crab_JpsiMassConstrained0_dset6
+								SUBMITREFUSED
+INFO 2026-03-09 13:29:45.936 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.937 UTC: 	 260222_211425:psajdak_crab_JpsiMassConstrained0_dset5
+								SUBMITREFUSED
+INFO 2026-03-09 13:29:45.937 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.937 UTC: 	 260222_211409:psajdak_crab_JpsiMassConstrained0_dset4
+								SUBMITREFUSED
+INFO 2026-03-09 13:29:45.937 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.937 UTC: 	 260222_211353:psajdak_crab_JpsiMassConstrained0_dset3
+								SUBMITREFUSED
+INFO 2026-03-09 13:29:45.937 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.937 UTC: 	 260222_211337:psajdak_crab_JpsiMassConstrained0_dset2
+								SUBMITREFUSED
+INFO 2026-03-09 13:29:45.937 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.937 UTC: 	 260222_211321:psajdak_crab_JpsiMassConstrained0_dset1
+								SUBMITREFUSED
+INFO 2026-03-09 13:29:45.937 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.937 UTC: 	 260222_211305:psajdak_crab_JpsiMassConstrained0_dset0
+								SUBMITREFUSED
+INFO 2026-03-09 13:29:45.937 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.937 UTC: 	 260222_211249:psajdak_crab_JpsiMassConstrained0_dset7
+								SUBMITREFUSED
+INFO 2026-03-09 13:29:45.937 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.937 UTC: 	 260222_211233:psajdak_crab_JpsiMassConstrained0_dset6
+								SUBMITREFUSED
+INFO 2026-03-09 13:29:45.938 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.938 UTC: 	 260222_211217:psajdak_crab_JpsiMassConstrained0_dset5
+								SUBMITREFUSED
+INFO 2026-03-09 13:29:45.938 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.938 UTC: 	 260222_211201:psajdak_crab_JpsiMassConstrained0_dset4
+								SUBMITREFUSED
+INFO 2026-03-09 13:29:45.938 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.938 UTC: 	 260222_211145:psajdak_crab_JpsiMassConstrained0_dset3
+								SUBMITREFUSED
+INFO 2026-03-09 13:29:45.938 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.938 UTC: 	 260222_211128:psajdak_crab_JpsiMassConstrained0_dset2
+								SUBMITREFUSED
+INFO 2026-03-09 13:29:45.938 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.938 UTC: 	 260222_211112:psajdak_crab_JpsiMassConstrained0_dset1
+								SUBMITREFUSED
+INFO 2026-03-09 13:29:45.939 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.939 UTC: 	 260222_211056:psajdak_crab_JpsiMassConstrained0_dset0
+								SUBMITREFUSED
+INFO 2026-03-09 13:29:45.939 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.939 UTC: 	 260222_210552:psajdak_crab_JpsiMassConstrained0_dset7
+								SUBMITTED
+INFO 2026-03-09 13:29:45.939 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.939 UTC: 	 260222_210535:psajdak_crab_JpsiMassConstrained0_dset6
+								SUBMITTED
+INFO 2026-03-09 13:29:45.939 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.939 UTC: 	 260222_210519:psajdak_crab_JpsiMassConstrained0_dset5
+								SUBMITTED
+INFO 2026-03-09 13:29:45.939 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.939 UTC: 	 260222_210502:psajdak_crab_JpsiMassConstrained0_dset4
+								SUBMITTED
+INFO 2026-03-09 13:29:45.939 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.939 UTC: 	 260222_210446:psajdak_crab_JpsiMassConstrained0_dset3
+								SUBMITTED
+INFO 2026-03-09 13:29:45.940 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.940 UTC: 	 260222_210429:psajdak_crab_JpsiMassConstrained0_dset2
+								SUBMITTED
+INFO 2026-03-09 13:29:45.940 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.940 UTC: 	 260222_210414:psajdak_crab_JpsiMassConstrained0_dset1
+								SUBMITTED
+INFO 2026-03-09 13:29:45.940 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.940 UTC: 	 260222_210358:psajdak_crab_JpsiMassConstrained0_dset0
+								SUBMITTED
+INFO 2026-03-09 13:29:45.940 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.940 UTC: 	 260220_131318:psajdak_crab_bsLifetime
+								SUBMITTED
+INFO 2026-03-09 13:29:45.940 UTC: 	 --------------------------------------------------------------------------------
+INFO 2026-03-09 13:29:45.940 UTC: 	 
+
+WARNING 2026-03-09 13:29:45.940 UTC: 	 ATTENTION return value for 'tasks' has been changed to a dictionary
+ format is {'commandStatus': 'SUCCESS' or 'FAILED',
+            'tasklist': list of [task, status] lists as before}
+INFO 2026-03-09 13:29:46.098 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-03-09 14:59:44.744 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-03-09 14:59:44.745 UTC: 	 Running on: Linux lxplus978.cern.ch 5.14.0-611.16.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sun Dec 7 05:52:24 EST 2025 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-03-09 14:59:44.745 UTC: 	 Not using Singularity
+DEBUG 2026-03-09 14:59:44.745 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-03-09 14:59:44.745 UTC: 	 Executing command: 'status'
+DEBUG 2026-03-09 14:59:44.745 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-03-09 14:59:45.061 UTC: 	 Error: 24H_JpsiMassG_imp_BsToJpsiGamma/crab_JpsiMassG_dset0 is not a valid CRAB project directory.
+ERROR 2026-03-09 14:59:45.062 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: [91mError[0m: 24H_JpsiMassG_imp_BsToJpsiGamma/crab_JpsiMassG_dset0 is not a valid CRAB project directory.
+INFO 2026-03-09 14:59:45.075 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
