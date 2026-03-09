@@ -18,7 +18,7 @@ process.options = cms.untracked.PSet(wantSummary = cms.untracked.bool(False))
 
 
 process.source = cms.Source('PoolSource', fileNames = cms.untracked.vstring(
-    "/store/data/Run2024C/ParkingDoubleMuonLowMass0/MINIAOD/PromptReco-v1/000/379/416/00000/0134a8bc-c8d4-400e-9508-2a4b222c5431.root"))
+    "/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToJpsiGamma_MCTunesRun3ECM13p6TeV/BsToJpsiGamma_CMSSW_12_4_11_patch3_19_01_2025/250119_174005/0000/private_BsToJpsiGamma_Run3_202.root"))
 process.source.skipEvents = cms.untracked.uint32(0)
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1))
 
@@ -30,8 +30,8 @@ process.load("Configuration.StandardSequences.Reconstruction_cff")
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_data', '')
-#process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_mc_FULL','')
+#process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_data', '')
+process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_mc_FULL','')
 
 
 process.dump=cms.EDAnalyzer('EventContentAnalyzer')

@@ -32,7 +32,7 @@ config.JobType.pluginName = 'Analysis'
 config.JobType.psetName = '../test/analysis.py'
 #config.JobType.disableAutomaticOutputCollection = True
 config.JobType.outputFiles = ['BsToJpsiGammaData.root']
-config.JobType.maxJobRuntimeMin = 60
+config.JobType.maxJobRuntimeMin = 480
 #config.JobType.maxMemoryMB = 3000
 
 config.section_("Site")

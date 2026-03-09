@@ -121,6 +121,45 @@ namespace Tools{
         return displ;
     }
 
+    // Lxy from the beam spot for a reco::Vertex
+    // neglect beam spot position error (compared to muons vertex positon error)
+    std::vector<double> beamSpotVertexLxy(const reco::BeamSpot& beamSpot, const reco::Vertex& vtx)
+    {
+      const math::XYZPoint bSpotPoint = beamSpot.position(vtx.z());
+      math::XYZVector displ3DVec = vtx.position() - bSpotPoint;
+      math::XYZVector displ2DVec (displ3DVec.x(), displ3DVec.y(), 0);
+      double sig2_d2 = 4*std::pow(vtx.x()-bSpotPoint.x(), 2)*vtx.covariance(0,0);
+      sig2_d2 += 4*std::pow(vtx.y()-bSpotPoint.y(), 2)*vtx.covariance(1,1);
+      sig2_d2 += 2*2*2*(vtx.x()-bSpotPoint.x())*(vtx.y()-bSpotPoint.y())*vtx.covariance(0,1);
+
+      double lXY_vtx_bSpot = TMath::Sqrt(displ2DVec.Mag2());
+      double lXY_vtx_bSpot_error = TMath::Sqrt(sig2_d2) / (2*lXY_vtx_bSpot);
+    
+      std::vector<double> outVector = {lXY_vtx_bSpot, lXY_vtx_bSpot_error};
+      return outVector;
+    }
+    // the same for a KinematicVertex
+    std::vector<double> beamSpotVertexLxy(const reco::BeamSpot& beamSpot, const KinematicVertex& vtx)
+    {
+        GlobalPoint vtxPosGP = vtx.position();
+        math::XYZPoint vtxPosPoint (vtxPosGP.x(),vtxPosGP.y(),vtxPosGP.z());
+        const AlgebraicSymMatrix33 vtxCovMatrix = vtx.error().matrix();
+
+        const math::XYZPoint bSpotPoint = beamSpot.position(vtxPosPoint.z());
+        math::XYZVector displ3DVec = vtxPosPoint - bSpotPoint;
+        math::XYZVector displ2DVec (displ3DVec.x(), displ3DVec.y(), 0);
+        double sig2_d2 = 4*std::pow(vtxPosPoint.x()-bSpotPoint.x(), 2)*vtxCovMatrix(0,0);
+        sig2_d2 += 4*std::pow(vtxPosPoint.y()-bSpotPoint.y(), 2)*vtxCovMatrix(1,1);
+        sig2_d2 += 2*2*2*(vtxPosPoint.x()-bSpotPoint.x())*(vtxPosPoint.y()-bSpotPoint.y())*vtxCovMatrix(0,1);
+
+        double lXY_vtx_bSpot = TMath::Sqrt(displ2DVec.Mag2());
+        double lXY_vtx_bSpot_error = TMath::Sqrt(sig2_d2) / (2*lXY_vtx_bSpot);
+    
+        std::vector<double> outVector = {lXY_vtx_bSpot, lXY_vtx_bSpot_error};
+        return outVector;
+    }
+    
+
 
     // find first produced B0s in MC sample
     const reco::Candidate* findFirstB0s(const reco::Candidate* partB0s)
@@ -200,25 +239,7 @@ namespace Tools{
       return maxVertexProb;
     }
 
-    // find the photon with the minimal deltaR wrt. the given lorentz vector
-    // however deltaR > minLimit
-    const pat::Photon* findPhotonWithMinDR (const std::vector<pat::Photon> & recoPhotons,
-                        math::XYZTLorentzVector & directionLV, double minLimit)
-    {
-        const pat::Photon* min_dR_photon = &recoPhotons.at(0);
-      double min_dR_val = 99.0;
-      for (const auto& photon : recoPhotons)
-      {
-        math::XYZTLorentzVector recoGammaLV = photon.p4();
-        double dR = reco::deltaR(recoGammaLV, directionLV);
-        if (dR < min_dR_val && dR > minLimit){
-          min_dR_photon = &photon;
-          min_dR_val = dR;
-        }
-      }
-
-      return min_dR_photon;
-    }
+    
 
 
 }

@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
-tag='JpsiMassConstrained1'
-run='24D'
+tag='JpsiMassG'
+run='24B'
 
 for i in {0..7} ; do
     crab submit --config='crabConfigData.py' General.requestName=${tag}_dset${i} \
