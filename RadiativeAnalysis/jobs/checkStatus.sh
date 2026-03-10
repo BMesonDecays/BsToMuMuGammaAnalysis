@@ -1,15 +1,9 @@
 #!/usr/bin/bash
 
-tag='JpsiMassG'
+tag='JpsiMassG_imp_resub1'
 
-run='24I'
+run='24G'
 
-vol=1
 for i in {0..7} ; do
-    crab status -d ${run}_${tag}_BsToJpsiGamma/crab_${tag}_vol${vol}_dset${i} >> status.txt
-done
-
-vol=2
-for i in {0..7} ; do
-    crab status -d ${run}_${tag}_BsToJpsiGamma/crab_${tag}_vol${vol}_dset${i} >> status.txt
+    crab status -d ${run}_${tag}_BsToJpsiGamma/crab_${tag}_dset${i} >> status.txt
 done

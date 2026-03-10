@@ -6,12 +6,12 @@ nEvents = -1
 
 config = config()
 
-config.General.requestName = 'eventCount3'
+config.General.requestName = 'photonDirMod'
 config.General.workArea = 'BsToJpsiGamma_MC'
 config.General.transferOutputs = True
 
 config.JobType.pluginName = 'ANALYSIS'
-config.JobType.psetName = '../test/analysis.py'
+config.JobType.psetName = '../test/analysisMC.py'
 config.JobType.outputFiles = [outputFileName]
 #config.JobType.pyCfgParams = [f'outputFile={outputFileName}', f'nEvents={nEvents}']
 config.JobType.numCores = 1
@@ -22,7 +22,7 @@ config.Data.unitsPerJob     = 15
 config.Data.totalUnits      = 70000000
 config.Data.splitting       = 'FileBased'
 config.Data.publication = False
-config.Data.outputDatasetTag = 'BsToJpsiGamma_MC_eventCount'
+config.Data.outputDatasetTag = 'BsToJpsiGamma_MC_photonDirMod'
 config.Data.outputPrimaryDataset = 'BsToJpsiGamma_analysis_MC'
 
 config.Site.storageSite = 'T3_CH_CERNBOX'
