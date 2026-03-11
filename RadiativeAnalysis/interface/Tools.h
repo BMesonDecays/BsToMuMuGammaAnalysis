@@ -239,6 +239,33 @@ namespace Tools{
       return maxVertexProb;
     }
 
+    // for PFCandidates
+    double getMaxCompatibility (const std::vector<reco::PFCandidate> & packedCandidates,
+                                reco::TrackRef mu1Track, reco::TrackRef mu2Track, const MagneticField & field,
+                                std::vector<reco::TransientTrack> & trackTTs)
+    {
+        KalmanVertexFitter kvf(false);
+      double maxVertexProb = 0.0;
+      for (std::vector<reco::PFCandidate>::const_iterator icand = packedCandidates.begin(); icand < packedCandidates.end(); icand++)
+      {
+        if (icand->bestTrack() == nullptr) continue;
+        const reco::Track* candTrack = icand->bestTrack();
+
+        // deltaR check to eliminate the already used two muons
+        if(std::min(reco::deltaR(*candTrack,*mu1Track),reco::deltaR(*candTrack,*mu2Track))<0.0003) continue;
+
+        reco::TransientTrack candTT = reco::TransientTrack(*candTrack, &field);
+        trackTTs.push_back(candTT);
+        reco::Vertex v3part (TransientVertex(kvf.vertex(trackTTs)));
+        double prob3part = TMath::Prob(v3part.chi2(),v3part.ndof());
+        if (prob3part > maxVertexProb)
+          maxVertexProb = prob3part;
+        
+        trackTTs.pop_back();
+      }
+      return maxVertexProb;
+    }
+
     
 
 

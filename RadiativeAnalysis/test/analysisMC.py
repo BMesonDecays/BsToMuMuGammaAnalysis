@@ -33,7 +33,7 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_mc_FULL','')
 
 
-process.analiza= cms.EDAnalyzer("PhotonDirJpsiG_MC",
+process.analiza= cms.EDAnalyzer("JpsiMassG_MC",
   outHist = cms.string('BsToJpsiGammaMC.root'),
 )
 

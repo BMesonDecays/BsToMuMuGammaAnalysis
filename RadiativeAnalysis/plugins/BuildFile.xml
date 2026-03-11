@@ -31,7 +31,7 @@
 
 
 
-<library name="PhotonDirJpsiG_MC" file="PhotonDirJpsiG_MC.cc">
+<library name="JpsiMassG_MC" file="JpsiMassG_MC.cc">
 </library>
 
 
