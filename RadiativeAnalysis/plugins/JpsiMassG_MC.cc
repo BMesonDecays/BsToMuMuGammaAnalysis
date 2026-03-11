@@ -159,7 +159,7 @@ void JpsiMassG_MC::beginJob()
 {
     hCompAll = new TH1D("hCompAll","Third candidate compatibility (one entry per candidate)",1000,0.,1.);
     tOut = new TNtupleD("tOut","Output tuple",
-        "twoMuonsMass:muonsKalmanVxProb:maxMuonsComp:fittedJpsiVxProb:lXY_twoMuons_bSpot:lXY_fittedJpsi_bSpot:dR_photon_twoMuons:dR_photon_Jpsi:twoMuonsPhotonMass:fittedJpsiPhotonMass:lXY_twoMuons_PV:lXY_fittedJpsi_PV:lXY_twoMuons_PV_sign:lXY_fittedJpsi_PV_sign:lXYZ_twoMuons_bestPV:lXYZ_fittedJpsi_bestPV:cosPointingAngle_twoMuons:cosPointingAngle_fittedJpsi:BsXYlifetime_twoMuons:BsXYlifetime_fittedJpsi");
+        "twoMuonsMass:muonsKalmanVxProb:maxMuonsComp:fittedJpsiVxProb:lXY_twoMuons_bSpot:lXY_fittedJpsi_bSpot:dR_photon_twoMuons:dR_photon_Jpsi:twoMuonsPhotonMass:fittedJpsiPhotonMass:lXY_twoMuons_PV:lXY_fittedJpsi_PV:lXY_twoMuons_PV_sign:lXY_fittedJpsi_PV_sign:lXYZ_twoMuons_bestPV:lXYZ_fittedJpsi_bestPV:cosPointingAngle_twoMuons:cosPointingAngle_fittedJpsi:BsXYlifetime_twoMuons:BsXYlifetime_fittedJpsi:hltRes");
   
   cout << "HERE JpsiMassG_MC::beginJob()" << endl;
 }
@@ -444,11 +444,30 @@ void JpsiMassG_MC::analyze(
   double lifetimeB0s_fittedJpsi = (lXY_fittedJpsi_PV * bsMass) / fittedJpsiPhotonLV.Vect().Rho();
   lifetimeB0s_fittedJpsi *= 100/3;
 
-  const double outArray[20] = {twoMuonsM,muonsKalmanVxProb,maxMuonsVertexComp,fittedJpsiVxProb,
+  // HLT paths
+  double triggerRes = 0.0;
+  for (unsigned int i=0; i < triggerResults.size();i++)
+  {
+    if (!triggerResults.accept(i))  continue;
+    std::string name = triggerNames.triggerName(i);
+    
+    if (!name.compare(0,26,path0))  triggerRes += 1.E0;
+    else if (!name.compare(0,22,path1))  triggerRes += 1.E1;
+    else if (!name.compare(0,25,path2))  triggerRes += 1.E2;
+    else if (!name.compare(0,36,path3))  triggerRes += 1.E3;
+    else if (!name.compare(0,30,path4))  triggerRes += 1.E4;
+    else if (!name.compare(0,32,path5))  triggerRes += 1.E5;
+    else if (!name.compare(0,33,path6))  triggerRes += 1.E6;
+    else if (!name.compare(0,33,path7))  triggerRes += 1.E7;      
+  }
+
+
+  const double outArray[21] = {twoMuonsM,muonsKalmanVxProb,maxMuonsVertexComp,fittedJpsiVxProb,
       lXY_muonsKalman_bSpot,lXY_fittedJpsi_bSpot,deltaR_photon_twoMuons,deltaR_photon_Jpsi,
       twoMuonsPhotonMass,fittedJpsiPhotonMass,lXY_muonsKalman_PV,lXY_fittedJpsi_PV,
       lXY_muonsKalman_PV_significance,lXY_fittedJpsi_PV_significance,lXYZ_muonsKalman_PV,lXYZ_fittedJpsi_PV,
-      cosPointingAngle_muonsKalman_PV,cosPointingAngle_fittedJpsi_PV,lifetimeB0s_muonsKalman,lifetimeB0s_fittedJpsi};
+      cosPointingAngle_muonsKalman_PV,cosPointingAngle_fittedJpsi_PV,lifetimeB0s_muonsKalman,lifetimeB0s_fittedJpsi,
+      triggerRes};
 
   tOut->Fill(outArray);
 

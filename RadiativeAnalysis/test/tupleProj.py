@@ -4,15 +4,13 @@ import sys
 import os
 import numpy as np
 
-datasetName = "24BCD_BsToJpsiGamma_JpsiMassConstrained"
-tupleName = "tJpsi"
+datasetName = "24fullB_I_JpsiMassG_BsToJpsiGamma_cut1"
+tupleName = "tOut"
 
 # Prepare a directory for the output histograms
-dirPath = 'tupleProjections/'+tupleName+'/'+datasetName+'/cut2'
+dirPath = 'tupleProjections/'+tupleName+'/'+datasetName+'/cut2_log'
 if not os.access(dirPath[:-5], os.F_OK):    # '/cut?' has 5 chars
     os.mkdir(dirPath[:-5])
-if os.access(dirPath, os.F_OK):
-    os.rmdir(dirPath)
 os.mkdir(dirPath)
 
 # Get the tuple
@@ -27,13 +25,15 @@ for branch in ntuple.GetListOfBranches():
 # Define the cuts
 cutList = []
 
-cutList.append(r.TCut("cosPointingAngleCut","cosPointingAngle > 0.9"))
-cutList.append(r.TCut("fittedJpsiVxProbCut","fittedJpsiVxProb > 0.1"))
 cutList.append(r.TCut("muonsKalmanVxProbCut","muonsKalmanVxProb > 0.1"))
+cutList.append(r.TCut("cosPointingAngle_twoMuonsCut","cosPointingAngle_twoMuons > 0.9"))
+cutList.append(r.TCut("maxMuonsCompCut","maxMuonsComp < 0.1"))
+
+'''
+cutList.append(r.TCut("fittedJpsiVxProbCut","fittedJpsiVxProb > 0.1"))
 cutList.append(r.TCut("lXY_fittedJpsi_PVCut","lXY_fittedJpsi_PV > 0.1"))
 cutList.append(r.TCut("BsXYlifetimeCut","BsXYlifetime < 9.0"))
-#cutList.append(r.TCut("maxMuonsCompCut","maxMuonsComp < 0.4"))
-'''
+
 cutList.append(r.TCut("M_dimuonCut","TMath::Abs(M_dimuon - 3.0969) < 0.04"))    #Jpsi mass constraint
 #cutList.append(r.TCut("commonMuonVrtxProbCut","ProbOfCommonMuonVertex > 0.1"))
 cutList.append(r.TCut("deltaR_dimuon_photonCut","deltaR_dimuon_photon < 0.4"))#&& deltaR_dimuon_photon > 0.1"))  #based on GenMatched tuple
@@ -56,13 +56,22 @@ binInfo = {
     branchNames[1] : (100,0.,1.),
     branchNames[2] : (100,0.,1.),
     branchNames[3] : (100,0.,1.),
-    branchNames[4] : (100,0.,0.5),
-    branchNames[5] : (100,4.4,6.4),
-    branchNames[6] : (100,0.,2.),
-    branchNames[7] : (100,0.,250.),
-    branchNames[8] : (100,0.,5.),
-    branchNames[9] : (100,-1.,1.),
-    branchNames[10] : (100,0.,20.)
+    branchNames[4] : (100,0.,2.),
+    branchNames[5] : (100,0.,2.),
+    branchNames[6] : (100,0.,0.6),
+    branchNames[7] : (100,0.,0.6),
+    branchNames[8] : (100,4.4,6.4),
+    branchNames[9] : (100,4.4,6.4),
+    branchNames[10] : (100,0.,2.),
+    branchNames[11] : (100,0.,2.),
+    branchNames[12] : (100,0.,300.),
+    branchNames[13] : (100,0.,300.),
+    branchNames[14] : (100,0.,10.),
+    branchNames[15] : (100,0.,10.),
+    branchNames[16] : (100,-1.,1.),
+    branchNames[17] : (100,-1.,1.),
+    branchNames[18] : (100,0.,20.),
+    branchNames[19] : (100,0.,20.)
 }
 
 # Create and fill the histograms
@@ -80,7 +89,7 @@ tupleFile.Close()
 # Draw histograms and save the images
 for histo in histoList:
     canvas = r.TCanvas("c"+str(histo.GetTitle()))
-    #canvas.SetLogy(1)
+    canvas.SetLogy(1)
     canvas.cd()
     histo.Draw()
     canvas.Print(dirPath+'/'+str(histo.GetName())+".pdf")
@@ -88,7 +97,7 @@ for histo in histoList:
 
 '''
 # Copy the ntuple limited by the cuts
-outputFile = r.TFile("./outputData/"+datasetName+"_dR0_4.root","RECREATE")
+outputFile = r.TFile("./outputData/"+datasetName+"_cut1.root","RECREATE")
 totalCut.Write()
 newNtuple = ntuple.CopyTree(str(totalCut))
 newNtuple.Write("new")
