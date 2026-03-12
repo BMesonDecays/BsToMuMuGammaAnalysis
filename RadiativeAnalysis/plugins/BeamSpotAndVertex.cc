@@ -140,3 +140,38 @@ int BeamSpotAndVertex::CosThetaindex(const std::vector<reco::Vertex>& vertex,
 	}
 	return PVCosThetaIndex;
 }
+
+int BeamSpotAndVertex::LowestDCAIndex(const std::vector<reco::Vertex>& vertex,
+			RefCountedKinematicVertex bVertex,
+			GlobalVector Bsvec)
+{
+	if(vertex.empty()) return -1;
+
+	math::XYZPoint SV(bVertex->position().x(), bVertex->position().y(), bVertex->position().z());
+	math::XYZVectorD p3sum(Bsvec.x(), Bsvec.y(), Bsvec.z());
+
+	// compute pca distances for every primary vertex
+	std::vector<float> pcaDist;
+	for (auto pv : vertex)
+	{
+		math::XYZPoint pca = BeamSpotAndVertex::pca(pv.position(), SV, p3sum);
+		pcaDist.push_back((pca - pv.position()).R());
+	}
+
+	// sort pv indeces by pca distance
+	std::vector<size_t> pvIndicesSortedByPCADist(vertex.size());
+	iota(pvIndicesSortedByPCADist.begin(), pvIndicesSortedByPCADist.end(), 0);
+	sort(pvIndicesSortedByPCADist.begin(), pvIndicesSortedByPCADist.end(),
+		[&pcaDist](size_t i1, size_t i2) { return pcaDist[i1] < pcaDist[i2]; });
+	
+	return pvIndicesSortedByPCADist[0];
+}
+
+math::XYZPoint BeamSpotAndVertex::pca(math::XYZPoint pv, math::XYZPoint sv, math::XYZVectorD pMuMu){
+  //s = (PV - SV) * (pMuMu) / |pMuMu|^2 
+  double s = ((pv - sv).Dot(pMuMu)) / pMuMu.Mag2();
+  //pca = sv + s*pMuMu
+  math::XYZPoint PCA = sv + s*pMuMu;
+
+  return PCA;
+}

@@ -72,7 +72,15 @@ class BeamSpotAndVertex{
 	static int CosThetaindex(const std::vector<reco::Vertex>& vertex,
 			RefCountedKinematicVertex bVertex,
 			GlobalVector Bsvec);
+	
+	static int LowestDCAIndex(const std::vector<reco::Vertex>& vertex,
+			RefCountedKinematicVertex bVertex,
+			GlobalVector Bsvec);
+			
 	int    NSelectedVertices;
+
+	private:
+	static math::XYZPoint pca(math::XYZPoint pv, math::XYZPoint sv, math::XYZVectorD pMuMu);
       
 };
 
