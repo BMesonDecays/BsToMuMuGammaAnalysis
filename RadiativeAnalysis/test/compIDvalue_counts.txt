@@ -1,0 +1,7 @@
+Value: -211.0, Count: 5720
+Value: -13.0, Count: 3
+Value: -11.0, Count: 9
+Value: 11.0, Count: 11
+Value: 13.0, Count: 1
+Value: 22.0, Count: 13
+Value: 211.0, Count: 6047

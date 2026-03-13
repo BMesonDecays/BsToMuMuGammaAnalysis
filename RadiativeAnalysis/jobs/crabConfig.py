@@ -6,7 +6,7 @@ nEvents = -1
 
 config = config()
 
-config.General.requestName = 'JpsiMassG_MC_hlt'
+config.General.requestName = 'CompCheckJpsiMassG_MC'
 config.General.workArea = 'BsToJpsiGamma_MC'
 config.General.transferOutputs = True
 
@@ -19,11 +19,11 @@ config.JobType.maxMemoryMB = 1600
 config.JobType.maxJobRuntimeMin = 40
 
 config.Data.userInputFiles = open("../JpsiGammaData/BsToJpsiGammaFileList.txt").readlines()
-config.Data.unitsPerJob     = 15
+config.Data.unitsPerJob     = 20
 config.Data.totalUnits      = 70000000
 config.Data.splitting       = 'FileBased'
 config.Data.publication = False
-config.Data.outputDatasetTag = 'BsToJpsiGamma_MC_JpsiMassG_MC_hlt'
+config.Data.outputDatasetTag = 'BsToJpsiGamma_MC_CompCheckJpsiMassG_MC'
 config.Data.outputPrimaryDataset = 'BsToJpsiGamma_analysis_MC'
 
 config.Site.storageSite = 'T3_CH_CERNBOX'
