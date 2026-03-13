@@ -1,79 +1,20 @@
-#include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/Event.h"
-#include "FWCore/Framework/interface/MakerMacros.h"
-#include "FWCore/ParameterSet/interface/ParameterSet.h"
-#include "FWCore/Framework/interface/stream/EDProducer.h"
-#include "FWCore/Utilities/interface/StreamID.h"
-#include "FWCore/Framework/interface/MakerMacros.h"
-#include "FWCore/Framework/interface/EventSetup.h"
-#include "FWCore/Framework/interface/ESHandle.h"
+#include "BsToMuMuGammaAnalysis/run3mvaid/interface/MuonMVAID.h"
 
-#include "DataFormats/MuonReco/interface/Muon.h"
-#include "DataFormats/PatCandidates/interface/Muon.h"
-#include "DataFormats/PatCandidates/interface/PackedCandidate.h"
-#include "DataFormats/PatCandidates/interface/PackedGenParticle.h"
-#include "DataFormats/PatCandidates/interface/CompositeCandidate.h"
-
-#include <TLorentzVector.h>
-#include <TVector.h>
-#include <TMatrix.h>
-#include <algorithm>
-
-#include "addID/run3mvaid/interface/XGBooster.h"
-#include "addID/run3mvaid/interface/CommonTools.h"
 
 // 
 // MiniRun3IdProducer is designed to add Run3 mva id to miniaod
 //
 
-using namespace std;
-typedef reco::Candidate::LorentzVector LorentzVector;
-typedef pair<const reco::MuonChamberMatch*, const reco::MuonSegmentMatch*> MatchPair;
-
-///////////////////////////////////////////////////////////////////////////
-///                             P L U G I N
-///////////////////////////////////////////////////////////////////////////
-
-class MiniRun3IdProducer : public edm::stream::EDProducer<> {
-    
-public:
-    
-  explicit MiniRun3IdProducer(const edm::ParameterSet &iConfig);
-  static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);  
-  ~MiniRun3IdProducer() override {};
-    
-    
-private:
-    
-  virtual void produce(edm::Event&, const edm::EventSetup&);
-  // GenMatchInfo getGenMatchInfo( const pat::PackedCandidate& track1,
-  // const pat::PackedCandidate& track2);
-  void fillMatchInfo(pat::Muon& cand, const pat::Muon& muon);
-  void fillSoftMva(pat::Muon& mu_cand);
-  
-  // ----------member data ---------------------------
-    
-  edm::EDGetTokenT<vector<reco::Muon> > muonToken_;
-  
-  vector<string> features_;
-  vector<string> xgboost_models_;
-  vector<string> xgboost_variable_names_;
-  vector<XGBooster> softMuonMva_;
-};
-
-MiniRun3IdProducer::MiniRun3IdProducer(const edm::ParameterSet &iConfig):
-muonToken_( consumes<vector<reco::Muon>> ( iConfig.getParameter<edm::InputTag>( "muonCollection" ) ) ),
+MuonMVAID::MuonMVAID(const edm::ParameterSet &iConfig):
 xgboost_models_( iConfig.getParameter<vector<string>>( "xgboost_models" ) ),
 xgboost_variable_names_( iConfig.getParameter<vector<string>>( "xgboost_variable_names" ) )
 {
-    produces<std::vector<pat::Muon>>();
-    //produces<pat::CompositeCandidateCollection>("muons");
     for (auto model: xgboost_models_)
-      softMuonMva_.push_back(XGBooster(edm::FileInPath("addID/run3mvaid/data/" + model + ".model").fullPath(),
-				       edm::FileInPath("addID/run3mvaid/data/" + model + ".features").fullPath()));
+      softMuonMva_.push_back(XGBooster(edm::FileInPath("BsToMuMuGammaAnalysis/run3mvaid/data/" + model + ".model").fullPath(),
+				       edm::FileInPath("BsToMuMuGammaAnalysis/run3mvaid/data/" + model + ".features").fullPath()));
 }
 
-void MiniRun3IdProducer::fillSoftMva(pat::Muon& mu_cand){
+void MuonMVAID::fillSoftMva(pat::Muon& mu_cand){
   // "match2_pullDyDz"
   // "match1_pullDyDz"
   // "match2_pullDxDz"
@@ -112,15 +53,12 @@ void MiniRun3IdProducer::fillSoftMva(pat::Muon& mu_cand){
 
 
 
-void MiniRun3IdProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
-
-    edm::Handle<vector<reco::Muon> > muonHandle;
-    iEvent.getByToken(muonToken_, muonHandle);
+vector<float> MuonMVAID::produce(const std::vector<reco::Muon>& InputMuons) {
 
     // Output collection
     auto muons = std::make_unique<std::vector<pat::Muon>>();
 
-    for ( const auto& muon: *muonHandle.product()){
+    for ( const auto& muon: InputMuons){
 
       pat::Muon mu_cand(muon);
 
@@ -188,7 +126,11 @@ void MiniRun3IdProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSet
       muons->push_back(mu_cand);
     }
     
-    iEvent.put(move(muons));
+    vector<float> output;
+    for(const auto& mu : *muons)
+      output.push_back(mu.userFloat("run3muonmva"));
+
+    return output;
 }
 
 const MatchPair&
@@ -262,7 +204,7 @@ void fillMatchInfoForStation(string prefix,
   cand.addUserFloat(prefix + "_pullDyDz", fpullDyDz(match));
 }
 
-void MiniRun3IdProducer::fillMatchInfo(pat::Muon& cand,
+void MuonMVAID::fillMatchInfo(pat::Muon& cand,
 				      const pat::Muon& muon){
   // Initiate containter for results
   const int n_stations = 2;
@@ -300,15 +242,5 @@ void MiniRun3IdProducer::fillMatchInfo(pat::Muon& cand,
   fillMatchInfoForStation("match2", cand, matches[1]);
 }
 
-
-void MiniRun3IdProducer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
-  edm::ParameterSetDescription desc;
-  desc.add<edm::InputTag>("muonCollection", edm::InputTag("slimmedMuons"));
-  desc.add<std::vector<std::string>>("xgboost_models", {})->setComment("List of XGBoost model names");
-  desc.add<std::vector<std::string>>("xgboost_variable_names", {})->setComment("List of variable names for models");
-  descriptions.add("cutstomslimmedMuons", desc);
-}
-
-DEFINE_FWK_MODULE(MiniRun3IdProducer);
 
 //  LocalWords:  vertices
