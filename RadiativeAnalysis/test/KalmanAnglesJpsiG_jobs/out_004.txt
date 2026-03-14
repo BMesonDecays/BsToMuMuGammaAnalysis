@@ -1,0 +1,1872 @@
+Failed to parse CPUID
+files2: ['/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToJpsiGamma_MCTunesRun3ECM13p6TeV/BsToJpsiGamma_CMSSW_12_4_11_patch3_19_01_2025/250119_174005/0000/private_BsToJpsiGamma_Run3_153.root', '/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToJpsiGamma_MCTunesRun3ECM13p6TeV/BsToJpsiGamma_CMSSW_12_4_11_patch3_19_01_2025/250119_174005/0000/private_BsToJpsiGamma_Run3_156.root', '/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToJpsiGamma_MCTunesRun3ECM13p6TeV/BsToJpsiGamma_CMSSW_12_4_11_patch3_19_01_2025/250119_174005/0000/private_BsToJpsiGamma_Run3_157.root', '/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToJpsiGamma_MCTunesRun3ECM13p6TeV/BsToJpsiGamma_CMSSW_12_4_11_patch3_19_01_2025/250119_174005/0000/private_BsToJpsiGamma_Run3_160.root', '/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToJpsiGamma_MCTunesRun3ECM13p6TeV/BsToJpsiGamma_CMSSW_12_4_11_patch3_19_01_2025/250119_174005/0000/private_BsToJpsiGamma_Run3_164.root', '/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToJpsiGamma_MCTunesRun3ECM13p6TeV/BsToJpsiGamma_CMSSW_12_4_11_patch3_19_01_2025/250119_174005/0000/private_BsToJpsiGamma_Run3_165.root']
+%MSG-i AlpakaService:  (NoModuleName) 14-Mar-2026 21:37:12 CET pre-events
+AlpakaServiceSerialSync succesfully initialised.
+Found 1 device:
+  - AMD EPYC-Milan Processor
+%MSG
+14-Mar-2026 21:37:16 CET  Initiating request to open file root://eoscms.cern.ch//eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToJpsiGamma_MCTunesRun3ECM13p6TeV/BsToJpsiGamma_CMSSW_12_4_11_patch3_19_01_2025/250119_174005/0000/private_BsToJpsiGamma_Run3_153.root
+14-Mar-2026 21:37:21 CET  Successfully opened file root://eoscms.cern.ch//eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToJpsiGamma_MCTunesRun3ECM13p6TeV/BsToJpsiGamma_CMSSW_12_4_11_patch3_19_01_2025/250119_174005/0000/private_BsToJpsiGamma_Run3_153.root
+ CTORXX
+HERE KalmanAnglesJpsiG_MC::beginJob()
+Begin processing the 1st record. Run 1, Event 760005, LumiSection 7601 on stream 0 at 14-Mar-2026 21:37:31.225 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 2nd record. Run 1, Event 760007, LumiSection 7601 on stream 0 at 14-Mar-2026 21:37:32.215 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 3rd record. Run 1, Event 760015, LumiSection 7601 on stream 0 at 14-Mar-2026 21:37:32.219 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 4th record. Run 1, Event 760016, LumiSection 7601 on stream 0 at 14-Mar-2026 21:37:32.224 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 5th record. Run 1, Event 760017, LumiSection 7601 on stream 0 at 14-Mar-2026 21:37:32.232 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 6th record. Run 1, Event 760019, LumiSection 7601 on stream 0 at 14-Mar-2026 21:37:32.239 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 7th record. Run 1, Event 760020, LumiSection 7601 on stream 0 at 14-Mar-2026 21:37:32.243 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 8th record. Run 1, Event 760032, LumiSection 7601 on stream 0 at 14-Mar-2026 21:37:32.250 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 9th record. Run 1, Event 760035, LumiSection 7601 on stream 0 at 14-Mar-2026 21:37:32.254 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 10th record. Run 1, Event 760045, LumiSection 7601 on stream 0 at 14-Mar-2026 21:37:32.258 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 11th record. Run 1, Event 760051, LumiSection 7601 on stream 0 at 14-Mar-2026 21:37:32.261 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 12th record. Run 1, Event 760055, LumiSection 7601 on stream 0 at 14-Mar-2026 21:37:32.264 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 13th record. Run 1, Event 760070, LumiSection 7601 on stream 0 at 14-Mar-2026 21:37:32.271 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 14th record. Run 1, Event 760076, LumiSection 7601 on stream 0 at 14-Mar-2026 21:37:32.282 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 15th record. Run 1, Event 760078, LumiSection 7601 on stream 0 at 14-Mar-2026 21:37:32.286 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 16th record. Run 1, Event 760081, LumiSection 7601 on stream 0 at 14-Mar-2026 21:37:32.292 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 17th record. Run 1, Event 760083, LumiSection 7601 on stream 0 at 14-Mar-2026 21:37:32.299 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 18th record. Run 1, Event 760085, LumiSection 7601 on stream 0 at 14-Mar-2026 21:37:32.303 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 19th record. Run 1, Event 760086, LumiSection 7601 on stream 0 at 14-Mar-2026 21:37:32.307 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 20th record. Run 1, Event 760089, LumiSection 7601 on stream 0 at 14-Mar-2026 21:37:32.313 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 21st record. Run 1, Event 760094, LumiSection 7601 on stream 0 at 14-Mar-2026 21:37:32.320 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 22nd record. Run 1, Event 760101, LumiSection 7602 on stream 0 at 14-Mar-2026 21:37:32.877 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 23rd record. Run 1, Event 760102, LumiSection 7602 on stream 0 at 14-Mar-2026 21:37:32.884 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 24th record. Run 1, Event 760104, LumiSection 7602 on stream 0 at 14-Mar-2026 21:37:32.891 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 25th record. Run 1, Event 760111, LumiSection 7602 on stream 0 at 14-Mar-2026 21:37:32.904 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 26th record. Run 1, Event 760119, LumiSection 7602 on stream 0 at 14-Mar-2026 21:37:32.911 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 27th record. Run 1, Event 760122, LumiSection 7602 on stream 0 at 14-Mar-2026 21:37:32.922 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 28th record. Run 1, Event 760123, LumiSection 7602 on stream 0 at 14-Mar-2026 21:37:32.926 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 29th record. Run 1, Event 760130, LumiSection 7602 on stream 0 at 14-Mar-2026 21:37:32.929 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 30th record. Run 1, Event 760133, LumiSection 7602 on stream 0 at 14-Mar-2026 21:37:32.934 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 31st record. Run 1, Event 760153, LumiSection 7602 on stream 0 at 14-Mar-2026 21:37:32.953 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 32nd record. Run 1, Event 760155, LumiSection 7602 on stream 0 at 14-Mar-2026 21:37:32.960 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 33rd record. Run 1, Event 760164, LumiSection 7602 on stream 0 at 14-Mar-2026 21:37:32.968 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 34th record. Run 1, Event 760199, LumiSection 7602 on stream 0 at 14-Mar-2026 21:37:32.975 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 35th record. Run 1, Event 760209, LumiSection 7603 on stream 0 at 14-Mar-2026 21:37:32.979 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 36th record. Run 1, Event 760213, LumiSection 7603 on stream 0 at 14-Mar-2026 21:37:32.990 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 37th record. Run 1, Event 760215, LumiSection 7603 on stream 0 at 14-Mar-2026 21:37:32.995 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 38th record. Run 1, Event 760224, LumiSection 7603 on stream 0 at 14-Mar-2026 21:37:33.003 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 39th record. Run 1, Event 760233, LumiSection 7603 on stream 0 at 14-Mar-2026 21:37:33.009 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 40th record. Run 1, Event 760238, LumiSection 7603 on stream 0 at 14-Mar-2026 21:37:33.013 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 41st record. Run 1, Event 760239, LumiSection 7603 on stream 0 at 14-Mar-2026 21:37:33.020 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 42nd record. Run 1, Event 760240, LumiSection 7603 on stream 0 at 14-Mar-2026 21:37:33.024 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 43rd record. Run 1, Event 760244, LumiSection 7603 on stream 0 at 14-Mar-2026 21:37:33.038 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 44th record. Run 1, Event 760253, LumiSection 7603 on stream 0 at 14-Mar-2026 21:37:33.048 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 45th record. Run 1, Event 760258, LumiSection 7603 on stream 0 at 14-Mar-2026 21:37:33.056 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 46th record. Run 1, Event 760269, LumiSection 7603 on stream 0 at 14-Mar-2026 21:37:33.070 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 47th record. Run 1, Event 760283, LumiSection 7603 on stream 0 at 14-Mar-2026 21:37:33.076 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 48th record. Run 1, Event 760289, LumiSection 7603 on stream 0 at 14-Mar-2026 21:37:33.086 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 49th record. Run 1, Event 760301, LumiSection 7604 on stream 0 at 14-Mar-2026 21:37:33.092 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 50th record. Run 1, Event 760308, LumiSection 7604 on stream 0 at 14-Mar-2026 21:37:33.097 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 51st record. Run 1, Event 760314, LumiSection 7604 on stream 0 at 14-Mar-2026 21:37:33.104 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 52nd record. Run 1, Event 760316, LumiSection 7604 on stream 0 at 14-Mar-2026 21:37:33.197 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 53rd record. Run 1, Event 760331, LumiSection 7604 on stream 0 at 14-Mar-2026 21:37:33.202 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 54th record. Run 1, Event 760339, LumiSection 7604 on stream 0 at 14-Mar-2026 21:37:33.205 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 55th record. Run 1, Event 760348, LumiSection 7604 on stream 0 at 14-Mar-2026 21:37:33.209 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 56th record. Run 1, Event 760358, LumiSection 7604 on stream 0 at 14-Mar-2026 21:37:33.213 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 57th record. Run 1, Event 760366, LumiSection 7604 on stream 0 at 14-Mar-2026 21:37:33.221 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 58th record. Run 1, Event 760372, LumiSection 7604 on stream 0 at 14-Mar-2026 21:37:33.227 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 59th record. Run 1, Event 760381, LumiSection 7604 on stream 0 at 14-Mar-2026 21:37:33.230 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 60th record. Run 1, Event 760384, LumiSection 7604 on stream 0 at 14-Mar-2026 21:37:33.233 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 61st record. Run 1, Event 760387, LumiSection 7604 on stream 0 at 14-Mar-2026 21:37:33.237 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 62nd record. Run 1, Event 760388, LumiSection 7604 on stream 0 at 14-Mar-2026 21:37:33.243 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+*** Analyze event: run: 1 lumi: 7604 event: 760388 analysed event count:1
+Begin processing the 63rd record. Run 1, Event 760389, LumiSection 7604 on stream 0 at 14-Mar-2026 21:37:33.436 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 64th record. Run 1, Event 760396, LumiSection 7604 on stream 0 at 14-Mar-2026 21:37:33.444 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 65th record. Run 1, Event 760397, LumiSection 7604 on stream 0 at 14-Mar-2026 21:37:33.448 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 66th record. Run 1, Event 760399, LumiSection 7604 on stream 0 at 14-Mar-2026 21:37:33.452 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 67th record. Run 1, Event 760422, LumiSection 7605 on stream 0 at 14-Mar-2026 21:37:33.456 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 68th record. Run 1, Event 760438, LumiSection 7605 on stream 0 at 14-Mar-2026 21:37:33.463 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 69th record. Run 1, Event 760455, LumiSection 7605 on stream 0 at 14-Mar-2026 21:37:33.467 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 70th record. Run 1, Event 760466, LumiSection 7605 on stream 0 at 14-Mar-2026 21:37:33.472 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 71st record. Run 1, Event 760468, LumiSection 7605 on stream 0 at 14-Mar-2026 21:37:33.475 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 72nd record. Run 1, Event 760469, LumiSection 7605 on stream 0 at 14-Mar-2026 21:37:33.479 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 73rd record. Run 1, Event 760482, LumiSection 7605 on stream 0 at 14-Mar-2026 21:37:33.487 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 74th record. Run 1, Event 760483, LumiSection 7605 on stream 0 at 14-Mar-2026 21:37:33.492 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 75th record. Run 1, Event 760485, LumiSection 7605 on stream 0 at 14-Mar-2026 21:37:33.496 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 76th record. Run 1, Event 760492, LumiSection 7605 on stream 0 at 14-Mar-2026 21:37:33.501 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 77th record. Run 1, Event 760495, LumiSection 7605 on stream 0 at 14-Mar-2026 21:37:33.505 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 78th record. Run 1, Event 760502, LumiSection 7606 on stream 0 at 14-Mar-2026 21:37:33.510 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 79th record. Run 1, Event 760503, LumiSection 7606 on stream 0 at 14-Mar-2026 21:37:33.514 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 80th record. Run 1, Event 760504, LumiSection 7606 on stream 0 at 14-Mar-2026 21:37:33.518 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 81st record. Run 1, Event 760507, LumiSection 7606 on stream 0 at 14-Mar-2026 21:37:33.522 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 82nd record. Run 1, Event 760522, LumiSection 7606 on stream 0 at 14-Mar-2026 21:37:33.530 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 83rd record. Run 1, Event 760530, LumiSection 7606 on stream 0 at 14-Mar-2026 21:37:33.534 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 84th record. Run 1, Event 760533, LumiSection 7606 on stream 0 at 14-Mar-2026 21:37:33.538 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 85th record. Run 1, Event 760538, LumiSection 7606 on stream 0 at 14-Mar-2026 21:37:33.542 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 86th record. Run 1, Event 760540, LumiSection 7606 on stream 0 at 14-Mar-2026 21:37:33.545 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 87th record. Run 1, Event 760541, LumiSection 7606 on stream 0 at 14-Mar-2026 21:37:33.551 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 88th record. Run 1, Event 760547, LumiSection 7606 on stream 0 at 14-Mar-2026 21:37:33.557 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 89th record. Run 1, Event 760549, LumiSection 7606 on stream 0 at 14-Mar-2026 21:37:33.562 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 90th record. Run 1, Event 760558, LumiSection 7606 on stream 0 at 14-Mar-2026 21:37:33.568 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 91st record. Run 1, Event 760563, LumiSection 7606 on stream 0 at 14-Mar-2026 21:37:33.585 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 92nd record. Run 1, Event 760571, LumiSection 7606 on stream 0 at 14-Mar-2026 21:37:33.600 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 93rd record. Run 1, Event 760575, LumiSection 7606 on stream 0 at 14-Mar-2026 21:37:33.606 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 94th record. Run 1, Event 760581, LumiSection 7606 on stream 0 at 14-Mar-2026 21:37:33.610 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 95th record. Run 1, Event 760587, LumiSection 7606 on stream 0 at 14-Mar-2026 21:37:33.614 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 96th record. Run 1, Event 760606, LumiSection 7607 on stream 0 at 14-Mar-2026 21:37:33.619 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 97th record. Run 1, Event 760611, LumiSection 7607 on stream 0 at 14-Mar-2026 21:37:33.624 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 98th record. Run 1, Event 760613, LumiSection 7607 on stream 0 at 14-Mar-2026 21:37:33.628 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 99th record. Run 1, Event 760615, LumiSection 7607 on stream 0 at 14-Mar-2026 21:37:33.631 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 100th record. Run 1, Event 760618, LumiSection 7607 on stream 0 at 14-Mar-2026 21:37:33.636 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 101st record. Run 1, Event 760633, LumiSection 7607 on stream 0 at 14-Mar-2026 21:37:33.640 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 102nd record. Run 1, Event 760636, LumiSection 7607 on stream 0 at 14-Mar-2026 21:37:33.726 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 103rd record. Run 1, Event 760637, LumiSection 7607 on stream 0 at 14-Mar-2026 21:37:33.730 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 104th record. Run 1, Event 760641, LumiSection 7607 on stream 0 at 14-Mar-2026 21:37:33.736 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 105th record. Run 1, Event 760643, LumiSection 7607 on stream 0 at 14-Mar-2026 21:37:33.740 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 106th record. Run 1, Event 760647, LumiSection 7607 on stream 0 at 14-Mar-2026 21:37:33.746 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 107th record. Run 1, Event 760657, LumiSection 7607 on stream 0 at 14-Mar-2026 21:37:33.751 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 108th record. Run 1, Event 760658, LumiSection 7607 on stream 0 at 14-Mar-2026 21:37:33.755 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 109th record. Run 1, Event 760665, LumiSection 7607 on stream 0 at 14-Mar-2026 21:37:33.760 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 110th record. Run 1, Event 760677, LumiSection 7607 on stream 0 at 14-Mar-2026 21:37:33.762 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 111th record. Run 1, Event 760680, LumiSection 7607 on stream 0 at 14-Mar-2026 21:37:33.767 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 112th record. Run 1, Event 760683, LumiSection 7607 on stream 0 at 14-Mar-2026 21:37:33.776 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 113th record. Run 1, Event 760691, LumiSection 7607 on stream 0 at 14-Mar-2026 21:37:33.780 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 114th record. Run 1, Event 760705, LumiSection 7608 on stream 0 at 14-Mar-2026 21:37:33.784 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 115th record. Run 1, Event 760714, LumiSection 7608 on stream 0 at 14-Mar-2026 21:37:33.788 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 116th record. Run 1, Event 760718, LumiSection 7608 on stream 0 at 14-Mar-2026 21:37:33.792 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 117th record. Run 1, Event 760722, LumiSection 7608 on stream 0 at 14-Mar-2026 21:37:33.797 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 118th record. Run 1, Event 760724, LumiSection 7608 on stream 0 at 14-Mar-2026 21:37:33.800 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 119th record. Run 1, Event 760733, LumiSection 7608 on stream 0 at 14-Mar-2026 21:37:33.803 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 120th record. Run 1, Event 760738, LumiSection 7608 on stream 0 at 14-Mar-2026 21:37:33.808 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 121st record. Run 1, Event 760744, LumiSection 7608 on stream 0 at 14-Mar-2026 21:37:33.814 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 122nd record. Run 1, Event 760748, LumiSection 7608 on stream 0 at 14-Mar-2026 21:37:33.816 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+*** Analyze event: run: 1 lumi: 7608 event: 760748 analysed event count:2
+Begin processing the 123rd record. Run 1, Event 760752, LumiSection 7608 on stream 0 at 14-Mar-2026 21:37:34.115 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 124th record. Run 1, Event 760757, LumiSection 7608 on stream 0 at 14-Mar-2026 21:37:34.121 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 125th record. Run 1, Event 760760, LumiSection 7608 on stream 0 at 14-Mar-2026 21:37:34.124 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 126th record. Run 1, Event 760790, LumiSection 7608 on stream 0 at 14-Mar-2026 21:37:34.129 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 127th record. Run 1, Event 760791, LumiSection 7608 on stream 0 at 14-Mar-2026 21:37:34.134 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 128th record. Run 1, Event 760794, LumiSection 7608 on stream 0 at 14-Mar-2026 21:37:34.137 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 129th record. Run 1, Event 760804, LumiSection 7609 on stream 0 at 14-Mar-2026 21:37:34.142 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 130th record. Run 1, Event 760816, LumiSection 7609 on stream 0 at 14-Mar-2026 21:37:34.146 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 131st record. Run 1, Event 760817, LumiSection 7609 on stream 0 at 14-Mar-2026 21:37:34.151 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 132nd record. Run 1, Event 760819, LumiSection 7609 on stream 0 at 14-Mar-2026 21:37:34.158 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 133rd record. Run 1, Event 760821, LumiSection 7609 on stream 0 at 14-Mar-2026 21:37:34.162 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 134th record. Run 1, Event 760822, LumiSection 7609 on stream 0 at 14-Mar-2026 21:37:34.165 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 135th record. Run 1, Event 760823, LumiSection 7609 on stream 0 at 14-Mar-2026 21:37:34.169 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 136th record. Run 1, Event 760830, LumiSection 7609 on stream 0 at 14-Mar-2026 21:37:34.172 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 137th record. Run 1, Event 760833, LumiSection 7609 on stream 0 at 14-Mar-2026 21:37:34.176 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 138th record. Run 1, Event 760835, LumiSection 7609 on stream 0 at 14-Mar-2026 21:37:34.180 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 139th record. Run 1, Event 760836, LumiSection 7609 on stream 0 at 14-Mar-2026 21:37:34.184 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 140th record. Run 1, Event 760839, LumiSection 7609 on stream 0 at 14-Mar-2026 21:37:34.193 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 141st record. Run 1, Event 760846, LumiSection 7609 on stream 0 at 14-Mar-2026 21:37:34.213 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 142nd record. Run 1, Event 760848, LumiSection 7609 on stream 0 at 14-Mar-2026 21:37:34.218 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 143rd record. Run 1, Event 760850, LumiSection 7609 on stream 0 at 14-Mar-2026 21:37:34.226 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 144th record. Run 1, Event 760853, LumiSection 7609 on stream 0 at 14-Mar-2026 21:37:34.231 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 145th record. Run 1, Event 760859, LumiSection 7609 on stream 0 at 14-Mar-2026 21:37:34.236 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 146th record. Run 1, Event 760864, LumiSection 7609 on stream 0 at 14-Mar-2026 21:37:34.240 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 147th record. Run 1, Event 760874, LumiSection 7609 on stream 0 at 14-Mar-2026 21:37:34.244 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 148th record. Run 1, Event 760879, LumiSection 7609 on stream 0 at 14-Mar-2026 21:37:34.248 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 149th record. Run 1, Event 760880, LumiSection 7609 on stream 0 at 14-Mar-2026 21:37:34.251 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 150th record. Run 1, Event 760889, LumiSection 7609 on stream 0 at 14-Mar-2026 21:37:34.255 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 151st record. Run 1, Event 760891, LumiSection 7609 on stream 0 at 14-Mar-2026 21:37:34.259 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 152nd record. Run 1, Event 760892, LumiSection 7609 on stream 0 at 14-Mar-2026 21:37:34.339 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 153rd record. Run 1, Event 760897, LumiSection 7609 on stream 0 at 14-Mar-2026 21:37:34.342 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 154th record. Run 1, Event 760898, LumiSection 7609 on stream 0 at 14-Mar-2026 21:37:34.346 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 155th record. Run 1, Event 760899, LumiSection 7609 on stream 0 at 14-Mar-2026 21:37:34.350 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 156th record. Run 1, Event 760905, LumiSection 7610 on stream 0 at 14-Mar-2026 21:37:34.354 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 157th record. Run 1, Event 760906, LumiSection 7610 on stream 0 at 14-Mar-2026 21:37:34.357 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 158th record. Run 1, Event 760909, LumiSection 7610 on stream 0 at 14-Mar-2026 21:37:34.361 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 159th record. Run 1, Event 760911, LumiSection 7610 on stream 0 at 14-Mar-2026 21:37:34.365 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 160th record. Run 1, Event 760912, LumiSection 7610 on stream 0 at 14-Mar-2026 21:37:34.370 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 161st record. Run 1, Event 760915, LumiSection 7610 on stream 0 at 14-Mar-2026 21:37:34.376 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 162nd record. Run 1, Event 760930, LumiSection 7610 on stream 0 at 14-Mar-2026 21:37:34.379 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 163rd record. Run 1, Event 760931, LumiSection 7610 on stream 0 at 14-Mar-2026 21:37:34.383 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 164th record. Run 1, Event 760932, LumiSection 7610 on stream 0 at 14-Mar-2026 21:37:34.387 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 165th record. Run 1, Event 760933, LumiSection 7610 on stream 0 at 14-Mar-2026 21:37:34.390 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 166th record. Run 1, Event 760940, LumiSection 7610 on stream 0 at 14-Mar-2026 21:37:34.394 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 167th record. Run 1, Event 760945, LumiSection 7610 on stream 0 at 14-Mar-2026 21:37:34.398 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 168th record. Run 1, Event 760946, LumiSection 7610 on stream 0 at 14-Mar-2026 21:37:34.401 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 169th record. Run 1, Event 760948, LumiSection 7610 on stream 0 at 14-Mar-2026 21:37:34.406 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 170th record. Run 1, Event 760955, LumiSection 7610 on stream 0 at 14-Mar-2026 21:37:34.408 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 171st record. Run 1, Event 760956, LumiSection 7610 on stream 0 at 14-Mar-2026 21:37:34.412 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 172nd record. Run 1, Event 760969, LumiSection 7610 on stream 0 at 14-Mar-2026 21:37:34.417 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 173rd record. Run 1, Event 760972, LumiSection 7610 on stream 0 at 14-Mar-2026 21:37:34.420 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 174th record. Run 1, Event 760973, LumiSection 7610 on stream 0 at 14-Mar-2026 21:37:34.425 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 175th record. Run 1, Event 760978, LumiSection 7610 on stream 0 at 14-Mar-2026 21:37:34.429 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 176th record. Run 1, Event 760985, LumiSection 7610 on stream 0 at 14-Mar-2026 21:37:34.436 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 177th record. Run 1, Event 760986, LumiSection 7610 on stream 0 at 14-Mar-2026 21:37:34.440 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 178th record. Run 1, Event 760987, LumiSection 7610 on stream 0 at 14-Mar-2026 21:37:34.445 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 179th record. Run 1, Event 760993, LumiSection 7610 on stream 0 at 14-Mar-2026 21:37:34.450 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 180th record. Run 1, Event 760995, LumiSection 7610 on stream 0 at 14-Mar-2026 21:37:34.460 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 181st record. Run 1, Event 760998, LumiSection 7610 on stream 0 at 14-Mar-2026 21:37:34.464 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 182nd record. Run 1, Event 761001, LumiSection 7611 on stream 0 at 14-Mar-2026 21:37:34.470 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 183rd record. Run 1, Event 761004, LumiSection 7611 on stream 0 at 14-Mar-2026 21:37:34.477 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 184th record. Run 1, Event 761005, LumiSection 7611 on stream 0 at 14-Mar-2026 21:37:34.481 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 185th record. Run 1, Event 761010, LumiSection 7611 on stream 0 at 14-Mar-2026 21:37:34.484 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 186th record. Run 1, Event 761013, LumiSection 7611 on stream 0 at 14-Mar-2026 21:37:34.488 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 187th record. Run 1, Event 761019, LumiSection 7611 on stream 0 at 14-Mar-2026 21:37:34.491 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 188th record. Run 1, Event 761020, LumiSection 7611 on stream 0 at 14-Mar-2026 21:37:34.495 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 189th record. Run 1, Event 761024, LumiSection 7611 on stream 0 at 14-Mar-2026 21:37:34.498 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 190th record. Run 1, Event 761031, LumiSection 7611 on stream 0 at 14-Mar-2026 21:37:34.502 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 191st record. Run 1, Event 761036, LumiSection 7611 on stream 0 at 14-Mar-2026 21:37:34.517 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 192nd record. Run 1, Event 761058, LumiSection 7611 on stream 0 at 14-Mar-2026 21:37:34.521 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 193rd record. Run 1, Event 761059, LumiSection 7611 on stream 0 at 14-Mar-2026 21:37:34.525 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 194th record. Run 1, Event 761062, LumiSection 7611 on stream 0 at 14-Mar-2026 21:37:34.531 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 195th record. Run 1, Event 761063, LumiSection 7611 on stream 0 at 14-Mar-2026 21:37:34.535 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 196th record. Run 1, Event 761064, LumiSection 7611 on stream 0 at 14-Mar-2026 21:37:34.538 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 197th record. Run 1, Event 761069, LumiSection 7611 on stream 0 at 14-Mar-2026 21:37:34.542 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 198th record. Run 1, Event 761070, LumiSection 7611 on stream 0 at 14-Mar-2026 21:37:34.545 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 199th record. Run 1, Event 761075, LumiSection 7611 on stream 0 at 14-Mar-2026 21:37:34.549 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 200th record. Run 1, Event 761078, LumiSection 7611 on stream 0 at 14-Mar-2026 21:37:34.553 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 201st record. Run 1, Event 761101, LumiSection 7612 on stream 0 at 14-Mar-2026 21:37:34.558 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 202nd record. Run 1, Event 761103, LumiSection 7612 on stream 0 at 14-Mar-2026 21:37:34.637 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 203rd record. Run 1, Event 761105, LumiSection 7612 on stream 0 at 14-Mar-2026 21:37:34.641 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 204th record. Run 1, Event 761112, LumiSection 7612 on stream 0 at 14-Mar-2026 21:37:34.644 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 205th record. Run 1, Event 761121, LumiSection 7612 on stream 0 at 14-Mar-2026 21:37:34.648 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 206th record. Run 1, Event 761127, LumiSection 7612 on stream 0 at 14-Mar-2026 21:37:34.651 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 207th record. Run 1, Event 761128, LumiSection 7612 on stream 0 at 14-Mar-2026 21:37:34.656 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 208th record. Run 1, Event 761132, LumiSection 7612 on stream 0 at 14-Mar-2026 21:37:34.660 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 209th record. Run 1, Event 761138, LumiSection 7612 on stream 0 at 14-Mar-2026 21:37:34.665 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 210th record. Run 1, Event 761143, LumiSection 7612 on stream 0 at 14-Mar-2026 21:37:34.669 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 211th record. Run 1, Event 761145, LumiSection 7612 on stream 0 at 14-Mar-2026 21:37:34.673 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 212th record. Run 1, Event 761146, LumiSection 7612 on stream 0 at 14-Mar-2026 21:37:34.676 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 213th record. Run 1, Event 761150, LumiSection 7612 on stream 0 at 14-Mar-2026 21:37:34.682 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 214th record. Run 1, Event 761153, LumiSection 7612 on stream 0 at 14-Mar-2026 21:37:34.686 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 215th record. Run 1, Event 761162, LumiSection 7612 on stream 0 at 14-Mar-2026 21:37:34.690 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 216th record. Run 1, Event 761163, LumiSection 7612 on stream 0 at 14-Mar-2026 21:37:34.693 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 217th record. Run 1, Event 761167, LumiSection 7612 on stream 0 at 14-Mar-2026 21:37:34.697 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 218th record. Run 1, Event 761176, LumiSection 7612 on stream 0 at 14-Mar-2026 21:37:34.701 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 219th record. Run 1, Event 761178, LumiSection 7612 on stream 0 at 14-Mar-2026 21:37:34.705 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 220th record. Run 1, Event 761183, LumiSection 7612 on stream 0 at 14-Mar-2026 21:37:34.709 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 221st record. Run 1, Event 761185, LumiSection 7612 on stream 0 at 14-Mar-2026 21:37:34.712 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 222nd record. Run 1, Event 761186, LumiSection 7612 on stream 0 at 14-Mar-2026 21:37:34.716 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 223rd record. Run 1, Event 761187, LumiSection 7612 on stream 0 at 14-Mar-2026 21:37:34.721 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 224th record. Run 1, Event 761192, LumiSection 7612 on stream 0 at 14-Mar-2026 21:37:34.724 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 225th record. Run 1, Event 761202, LumiSection 7613 on stream 0 at 14-Mar-2026 21:37:34.728 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 226th record. Run 1, Event 761203, LumiSection 7613 on stream 0 at 14-Mar-2026 21:37:34.731 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 227th record. Run 1, Event 761214, LumiSection 7613 on stream 0 at 14-Mar-2026 21:37:34.736 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 228th record. Run 1, Event 761220, LumiSection 7613 on stream 0 at 14-Mar-2026 21:37:34.741 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 229th record. Run 1, Event 761223, LumiSection 7613 on stream 0 at 14-Mar-2026 21:37:34.745 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 230th record. Run 1, Event 761231, LumiSection 7613 on stream 0 at 14-Mar-2026 21:37:34.749 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 231st record. Run 1, Event 761232, LumiSection 7613 on stream 0 at 14-Mar-2026 21:37:34.753 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 232nd record. Run 1, Event 761235, LumiSection 7613 on stream 0 at 14-Mar-2026 21:37:34.756 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 233rd record. Run 1, Event 761241, LumiSection 7613 on stream 0 at 14-Mar-2026 21:37:34.760 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 234th record. Run 1, Event 761245, LumiSection 7613 on stream 0 at 14-Mar-2026 21:37:34.764 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 235th record. Run 1, Event 761251, LumiSection 7613 on stream 0 at 14-Mar-2026 21:37:34.771 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 236th record. Run 1, Event 761254, LumiSection 7613 on stream 0 at 14-Mar-2026 21:37:34.774 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 237th record. Run 1, Event 761263, LumiSection 7613 on stream 0 at 14-Mar-2026 21:37:34.778 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 238th record. Run 1, Event 761265, LumiSection 7613 on stream 0 at 14-Mar-2026 21:37:34.782 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 239th record. Run 1, Event 761269, LumiSection 7613 on stream 0 at 14-Mar-2026 21:37:34.786 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 240th record. Run 1, Event 761271, LumiSection 7613 on stream 0 at 14-Mar-2026 21:37:34.790 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 241st record. Run 1, Event 761275, LumiSection 7613 on stream 0 at 14-Mar-2026 21:37:34.793 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 242nd record. Run 1, Event 761291, LumiSection 7613 on stream 0 at 14-Mar-2026 21:37:34.797 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 243rd record. Run 1, Event 761304, LumiSection 7614 on stream 0 at 14-Mar-2026 21:37:34.800 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 244th record. Run 1, Event 761305, LumiSection 7614 on stream 0 at 14-Mar-2026 21:37:34.804 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 245th record. Run 1, Event 761319, LumiSection 7614 on stream 0 at 14-Mar-2026 21:37:34.817 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 246th record. Run 1, Event 761333, LumiSection 7614 on stream 0 at 14-Mar-2026 21:37:34.821 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 247th record. Run 1, Event 761337, LumiSection 7614 on stream 0 at 14-Mar-2026 21:37:34.824 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 248th record. Run 1, Event 761339, LumiSection 7614 on stream 0 at 14-Mar-2026 21:37:34.827 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 249th record. Run 1, Event 761341, LumiSection 7614 on stream 0 at 14-Mar-2026 21:37:34.831 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 250th record. Run 1, Event 761342, LumiSection 7614 on stream 0 at 14-Mar-2026 21:37:34.834 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 251st record. Run 1, Event 761354, LumiSection 7614 on stream 0 at 14-Mar-2026 21:37:34.838 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 252nd record. Run 1, Event 761356, LumiSection 7614 on stream 0 at 14-Mar-2026 21:37:34.915 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 253rd record. Run 1, Event 761358, LumiSection 7614 on stream 0 at 14-Mar-2026 21:37:34.919 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 254th record. Run 1, Event 761368, LumiSection 7614 on stream 0 at 14-Mar-2026 21:37:34.923 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 255th record. Run 1, Event 761371, LumiSection 7614 on stream 0 at 14-Mar-2026 21:37:34.925 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 256th record. Run 1, Event 761376, LumiSection 7614 on stream 0 at 14-Mar-2026 21:37:34.929 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 257th record. Run 1, Event 761382, LumiSection 7614 on stream 0 at 14-Mar-2026 21:37:34.933 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 258th record. Run 1, Event 761385, LumiSection 7614 on stream 0 at 14-Mar-2026 21:37:34.936 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 259th record. Run 1, Event 761389, LumiSection 7614 on stream 0 at 14-Mar-2026 21:37:34.940 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 260th record. Run 1, Event 761391, LumiSection 7614 on stream 0 at 14-Mar-2026 21:37:34.944 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 261st record. Run 1, Event 761392, LumiSection 7614 on stream 0 at 14-Mar-2026 21:37:34.948 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 262nd record. Run 1, Event 761398, LumiSection 7614 on stream 0 at 14-Mar-2026 21:37:34.954 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 263rd record. Run 1, Event 761401, LumiSection 7615 on stream 0 at 14-Mar-2026 21:37:34.958 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 264th record. Run 1, Event 761407, LumiSection 7615 on stream 0 at 14-Mar-2026 21:37:34.961 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 265th record. Run 1, Event 761418, LumiSection 7615 on stream 0 at 14-Mar-2026 21:37:34.967 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 266th record. Run 1, Event 761420, LumiSection 7615 on stream 0 at 14-Mar-2026 21:37:34.972 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 267th record. Run 1, Event 761429, LumiSection 7615 on stream 0 at 14-Mar-2026 21:37:34.978 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 268th record. Run 1, Event 761434, LumiSection 7615 on stream 0 at 14-Mar-2026 21:37:34.982 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 269th record. Run 1, Event 761441, LumiSection 7615 on stream 0 at 14-Mar-2026 21:37:34.986 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 270th record. Run 1, Event 761445, LumiSection 7615 on stream 0 at 14-Mar-2026 21:37:34.990 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 271st record. Run 1, Event 761450, LumiSection 7615 on stream 0 at 14-Mar-2026 21:37:34.998 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 272nd record. Run 1, Event 761457, LumiSection 7615 on stream 0 at 14-Mar-2026 21:37:35.002 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 273rd record. Run 1, Event 761460, LumiSection 7615 on stream 0 at 14-Mar-2026 21:37:35.006 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 274th record. Run 1, Event 761466, LumiSection 7615 on stream 0 at 14-Mar-2026 21:37:35.010 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 275th record. Run 1, Event 761474, LumiSection 7615 on stream 0 at 14-Mar-2026 21:37:35.013 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 276th record. Run 1, Event 761478, LumiSection 7615 on stream 0 at 14-Mar-2026 21:37:35.017 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 277th record. Run 1, Event 761481, LumiSection 7615 on stream 0 at 14-Mar-2026 21:37:35.021 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 278th record. Run 1, Event 761494, LumiSection 7615 on stream 0 at 14-Mar-2026 21:37:35.024 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 279th record. Run 1, Event 761497, LumiSection 7615 on stream 0 at 14-Mar-2026 21:37:35.028 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 280th record. Run 1, Event 761498, LumiSection 7615 on stream 0 at 14-Mar-2026 21:37:35.030 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 281st record. Run 1, Event 761499, LumiSection 7615 on stream 0 at 14-Mar-2026 21:37:35.033 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 282nd record. Run 1, Event 761503, LumiSection 7616 on stream 0 at 14-Mar-2026 21:37:35.036 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 283rd record. Run 1, Event 761512, LumiSection 7616 on stream 0 at 14-Mar-2026 21:37:35.042 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 284th record. Run 1, Event 761521, LumiSection 7616 on stream 0 at 14-Mar-2026 21:37:35.046 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 285th record. Run 1, Event 761525, LumiSection 7616 on stream 0 at 14-Mar-2026 21:37:35.050 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 286th record. Run 1, Event 761537, LumiSection 7616 on stream 0 at 14-Mar-2026 21:37:35.053 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 287th record. Run 1, Event 761540, LumiSection 7616 on stream 0 at 14-Mar-2026 21:37:35.056 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 288th record. Run 1, Event 761543, LumiSection 7616 on stream 0 at 14-Mar-2026 21:37:35.059 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 289th record. Run 1, Event 761553, LumiSection 7616 on stream 0 at 14-Mar-2026 21:37:35.062 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 290th record. Run 1, Event 761567, LumiSection 7616 on stream 0 at 14-Mar-2026 21:37:35.065 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 291st record. Run 1, Event 761578, LumiSection 7616 on stream 0 at 14-Mar-2026 21:37:35.077 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 292nd record. Run 1, Event 761587, LumiSection 7616 on stream 0 at 14-Mar-2026 21:37:35.081 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 293rd record. Run 1, Event 761594, LumiSection 7616 on stream 0 at 14-Mar-2026 21:37:35.085 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 294th record. Run 1, Event 761598, LumiSection 7616 on stream 0 at 14-Mar-2026 21:37:35.090 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 295th record. Run 1, Event 761599, LumiSection 7616 on stream 0 at 14-Mar-2026 21:37:35.095 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 296th record. Run 1, Event 761601, LumiSection 7617 on stream 0 at 14-Mar-2026 21:37:35.099 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 297th record. Run 1, Event 761606, LumiSection 7617 on stream 0 at 14-Mar-2026 21:37:35.102 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 298th record. Run 1, Event 761612, LumiSection 7617 on stream 0 at 14-Mar-2026 21:37:35.106 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 299th record. Run 1, Event 761613, LumiSection 7617 on stream 0 at 14-Mar-2026 21:37:35.109 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 300th record. Run 1, Event 761619, LumiSection 7617 on stream 0 at 14-Mar-2026 21:37:35.112 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 301st record. Run 1, Event 761628, LumiSection 7617 on stream 0 at 14-Mar-2026 21:37:35.115 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 302nd record. Run 1, Event 761629, LumiSection 7617 on stream 0 at 14-Mar-2026 21:37:35.194 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 303rd record. Run 1, Event 761630, LumiSection 7617 on stream 0 at 14-Mar-2026 21:37:35.198 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 304th record. Run 1, Event 761634, LumiSection 7617 on stream 0 at 14-Mar-2026 21:37:35.202 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 305th record. Run 1, Event 761637, LumiSection 7617 on stream 0 at 14-Mar-2026 21:37:35.206 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 306th record. Run 1, Event 761646, LumiSection 7617 on stream 0 at 14-Mar-2026 21:37:35.209 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 307th record. Run 1, Event 761653, LumiSection 7617 on stream 0 at 14-Mar-2026 21:37:35.214 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 308th record. Run 1, Event 761657, LumiSection 7617 on stream 0 at 14-Mar-2026 21:37:35.217 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 309th record. Run 1, Event 761675, LumiSection 7617 on stream 0 at 14-Mar-2026 21:37:35.221 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 310th record. Run 1, Event 761685, LumiSection 7617 on stream 0 at 14-Mar-2026 21:37:35.232 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 311th record. Run 1, Event 761687, LumiSection 7617 on stream 0 at 14-Mar-2026 21:37:35.235 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 312th record. Run 1, Event 761690, LumiSection 7617 on stream 0 at 14-Mar-2026 21:37:35.240 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 313th record. Run 1, Event 761694, LumiSection 7617 on stream 0 at 14-Mar-2026 21:37:35.247 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 314th record. Run 1, Event 761695, LumiSection 7617 on stream 0 at 14-Mar-2026 21:37:35.254 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 315th record. Run 1, Event 761700, LumiSection 7617 on stream 0 at 14-Mar-2026 21:37:35.257 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 316th record. Run 1, Event 761701, LumiSection 7618 on stream 0 at 14-Mar-2026 21:37:35.261 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 317th record. Run 1, Event 761702, LumiSection 7618 on stream 0 at 14-Mar-2026 21:37:35.264 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 318th record. Run 1, Event 761704, LumiSection 7618 on stream 0 at 14-Mar-2026 21:37:35.268 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 319th record. Run 1, Event 761707, LumiSection 7618 on stream 0 at 14-Mar-2026 21:37:35.272 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 320th record. Run 1, Event 761710, LumiSection 7618 on stream 0 at 14-Mar-2026 21:37:35.276 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 321st record. Run 1, Event 761711, LumiSection 7618 on stream 0 at 14-Mar-2026 21:37:35.285 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 322nd record. Run 1, Event 761714, LumiSection 7618 on stream 0 at 14-Mar-2026 21:37:35.288 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 323rd record. Run 1, Event 761718, LumiSection 7618 on stream 0 at 14-Mar-2026 21:37:35.292 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 324th record. Run 1, Event 761724, LumiSection 7618 on stream 0 at 14-Mar-2026 21:37:35.295 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 325th record. Run 1, Event 761731, LumiSection 7618 on stream 0 at 14-Mar-2026 21:37:35.302 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 326th record. Run 1, Event 761745, LumiSection 7618 on stream 0 at 14-Mar-2026 21:37:35.308 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 327th record. Run 1, Event 761750, LumiSection 7618 on stream 0 at 14-Mar-2026 21:37:35.313 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 328th record. Run 1, Event 761754, LumiSection 7618 on stream 0 at 14-Mar-2026 21:37:35.316 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 329th record. Run 1, Event 761756, LumiSection 7618 on stream 0 at 14-Mar-2026 21:37:35.320 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 330th record. Run 1, Event 761758, LumiSection 7618 on stream 0 at 14-Mar-2026 21:37:35.323 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 331st record. Run 1, Event 761773, LumiSection 7618 on stream 0 at 14-Mar-2026 21:37:35.327 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 332nd record. Run 1, Event 761775, LumiSection 7618 on stream 0 at 14-Mar-2026 21:37:35.336 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 333rd record. Run 1, Event 761778, LumiSection 7618 on stream 0 at 14-Mar-2026 21:37:35.340 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 334th record. Run 1, Event 761790, LumiSection 7618 on stream 0 at 14-Mar-2026 21:37:35.344 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 335th record. Run 1, Event 761791, LumiSection 7618 on stream 0 at 14-Mar-2026 21:37:35.351 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 336th record. Run 1, Event 761798, LumiSection 7618 on stream 0 at 14-Mar-2026 21:37:35.356 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 337th record. Run 1, Event 761811, LumiSection 7619 on stream 0 at 14-Mar-2026 21:37:35.359 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 338th record. Run 1, Event 761813, LumiSection 7619 on stream 0 at 14-Mar-2026 21:37:35.362 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 339th record. Run 1, Event 761822, LumiSection 7619 on stream 0 at 14-Mar-2026 21:37:35.365 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 340th record. Run 1, Event 761824, LumiSection 7619 on stream 0 at 14-Mar-2026 21:37:35.368 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 341st record. Run 1, Event 761830, LumiSection 7619 on stream 0 at 14-Mar-2026 21:37:35.372 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 342nd record. Run 1, Event 761839, LumiSection 7619 on stream 0 at 14-Mar-2026 21:37:35.388 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 343rd record. Run 1, Event 761854, LumiSection 7619 on stream 0 at 14-Mar-2026 21:37:35.392 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 344th record. Run 1, Event 761855, LumiSection 7619 on stream 0 at 14-Mar-2026 21:37:35.399 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 345th record. Run 1, Event 761858, LumiSection 7619 on stream 0 at 14-Mar-2026 21:37:35.403 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 346th record. Run 1, Event 761862, LumiSection 7619 on stream 0 at 14-Mar-2026 21:37:35.406 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 347th record. Run 1, Event 761870, LumiSection 7619 on stream 0 at 14-Mar-2026 21:37:35.408 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 348th record. Run 1, Event 761872, LumiSection 7619 on stream 0 at 14-Mar-2026 21:37:35.412 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 349th record. Run 1, Event 761874, LumiSection 7619 on stream 0 at 14-Mar-2026 21:37:35.415 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 350th record. Run 1, Event 761877, LumiSection 7619 on stream 0 at 14-Mar-2026 21:37:35.419 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 351st record. Run 1, Event 761879, LumiSection 7619 on stream 0 at 14-Mar-2026 21:37:35.423 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 352nd record. Run 1, Event 761897, LumiSection 7619 on stream 0 at 14-Mar-2026 21:37:35.510 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 353rd record. Run 1, Event 761901, LumiSection 7620 on stream 0 at 14-Mar-2026 21:37:35.514 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 354th record. Run 1, Event 761917, LumiSection 7620 on stream 0 at 14-Mar-2026 21:37:35.521 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 355th record. Run 1, Event 761927, LumiSection 7620 on stream 0 at 14-Mar-2026 21:37:35.526 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 356th record. Run 1, Event 761937, LumiSection 7620 on stream 0 at 14-Mar-2026 21:37:35.530 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 357th record. Run 1, Event 761941, LumiSection 7620 on stream 0 at 14-Mar-2026 21:37:35.535 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 358th record. Run 1, Event 761948, LumiSection 7620 on stream 0 at 14-Mar-2026 21:37:35.539 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 359th record. Run 1, Event 761964, LumiSection 7620 on stream 0 at 14-Mar-2026 21:37:35.544 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 360th record. Run 1, Event 761998, LumiSection 7620 on stream 0 at 14-Mar-2026 21:37:35.552 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 361st record. Run 1, Event 761999, LumiSection 7620 on stream 0 at 14-Mar-2026 21:37:35.556 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 362nd record. Run 1, Event 762005, LumiSection 7621 on stream 0 at 14-Mar-2026 21:37:35.560 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 363rd record. Run 1, Event 762006, LumiSection 7621 on stream 0 at 14-Mar-2026 21:37:35.564 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 364th record. Run 1, Event 762007, LumiSection 7621 on stream 0 at 14-Mar-2026 21:37:35.567 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 365th record. Run 1, Event 762015, LumiSection 7621 on stream 0 at 14-Mar-2026 21:37:35.570 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 366th record. Run 1, Event 762031, LumiSection 7621 on stream 0 at 14-Mar-2026 21:37:35.573 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 367th record. Run 1, Event 762035, LumiSection 7621 on stream 0 at 14-Mar-2026 21:37:35.576 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 368th record. Run 1, Event 762041, LumiSection 7621 on stream 0 at 14-Mar-2026 21:37:35.580 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 369th record. Run 1, Event 762042, LumiSection 7621 on stream 0 at 14-Mar-2026 21:37:35.584 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 370th record. Run 1, Event 762044, LumiSection 7621 on stream 0 at 14-Mar-2026 21:37:35.588 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 371st record. Run 1, Event 762047, LumiSection 7621 on stream 0 at 14-Mar-2026 21:37:35.591 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 372nd record. Run 1, Event 762048, LumiSection 7621 on stream 0 at 14-Mar-2026 21:37:35.598 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 373rd record. Run 1, Event 762055, LumiSection 7621 on stream 0 at 14-Mar-2026 21:37:35.603 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 374th record. Run 1, Event 762059, LumiSection 7621 on stream 0 at 14-Mar-2026 21:37:35.609 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 375th record. Run 1, Event 762067, LumiSection 7621 on stream 0 at 14-Mar-2026 21:37:35.613 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 376th record. Run 1, Event 762073, LumiSection 7621 on stream 0 at 14-Mar-2026 21:37:35.617 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 377th record. Run 1, Event 762081, LumiSection 7621 on stream 0 at 14-Mar-2026 21:37:35.620 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 378th record. Run 1, Event 762082, LumiSection 7621 on stream 0 at 14-Mar-2026 21:37:35.624 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 379th record. Run 1, Event 762091, LumiSection 7621 on stream 0 at 14-Mar-2026 21:37:35.627 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 380th record. Run 1, Event 762103, LumiSection 7622 on stream 0 at 14-Mar-2026 21:37:35.632 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 381st record. Run 1, Event 762106, LumiSection 7622 on stream 0 at 14-Mar-2026 21:37:35.638 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 382nd record. Run 1, Event 762108, LumiSection 7622 on stream 0 at 14-Mar-2026 21:37:35.642 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 383rd record. Run 1, Event 762109, LumiSection 7622 on stream 0 at 14-Mar-2026 21:37:35.648 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 384th record. Run 1, Event 762113, LumiSection 7622 on stream 0 at 14-Mar-2026 21:37:35.652 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 385th record. Run 1, Event 762114, LumiSection 7622 on stream 0 at 14-Mar-2026 21:37:35.656 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 386th record. Run 1, Event 762126, LumiSection 7622 on stream 0 at 14-Mar-2026 21:37:35.660 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 387th record. Run 1, Event 762127, LumiSection 7622 on stream 0 at 14-Mar-2026 21:37:35.664 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 388th record. Run 1, Event 762129, LumiSection 7622 on stream 0 at 14-Mar-2026 21:37:35.668 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 389th record. Run 1, Event 762135, LumiSection 7622 on stream 0 at 14-Mar-2026 21:37:35.673 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 390th record. Run 1, Event 762139, LumiSection 7622 on stream 0 at 14-Mar-2026 21:37:35.677 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 391st record. Run 1, Event 762140, LumiSection 7622 on stream 0 at 14-Mar-2026 21:37:35.697 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 392nd record. Run 1, Event 762147, LumiSection 7622 on stream 0 at 14-Mar-2026 21:37:35.700 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 393rd record. Run 1, Event 762151, LumiSection 7622 on stream 0 at 14-Mar-2026 21:37:35.705 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 394th record. Run 1, Event 762152, LumiSection 7622 on stream 0 at 14-Mar-2026 21:37:35.709 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 395th record. Run 1, Event 762154, LumiSection 7622 on stream 0 at 14-Mar-2026 21:37:35.713 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 396th record. Run 1, Event 762159, LumiSection 7622 on stream 0 at 14-Mar-2026 21:37:35.717 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 397th record. Run 1, Event 762161, LumiSection 7622 on stream 0 at 14-Mar-2026 21:37:35.720 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 398th record. Run 1, Event 762164, LumiSection 7622 on stream 0 at 14-Mar-2026 21:37:35.723 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 399th record. Run 1, Event 762165, LumiSection 7622 on stream 0 at 14-Mar-2026 21:37:35.727 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 400th record. Run 1, Event 762168, LumiSection 7622 on stream 0 at 14-Mar-2026 21:37:35.731 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 401st record. Run 1, Event 762181, LumiSection 7622 on stream 0 at 14-Mar-2026 21:37:35.735 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 402nd record. Run 1, Event 762190, LumiSection 7622 on stream 0 at 14-Mar-2026 21:37:35.815 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 403rd record. Run 1, Event 762195, LumiSection 7622 on stream 0 at 14-Mar-2026 21:37:35.818 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 404th record. Run 1, Event 762198, LumiSection 7622 on stream 0 at 14-Mar-2026 21:37:35.822 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 405th record. Run 1, Event 762199, LumiSection 7622 on stream 0 at 14-Mar-2026 21:37:35.825 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 406th record. Run 1, Event 762207, LumiSection 7623 on stream 0 at 14-Mar-2026 21:37:35.830 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 407th record. Run 1, Event 762218, LumiSection 7623 on stream 0 at 14-Mar-2026 21:37:35.833 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 408th record. Run 1, Event 762232, LumiSection 7623 on stream 0 at 14-Mar-2026 21:37:35.837 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 409th record. Run 1, Event 762247, LumiSection 7623 on stream 0 at 14-Mar-2026 21:37:35.841 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 410th record. Run 1, Event 762248, LumiSection 7623 on stream 0 at 14-Mar-2026 21:37:35.844 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 411th record. Run 1, Event 762258, LumiSection 7623 on stream 0 at 14-Mar-2026 21:37:35.848 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 412th record. Run 1, Event 762259, LumiSection 7623 on stream 0 at 14-Mar-2026 21:37:35.854 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 413th record. Run 1, Event 762267, LumiSection 7623 on stream 0 at 14-Mar-2026 21:37:35.857 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 414th record. Run 1, Event 762268, LumiSection 7623 on stream 0 at 14-Mar-2026 21:37:35.860 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 415th record. Run 1, Event 762274, LumiSection 7623 on stream 0 at 14-Mar-2026 21:37:35.864 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 416th record. Run 1, Event 762276, LumiSection 7623 on stream 0 at 14-Mar-2026 21:37:35.867 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 417th record. Run 1, Event 762279, LumiSection 7623 on stream 0 at 14-Mar-2026 21:37:35.871 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 418th record. Run 1, Event 762286, LumiSection 7623 on stream 0 at 14-Mar-2026 21:37:35.875 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 419th record. Run 1, Event 762289, LumiSection 7623 on stream 0 at 14-Mar-2026 21:37:35.879 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 420th record. Run 1, Event 762292, LumiSection 7623 on stream 0 at 14-Mar-2026 21:37:35.882 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 421st record. Run 1, Event 762296, LumiSection 7623 on stream 0 at 14-Mar-2026 21:37:35.886 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 422nd record. Run 1, Event 762297, LumiSection 7623 on stream 0 at 14-Mar-2026 21:37:35.889 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 423rd record. Run 1, Event 762307, LumiSection 7624 on stream 0 at 14-Mar-2026 21:37:35.892 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 424th record. Run 1, Event 762312, LumiSection 7624 on stream 0 at 14-Mar-2026 21:37:35.896 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 425th record. Run 1, Event 762324, LumiSection 7624 on stream 0 at 14-Mar-2026 21:37:35.900 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 426th record. Run 1, Event 762325, LumiSection 7624 on stream 0 at 14-Mar-2026 21:37:35.906 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 427th record. Run 1, Event 762336, LumiSection 7624 on stream 0 at 14-Mar-2026 21:37:35.910 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 428th record. Run 1, Event 762340, LumiSection 7624 on stream 0 at 14-Mar-2026 21:37:35.916 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 429th record. Run 1, Event 762344, LumiSection 7624 on stream 0 at 14-Mar-2026 21:37:35.928 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 430th record. Run 1, Event 762349, LumiSection 7624 on stream 0 at 14-Mar-2026 21:37:35.934 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 431st record. Run 1, Event 762351, LumiSection 7624 on stream 0 at 14-Mar-2026 21:37:35.938 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 432nd record. Run 1, Event 762352, LumiSection 7624 on stream 0 at 14-Mar-2026 21:37:35.942 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 433rd record. Run 1, Event 762364, LumiSection 7624 on stream 0 at 14-Mar-2026 21:37:35.945 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 434th record. Run 1, Event 762365, LumiSection 7624 on stream 0 at 14-Mar-2026 21:37:35.949 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 435th record. Run 1, Event 762366, LumiSection 7624 on stream 0 at 14-Mar-2026 21:37:35.953 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 436th record. Run 1, Event 762372, LumiSection 7624 on stream 0 at 14-Mar-2026 21:37:35.956 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 437th record. Run 1, Event 762373, LumiSection 7624 on stream 0 at 14-Mar-2026 21:37:35.960 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 438th record. Run 1, Event 762376, LumiSection 7624 on stream 0 at 14-Mar-2026 21:37:35.969 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 439th record. Run 1, Event 762377, LumiSection 7624 on stream 0 at 14-Mar-2026 21:37:35.972 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 440th record. Run 1, Event 762392, LumiSection 7624 on stream 0 at 14-Mar-2026 21:37:35.976 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 441st record. Run 1, Event 762395, LumiSection 7624 on stream 0 at 14-Mar-2026 21:37:35.978 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 442nd record. Run 1, Event 762401, LumiSection 7625 on stream 0 at 14-Mar-2026 21:37:35.982 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 443rd record. Run 1, Event 762404, LumiSection 7625 on stream 0 at 14-Mar-2026 21:37:35.986 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 444th record. Run 1, Event 762405, LumiSection 7625 on stream 0 at 14-Mar-2026 21:37:35.990 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 445th record. Run 1, Event 762408, LumiSection 7625 on stream 0 at 14-Mar-2026 21:37:35.994 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 446th record. Run 1, Event 762414, LumiSection 7625 on stream 0 at 14-Mar-2026 21:37:36.003 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 447th record. Run 1, Event 762426, LumiSection 7625 on stream 0 at 14-Mar-2026 21:37:36.006 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 448th record. Run 1, Event 762428, LumiSection 7625 on stream 0 at 14-Mar-2026 21:37:36.010 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 449th record. Run 1, Event 762433, LumiSection 7625 on stream 0 at 14-Mar-2026 21:37:36.013 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 450th record. Run 1, Event 762447, LumiSection 7625 on stream 0 at 14-Mar-2026 21:37:36.017 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 451st record. Run 1, Event 762451, LumiSection 7625 on stream 0 at 14-Mar-2026 21:37:36.021 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 452nd record. Run 1, Event 762454, LumiSection 7625 on stream 0 at 14-Mar-2026 21:37:36.105 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 453rd record. Run 1, Event 762455, LumiSection 7625 on stream 0 at 14-Mar-2026 21:37:36.108 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 454th record. Run 1, Event 762463, LumiSection 7625 on stream 0 at 14-Mar-2026 21:37:36.112 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 455th record. Run 1, Event 762468, LumiSection 7625 on stream 0 at 14-Mar-2026 21:37:36.116 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 456th record. Run 1, Event 762478, LumiSection 7625 on stream 0 at 14-Mar-2026 21:37:36.120 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 457th record. Run 1, Event 762480, LumiSection 7625 on stream 0 at 14-Mar-2026 21:37:36.124 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 458th record. Run 1, Event 762481, LumiSection 7625 on stream 0 at 14-Mar-2026 21:37:36.128 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 459th record. Run 1, Event 762497, LumiSection 7625 on stream 0 at 14-Mar-2026 21:37:36.131 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 460th record. Run 1, Event 762500, LumiSection 7625 on stream 0 at 14-Mar-2026 21:37:36.136 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 461st record. Run 1, Event 762509, LumiSection 7626 on stream 0 at 14-Mar-2026 21:37:36.140 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 462nd record. Run 1, Event 762518, LumiSection 7626 on stream 0 at 14-Mar-2026 21:37:36.144 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 463rd record. Run 1, Event 762520, LumiSection 7626 on stream 0 at 14-Mar-2026 21:37:36.150 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 464th record. Run 1, Event 762521, LumiSection 7626 on stream 0 at 14-Mar-2026 21:37:36.154 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 465th record. Run 1, Event 762522, LumiSection 7626 on stream 0 at 14-Mar-2026 21:37:36.158 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 466th record. Run 1, Event 762525, LumiSection 7626 on stream 0 at 14-Mar-2026 21:37:36.161 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 467th record. Run 1, Event 762526, LumiSection 7626 on stream 0 at 14-Mar-2026 21:37:36.164 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 468th record. Run 1, Event 762530, LumiSection 7626 on stream 0 at 14-Mar-2026 21:37:36.168 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 469th record. Run 1, Event 762545, LumiSection 7626 on stream 0 at 14-Mar-2026 21:37:36.172 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 470th record. Run 1, Event 762549, LumiSection 7626 on stream 0 at 14-Mar-2026 21:37:36.177 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 471st record. Run 1, Event 762556, LumiSection 7626 on stream 0 at 14-Mar-2026 21:37:36.181 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 472nd record. Run 1, Event 762571, LumiSection 7626 on stream 0 at 14-Mar-2026 21:37:36.186 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 473rd record. Run 1, Event 762572, LumiSection 7626 on stream 0 at 14-Mar-2026 21:37:36.190 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 474th record. Run 1, Event 762574, LumiSection 7626 on stream 0 at 14-Mar-2026 21:37:36.197 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 475th record. Run 1, Event 762578, LumiSection 7626 on stream 0 at 14-Mar-2026 21:37:36.200 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 476th record. Run 1, Event 762584, LumiSection 7626 on stream 0 at 14-Mar-2026 21:37:36.205 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 477th record. Run 1, Event 762585, LumiSection 7626 on stream 0 at 14-Mar-2026 21:37:36.210 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 478th record. Run 1, Event 762586, LumiSection 7626 on stream 0 at 14-Mar-2026 21:37:36.214 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 479th record. Run 1, Event 762593, LumiSection 7626 on stream 0 at 14-Mar-2026 21:37:36.217 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 480th record. Run 1, Event 762595, LumiSection 7626 on stream 0 at 14-Mar-2026 21:37:36.220 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 481st record. Run 1, Event 762605, LumiSection 7627 on stream 0 at 14-Mar-2026 21:37:36.223 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 482nd record. Run 1, Event 762608, LumiSection 7627 on stream 0 at 14-Mar-2026 21:37:36.227 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 483rd record. Run 1, Event 762610, LumiSection 7627 on stream 0 at 14-Mar-2026 21:37:36.230 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 484th record. Run 1, Event 762611, LumiSection 7627 on stream 0 at 14-Mar-2026 21:37:36.239 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 485th record. Run 1, Event 762619, LumiSection 7627 on stream 0 at 14-Mar-2026 21:37:36.244 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 486th record. Run 1, Event 762621, LumiSection 7627 on stream 0 at 14-Mar-2026 21:37:36.251 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 487th record. Run 1, Event 762625, LumiSection 7627 on stream 0 at 14-Mar-2026 21:37:36.255 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 488th record. Run 1, Event 762627, LumiSection 7627 on stream 0 at 14-Mar-2026 21:37:36.258 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 489th record. Run 1, Event 762635, LumiSection 7627 on stream 0 at 14-Mar-2026 21:37:36.261 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 490th record. Run 1, Event 762637, LumiSection 7627 on stream 0 at 14-Mar-2026 21:37:36.264 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 491st record. Run 1, Event 762638, LumiSection 7627 on stream 0 at 14-Mar-2026 21:37:36.268 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 492nd record. Run 1, Event 762649, LumiSection 7627 on stream 0 at 14-Mar-2026 21:37:36.272 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 493rd record. Run 1, Event 762662, LumiSection 7627 on stream 0 at 14-Mar-2026 21:37:36.275 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 494th record. Run 1, Event 762677, LumiSection 7627 on stream 0 at 14-Mar-2026 21:37:36.279 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 495th record. Run 1, Event 762679, LumiSection 7627 on stream 0 at 14-Mar-2026 21:37:36.293 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 496th record. Run 1, Event 762681, LumiSection 7627 on stream 0 at 14-Mar-2026 21:37:36.297 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 497th record. Run 1, Event 762682, LumiSection 7627 on stream 0 at 14-Mar-2026 21:37:36.300 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 498th record. Run 1, Event 762686, LumiSection 7627 on stream 0 at 14-Mar-2026 21:37:36.305 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 499th record. Run 1, Event 762690, LumiSection 7627 on stream 0 at 14-Mar-2026 21:37:36.308 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 500th record. Run 1, Event 762701, LumiSection 7628 on stream 0 at 14-Mar-2026 21:37:36.312 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 501st record. Run 1, Event 762703, LumiSection 7628 on stream 0 at 14-Mar-2026 21:37:36.316 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 502nd record. Run 1, Event 762715, LumiSection 7628 on stream 0 at 14-Mar-2026 21:37:36.396 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 503rd record. Run 1, Event 762727, LumiSection 7628 on stream 0 at 14-Mar-2026 21:37:36.401 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 504th record. Run 1, Event 762732, LumiSection 7628 on stream 0 at 14-Mar-2026 21:37:36.405 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 505th record. Run 1, Event 762741, LumiSection 7628 on stream 0 at 14-Mar-2026 21:37:36.409 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 506th record. Run 1, Event 762756, LumiSection 7628 on stream 0 at 14-Mar-2026 21:37:36.412 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 507th record. Run 1, Event 762758, LumiSection 7628 on stream 0 at 14-Mar-2026 21:37:36.417 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 508th record. Run 1, Event 762766, LumiSection 7628 on stream 0 at 14-Mar-2026 21:37:36.420 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 509th record. Run 1, Event 762781, LumiSection 7628 on stream 0 at 14-Mar-2026 21:37:36.424 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 510th record. Run 1, Event 762782, LumiSection 7628 on stream 0 at 14-Mar-2026 21:37:36.430 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 511th record. Run 1, Event 762786, LumiSection 7628 on stream 0 at 14-Mar-2026 21:37:36.433 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 512th record. Run 1, Event 762799, LumiSection 7628 on stream 0 at 14-Mar-2026 21:37:36.436 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 513th record. Run 1, Event 762801, LumiSection 7629 on stream 0 at 14-Mar-2026 21:37:36.440 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 514th record. Run 1, Event 762808, LumiSection 7629 on stream 0 at 14-Mar-2026 21:37:36.443 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 515th record. Run 1, Event 762815, LumiSection 7629 on stream 0 at 14-Mar-2026 21:37:36.447 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 516th record. Run 1, Event 762845, LumiSection 7629 on stream 0 at 14-Mar-2026 21:37:36.451 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 517th record. Run 1, Event 762846, LumiSection 7629 on stream 0 at 14-Mar-2026 21:37:36.455 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 518th record. Run 1, Event 762853, LumiSection 7629 on stream 0 at 14-Mar-2026 21:37:36.462 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 519th record. Run 1, Event 762856, LumiSection 7629 on stream 0 at 14-Mar-2026 21:37:36.466 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 520th record. Run 1, Event 762860, LumiSection 7629 on stream 0 at 14-Mar-2026 21:37:36.469 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 521st record. Run 1, Event 762863, LumiSection 7629 on stream 0 at 14-Mar-2026 21:37:36.473 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 522nd record. Run 1, Event 762874, LumiSection 7629 on stream 0 at 14-Mar-2026 21:37:36.477 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 523rd record. Run 1, Event 762898, LumiSection 7629 on stream 0 at 14-Mar-2026 21:37:36.480 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 524th record. Run 1, Event 762900, LumiSection 7629 on stream 0 at 14-Mar-2026 21:37:36.483 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 525th record. Run 1, Event 762905, LumiSection 7630 on stream 0 at 14-Mar-2026 21:37:36.488 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 526th record. Run 1, Event 762909, LumiSection 7630 on stream 0 at 14-Mar-2026 21:37:36.493 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 527th record. Run 1, Event 762913, LumiSection 7630 on stream 0 at 14-Mar-2026 21:37:36.500 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 528th record. Run 1, Event 762919, LumiSection 7630 on stream 0 at 14-Mar-2026 21:37:36.503 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 529th record. Run 1, Event 762925, LumiSection 7630 on stream 0 at 14-Mar-2026 21:37:36.508 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 530th record. Run 1, Event 762927, LumiSection 7630 on stream 0 at 14-Mar-2026 21:37:36.512 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 531st record. Run 1, Event 762929, LumiSection 7630 on stream 0 at 14-Mar-2026 21:37:36.515 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 532nd record. Run 1, Event 762931, LumiSection 7630 on stream 0 at 14-Mar-2026 21:37:36.519 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 533rd record. Run 1, Event 762937, LumiSection 7630 on stream 0 at 14-Mar-2026 21:37:36.522 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 534th record. Run 1, Event 762938, LumiSection 7630 on stream 0 at 14-Mar-2026 21:37:36.526 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 535th record. Run 1, Event 762946, LumiSection 7630 on stream 0 at 14-Mar-2026 21:37:36.529 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 536th record. Run 1, Event 762947, LumiSection 7630 on stream 0 at 14-Mar-2026 21:37:36.533 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 537th record. Run 1, Event 762950, LumiSection 7630 on stream 0 at 14-Mar-2026 21:37:36.536 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 538th record. Run 1, Event 762953, LumiSection 7630 on stream 0 at 14-Mar-2026 21:37:36.540 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 539th record. Run 1, Event 762954, LumiSection 7630 on stream 0 at 14-Mar-2026 21:37:36.547 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 540th record. Run 1, Event 762956, LumiSection 7630 on stream 0 at 14-Mar-2026 21:37:36.551 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 541st record. Run 1, Event 762958, LumiSection 7630 on stream 0 at 14-Mar-2026 21:37:36.566 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 542nd record. Run 1, Event 762960, LumiSection 7630 on stream 0 at 14-Mar-2026 21:37:36.571 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 543rd record. Run 1, Event 762967, LumiSection 7630 on stream 0 at 14-Mar-2026 21:37:36.574 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 544th record. Run 1, Event 762972, LumiSection 7630 on stream 0 at 14-Mar-2026 21:37:36.578 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 545th record. Run 1, Event 762973, LumiSection 7630 on stream 0 at 14-Mar-2026 21:37:36.583 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 546th record. Run 1, Event 762977, LumiSection 7630 on stream 0 at 14-Mar-2026 21:37:36.588 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+*** Analyze event: run: 1 lumi: 7630 event: 762977 analysed event count:3
+Begin processing the 547th record. Run 1, Event 762978, LumiSection 7630 on stream 0 at 14-Mar-2026 21:37:36.604 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 548th record. Run 1, Event 762983, LumiSection 7630 on stream 0 at 14-Mar-2026 21:37:36.608 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 549th record. Run 1, Event 762985, LumiSection 7630 on stream 0 at 14-Mar-2026 21:37:36.615 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 550th record. Run 1, Event 762993, LumiSection 7630 on stream 0 at 14-Mar-2026 21:37:36.619 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 551st record. Run 1, Event 763007, LumiSection 7631 on stream 0 at 14-Mar-2026 21:37:36.622 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 552nd record. Run 1, Event 763017, LumiSection 7631 on stream 0 at 14-Mar-2026 21:37:36.704 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 553rd record. Run 1, Event 763018, LumiSection 7631 on stream 0 at 14-Mar-2026 21:37:36.708 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 554th record. Run 1, Event 763023, LumiSection 7631 on stream 0 at 14-Mar-2026 21:37:36.710 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 555th record. Run 1, Event 763026, LumiSection 7631 on stream 0 at 14-Mar-2026 21:37:36.714 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 556th record. Run 1, Event 763031, LumiSection 7631 on stream 0 at 14-Mar-2026 21:37:36.717 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 557th record. Run 1, Event 763035, LumiSection 7631 on stream 0 at 14-Mar-2026 21:37:36.721 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 558th record. Run 1, Event 763036, LumiSection 7631 on stream 0 at 14-Mar-2026 21:37:36.725 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 559th record. Run 1, Event 763048, LumiSection 7631 on stream 0 at 14-Mar-2026 21:37:36.729 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 560th record. Run 1, Event 763053, LumiSection 7631 on stream 0 at 14-Mar-2026 21:37:36.734 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 561st record. Run 1, Event 763055, LumiSection 7631 on stream 0 at 14-Mar-2026 21:37:36.738 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 562nd record. Run 1, Event 763069, LumiSection 7631 on stream 0 at 14-Mar-2026 21:37:36.741 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 563rd record. Run 1, Event 763071, LumiSection 7631 on stream 0 at 14-Mar-2026 21:37:36.746 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 564th record. Run 1, Event 763072, LumiSection 7631 on stream 0 at 14-Mar-2026 21:37:36.752 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 565th record. Run 1, Event 763079, LumiSection 7631 on stream 0 at 14-Mar-2026 21:37:36.756 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 566th record. Run 1, Event 763080, LumiSection 7631 on stream 0 at 14-Mar-2026 21:37:36.759 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 567th record. Run 1, Event 763092, LumiSection 7631 on stream 0 at 14-Mar-2026 21:37:36.763 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 568th record. Run 1, Event 763093, LumiSection 7631 on stream 0 at 14-Mar-2026 21:37:36.767 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 569th record. Run 1, Event 763099, LumiSection 7631 on stream 0 at 14-Mar-2026 21:37:36.771 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 570th record. Run 1, Event 763104, LumiSection 7632 on stream 0 at 14-Mar-2026 21:37:36.775 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 571st record. Run 1, Event 763110, LumiSection 7632 on stream 0 at 14-Mar-2026 21:37:36.779 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 572nd record. Run 1, Event 763112, LumiSection 7632 on stream 0 at 14-Mar-2026 21:37:36.783 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 573rd record. Run 1, Event 763113, LumiSection 7632 on stream 0 at 14-Mar-2026 21:37:36.787 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 574th record. Run 1, Event 763121, LumiSection 7632 on stream 0 at 14-Mar-2026 21:37:36.791 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 575th record. Run 1, Event 763122, LumiSection 7632 on stream 0 at 14-Mar-2026 21:37:36.799 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 576th record. Run 1, Event 763127, LumiSection 7632 on stream 0 at 14-Mar-2026 21:37:36.803 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 577th record. Run 1, Event 763128, LumiSection 7632 on stream 0 at 14-Mar-2026 21:37:36.811 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 578th record. Run 1, Event 763129, LumiSection 7632 on stream 0 at 14-Mar-2026 21:37:36.815 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 579th record. Run 1, Event 763144, LumiSection 7632 on stream 0 at 14-Mar-2026 21:37:36.819 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 580th record. Run 1, Event 763156, LumiSection 7632 on stream 0 at 14-Mar-2026 21:37:36.824 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 581st record. Run 1, Event 763158, LumiSection 7632 on stream 0 at 14-Mar-2026 21:37:36.827 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 582nd record. Run 1, Event 763161, LumiSection 7632 on stream 0 at 14-Mar-2026 21:37:36.830 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 583rd record. Run 1, Event 763162, LumiSection 7632 on stream 0 at 14-Mar-2026 21:37:36.834 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 584th record. Run 1, Event 763164, LumiSection 7632 on stream 0 at 14-Mar-2026 21:37:36.840 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 585th record. Run 1, Event 763165, LumiSection 7632 on stream 0 at 14-Mar-2026 21:37:36.843 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 586th record. Run 1, Event 763180, LumiSection 7632 on stream 0 at 14-Mar-2026 21:37:36.854 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 587th record. Run 1, Event 763181, LumiSection 7632 on stream 0 at 14-Mar-2026 21:37:36.857 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 588th record. Run 1, Event 763184, LumiSection 7632 on stream 0 at 14-Mar-2026 21:37:36.861 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 589th record. Run 1, Event 763192, LumiSection 7632 on stream 0 at 14-Mar-2026 21:37:36.864 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 590th record. Run 1, Event 763202, LumiSection 7633 on stream 0 at 14-Mar-2026 21:37:36.868 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 591st record. Run 1, Event 763204, LumiSection 7633 on stream 0 at 14-Mar-2026 21:37:36.879 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 592nd record. Run 1, Event 763208, LumiSection 7633 on stream 0 at 14-Mar-2026 21:37:36.884 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 593rd record. Run 1, Event 763213, LumiSection 7633 on stream 0 at 14-Mar-2026 21:37:36.887 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 594th record. Run 1, Event 763217, LumiSection 7633 on stream 0 at 14-Mar-2026 21:37:36.890 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 595th record. Run 1, Event 763224, LumiSection 7633 on stream 0 at 14-Mar-2026 21:37:36.894 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 596th record. Run 1, Event 763230, LumiSection 7633 on stream 0 at 14-Mar-2026 21:37:36.899 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 597th record. Run 1, Event 763239, LumiSection 7633 on stream 0 at 14-Mar-2026 21:37:36.903 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 598th record. Run 1, Event 763247, LumiSection 7633 on stream 0 at 14-Mar-2026 21:37:36.905 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 599th record. Run 1, Event 763252, LumiSection 7633 on stream 0 at 14-Mar-2026 21:37:36.908 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 600th record. Run 1, Event 763255, LumiSection 7633 on stream 0 at 14-Mar-2026 21:37:36.911 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 601st record. Run 1, Event 763258, LumiSection 7633 on stream 0 at 14-Mar-2026 21:37:36.914 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 602nd record. Run 1, Event 763270, LumiSection 7633 on stream 0 at 14-Mar-2026 21:37:37.000 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 603rd record. Run 1, Event 763272, LumiSection 7633 on stream 0 at 14-Mar-2026 21:37:37.004 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 604th record. Run 1, Event 763279, LumiSection 7633 on stream 0 at 14-Mar-2026 21:37:37.008 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 605th record. Run 1, Event 763280, LumiSection 7633 on stream 0 at 14-Mar-2026 21:37:37.011 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 606th record. Run 1, Event 763283, LumiSection 7633 on stream 0 at 14-Mar-2026 21:37:37.016 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 607th record. Run 1, Event 763298, LumiSection 7633 on stream 0 at 14-Mar-2026 21:37:37.020 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 608th record. Run 1, Event 763314, LumiSection 7634 on stream 0 at 14-Mar-2026 21:37:37.025 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 609th record. Run 1, Event 763319, LumiSection 7634 on stream 0 at 14-Mar-2026 21:37:37.034 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 610th record. Run 1, Event 763320, LumiSection 7634 on stream 0 at 14-Mar-2026 21:37:37.048 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 611th record. Run 1, Event 763327, LumiSection 7634 on stream 0 at 14-Mar-2026 21:37:37.053 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 612th record. Run 1, Event 763333, LumiSection 7634 on stream 0 at 14-Mar-2026 21:37:37.057 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 613th record. Run 1, Event 763338, LumiSection 7634 on stream 0 at 14-Mar-2026 21:37:37.061 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 614th record. Run 1, Event 763340, LumiSection 7634 on stream 0 at 14-Mar-2026 21:37:37.065 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 615th record. Run 1, Event 763345, LumiSection 7634 on stream 0 at 14-Mar-2026 21:37:37.069 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 616th record. Run 1, Event 763346, LumiSection 7634 on stream 0 at 14-Mar-2026 21:37:37.074 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 617th record. Run 1, Event 763350, LumiSection 7634 on stream 0 at 14-Mar-2026 21:37:37.078 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 618th record. Run 1, Event 763355, LumiSection 7634 on stream 0 at 14-Mar-2026 21:37:37.083 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 619th record. Run 1, Event 763362, LumiSection 7634 on stream 0 at 14-Mar-2026 21:37:37.090 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 620th record. Run 1, Event 763365, LumiSection 7634 on stream 0 at 14-Mar-2026 21:37:37.097 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 621st record. Run 1, Event 763366, LumiSection 7634 on stream 0 at 14-Mar-2026 21:37:37.106 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 622nd record. Run 1, Event 763370, LumiSection 7634 on stream 0 at 14-Mar-2026 21:37:37.111 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 623rd record. Run 1, Event 763372, LumiSection 7634 on stream 0 at 14-Mar-2026 21:37:37.115 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 624th record. Run 1, Event 763375, LumiSection 7634 on stream 0 at 14-Mar-2026 21:37:37.121 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 625th record. Run 1, Event 763393, LumiSection 7634 on stream 0 at 14-Mar-2026 21:37:37.128 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 626th record. Run 1, Event 763394, LumiSection 7634 on stream 0 at 14-Mar-2026 21:37:37.134 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 627th record. Run 1, Event 763404, LumiSection 7635 on stream 0 at 14-Mar-2026 21:37:37.146 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 628th record. Run 1, Event 763407, LumiSection 7635 on stream 0 at 14-Mar-2026 21:37:37.149 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 629th record. Run 1, Event 763408, LumiSection 7635 on stream 0 at 14-Mar-2026 21:37:37.154 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 630th record. Run 1, Event 763413, LumiSection 7635 on stream 0 at 14-Mar-2026 21:37:37.163 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 631st record. Run 1, Event 763415, LumiSection 7635 on stream 0 at 14-Mar-2026 21:37:37.168 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 632nd record. Run 1, Event 763420, LumiSection 7635 on stream 0 at 14-Mar-2026 21:37:37.173 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+*** Analyze event: run: 1 lumi: 7635 event: 763420 analysed event count:4
+Begin processing the 633rd record. Run 1, Event 763426, LumiSection 7635 on stream 0 at 14-Mar-2026 21:37:37.235 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 634th record. Run 1, Event 763429, LumiSection 7635 on stream 0 at 14-Mar-2026 21:37:37.239 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 635th record. Run 1, Event 763431, LumiSection 7635 on stream 0 at 14-Mar-2026 21:37:37.243 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 636th record. Run 1, Event 763438, LumiSection 7635 on stream 0 at 14-Mar-2026 21:37:37.248 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 637th record. Run 1, Event 763439, LumiSection 7635 on stream 0 at 14-Mar-2026 21:37:37.253 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 638th record. Run 1, Event 763440, LumiSection 7635 on stream 0 at 14-Mar-2026 21:37:37.260 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 639th record. Run 1, Event 763445, LumiSection 7635 on stream 0 at 14-Mar-2026 21:37:37.266 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 640th record. Run 1, Event 763447, LumiSection 7635 on stream 0 at 14-Mar-2026 21:37:37.288 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 641st record. Run 1, Event 763450, LumiSection 7635 on stream 0 at 14-Mar-2026 21:37:37.293 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 642nd record. Run 1, Event 763452, LumiSection 7635 on stream 0 at 14-Mar-2026 21:37:37.305 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 643rd record. Run 1, Event 763453, LumiSection 7635 on stream 0 at 14-Mar-2026 21:37:37.309 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 644th record. Run 1, Event 763461, LumiSection 7635 on stream 0 at 14-Mar-2026 21:37:37.313 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 645th record. Run 1, Event 763469, LumiSection 7635 on stream 0 at 14-Mar-2026 21:37:37.318 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 646th record. Run 1, Event 763472, LumiSection 7635 on stream 0 at 14-Mar-2026 21:37:37.321 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 647th record. Run 1, Event 763476, LumiSection 7635 on stream 0 at 14-Mar-2026 21:37:37.325 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 648th record. Run 1, Event 763491, LumiSection 7635 on stream 0 at 14-Mar-2026 21:37:37.328 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 649th record. Run 1, Event 763496, LumiSection 7635 on stream 0 at 14-Mar-2026 21:37:37.331 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 650th record. Run 1, Event 763498, LumiSection 7635 on stream 0 at 14-Mar-2026 21:37:37.335 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 651st record. Run 1, Event 763509, LumiSection 7636 on stream 0 at 14-Mar-2026 21:37:37.860 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 652nd record. Run 1, Event 763515, LumiSection 7636 on stream 0 at 14-Mar-2026 21:37:37.960 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 653rd record. Run 1, Event 763525, LumiSection 7636 on stream 0 at 14-Mar-2026 21:37:37.966 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 654th record. Run 1, Event 763528, LumiSection 7636 on stream 0 at 14-Mar-2026 21:37:37.971 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 655th record. Run 1, Event 763530, LumiSection 7636 on stream 0 at 14-Mar-2026 21:37:37.990 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 656th record. Run 1, Event 763539, LumiSection 7636 on stream 0 at 14-Mar-2026 21:37:37.993 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 657th record. Run 1, Event 763541, LumiSection 7636 on stream 0 at 14-Mar-2026 21:37:37.998 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 658th record. Run 1, Event 763551, LumiSection 7636 on stream 0 at 14-Mar-2026 21:37:38.002 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 659th record. Run 1, Event 763557, LumiSection 7636 on stream 0 at 14-Mar-2026 21:37:38.006 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 660th record. Run 1, Event 763562, LumiSection 7636 on stream 0 at 14-Mar-2026 21:37:38.013 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 661st record. Run 1, Event 763590, LumiSection 7636 on stream 0 at 14-Mar-2026 21:37:38.021 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 662nd record. Run 1, Event 763595, LumiSection 7636 on stream 0 at 14-Mar-2026 21:37:38.026 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 663rd record. Run 1, Event 763605, LumiSection 7637 on stream 0 at 14-Mar-2026 21:37:38.030 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 664th record. Run 1, Event 763606, LumiSection 7637 on stream 0 at 14-Mar-2026 21:37:38.035 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 665th record. Run 1, Event 763608, LumiSection 7637 on stream 0 at 14-Mar-2026 21:37:38.040 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 666th record. Run 1, Event 763611, LumiSection 7637 on stream 0 at 14-Mar-2026 21:37:38.045 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 667th record. Run 1, Event 763615, LumiSection 7637 on stream 0 at 14-Mar-2026 21:37:38.050 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 668th record. Run 1, Event 763618, LumiSection 7637 on stream 0 at 14-Mar-2026 21:37:38.055 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 669th record. Run 1, Event 763625, LumiSection 7637 on stream 0 at 14-Mar-2026 21:37:38.059 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 670th record. Run 1, Event 763634, LumiSection 7637 on stream 0 at 14-Mar-2026 21:37:38.063 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 671st record. Run 1, Event 763639, LumiSection 7637 on stream 0 at 14-Mar-2026 21:37:38.067 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 672nd record. Run 1, Event 763643, LumiSection 7637 on stream 0 at 14-Mar-2026 21:37:38.071 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 673rd record. Run 1, Event 763652, LumiSection 7637 on stream 0 at 14-Mar-2026 21:37:38.079 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 674th record. Run 1, Event 763653, LumiSection 7637 on stream 0 at 14-Mar-2026 21:37:38.083 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 675th record. Run 1, Event 763662, LumiSection 7637 on stream 0 at 14-Mar-2026 21:37:38.087 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 676th record. Run 1, Event 763670, LumiSection 7637 on stream 0 at 14-Mar-2026 21:37:38.092 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 677th record. Run 1, Event 763672, LumiSection 7637 on stream 0 at 14-Mar-2026 21:37:38.097 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 678th record. Run 1, Event 763682, LumiSection 7637 on stream 0 at 14-Mar-2026 21:37:38.103 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 679th record. Run 1, Event 763699, LumiSection 7637 on stream 0 at 14-Mar-2026 21:37:38.108 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 680th record. Run 1, Event 763708, LumiSection 7638 on stream 0 at 14-Mar-2026 21:37:38.113 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 681st record. Run 1, Event 763711, LumiSection 7638 on stream 0 at 14-Mar-2026 21:37:38.116 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 682nd record. Run 1, Event 763713, LumiSection 7638 on stream 0 at 14-Mar-2026 21:37:38.121 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 683rd record. Run 1, Event 763720, LumiSection 7638 on stream 0 at 14-Mar-2026 21:37:38.126 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 684th record. Run 1, Event 763732, LumiSection 7638 on stream 0 at 14-Mar-2026 21:37:38.133 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 685th record. Run 1, Event 763735, LumiSection 7638 on stream 0 at 14-Mar-2026 21:37:38.137 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 686th record. Run 1, Event 763745, LumiSection 7638 on stream 0 at 14-Mar-2026 21:37:38.141 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 687th record. Run 1, Event 763747, LumiSection 7638 on stream 0 at 14-Mar-2026 21:37:38.144 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 688th record. Run 1, Event 763753, LumiSection 7638 on stream 0 at 14-Mar-2026 21:37:38.151 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 689th record. Run 1, Event 763759, LumiSection 7638 on stream 0 at 14-Mar-2026 21:37:38.156 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 690th record. Run 1, Event 763762, LumiSection 7638 on stream 0 at 14-Mar-2026 21:37:38.162 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 691st record. Run 1, Event 763772, LumiSection 7638 on stream 0 at 14-Mar-2026 21:37:38.167 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 692nd record. Run 1, Event 763775, LumiSection 7638 on stream 0 at 14-Mar-2026 21:37:38.196 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 693rd record. Run 1, Event 763777, LumiSection 7638 on stream 0 at 14-Mar-2026 21:37:38.201 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 694th record. Run 1, Event 763786, LumiSection 7638 on stream 0 at 14-Mar-2026 21:37:38.206 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 695th record. Run 1, Event 763787, LumiSection 7638 on stream 0 at 14-Mar-2026 21:37:38.211 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 696th record. Run 1, Event 763794, LumiSection 7638 on stream 0 at 14-Mar-2026 21:37:38.215 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 697th record. Run 1, Event 763797, LumiSection 7638 on stream 0 at 14-Mar-2026 21:37:38.222 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 698th record. Run 1, Event 763798, LumiSection 7638 on stream 0 at 14-Mar-2026 21:37:38.226 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 699th record. Run 1, Event 763799, LumiSection 7638 on stream 0 at 14-Mar-2026 21:37:38.229 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 700th record. Run 1, Event 763804, LumiSection 7639 on stream 0 at 14-Mar-2026 21:37:38.235 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 701st record. Run 1, Event 763805, LumiSection 7639 on stream 0 at 14-Mar-2026 21:37:38.240 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 702nd record. Run 1, Event 763806, LumiSection 7639 on stream 0 at 14-Mar-2026 21:37:38.334 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 703rd record. Run 1, Event 763807, LumiSection 7639 on stream 0 at 14-Mar-2026 21:37:38.338 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 704th record. Run 1, Event 763811, LumiSection 7639 on stream 0 at 14-Mar-2026 21:37:38.343 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 705th record. Run 1, Event 763812, LumiSection 7639 on stream 0 at 14-Mar-2026 21:37:38.346 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 706th record. Run 1, Event 763813, LumiSection 7639 on stream 0 at 14-Mar-2026 21:37:38.350 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 707th record. Run 1, Event 763818, LumiSection 7639 on stream 0 at 14-Mar-2026 21:37:38.353 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 708th record. Run 1, Event 763835, LumiSection 7639 on stream 0 at 14-Mar-2026 21:37:38.358 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 709th record. Run 1, Event 763837, LumiSection 7639 on stream 0 at 14-Mar-2026 21:37:38.362 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 710th record. Run 1, Event 763838, LumiSection 7639 on stream 0 at 14-Mar-2026 21:37:38.365 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 711th record. Run 1, Event 763843, LumiSection 7639 on stream 0 at 14-Mar-2026 21:37:38.370 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 712th record. Run 1, Event 763847, LumiSection 7639 on stream 0 at 14-Mar-2026 21:37:38.377 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 713th record. Run 1, Event 763854, LumiSection 7639 on stream 0 at 14-Mar-2026 21:37:38.381 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 714th record. Run 1, Event 763856, LumiSection 7639 on stream 0 at 14-Mar-2026 21:37:38.389 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 715th record. Run 1, Event 763860, LumiSection 7639 on stream 0 at 14-Mar-2026 21:37:38.395 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 716th record. Run 1, Event 763861, LumiSection 7639 on stream 0 at 14-Mar-2026 21:37:38.400 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 717th record. Run 1, Event 763870, LumiSection 7639 on stream 0 at 14-Mar-2026 21:37:38.405 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 718th record. Run 1, Event 763882, LumiSection 7639 on stream 0 at 14-Mar-2026 21:37:38.409 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 719th record. Run 1, Event 763883, LumiSection 7639 on stream 0 at 14-Mar-2026 21:37:38.414 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 720th record. Run 1, Event 763884, LumiSection 7639 on stream 0 at 14-Mar-2026 21:37:38.417 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 721st record. Run 1, Event 763892, LumiSection 7639 on stream 0 at 14-Mar-2026 21:37:38.420 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 722nd record. Run 1, Event 763893, LumiSection 7639 on stream 0 at 14-Mar-2026 21:37:38.424 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 723rd record. Run 1, Event 763904, LumiSection 7640 on stream 0 at 14-Mar-2026 21:37:38.431 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 724th record. Run 1, Event 763907, LumiSection 7640 on stream 0 at 14-Mar-2026 21:37:38.435 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 725th record. Run 1, Event 763919, LumiSection 7640 on stream 0 at 14-Mar-2026 21:37:38.439 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 726th record. Run 1, Event 763927, LumiSection 7640 on stream 0 at 14-Mar-2026 21:37:38.443 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 727th record. Run 1, Event 763934, LumiSection 7640 on stream 0 at 14-Mar-2026 21:37:38.447 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 728th record. Run 1, Event 763940, LumiSection 7640 on stream 0 at 14-Mar-2026 21:37:38.451 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 729th record. Run 1, Event 763942, LumiSection 7640 on stream 0 at 14-Mar-2026 21:37:38.454 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 730th record. Run 1, Event 763944, LumiSection 7640 on stream 0 at 14-Mar-2026 21:37:38.458 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 731st record. Run 1, Event 763947, LumiSection 7640 on stream 0 at 14-Mar-2026 21:37:38.461 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 732nd record. Run 1, Event 763951, LumiSection 7640 on stream 0 at 14-Mar-2026 21:37:38.465 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 733rd record. Run 1, Event 763952, LumiSection 7640 on stream 0 at 14-Mar-2026 21:37:38.469 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 734th record. Run 1, Event 763961, LumiSection 7640 on stream 0 at 14-Mar-2026 21:37:38.473 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 735th record. Run 1, Event 763965, LumiSection 7640 on stream 0 at 14-Mar-2026 21:37:38.478 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 736th record. Run 1, Event 763970, LumiSection 7640 on stream 0 at 14-Mar-2026 21:37:38.484 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 737th record. Run 1, Event 763978, LumiSection 7640 on stream 0 at 14-Mar-2026 21:37:38.488 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 738th record. Run 1, Event 763981, LumiSection 7640 on stream 0 at 14-Mar-2026 21:37:38.492 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 739th record. Run 1, Event 763985, LumiSection 7640 on stream 0 at 14-Mar-2026 21:37:38.496 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 740th record. Run 1, Event 764006, LumiSection 7641 on stream 0 at 14-Mar-2026 21:37:38.499 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 741st record. Run 1, Event 764008, LumiSection 7641 on stream 0 at 14-Mar-2026 21:37:38.503 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 742nd record. Run 1, Event 764015, LumiSection 7641 on stream 0 at 14-Mar-2026 21:37:38.507 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 743rd record. Run 1, Event 764020, LumiSection 7641 on stream 0 at 14-Mar-2026 21:37:38.520 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 744th record. Run 1, Event 764031, LumiSection 7641 on stream 0 at 14-Mar-2026 21:37:38.523 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 745th record. Run 1, Event 764034, LumiSection 7641 on stream 0 at 14-Mar-2026 21:37:38.527 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 746th record. Run 1, Event 764047, LumiSection 7641 on stream 0 at 14-Mar-2026 21:37:38.531 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 747th record. Run 1, Event 764050, LumiSection 7641 on stream 0 at 14-Mar-2026 21:37:38.536 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 748th record. Run 1, Event 764060, LumiSection 7641 on stream 0 at 14-Mar-2026 21:37:38.541 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 749th record. Run 1, Event 764071, LumiSection 7641 on stream 0 at 14-Mar-2026 21:37:38.545 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 750th record. Run 1, Event 764077, LumiSection 7641 on stream 0 at 14-Mar-2026 21:37:38.550 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 751st record. Run 1, Event 764079, LumiSection 7641 on stream 0 at 14-Mar-2026 21:37:38.555 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 752nd record. Run 1, Event 764083, LumiSection 7641 on stream 0 at 14-Mar-2026 21:37:38.632 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 753rd record. Run 1, Event 764088, LumiSection 7641 on stream 0 at 14-Mar-2026 21:37:38.637 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 754th record. Run 1, Event 764094, LumiSection 7641 on stream 0 at 14-Mar-2026 21:37:38.641 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 755th record. Run 1, Event 764111, LumiSection 7642 on stream 0 at 14-Mar-2026 21:37:38.646 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 756th record. Run 1, Event 764113, LumiSection 7642 on stream 0 at 14-Mar-2026 21:37:38.651 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 757th record. Run 1, Event 764118, LumiSection 7642 on stream 0 at 14-Mar-2026 21:37:38.655 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 758th record. Run 1, Event 764120, LumiSection 7642 on stream 0 at 14-Mar-2026 21:37:38.659 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 759th record. Run 1, Event 764121, LumiSection 7642 on stream 0 at 14-Mar-2026 21:37:38.664 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 760th record. Run 1, Event 764122, LumiSection 7642 on stream 0 at 14-Mar-2026 21:37:38.667 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 761st record. Run 1, Event 764137, LumiSection 7642 on stream 0 at 14-Mar-2026 21:37:38.671 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 762nd record. Run 1, Event 764140, LumiSection 7642 on stream 0 at 14-Mar-2026 21:37:38.679 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 763rd record. Run 1, Event 764143, LumiSection 7642 on stream 0 at 14-Mar-2026 21:37:38.683 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 764th record. Run 1, Event 764145, LumiSection 7642 on stream 0 at 14-Mar-2026 21:37:38.685 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 765th record. Run 1, Event 764161, LumiSection 7642 on stream 0 at 14-Mar-2026 21:37:38.689 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 766th record. Run 1, Event 764165, LumiSection 7642 on stream 0 at 14-Mar-2026 21:37:38.693 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 767th record. Run 1, Event 764167, LumiSection 7642 on stream 0 at 14-Mar-2026 21:37:38.696 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 768th record. Run 1, Event 764173, LumiSection 7642 on stream 0 at 14-Mar-2026 21:37:38.699 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 769th record. Run 1, Event 764177, LumiSection 7642 on stream 0 at 14-Mar-2026 21:37:38.703 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 770th record. Run 1, Event 764184, LumiSection 7642 on stream 0 at 14-Mar-2026 21:37:38.707 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 771st record. Run 1, Event 764185, LumiSection 7642 on stream 0 at 14-Mar-2026 21:37:38.711 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 772nd record. Run 1, Event 764191, LumiSection 7642 on stream 0 at 14-Mar-2026 21:37:38.716 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 773rd record. Run 1, Event 764197, LumiSection 7642 on stream 0 at 14-Mar-2026 21:37:38.719 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 774th record. Run 1, Event 764199, LumiSection 7642 on stream 0 at 14-Mar-2026 21:37:38.724 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 775th record. Run 1, Event 764214, LumiSection 7643 on stream 0 at 14-Mar-2026 21:37:38.728 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 776th record. Run 1, Event 764218, LumiSection 7643 on stream 0 at 14-Mar-2026 21:37:38.735 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 777th record. Run 1, Event 764232, LumiSection 7643 on stream 0 at 14-Mar-2026 21:37:38.740 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 778th record. Run 1, Event 764239, LumiSection 7643 on stream 0 at 14-Mar-2026 21:37:38.744 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 779th record. Run 1, Event 764250, LumiSection 7643 on stream 0 at 14-Mar-2026 21:37:38.749 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 780th record. Run 1, Event 764254, LumiSection 7643 on stream 0 at 14-Mar-2026 21:37:38.754 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 781st record. Run 1, Event 764260, LumiSection 7643 on stream 0 at 14-Mar-2026 21:37:38.757 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 782nd record. Run 1, Event 764263, LumiSection 7643 on stream 0 at 14-Mar-2026 21:37:38.764 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 783rd record. Run 1, Event 764269, LumiSection 7643 on stream 0 at 14-Mar-2026 21:37:38.768 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 784th record. Run 1, Event 764270, LumiSection 7643 on stream 0 at 14-Mar-2026 21:37:38.772 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 785th record. Run 1, Event 764278, LumiSection 7643 on stream 0 at 14-Mar-2026 21:37:38.775 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 786th record. Run 1, Event 764282, LumiSection 7643 on stream 0 at 14-Mar-2026 21:37:38.779 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 787th record. Run 1, Event 764283, LumiSection 7643 on stream 0 at 14-Mar-2026 21:37:38.783 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 788th record. Run 1, Event 764301, LumiSection 7644 on stream 0 at 14-Mar-2026 21:37:38.786 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 789th record. Run 1, Event 764304, LumiSection 7644 on stream 0 at 14-Mar-2026 21:37:38.791 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 790th record. Run 1, Event 764306, LumiSection 7644 on stream 0 at 14-Mar-2026 21:37:38.795 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 791st record. Run 1, Event 764307, LumiSection 7644 on stream 0 at 14-Mar-2026 21:37:38.799 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 792nd record. Run 1, Event 764310, LumiSection 7644 on stream 0 at 14-Mar-2026 21:37:38.802 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 793rd record. Run 1, Event 764314, LumiSection 7644 on stream 0 at 14-Mar-2026 21:37:38.806 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 794th record. Run 1, Event 764316, LumiSection 7644 on stream 0 at 14-Mar-2026 21:37:38.816 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 795th record. Run 1, Event 764319, LumiSection 7644 on stream 0 at 14-Mar-2026 21:37:38.821 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 796th record. Run 1, Event 764326, LumiSection 7644 on stream 0 at 14-Mar-2026 21:37:38.825 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 797th record. Run 1, Event 764327, LumiSection 7644 on stream 0 at 14-Mar-2026 21:37:38.828 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 798th record. Run 1, Event 764331, LumiSection 7644 on stream 0 at 14-Mar-2026 21:37:38.832 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 799th record. Run 1, Event 764339, LumiSection 7644 on stream 0 at 14-Mar-2026 21:37:38.835 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 800th record. Run 1, Event 764352, LumiSection 7644 on stream 0 at 14-Mar-2026 21:37:38.838 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 801st record. Run 1, Event 764355, LumiSection 7644 on stream 0 at 14-Mar-2026 21:37:38.842 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 802nd record. Run 1, Event 764357, LumiSection 7644 on stream 0 at 14-Mar-2026 21:37:38.919 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 803rd record. Run 1, Event 764358, LumiSection 7644 on stream 0 at 14-Mar-2026 21:37:38.923 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 804th record. Run 1, Event 764361, LumiSection 7644 on stream 0 at 14-Mar-2026 21:37:38.926 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 805th record. Run 1, Event 764363, LumiSection 7644 on stream 0 at 14-Mar-2026 21:37:38.930 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 806th record. Run 1, Event 764375, LumiSection 7644 on stream 0 at 14-Mar-2026 21:37:38.934 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 807th record. Run 1, Event 764382, LumiSection 7644 on stream 0 at 14-Mar-2026 21:37:38.938 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 808th record. Run 1, Event 764389, LumiSection 7644 on stream 0 at 14-Mar-2026 21:37:38.943 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 809th record. Run 1, Event 764395, LumiSection 7644 on stream 0 at 14-Mar-2026 21:37:38.947 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 810th record. Run 1, Event 764396, LumiSection 7644 on stream 0 at 14-Mar-2026 21:37:38.950 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 811th record. Run 1, Event 764400, LumiSection 7644 on stream 0 at 14-Mar-2026 21:37:38.953 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 812th record. Run 1, Event 764402, LumiSection 7645 on stream 0 at 14-Mar-2026 21:37:38.957 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 813th record. Run 1, Event 764403, LumiSection 7645 on stream 0 at 14-Mar-2026 21:37:38.964 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 814th record. Run 1, Event 764412, LumiSection 7645 on stream 0 at 14-Mar-2026 21:37:38.968 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 815th record. Run 1, Event 764416, LumiSection 7645 on stream 0 at 14-Mar-2026 21:37:38.973 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 816th record. Run 1, Event 764422, LumiSection 7645 on stream 0 at 14-Mar-2026 21:37:38.977 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 817th record. Run 1, Event 764429, LumiSection 7645 on stream 0 at 14-Mar-2026 21:37:38.981 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 818th record. Run 1, Event 764433, LumiSection 7645 on stream 0 at 14-Mar-2026 21:37:38.985 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 819th record. Run 1, Event 764437, LumiSection 7645 on stream 0 at 14-Mar-2026 21:37:38.991 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 820th record. Run 1, Event 764440, LumiSection 7645 on stream 0 at 14-Mar-2026 21:37:38.994 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 821st record. Run 1, Event 764441, LumiSection 7645 on stream 0 at 14-Mar-2026 21:37:38.999 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 822nd record. Run 1, Event 764448, LumiSection 7645 on stream 0 at 14-Mar-2026 21:37:39.004 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 823rd record. Run 1, Event 764456, LumiSection 7645 on stream 0 at 14-Mar-2026 21:37:39.007 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 824th record. Run 1, Event 764457, LumiSection 7645 on stream 0 at 14-Mar-2026 21:37:39.011 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 825th record. Run 1, Event 764470, LumiSection 7645 on stream 0 at 14-Mar-2026 21:37:39.015 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 826th record. Run 1, Event 764471, LumiSection 7645 on stream 0 at 14-Mar-2026 21:37:39.019 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 827th record. Run 1, Event 764472, LumiSection 7645 on stream 0 at 14-Mar-2026 21:37:39.022 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 828th record. Run 1, Event 764480, LumiSection 7645 on stream 0 at 14-Mar-2026 21:37:39.026 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 829th record. Run 1, Event 764484, LumiSection 7645 on stream 0 at 14-Mar-2026 21:37:39.029 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 830th record. Run 1, Event 764486, LumiSection 7645 on stream 0 at 14-Mar-2026 21:37:39.033 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 831st record. Run 1, Event 764488, LumiSection 7645 on stream 0 at 14-Mar-2026 21:37:39.037 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 832nd record. Run 1, Event 764497, LumiSection 7645 on stream 0 at 14-Mar-2026 21:37:39.041 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 833rd record. Run 1, Event 764502, LumiSection 7646 on stream 0 at 14-Mar-2026 21:37:39.050 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 834th record. Run 1, Event 764512, LumiSection 7646 on stream 0 at 14-Mar-2026 21:37:39.053 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 835th record. Run 1, Event 764518, LumiSection 7646 on stream 0 at 14-Mar-2026 21:37:39.057 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 836th record. Run 1, Event 764521, LumiSection 7646 on stream 0 at 14-Mar-2026 21:37:39.060 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 837th record. Run 1, Event 764526, LumiSection 7646 on stream 0 at 14-Mar-2026 21:37:39.064 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 838th record. Run 1, Event 764530, LumiSection 7646 on stream 0 at 14-Mar-2026 21:37:39.068 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 839th record. Run 1, Event 764532, LumiSection 7646 on stream 0 at 14-Mar-2026 21:37:39.071 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 840th record. Run 1, Event 764535, LumiSection 7646 on stream 0 at 14-Mar-2026 21:37:39.074 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 841st record. Run 1, Event 764551, LumiSection 7646 on stream 0 at 14-Mar-2026 21:37:39.078 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 842nd record. Run 1, Event 764558, LumiSection 7646 on stream 0 at 14-Mar-2026 21:37:39.082 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 843rd record. Run 1, Event 764559, LumiSection 7646 on stream 0 at 14-Mar-2026 21:37:39.097 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 844th record. Run 1, Event 764561, LumiSection 7646 on stream 0 at 14-Mar-2026 21:37:39.100 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 845th record. Run 1, Event 764563, LumiSection 7646 on stream 0 at 14-Mar-2026 21:37:39.104 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 846th record. Run 1, Event 764573, LumiSection 7646 on stream 0 at 14-Mar-2026 21:37:39.108 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 847th record. Run 1, Event 764574, LumiSection 7646 on stream 0 at 14-Mar-2026 21:37:39.112 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 848th record. Run 1, Event 764576, LumiSection 7646 on stream 0 at 14-Mar-2026 21:37:39.115 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 849th record. Run 1, Event 764577, LumiSection 7646 on stream 0 at 14-Mar-2026 21:37:39.120 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 850th record. Run 1, Event 764581, LumiSection 7646 on stream 0 at 14-Mar-2026 21:37:39.125 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 851st record. Run 1, Event 764582, LumiSection 7646 on stream 0 at 14-Mar-2026 21:37:39.129 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 852nd record. Run 1, Event 764583, LumiSection 7646 on stream 0 at 14-Mar-2026 21:37:39.220 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 853rd record. Run 1, Event 764585, LumiSection 7646 on stream 0 at 14-Mar-2026 21:37:39.227 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 854th record. Run 1, Event 764599, LumiSection 7646 on stream 0 at 14-Mar-2026 21:37:39.232 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 855th record. Run 1, Event 764604, LumiSection 7647 on stream 0 at 14-Mar-2026 21:37:39.236 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 856th record. Run 1, Event 764618, LumiSection 7647 on stream 0 at 14-Mar-2026 21:37:39.240 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 857th record. Run 1, Event 764621, LumiSection 7647 on stream 0 at 14-Mar-2026 21:37:39.244 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 858th record. Run 1, Event 764622, LumiSection 7647 on stream 0 at 14-Mar-2026 21:37:39.247 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 859th record. Run 1, Event 764625, LumiSection 7647 on stream 0 at 14-Mar-2026 21:37:39.254 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 860th record. Run 1, Event 764634, LumiSection 7647 on stream 0 at 14-Mar-2026 21:37:39.258 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 861st record. Run 1, Event 764639, LumiSection 7647 on stream 0 at 14-Mar-2026 21:37:39.261 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 862nd record. Run 1, Event 764645, LumiSection 7647 on stream 0 at 14-Mar-2026 21:37:39.264 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 863rd record. Run 1, Event 764647, LumiSection 7647 on stream 0 at 14-Mar-2026 21:37:39.269 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 864th record. Run 1, Event 764649, LumiSection 7647 on stream 0 at 14-Mar-2026 21:37:39.274 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 865th record. Run 1, Event 764661, LumiSection 7647 on stream 0 at 14-Mar-2026 21:37:39.277 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 866th record. Run 1, Event 764664, LumiSection 7647 on stream 0 at 14-Mar-2026 21:37:39.284 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 867th record. Run 1, Event 764665, LumiSection 7647 on stream 0 at 14-Mar-2026 21:37:39.288 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 868th record. Run 1, Event 764670, LumiSection 7647 on stream 0 at 14-Mar-2026 21:37:39.292 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 869th record. Run 1, Event 764684, LumiSection 7647 on stream 0 at 14-Mar-2026 21:37:39.296 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 870th record. Run 1, Event 764685, LumiSection 7647 on stream 0 at 14-Mar-2026 21:37:39.300 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 871st record. Run 1, Event 764691, LumiSection 7647 on stream 0 at 14-Mar-2026 21:37:39.304 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 872nd record. Run 1, Event 764697, LumiSection 7647 on stream 0 at 14-Mar-2026 21:37:39.308 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 873rd record. Run 1, Event 764700, LumiSection 7647 on stream 0 at 14-Mar-2026 21:37:39.313 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 874th record. Run 1, Event 764704, LumiSection 7648 on stream 0 at 14-Mar-2026 21:37:39.317 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 875th record. Run 1, Event 764709, LumiSection 7648 on stream 0 at 14-Mar-2026 21:37:39.320 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 876th record. Run 1, Event 764710, LumiSection 7648 on stream 0 at 14-Mar-2026 21:37:39.324 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 877th record. Run 1, Event 764718, LumiSection 7648 on stream 0 at 14-Mar-2026 21:37:39.329 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 878th record. Run 1, Event 764719, LumiSection 7648 on stream 0 at 14-Mar-2026 21:37:39.332 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 879th record. Run 1, Event 764720, LumiSection 7648 on stream 0 at 14-Mar-2026 21:37:39.336 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 880th record. Run 1, Event 764721, LumiSection 7648 on stream 0 at 14-Mar-2026 21:37:39.344 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 881st record. Run 1, Event 764722, LumiSection 7648 on stream 0 at 14-Mar-2026 21:37:39.347 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 882nd record. Run 1, Event 764732, LumiSection 7648 on stream 0 at 14-Mar-2026 21:37:39.351 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 883rd record. Run 1, Event 764735, LumiSection 7648 on stream 0 at 14-Mar-2026 21:37:39.356 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 884th record. Run 1, Event 764736, LumiSection 7648 on stream 0 at 14-Mar-2026 21:37:39.360 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 885th record. Run 1, Event 764741, LumiSection 7648 on stream 0 at 14-Mar-2026 21:37:39.364 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 886th record. Run 1, Event 764747, LumiSection 7648 on stream 0 at 14-Mar-2026 21:37:39.367 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 887th record. Run 1, Event 764748, LumiSection 7648 on stream 0 at 14-Mar-2026 21:37:39.371 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 888th record. Run 1, Event 764752, LumiSection 7648 on stream 0 at 14-Mar-2026 21:37:39.375 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 889th record. Run 1, Event 764754, LumiSection 7648 on stream 0 at 14-Mar-2026 21:37:39.379 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 890th record. Run 1, Event 764757, LumiSection 7648 on stream 0 at 14-Mar-2026 21:37:39.386 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 891st record. Run 1, Event 764762, LumiSection 7648 on stream 0 at 14-Mar-2026 21:37:39.394 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 892nd record. Run 1, Event 764768, LumiSection 7648 on stream 0 at 14-Mar-2026 21:37:39.397 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 893rd record. Run 1, Event 764774, LumiSection 7648 on stream 0 at 14-Mar-2026 21:37:39.402 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 894th record. Run 1, Event 764777, LumiSection 7648 on stream 0 at 14-Mar-2026 21:37:39.406 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 895th record. Run 1, Event 764785, LumiSection 7648 on stream 0 at 14-Mar-2026 21:37:39.409 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 896th record. Run 1, Event 764790, LumiSection 7648 on stream 0 at 14-Mar-2026 21:37:39.413 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 897th record. Run 1, Event 764802, LumiSection 7649 on stream 0 at 14-Mar-2026 21:37:39.417 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 898th record. Run 1, Event 764811, LumiSection 7649 on stream 0 at 14-Mar-2026 21:37:39.421 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+*** Analyze event: run: 1 lumi: 7649 event: 764811 analysed event count:5
+Begin processing the 899th record. Run 1, Event 764822, LumiSection 7649 on stream 0 at 14-Mar-2026 21:37:39.452 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 900th record. Run 1, Event 764823, LumiSection 7649 on stream 0 at 14-Mar-2026 21:37:39.460 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 901st record. Run 1, Event 764824, LumiSection 7649 on stream 0 at 14-Mar-2026 21:37:39.465 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 902nd record. Run 1, Event 764834, LumiSection 7649 on stream 0 at 14-Mar-2026 21:37:39.536 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 903rd record. Run 1, Event 764844, LumiSection 7649 on stream 0 at 14-Mar-2026 21:37:39.542 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 904th record. Run 1, Event 764849, LumiSection 7649 on stream 0 at 14-Mar-2026 21:37:39.547 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 905th record. Run 1, Event 764855, LumiSection 7649 on stream 0 at 14-Mar-2026 21:37:39.552 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 906th record. Run 1, Event 764862, LumiSection 7649 on stream 0 at 14-Mar-2026 21:37:39.557 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 907th record. Run 1, Event 764871, LumiSection 7649 on stream 0 at 14-Mar-2026 21:37:39.560 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 908th record. Run 1, Event 764873, LumiSection 7649 on stream 0 at 14-Mar-2026 21:37:39.565 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 909th record. Run 1, Event 764874, LumiSection 7649 on stream 0 at 14-Mar-2026 21:37:39.570 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 910th record. Run 1, Event 764877, LumiSection 7649 on stream 0 at 14-Mar-2026 21:37:39.578 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 911th record. Run 1, Event 764881, LumiSection 7649 on stream 0 at 14-Mar-2026 21:37:39.581 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 912th record. Run 1, Event 764884, LumiSection 7649 on stream 0 at 14-Mar-2026 21:37:39.585 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 913th record. Run 1, Event 764895, LumiSection 7649 on stream 0 at 14-Mar-2026 21:37:39.589 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 914th record. Run 1, Event 764910, LumiSection 7650 on stream 0 at 14-Mar-2026 21:37:39.593 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 915th record. Run 1, Event 764915, LumiSection 7650 on stream 0 at 14-Mar-2026 21:37:39.596 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 916th record. Run 1, Event 764916, LumiSection 7650 on stream 0 at 14-Mar-2026 21:37:39.600 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 917th record. Run 1, Event 764943, LumiSection 7650 on stream 0 at 14-Mar-2026 21:37:39.604 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 918th record. Run 1, Event 764944, LumiSection 7650 on stream 0 at 14-Mar-2026 21:37:39.607 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 919th record. Run 1, Event 764953, LumiSection 7650 on stream 0 at 14-Mar-2026 21:37:39.612 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 920th record. Run 1, Event 764961, LumiSection 7650 on stream 0 at 14-Mar-2026 21:37:39.620 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 921st record. Run 1, Event 764972, LumiSection 7650 on stream 0 at 14-Mar-2026 21:37:39.628 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 922nd record. Run 1, Event 764974, LumiSection 7650 on stream 0 at 14-Mar-2026 21:37:39.634 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 923rd record. Run 1, Event 764978, LumiSection 7650 on stream 0 at 14-Mar-2026 21:37:39.637 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 924th record. Run 1, Event 764980, LumiSection 7650 on stream 0 at 14-Mar-2026 21:37:39.641 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 925th record. Run 1, Event 764983, LumiSection 7650 on stream 0 at 14-Mar-2026 21:37:39.646 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+Begin processing the 926th record. Run 1, Event 764990, LumiSection 7650 on stream 0 at 14-Mar-2026 21:37:39.651 CET
+ -------------------------------- HERE KalmanAnglesJpsiG_MC::analyze 
+14-Mar-2026 21:37:39 CET  Closed file root://eoscms.cern.ch//eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToJpsiGamma_MCTunesRun3ECM13p6TeV/BsToJpsiGamma_CMSSW_12_4_11_patch3_19_01_2025/250119_174005/0000/private_BsToJpsiGamma_Run3_153.root
+14-Mar-2026 21:37:39 CET  Initiating request to open file root://eoscms.cern.ch//eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToJpsiGamma_MCTunesRun3ECM13p6TeV/BsToJpsiGamma_CMSSW_12_4_11_patch3_19_01_2025/250119_174005/0000/private_BsToJpsiGamma_Run3_156.root
+14-Mar-2026 21:37:41 CET  Successfully opened file root://eoscms.cern.ch//eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToJpsiGamma_MCTunesRun3ECM13p6TeV/BsToJpsiGamma_CMSSW_12_4_11_patch3_19_01_2025/250119_174005/0000/private_BsToJpsiGamma_Run3_156.root
+Begin processing the 

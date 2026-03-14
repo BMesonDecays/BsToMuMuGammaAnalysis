@@ -31,7 +31,7 @@
 
 
 
-<library name="CompCheckJpsiMassG_MC" file="CompCheckJpsiMassG_MC.cc">
+<library name="KalmanAnglesJpsiG_MC" file="KalmanAnglesJpsiG_MC.cc">
 </library>
 
 

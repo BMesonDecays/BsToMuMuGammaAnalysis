@@ -1,11 +1,7 @@
-#!/cvmfs/cms.cern.ch/el8_amd64_gcc12/cms/cmssw/CMSSW_14_1_1/external/el8_amd64_gcc12/bin/python3
-
 import FWCore.ParameterSet.Config as cms
-
 import os
 import sys
 import subprocess
-
 
 from Configuration.Eras.Era_Run3_cff import Run3
 process = cms.Process("analysis", Run3)
@@ -16,9 +12,16 @@ process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(1)
 process.MessageLogger.suppressWarning  = cms.untracked.vstring('Geometry','AfterSource','L1T')
 process.options = cms.untracked.PSet(wantSummary = cms.untracked.bool(False))
 
+jobId = sys.argv[1]
+files2 = []
+for f in sys.argv[2].split():
+  files2.append(f.strip('\''))
+print('files2:', files2)
 
-process.source = cms.Source('PoolSource', fileNames = cms.untracked.vstring(
-    "/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToJpsiGamma_MCTunesRun3ECM13p6TeV/BsToJpsiGamma_CMSSW_12_4_11_patch3_19_01_2025/250119_174005/0000/private_BsToJpsiGamma_Run3_137.root"))
+
+# input files (up to 255 files accepted)
+process.source = cms.Source('PoolSource',
+  fileNames = cms.untracked.vstring(files2))
 process.source.skipEvents = cms.untracked.uint32(0)
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1))
 
@@ -34,11 +37,9 @@ process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_mc_FULL','')
 
 
 process.analiza= cms.EDAnalyzer("KalmanAnglesJpsiG_MC",
-  outHist = cms.string('BsToJpsiGammaMC.root'),
+  outHist = cms.string('KalmanAnglesJpsiG_jobs/BsToJpsiGammaMC'+jobId+'.root'),
 )
 
 
-
 process.MyPath = cms.Path(process.analiza)
-
-print("All files set for analysis.")
+process.schedule = cms.Schedule(process.MyPath)

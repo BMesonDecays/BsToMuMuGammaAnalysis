@@ -4,14 +4,15 @@ import sys
 import os
 import numpy as np
 
-datasetName = "24fullB_I_JpsiMassG_BsToJpsiGamma_cut1"
+datasetName = "24fullB_I_JpsiMassG_BsToJpsiGamma_KalmanAnLevelCut"
 tupleName = "tOut"
-
+#'''
 # Prepare a directory for the output histograms
-dirPath = 'tupleProjections/'+tupleName+'/'+datasetName+'/cut2_log'
+dirPath = 'tupleProjections/'+tupleName+'/'+datasetName+'/cut0'
 if not os.access(dirPath[:-5], os.F_OK):    # '/cut?' has 5 chars
     os.mkdir(dirPath[:-5])
 os.mkdir(dirPath)
+#'''
 
 # Get the tuple
 tupleFile = r.TFile("./outputData/"+datasetName+".root","READ")
@@ -25,11 +26,12 @@ for branch in ntuple.GetListOfBranches():
 # Define the cuts
 cutList = []
 
+'''
 cutList.append(r.TCut("muonsKalmanVxProbCut","muonsKalmanVxProb > 0.1"))
 cutList.append(r.TCut("cosPointingAngle_twoMuonsCut","cosPointingAngle_twoMuons > 0.9"))
 cutList.append(r.TCut("maxMuonsCompCut","maxMuonsComp < 0.1"))
 
-'''
+
 cutList.append(r.TCut("fittedJpsiVxProbCut","fittedJpsiVxProb > 0.1"))
 cutList.append(r.TCut("lXY_fittedJpsi_PVCut","lXY_fittedJpsi_PV > 0.1"))
 cutList.append(r.TCut("BsXYlifetimeCut","BsXYlifetime < 9.0"))
@@ -46,6 +48,7 @@ totalCut = r.TCut()
 for cut in cutList:
     totalCut += cut
 totalCut.Print()
+
 
 with open(dirPath+'/cuts.txt','w') as of:
     print(totalCut.GetTitle(), file=of)
@@ -89,7 +92,7 @@ tupleFile.Close()
 # Draw histograms and save the images
 for histo in histoList:
     canvas = r.TCanvas("c"+str(histo.GetTitle()))
-    canvas.SetLogy(1)
+    #canvas.SetLogy(1)
     canvas.cd()
     histo.Draw()
     canvas.Print(dirPath+'/'+str(histo.GetName())+".pdf")
@@ -97,10 +100,10 @@ for histo in histoList:
 
 '''
 # Copy the ntuple limited by the cuts
-outputFile = r.TFile("./outputData/"+datasetName+"_cut1.root","RECREATE")
+outputFile = r.TFile("./outputData/"+datasetName+"_KalmanAnLevelCut.root","RECREATE")
 totalCut.Write()
 newNtuple = ntuple.CopyTree(str(totalCut))
-newNtuple.Write("new")
+newNtuple.Write()
 outputFile.Close()
 tupleFile.Close()
 '''
