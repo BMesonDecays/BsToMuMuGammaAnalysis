@@ -22,7 +22,7 @@ for f in lsOutput.split():
   files.append(f)
 print ('number of files: ',len(files))
 
-nJobs = 216
+nJobs = 150
 maxRunningJobs = 15 
 files_splitted = np.array_split(files, nJobs)
 print ('number of files: ',len(files),', submitting in', nJobs,' jobs, max running jobs: ',maxRunningJobs)

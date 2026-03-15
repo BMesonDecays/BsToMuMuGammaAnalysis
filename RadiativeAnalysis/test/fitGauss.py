@@ -2,11 +2,11 @@
 import ROOT as r
 import sys
 
-histname = "hMMGMass"
+histname = "hdimuonModScaledPhotonMass"
 xmin = 4.8
 xmax = 6.0
 ##########################################
-histfilename = "cut2_Kalman_MCfinalMass_BsToJpsiGammaMC_JpsiMassConstrained.root"
+histfilename = "outFile.root"
 histfile = r.TFile.Open(histfilename,"READ")
 histo = histfile.Get(histname)
 histo.SetDirectory(0)
@@ -15,7 +15,7 @@ histfile.Close()
 # Fitting function
 expression = "0.5*[0]*(exp((-(x-[1])**2)/(2*[2]**2))/([2]*TMath::Sqrt(2*TMath::Pi())) + exp((-(x-[1])**2)/(2*[3]**2))/([3]*TMath::Sqrt(2*TMath::Pi())))"
 fitFunc = r.TF1("fitFunc",expression,xmin,xmax,4)
-fitFunc.SetParameters(80.,5.4,0.1,0.1)
+fitFunc.SetParameters(15.,5.37,0.1,0.1)
 
 results = histo.Fit(fitFunc,"ERSLB")
 
@@ -32,7 +32,7 @@ canvas = r.TCanvas("canvas")
 canvas.cd()
 #canvas.SetLogy(True)
 
-histo.SetAxisRange(4.6,6.2)
+#histo.SetAxisRange(4.6,6.2)
 #histo.SetAxisRange(3.5, 6., "X")
 #histo.SetAxisRange(1500, 3.e3, "Y")
 #histo.SetTitle("Lifetime of B^{#pm};t;Counts")

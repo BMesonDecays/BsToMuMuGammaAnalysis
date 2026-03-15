@@ -157,7 +157,7 @@ MidMarchJpsiG_MC::~MidMarchJpsiG_MC()
 void MidMarchJpsiG_MC::beginJob()
 {
     tOut = new TNtupleD("tOut","Output tuple",
-      "muonsKalmanVxProb:dimuonMass:lXY_muonsKalman_bSpot:lXY_muonsKalman_bSpot_significance:cosPointingAngleDimuonBS2D:deltaR_modPhotonDimuon:dimuonModPhotonMass:twoMuonsPhotonMass:dimuonPhotonMass:twoMuonsModPhotonMass:triggerRes");
+      "muonsKalmanVxProb:dimuonMass:lXY_muonsKalman_bSpot:lXY_muonsKalman_bSpot_significance:cosPointingAngleDimuonBS2D:deltaR_modPhotonDimuon:dimuonModPhotonMass:dimuonModScaledPhotonMass:twoMuonsPhotonMass:dimuonPhotonMass:twoMuonsModPhotonMass:twoMuonsModScaledPhotonMass:triggerRes");
   cout << "HERE MidMarchJpsiG_MC::beginJob()" << endl;
 }
 
@@ -347,6 +347,7 @@ void MidMarchJpsiG_MC::analyze(
   //////PHOTON///////// 
   math::XYZTLorentzVector photonLV = recoMatchedPhotons.at(0)->p4();
   double photonEnergy = photonLV.energy();
+  double photonScaledEnergy = (photonEnergy - 0.599366) / 1.02408;
 
   // modify photon direction (keeping energy intact)
   const math::XYZPoint clusterPos = recoMatchedPhotons.at(0)->superCluster()->position();
@@ -354,12 +355,19 @@ void MidMarchJpsiG_MC::analyze(
   math::XYZVector modPhotonMom = photonEnergy * (modPhotonPath.unit());
   math::XYZTLorentzVector modPhotonLV (modPhotonMom.x(),modPhotonMom.y(),modPhotonMom.z(),photonEnergy);
 
+  math::XYZVector modScaledPhotonMom = photonScaledEnergy * (modPhotonPath.unit());
+  math::XYZTLorentzVector modScaledPhotonLV (modScaledPhotonMom.x(),modScaledPhotonMom.y(),modScaledPhotonMom.z(),photonScaledEnergy);
+
+
   // photon deltaR
   double deltaR_modPhotonDimuon = reco::deltaR(refitDimuonMom, modPhotonMom);
 
   // final mass
   math::XYZTLorentzVector dimuonModPhotonLV = dimuonLV + modPhotonLV;
   double dimuonModPhotonMass = dimuonModPhotonLV.M();
+
+  math::XYZTLorentzVector dimuonModScaledPhotonLV = dimuonLV + modScaledPhotonLV;
+  double dimuonModScaledPhotonMass = dimuonModScaledPhotonLV.M();
 
   // alternative results
   math::XYZTLorentzVector twoMuonsLV = recoMatchedMuons.at(0)->p4() + recoMatchedMuons.at(1)->p4();
@@ -371,6 +379,9 @@ void MidMarchJpsiG_MC::analyze(
 
   math::XYZTLorentzVector twoMuonsModPhotonLV = twoMuonsLV + modPhotonLV;
   double twoMuonsModPhotonMass = twoMuonsModPhotonLV.M();
+
+  math::XYZTLorentzVector twoMuonsModScaledPhotonLV = twoMuonsLV + modScaledPhotonLV;
+  double twoMuonsModScaledPhotonMass = twoMuonsModScaledPhotonLV.M();
 
 
 
@@ -391,9 +402,10 @@ void MidMarchJpsiG_MC::analyze(
     else if (!name.compare(0,33,path7))  triggerRes += 1.E7;      
   }
 
-  const double outArray[11] = {muonsKalmanVxProb,dimuonMass,lXY_muonsKalman_bSpot,
+  const double outArray[13] = {muonsKalmanVxProb,dimuonMass,lXY_muonsKalman_bSpot,
     lXY_muonsKalman_bSpot_significance,cosPointingAngleDimuonBS2D,deltaR_modPhotonDimuon,
-    dimuonModPhotonMass,twoMuonsPhotonMass,dimuonPhotonMass,twoMuonsModPhotonMass,triggerRes};
+    dimuonModPhotonMass,dimuonModScaledPhotonMass,twoMuonsPhotonMass,dimuonPhotonMass,
+    twoMuonsModPhotonMass,twoMuonsModScaledPhotonMass,triggerRes};
 
   tOut->Fill(outArray);
 

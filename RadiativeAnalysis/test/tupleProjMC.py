@@ -4,7 +4,7 @@ import sys
 import os
 import numpy as np
 
-datasetName = "MidMarchJpsiG_MCfull"
+datasetName = "MidMarchExtraJpsiG_MCfull"
 tupleName = "tOut"
 
 # Prepare a directory for the output histograms
@@ -53,7 +53,9 @@ binInfo = {
     branchNames[6] : (80,5.,5.8),
     branchNames[7] : (80,5.,5.8),
     branchNames[8] : (80,5.,5.8),
-    branchNames[9] : (80,5.,5.8)
+    branchNames[9] : (80,5.,5.8),
+    branchNames[10] : (80,5.,5.8),
+    branchNames[11] : (80,5.,5.8)
 }
 
 # Create and fill the histograms
@@ -67,6 +69,14 @@ for bname in branchNames[:-1]:
     histoList.append(histo)
 
 tupleFile.Close()
+
+'''
+# save selected histograms
+outFile = r.TFile("outFile.root",'RECREATE')
+histoList[7].Write()
+histoList[11].Write()
+outFile.Close()
+'''
 
 # Draw histograms and save the images
 for histo in histoList:
