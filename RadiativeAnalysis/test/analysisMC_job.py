@@ -36,8 +36,8 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_mc_FULL','')
 
 
-process.analiza= cms.EDAnalyzer("KalmanAnglesJpsiG_MC",
-  outHist = cms.string('KalmanAnglesJpsiG_jobs/BsToJpsiGammaMC'+jobId+'.root'),
+process.analiza= cms.EDAnalyzer("MidMarchJpsiG_MC",
+  outHist = cms.string('MidMarchJpsiG_jobs/BsToJpsiGammaMC'+jobId+'.root'),
 )
 
 
