@@ -3,33 +3,35 @@ import ROOT as r
 import sys
 
 # Get the tuple
-tupleFile = r.TFile("./outputData/BsToJpsiGammaMC_triggerBit.root","READ")
-ntuple = tupleFile.Get("tMuMuGamma")
+tupleFile = r.TFile("KalmanAnglesExtraJpsiG_MCfull.root","READ")
+ntuple = tupleFile.Get("tOut")
 ntuple.Print()
 
 # Create a histogram
-branchName = "flightLength"
-histo = r.TH1D("h"+branchName, branchName+" 2024BC", 100, 0.,5.)
-ntuple.Project("h"+branchName, branchName, "triggerBit == 1")
+branchName = "photonDirChange"
+histo = r.TH1D("h"+branchName, "cos "+branchName+" KalmanAnglesExtra", 100,0.999999,1.0)
+ntuple.Project("h"+branchName, branchName)
 histo.SetDirectory(0)
 
 tupleFile.Close()
 
 # Histo options
-histo.SetTitle("Flight length between best PV and fitted SV; Distance [cm]; Counts")
-histo.SetStats(0)
+#histo.SetTitle("Dimuon mass difference after taking momenta from refitted muon tracks;#DeltaE;Counts")
+#histo.SetStats(0)
+#histo.GetXaxis().SetLabelSize(0.02)
 
 # Draw and save the histogram
 canvas = r.TCanvas("c"+str(histo.GetTitle()))
-canvas.SetLogy(1)
+#canvas.SetLogy(1)
 canvas.cd()
 histo.Draw()
 
+'''
 l = r.TLatex()
 l.SetTextFont(42)
 l.SetTextSize(0.04)
-l.DrawLatex(2.5,190.,"HLT_DoubleMu4_3_LowMass_v1")
-
+l.DrawLatex(0.5,200.,"lXY_muonsKalman_bSpot_significance > 3.0")
+'''
 
 canvas.Print("h"+branchName+"Temp"+".pdf")
 input('press enter to exit')

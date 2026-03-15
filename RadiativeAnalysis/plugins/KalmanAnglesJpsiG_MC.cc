@@ -324,7 +324,7 @@ void KalmanAnglesJpsiG_MC::analyze(
   // twoMuons mass
   math::XYZTLorentzVector twoMuonsLV = recoMatchedMuons.at(0)->p4() + recoMatchedMuons.at(1)->p4();
   double twoMuonsM = twoMuonsLV.M();
-  if (std::fabs(twoMuonsM - jpsiMass) > 0.15) return;
+  //if (std::fabs(twoMuonsM - jpsiMass) > 0.15) return;
 
   // get the momentum of the refitted tracks
   if (! muonsKalmanTVertex.hasRefittedTracks())  return;
