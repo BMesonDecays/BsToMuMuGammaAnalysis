@@ -1,1 +1,1 @@
-((muonsKalmanVxProb > 0.1)&&(cosPointingAngle_twoMuons > 0.9))&&(maxMuonsComp < 0.1)
+((((muonsKalmanVxProb > 0.1)&&(lXY_twoMuons_PV_sign > 3.0))&&(dR_photon_twoMuons > 0.05 && dR_photon_twoMuons < 0.4))&&(TMath::Abs(twoMuonsPhotonMass - 5.367) < 1.5))&&(cosPointingAngle_twoMuons > 0.95)

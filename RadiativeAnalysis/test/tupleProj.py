@@ -4,11 +4,11 @@ import sys
 import os
 import numpy as np
 
-datasetName = "24fullB_I_JpsiMassG_BsToJpsiGamma_KalmanAnLevelCut"
+datasetName = "24fullB_I_JpsiMassG_BsToJpsiGamma_cut1"
 tupleName = "tOut"
 #'''
 # Prepare a directory for the output histograms
-dirPath = 'tupleProjections/'+tupleName+'/'+datasetName+'/cut0'
+dirPath = 'tupleProjections/'+tupleName+'/'+datasetName+'/range10Cut2_log'
 if not os.access(dirPath[:-5], os.F_OK):    # '/cut?' has 5 chars
     os.mkdir(dirPath[:-5])
 os.mkdir(dirPath)
@@ -26,12 +26,16 @@ for branch in ntuple.GetListOfBranches():
 # Define the cuts
 cutList = []
 
-'''
+
 cutList.append(r.TCut("muonsKalmanVxProbCut","muonsKalmanVxProb > 0.1"))
-cutList.append(r.TCut("cosPointingAngle_twoMuonsCut","cosPointingAngle_twoMuons > 0.9"))
+cutList.append(r.TCut("lXY_twoMuons_PV_signCut","lXY_twoMuons_PV_sign > 3.0"))
+cutList.append(r.TCut("dR_photon_twoMuonsCut","dR_photon_twoMuons > 0.05 && dR_photon_twoMuons < 0.4"))
+cutList.append(r.TCut("twoMuonsPhotonMassCut","TMath::Abs(twoMuonsPhotonMass - 5.367) < 1.5"))
+cutList.append(r.TCut("cosPointingAngle_twoMuonsCut","cosPointingAngle_twoMuons > 0.95"))
+
+
+'''
 cutList.append(r.TCut("maxMuonsCompCut","maxMuonsComp < 0.1"))
-
-
 cutList.append(r.TCut("fittedJpsiVxProbCut","fittedJpsiVxProb > 0.1"))
 cutList.append(r.TCut("lXY_fittedJpsi_PVCut","lXY_fittedJpsi_PV > 0.1"))
 cutList.append(r.TCut("BsXYlifetimeCut","BsXYlifetime < 9.0"))
@@ -73,7 +77,7 @@ binInfo = {
     branchNames[15] : (100,0.,10.),
     branchNames[16] : (100,-1.,1.),
     branchNames[17] : (100,-1.,1.),
-    branchNames[18] : (100,0.,20.),
+    branchNames[18] : (800,0.,800.),
     branchNames[19] : (100,0.,20.)
 }
 
@@ -89,10 +93,15 @@ for bname in branchNames:
 
 tupleFile.Close()
 
+# save selected histograms
+outFile = r.TFile("hBsXYlifetime_twoMuons.root",'UPDATE')
+histoList[18].Write("h800_2BsXYlifetime_twoMuons_cut2")
+outFile.Close()
+
 # Draw histograms and save the images
 for histo in histoList:
     canvas = r.TCanvas("c"+str(histo.GetTitle()))
-    #canvas.SetLogy(1)
+    canvas.SetLogy(1)
     canvas.cd()
     histo.Draw()
     canvas.Print(dirPath+'/'+str(histo.GetName())+".pdf")

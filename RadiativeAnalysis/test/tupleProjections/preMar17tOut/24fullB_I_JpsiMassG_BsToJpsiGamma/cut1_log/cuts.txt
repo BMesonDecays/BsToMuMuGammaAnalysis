@@ -1,0 +1,1 @@
+((muonsKalmanVxProb > 0.1)&&(cosPointingAngle_twoMuons > 0.9))&&(maxMuonsComp < 0.9)

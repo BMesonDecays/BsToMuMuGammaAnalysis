@@ -6,3 +6,5 @@ __*
 **/.gitignore
 archive/
 .git_old/
+
+**/hBsXYlifetime_twoMuons.root
