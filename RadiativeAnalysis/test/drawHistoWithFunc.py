@@ -18,7 +18,7 @@ funcFile = r.TFile.Open(funcFileName,"READ")
 func = funcFile.Get(funcName)
 
 # Set the function parameters
-func.SetParameter(0,122.04)
+func.SetParameter(0,610.2)
 func.SetLineWidth(1)
 
 histo.SetAxisRange(0.,8.E3,"Y")
@@ -28,7 +28,7 @@ canvas = r.TCanvas("canvas")
 canvas.cd()
 histo.Draw()
 func.Draw("same")
-canvas.Print("cut3DataSignalTimes10.pdf")
+canvas.Print("cut3DataSignalTimes100.pdf")
 input('press enter to exit')
 
 funcFile.Close()
