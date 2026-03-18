@@ -2,11 +2,11 @@
 import ROOT as r
 import sys
 
-histname = "MCcut3_hlt2"
+histname = "MChTwoMuonsPhotonMassCut4_hlt2"
 xmin = 4.8
 xmax = 6.2
 ##########################################
-histfilename = "finalMass_JpsiMassG.root"
+histfilename = "hMassAfterComp.root"
 histfile = r.TFile.Open(histfilename,"READ")
 histo = histfile.Get(histname)
 histo.SetDirectory(0)
@@ -15,16 +15,16 @@ histfile.Close()
 # Fitting function
 expression = "0.5*[0]*(exp((-(x-[1])**2)/(2*[2]**2))/([2]*TMath::Sqrt(2*TMath::Pi())) + exp((-(x-[1])**2)/(2*[3]**2))/([3]*TMath::Sqrt(2*TMath::Pi())))"
 fitFunc = r.TF1("fitFunc",expression,xmin,xmax,4)
-fitFunc.SetParameters(90.,5.43,0.1,0.1)
+fitFunc.SetParameters(15.,5.43,0.1,0.1)
 
 results = histo.Fit(fitFunc,"ERSLB")
 
 #'''
-funcFile = r.TFile.Open(histname+"JpsiMassG_fitFunc.root","RECREATE")
+funcFile = r.TFile.Open(histname+"_fitFunc.root","RECREATE")
 fitFunc.Write()
 funcFile.Close()
 
-with open(histname+'JpsiMassG_fitResults.txt','a') as of:
+with open(histname+'_fitResults.txt','a') as of:
     print(results, file=of)
 #'''
     
@@ -41,5 +41,5 @@ histo.Draw("h")
 fitFunc.Draw("same")
 
 
-canvas.Print(histname+"JpsiMassG_Fit.pdf")
+canvas.Print(histname+"_Fit.pdf")
 input('press enter to exit')

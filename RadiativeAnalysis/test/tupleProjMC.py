@@ -8,7 +8,7 @@ datasetName = "JpsiMassG_BsToJpsiGamma_MC_hlt"
 tupleName = "tOut"
 
 # Prepare a directory for the output histograms
-dirPath = 'tupleProjections/'+datasetName+'/RQcut3_log'
+dirPath = 'tupleProjections/'+datasetName+'/cut4_log_hlt'
 os.mkdir(dirPath)
 
 # Get the tuple
@@ -29,6 +29,7 @@ cutList.append(r.TCut("dR_photon_twoMuonsCut","dR_photon_twoMuons > 0.05 && dR_p
 cutList.append(r.TCut("twoMuonsPhotonMassCut","TMath::Abs(twoMuonsPhotonMass - 5.367) < 1.5"))
 cutList.append(r.TCut("cosPointingAngle_twoMuonsCut","cosPointingAngle_twoMuons > 0.95"))
 cutList.append(r.TCut("lXY_twoMuons_bSpotCut","lXY_twoMuons_bSpot > 0.1"))
+cutList.append(r.TCut("maxMuonsCompCut","maxMuonsComp < 0.1"))
 
 
 # trigger cuts
@@ -81,8 +82,8 @@ tupleFile.Close()
 
 '''
 # save selected histograms
-outFile = r.TFile("finalMass_JpsiMassG.root",'UPDATE')
-histoList[8].Write("MCcut3_hlt2")
+outFile = r.TFile("hMassAfterComp.root",'UPDATE')
+histoList[8].Write("MChTwoMuonsPhotonMassCut4_hlt2")
 totalCut.Write()
 outFile.Close()
 '''

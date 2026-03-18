@@ -8,7 +8,7 @@ datasetName = "24fullB_I_JpsiMassG_BsToJpsiGamma_cut1"
 tupleName = "tOut"
 #'''
 # Prepare a directory for the output histograms
-dirPath = 'tupleProjections/'+tupleName+'/'+datasetName+'/cut3'
+dirPath = 'tupleProjections/'+tupleName+'/'+datasetName+'/Rcut4_log'
 if not os.access(dirPath[:-5], os.F_OK):    # '/cut?' has 5 chars
     os.mkdir(dirPath[:-5])
 os.mkdir(dirPath)
@@ -33,10 +33,10 @@ cutList.append(r.TCut("dR_photon_twoMuonsCut","dR_photon_twoMuons > 0.05 && dR_p
 cutList.append(r.TCut("twoMuonsPhotonMassCut","TMath::Abs(twoMuonsPhotonMass - 5.367) < 1.5"))
 cutList.append(r.TCut("cosPointingAngle_twoMuonsCut","cosPointingAngle_twoMuons > 0.95"))
 cutList.append(r.TCut("lXY_twoMuons_bSpotCut","lXY_twoMuons_bSpot > 0.1"))
+cutList.append(r.TCut("maxMuonsCompCut","maxMuonsComp < 0.1"))
 
 
 '''
-cutList.append(r.TCut("maxMuonsCompCut","maxMuonsComp < 0.1"))
 cutList.append(r.TCut("fittedJpsiVxProbCut","fittedJpsiVxProb > 0.1"))
 cutList.append(r.TCut("lXY_fittedJpsi_PVCut","lXY_fittedJpsi_PV > 0.1"))
 cutList.append(r.TCut("BsXYlifetimeCut","BsXYlifetime < 9.0"))
@@ -68,7 +68,7 @@ binInfo = {
     branchNames[5] : (100,0.,2.),
     branchNames[6] : (100,0.,0.6),
     branchNames[7] : (100,0.,0.6),
-    branchNames[8] : (100,4.4,6.4),
+    branchNames[8] : (200,4.4,6.4),
     branchNames[9] : (100,4.4,6.4),
     branchNames[10] : (100,0.,2.),
     branchNames[11] : (100,0.,2.),
@@ -94,6 +94,10 @@ for bname in branchNames:
 
 tupleFile.Close()
 
+# save selected histograms
+outFile = r.TFile("hMassAfterCompR.root",'UPDATE')
+histoList[8].Write("hTwoMuonsphotonMassCut4")
+outFile.Close()
 
 # Draw histograms and save the images
 for histo in histoList:
@@ -113,9 +117,6 @@ newNtuple.Write()
 outputFile.Close()
 tupleFile.Close()
 
-# save selected histograms
-outFile = r.TFile("hBsXYlifetime_twoMuons.root",'UPDATE')
-histoList[18].Write("h800_2BsXYlifetime_twoMuons_cut2")
-outFile.Close()
+
 
 '''
