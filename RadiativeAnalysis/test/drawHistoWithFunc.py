@@ -4,29 +4,31 @@ import sys
 
 
 # Get the histogram
-histfilename = "hBsXYlifetime_twoMuons.root"
-histname = "h100BsXYlifetime_twoMuons_cut2"
+histfilename = "finalMass_JpsiMassG.root"
+histname = "cut3"
 histfile = r.TFile.Open(histfilename,"READ")
 histo = histfile.Get(histname)
 histo.SetDirectory(0)
 histfile.Close()
 
 # Get the function
-funcFileName = histname+"_fitFunc.root"
+funcFileName = "MC"+histname+"_hlt2JpsiMassG_fitFunc.root"
 funcName = "fitFunc"
 funcFile = r.TFile.Open(funcFileName,"READ")
 func = funcFile.Get(funcName)
 
 # Set the function parameters
-#func.SetParameter(0,0.125)
+func.SetParameter(0,122.04)
+func.SetLineWidth(1)
 
 histo.SetAxisRange(0.,8.E3,"Y")
+histo.SetAxisRange(5.2,5.7,"X")
 # Draw and save
 canvas = r.TCanvas("canvas")
 canvas.cd()
 histo.Draw()
 func.Draw("same")
-canvas.Print(histname+"_lin3.pdf")
+canvas.Print("cut3DataSignalTimes10.pdf")
 input('press enter to exit')
 
 funcFile.Close()
