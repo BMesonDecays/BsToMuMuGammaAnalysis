@@ -27,11 +27,13 @@
 <use   name="DataFormats/EgammaReco"/>
 <use   name="DataFormats/EcalRecHit"/>
 
+<use name="BsToMuMuGammaAnalysis/run3mvaid"/>
+
 <use   name="BsToMuMuGammaAnalysis/RadiativeAnalysis"/>
 
 
 
-<library name="MidMarchJpsiG_MC" file="MidMarchJpsiG_MC.cc">
+<library name="CompCheckJpsiMassG_MC" file="CompCheckJpsiMassG_MC.cc">
 </library>
 
 

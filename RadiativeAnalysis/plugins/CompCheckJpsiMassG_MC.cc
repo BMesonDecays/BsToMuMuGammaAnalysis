@@ -1,4 +1,5 @@
 // JpsiMassG_MC for investigation of high muons compatibility
+// later a test for muon MVA Id
 
 #include "FWCore/Framework/interface/one/EDAnalyzer.h"
 
@@ -63,6 +64,7 @@
 #include "DataFormats/Math/interface/LorentzVector.h"
 
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/Tools.h"
+#include "BsToMuMuGammaAnalysis/run3mvaid/interface/MuonMVAID.h"
 
 #include "TH1D.h"
 #include "TH2D.h"
@@ -115,6 +117,8 @@ private:
   edm::ESGetToken<MagneticField, IdealMagneticFieldRecord> m_fieldToken;
   edm::EDGetTokenT < reco::BeamSpot > theBeamSpotToken;
 
+  MuonMVAID* muonMVAIDProducer_;
+
   std::vector<int> JpsiG = {443, 22};
   std::vector<int> MuMu = {13, -13};
 
@@ -156,6 +160,8 @@ CompCheckJpsiMassG_MC::~CompCheckJpsiMassG_MC()
 
 void CompCheckJpsiMassG_MC::beginJob()
 {
+  muonMVAIDProducer_ = new MuonMVAID(theConfig);
+
   tCompID = new TNtupleD("tCompID","PDG ID of the compatible particle","ID:fill");
 
   cout << "HERE CompCheckJpsiMassG_MC::beginJob()" << endl;
@@ -163,6 +169,8 @@ void CompCheckJpsiMassG_MC::beginJob()
 
 void CompCheckJpsiMassG_MC::endJob()
 {
+  delete muonMVAIDProducer_;
+
   //make a new Root file
   TFile myRootFile( theConfig.getParameter<std::string>("outHist").c_str(), "RECREATE");
 
@@ -198,8 +206,13 @@ void CompCheckJpsiMassG_MC::analyze(
 
   if (recoMuons.size() < 2 || recoPhotons.size() < 1)   return;
 
-  //////////////////BEGINNING OF THE GENPARTICLE SECTION//////////////////////
+  // Muon MVA ID
+  std::vector<float> muonMVAIDs = muonMVAIDProducer_->produce(recoMuons);
+  for (auto idVal : muonMVAIDs)
+    std::cout << idVal << "\t";
 
+  //////////////////BEGINNING OF THE GENPARTICLE SECTION//////////////////////
+/*
   vector<const reco::Candidate*> genMuons;
   vector<const reco::Muon*> recoMatchedMuons;
   vector<const reco::Candidate*> genMatchedMuons;
@@ -347,7 +360,7 @@ void CompCheckJpsiMassG_MC::analyze(
     trackTTs.pop_back();
   }
 
-
+*/
   /*
   // HLT paths
   double triggerRes = 0.0;
