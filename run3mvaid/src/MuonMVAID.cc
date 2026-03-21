@@ -53,14 +53,14 @@ void MuonMVAID::fillSoftMva(pat::Muon& mu_cand){
 
 
 
-vector<float> MuonMVAID::produce(const std::vector<reco::Muon>& InputMuons) {
+vector<float> MuonMVAID::produce(const std::vector<pat::Muon>& InputMuons) {
 
     // Output collection
     auto muons = std::make_unique<std::vector<pat::Muon>>();
 
     for ( const auto& muon: InputMuons){
 
-      pat::Muon mu_cand(muon);
+      pat::Muon mu_cand = muon;
 
       mu_cand.addUserFloat("trkKink",             muon.combinedQuality().trkKink);
       mu_cand.addUserFloat("glbTrackProbability", muon.combinedQuality().glbTrackProbability);
@@ -68,7 +68,7 @@ vector<float> MuonMVAID::produce(const std::vector<reco::Muon>& InputMuons) {
       mu_cand.addUserFloat("chi2LocalMomentum",   muon.combinedQuality().chi2LocalMomentum);
       mu_cand.addUserFloat("trkRelChi2",          muon.combinedQuality().trkRelChi2);
       mu_cand.addUserFloat("staRelChi2",          muon.combinedQuality().staRelChi2);
-      mu_cand.addUserFloat("mvaId",               0.);
+      mu_cand.addUserFloat("mvaId",               muon.mvaIDValue());
       
       if (muon.isGlobalMuon()){
 	mu_cand.addUserFloat("glbNormChi2", muon.globalTrack()->normalizedChi2());
@@ -132,6 +132,86 @@ vector<float> MuonMVAID::produce(const std::vector<reco::Muon>& InputMuons) {
 
     return output;
 }
+
+vector<float> MuonMVAID::produce(const std::vector<reco::Muon>& InputMuons) {
+
+    // Output collection
+    auto muons = std::make_unique<std::vector<pat::Muon>>();
+
+    for ( const auto& muon: InputMuons){
+
+      pat::Muon mu_cand = pat::Muon(muon);
+
+      mu_cand.addUserFloat("trkKink",             muon.combinedQuality().trkKink);
+      mu_cand.addUserFloat("glbTrackProbability", muon.combinedQuality().glbTrackProbability);
+      mu_cand.addUserFloat("chi2LocalPosition",   muon.combinedQuality().chi2LocalPosition);
+      mu_cand.addUserFloat("chi2LocalMomentum",   muon.combinedQuality().chi2LocalMomentum);
+      mu_cand.addUserFloat("trkRelChi2",          muon.combinedQuality().trkRelChi2);
+      mu_cand.addUserFloat("staRelChi2",          muon.combinedQuality().staRelChi2);
+      
+      if (muon.isGlobalMuon()){
+	mu_cand.addUserFloat("glbNormChi2", muon.globalTrack()->normalizedChi2());
+	mu_cand.addUserFloat("staNormChi2", muon.outerTrack()->normalizedChi2());
+	mu_cand.addUserInt( "staValidHits", muon.outerTrack()->hitPattern().muonStationsWithValidHits());
+	mu_cand.addUserInt("chargeProduct", muon.outerTrack()->charge() * muon.innerTrack()->charge());
+      } else {
+	mu_cand.addUserFloat("glbNormChi2", 9999.);
+	mu_cand.addUserFloat("staNormChi2", 9999.);
+	mu_cand.addUserInt( "staValidHits", 0);
+	mu_cand.addUserInt("chargeProduct", 0);
+      }
+      
+      if (muon.isTrackerMuon() or muon.isGlobalMuon()){
+	mu_cand.addUserFloat("trkValidFrac",  muon.innerTrack()->validFraction());
+	mu_cand.addUserFloat("trkNormChi2",   muon.innerTrack()->normalizedChi2());
+	
+	mu_cand.addUserInt("pixelPattern",    bmm::get_pixel_pattern(muon.innerTrack()->hitPattern()));
+	mu_cand.addUserInt("nPixels",         muon.innerTrack()->hitPattern().numberOfValidPixelHits());
+	mu_cand.addUserInt("nValidHits",      muon.innerTrack()->hitPattern().numberOfValidTrackerHits());
+	mu_cand.addUserInt("nLostHitsInner",  muon.innerTrack()->hitPattern().numberOfLostTrackerHits(reco::HitPattern::MISSING_INNER_HITS));
+	mu_cand.addUserInt("nLostHitsOn",     muon.innerTrack()->hitPattern().numberOfLostTrackerHits(reco::HitPattern::TRACK_HITS));
+	mu_cand.addUserInt("nLostHitsOuter",  muon.innerTrack()->hitPattern().numberOfLostTrackerHits(reco::HitPattern::MISSING_OUTER_HITS));
+	
+	mu_cand.addUserInt("trkLayers",           muon.innerTrack()->hitPattern().trackerLayersWithMeasurement());
+	mu_cand.addUserInt("trkLostLayersInner",  muon.innerTrack()->hitPattern().trackerLayersWithoutMeasurement(reco::HitPattern::MISSING_INNER_HITS));
+	mu_cand.addUserInt("trkLostLayersOn",     muon.innerTrack()->hitPattern().trackerLayersWithoutMeasurement(reco::HitPattern::TRACK_HITS));
+	mu_cand.addUserInt("trkLostLayersOuter",  muon.innerTrack()->hitPattern().trackerLayersWithoutMeasurement(reco::HitPattern::MISSING_OUTER_HITS));
+
+	mu_cand.addUserInt("highPurity",   muon.innerTrack()->quality(reco::Track::highPurity));
+
+      } else {
+	mu_cand.addUserFloat("trkValidFrac",  0);
+	mu_cand.addUserFloat("trkNormChi2",   9999.);
+	
+	mu_cand.addUserInt("pixelPattern",    0);
+	mu_cand.addUserInt("nPixels",         0);
+	mu_cand.addUserInt("nValidHits",      0);
+	mu_cand.addUserInt("nLostHitsInner",  0);
+	mu_cand.addUserInt("nLostHitsOn",     0);
+	mu_cand.addUserInt("nLostHitsOuter",  0);
+	
+	mu_cand.addUserInt("trkLayers",           0);
+	mu_cand.addUserInt("trkLostLayersInner",  0);
+	mu_cand.addUserInt("trkLostLayersOn",     0);
+	mu_cand.addUserInt("trkLostLayersOuter",  0);
+
+	mu_cand.addUserInt("highPurity",   0);
+
+      }
+	
+      fillMatchInfo(mu_cand, muon);
+      fillSoftMva(mu_cand);
+
+      muons->push_back(mu_cand);
+    }
+    
+    vector<float> output;
+    for(const auto& mu : *muons)
+      output.push_back(mu.userFloat("run3muonmva"));
+
+    return output;
+}
+
 
 const MatchPair&
 fgetBetterMatch(const MatchPair& match1, const MatchPair& match2){

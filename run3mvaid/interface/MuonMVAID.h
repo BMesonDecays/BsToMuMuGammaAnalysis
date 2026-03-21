@@ -11,8 +11,8 @@
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/ESHandle.h"
 
-#include "DataFormats/MuonReco/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
+#include "DataFormats/MuonReco/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/PackedCandidate.h"
 #include "DataFormats/PatCandidates/interface/PackedGenParticle.h"
 #include "DataFormats/PatCandidates/interface/CompositeCandidate.h"
@@ -41,6 +41,7 @@ public:
   MuonMVAID(const edm::ParameterSet &iConfig);
   ~MuonMVAID() {};
 
+  vector<float> produce(const std::vector<pat::Muon>& muons);
   vector<float> produce(const std::vector<reco::Muon>& muons);
 
 

@@ -1,4 +1,4 @@
-// 
+// gen vs reco photon energy
 
 #include "FWCore/Framework/interface/one/EDAnalyzer.h"
 
@@ -67,6 +67,7 @@
 #include "TH1D.h"
 #include "TH2D.h"
 #include "TProfile.h"
+#include "TGraph.h"
 #include "TFile.h"
 #include "TMath.h"
 #include "TString.h"
@@ -118,18 +119,9 @@ private:
   std::vector<int> JpsiG = {443, 22};
   std::vector<int> MuMu = {13, -13};
 
-  TNtupleD* tOut;
+  TGraph* gBsPhotons;
   
-  // HLT paths
-  std::string path0 = "HLT_DoubleMu2_Jpsi_LowPt_v";
-  std::string path1 = "HLT_DoubleMu4_3_Jpsi_v";
-  std::string path2 = "HLT_DoubleMu4_3_LowMass_v";
-  std::string path3 = "HLT_DoubleMu4_JpsiTrkTrk_Displaced_v";
-  std::string path4 = "HLT_DoubleMu4_Jpsi_Displaced_v";
-  std::string path5 = "HLT_DoubleMu4_Jpsi_NoVertexing_v";
-  std::string path6 = "HLT_DoubleMu4_LowMass_Displaced_v";
-  std::string path7 = "HLT_DoubleMu4_MuMuTrk_Displaced_v";
-
+  
 };
 
 MidMarchJpsiG_MC::MidMarchJpsiG_MC(const edm::ParameterSet& conf)
@@ -156,8 +148,10 @@ MidMarchJpsiG_MC::~MidMarchJpsiG_MC()
 
 void MidMarchJpsiG_MC::beginJob()
 {
-    tOut = new TNtupleD("tOut","Output tuple",
-      "muonsKalmanVxProb:dimuonMass:lXY_muonsKalman_bSpot:lXY_muonsKalman_bSpot_significance:cosPointingAngleDimuonBS2D:deltaR_modPhotonDimuon:dimuonModPhotonMass:dimuonModScaledPhotonMass:twoMuonsPhotonMass:dimuonPhotonMass:twoMuonsModPhotonMass:twoMuonsModScaledPhotonMass:triggerRes");
+  gBsPhotons = new TGraph();
+  gBsPhotons->SetName("gBsPhotons");
+  gBsPhotons->SetTitle("Matched photons from B0s to J/psi gamma;generated energy;reconstructed energy");
+
   cout << "HERE MidMarchJpsiG_MC::beginJob()" << endl;
 }
 
@@ -167,11 +161,11 @@ void MidMarchJpsiG_MC::endJob()
   TFile myRootFile( theConfig.getParameter<std::string>("outHist").c_str(), "RECREATE");
 
   //write data
-  tOut->Write();
+  gBsPhotons->Write();
 
   myRootFile.Close();
 
-  delete tOut;
+  delete gBsPhotons;
 
   cout << "HERE MidMarchJpsiG_MC::endJob()" << endl;
 }
@@ -297,117 +291,7 @@ void MidMarchJpsiG_MC::analyze(
 
   ///////////////END OF THE GENPARTICLE SECTION/////////////////////////
 
-  KalmanVertexFitter kvf(true);
-  double jpsiMass = 3.097;
-  double bsMass = 5.367;
-
-  // take both recoMatchedMuons
-  if (recoMatchedMuons.at(0)->charge() * recoMatchedMuons.at(1)->charge() != -1)  return;
-
-  reco::TrackRef mu1Track = recoMatchedMuons.at(0)->track();
-  if (!mu1Track)  return;
-  reco::TransientTrack muon1TT = reco::TransientTrack(mu1Track, &field);
-  reco::TrackRef mu2Track = recoMatchedMuons.at(1)->track();
-  if (!mu2Track) return;
-  reco::TransientTrack muon2TT = reco::TransientTrack(mu2Track, &field);
-
-  std::vector<reco::TransientTrack> trackTTs;
-  trackTTs.push_back(muon1TT);
-  trackTTs.push_back(muon2TT);
-
-  // fit a common muons vertex
-  TransientVertex muonsKalmanTVertex = kvf.vertex(trackTTs);
-  double muonsKalmanVxProb = TMath::Prob(muonsKalmanTVertex.totalChiSquared(), muonsKalmanTVertex.degreesOfFreedom());
-  if (muonsKalmanVxProb < 0.1)  return;
- 
-  // get the momentum of the refitted dimuon
-  if (! muonsKalmanTVertex.hasRefittedTracks())  return;
-  reco::TransientTrack muon1TTrefit = muonsKalmanTVertex.refittedTrack(muon1TT);
-  reco::TransientTrack muon2TTrefit = muonsKalmanTVertex.refittedTrack(muon2TT);
-  math::XYZVector refitDimuonMom = muon1TTrefit.track().momentum() + muon2TTrefit.track().momentum();
-
-  // compose LV of the dimuon and get the invariant mass
-  double muonsEnergySum = recoMatchedMuons.at(0)->energy() + recoMatchedMuons.at(1)->energy();
-  math::XYZTLorentzVector dimuonLV (refitDimuonMom.x(),refitDimuonMom.y(),refitDimuonMom.z(),muonsEnergySum);
-  double dimuonMass = dimuonLV.M();
-
-  // lXY to the beam spot with significance
-  reco::Vertex muonsKalmanVertex (muonsKalmanTVertex);
-  std::vector<double> lXY_muonsKalman_bSpot_Vec = Tools::beamSpotVertexLxy(beamSpot, muonsKalmanVertex);
-  double lXY_muonsKalman_bSpot = lXY_muonsKalman_bSpot_Vec.at(0);
-  double lXY_muonsKalman_bSpot_significance = lXY_muonsKalman_bSpot / lXY_muonsKalman_bSpot_Vec.at(1);
-  
-  // pointing angle to the beam spot in 2D
-  const math::XYZPoint bSpotPoint = beamSpot.position(muonsKalmanVertex.z());
-  math::XYZVector displ3DVec = muonsKalmanVertex.position() - bSpotPoint;
-  math::XYZVector displ2DVec (displ3DVec.x(), displ3DVec.y(), 0);
-  math::XYZVector refitDimuonMom2D (refitDimuonMom.x(),refitDimuonMom.y(),0.0);
-  double cosPointingAngleDimuonBS2D = displ2DVec.unit().Dot(refitDimuonMom2D.unit());
-
-  //////PHOTON///////// 
-  math::XYZTLorentzVector photonLV = recoMatchedPhotons.at(0)->p4();
-  double photonEnergy = photonLV.energy();
-  double photonScaledEnergy = (photonEnergy - 0.599366) / 1.02408;
-
-  // modify photon direction (keeping energy intact)
-  const math::XYZPoint clusterPos = recoMatchedPhotons.at(0)->superCluster()->position();
-  math::XYZVector modPhotonPath = clusterPos - muonsKalmanVertex.position();
-  math::XYZVector modPhotonMom = photonEnergy * (modPhotonPath.unit());
-  math::XYZTLorentzVector modPhotonLV (modPhotonMom.x(),modPhotonMom.y(),modPhotonMom.z(),photonEnergy);
-
-  math::XYZVector modScaledPhotonMom = photonScaledEnergy * (modPhotonPath.unit());
-  math::XYZTLorentzVector modScaledPhotonLV (modScaledPhotonMom.x(),modScaledPhotonMom.y(),modScaledPhotonMom.z(),photonScaledEnergy);
-
-
-  // photon deltaR
-  double deltaR_modPhotonDimuon = reco::deltaR(refitDimuonMom, modPhotonMom);
-
-  // final mass
-  math::XYZTLorentzVector dimuonModPhotonLV = dimuonLV + modPhotonLV;
-  double dimuonModPhotonMass = dimuonModPhotonLV.M();
-
-  math::XYZTLorentzVector dimuonModScaledPhotonLV = dimuonLV + modScaledPhotonLV;
-  double dimuonModScaledPhotonMass = dimuonModScaledPhotonLV.M();
-
-  // alternative results
-  math::XYZTLorentzVector twoMuonsLV = recoMatchedMuons.at(0)->p4() + recoMatchedMuons.at(1)->p4();
-  math::XYZTLorentzVector twoMuonsPhotonLV = twoMuonsLV + photonLV;
-  double twoMuonsPhotonMass = twoMuonsPhotonLV.M();
-
-  math::XYZTLorentzVector dimuonPhotonLV = dimuonLV + photonLV;
-  double dimuonPhotonMass = dimuonPhotonLV.M();
-
-  math::XYZTLorentzVector twoMuonsModPhotonLV = twoMuonsLV + modPhotonLV;
-  double twoMuonsModPhotonMass = twoMuonsModPhotonLV.M();
-
-  math::XYZTLorentzVector twoMuonsModScaledPhotonLV = twoMuonsLV + modScaledPhotonLV;
-  double twoMuonsModScaledPhotonMass = twoMuonsModScaledPhotonLV.M();
-
-
-
-  // HLT paths
-  double triggerRes = 0.0;
-  for (unsigned int i=0; i < triggerResults.size();i++)
-  {
-    if (!triggerResults.accept(i))  continue;
-    std::string name = triggerNames.triggerName(i);
-    
-    if (!name.compare(0,26,path0))  triggerRes += 1.E0;
-    else if (!name.compare(0,22,path1))  triggerRes += 1.E1;
-    else if (!name.compare(0,25,path2))  triggerRes += 1.E2;
-    else if (!name.compare(0,36,path3))  triggerRes += 1.E3;
-    else if (!name.compare(0,30,path4))  triggerRes += 1.E4;
-    else if (!name.compare(0,32,path5))  triggerRes += 1.E5;
-    else if (!name.compare(0,33,path6))  triggerRes += 1.E6;
-    else if (!name.compare(0,33,path7))  triggerRes += 1.E7;      
-  }
-
-  const double outArray[13] = {muonsKalmanVxProb,dimuonMass,lXY_muonsKalman_bSpot,
-    lXY_muonsKalman_bSpot_significance,cosPointingAngleDimuonBS2D,deltaR_modPhotonDimuon,
-    dimuonModPhotonMass,dimuonModScaledPhotonMass,twoMuonsPhotonMass,dimuonPhotonMass,
-    twoMuonsModPhotonMass,twoMuonsModScaledPhotonMass,triggerRes};
-
-  tOut->Fill(outArray);
+  gBsPhotons->AddPoint(genMatchedPhotons.at(0)->energy(), recoMatchedPhotons.at(0)->p4().energy());
 
 
 

@@ -33,7 +33,7 @@
 
 
 
-<library name="CompCheckJpsiMassG_MC" file="CompCheckJpsiMassG_MC.cc">
+<library name="MidMarchJpsiG_MC" file="MidMarchJpsiG_MC.cc">
 </library>
 
 
