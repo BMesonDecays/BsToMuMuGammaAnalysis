@@ -68,6 +68,7 @@
 #include "TH2D.h"
 #include "TProfile.h"
 #include "TGraph.h"
+#include "TGraphErrors.h"
 #include "TFile.h"
 #include "TMath.h"
 #include "TString.h"
@@ -119,7 +120,8 @@ private:
   std::vector<int> JpsiG = {443, 22};
   std::vector<int> MuMu = {13, -13};
 
-  TGraph* gBsPhotons;
+  TGraphErrors* gBsPhotons;
+  TH1D* hCompE;
   
   
 };
@@ -148,9 +150,11 @@ MidMarchJpsiG_MC::~MidMarchJpsiG_MC()
 
 void MidMarchJpsiG_MC::beginJob()
 {
-  gBsPhotons = new TGraph();
+  gBsPhotons = new TGraphErrors();
   gBsPhotons->SetName("gBsPhotons");
   gBsPhotons->SetTitle("Matched photons from B0s to J/psi gamma;generated energy;reconstructed energy");
+
+  hCompE = new TH1D("hCompE","Reco photon energy ratio of methods",1000,0.,10.);
 
   cout << "HERE MidMarchJpsiG_MC::beginJob()" << endl;
 }
@@ -162,10 +166,12 @@ void MidMarchJpsiG_MC::endJob()
 
   //write data
   gBsPhotons->Write();
+  hCompE->Write();
 
   myRootFile.Close();
 
   delete gBsPhotons;
+  delete hCompE;
 
   cout << "HERE MidMarchJpsiG_MC::endJob()" << endl;
 }
@@ -291,8 +297,17 @@ void MidMarchJpsiG_MC::analyze(
 
   ///////////////END OF THE GENPARTICLE SECTION/////////////////////////
 
-  gBsPhotons->AddPoint(genMatchedPhotons.at(0)->energy(), recoMatchedPhotons.at(0)->p4().energy());
+  const reco::Photon* & recoPhoton = recoMatchedPhotons.at(0);
 
+  reco::Photon::P4type recoPhotonType = recoPhoton->getCandidateP4type();
+  float recoPhotonEnergy = recoPhoton->getCorrectedEnergy(recoPhotonType);
+  float recoPhotonEnergyError = recoPhoton->getCorrectedEnergyError(recoPhotonType);
+
+  gBsPhotons->AddPoint(genMatchedPhotons.at(0)->energy(), recoPhotonEnergy);
+  gBsPhotons->SetPointError(gBsPhotons->GetN()-1, 0.0, recoPhotonEnergyError);
+
+  float recoPhotonEnergyFromLV = recoPhoton->p4().energy();
+  hCompE->Fill(recoPhotonEnergy/recoPhotonEnergyFromLV);
 
 
   cout <<"*** Analyze event: " << ev.id() <<" analysed event count:" << ++theEventCount << endl;

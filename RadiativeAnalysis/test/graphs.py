@@ -3,7 +3,7 @@ import sys
 import math
 from ROOT import *
 
-fileName = "genRecoPhotonEnergyBsPhotons.root"
+fileName = "genRecoPhotonEnergyErBsPhotons.root"
 
 print ('Read data from: ', fileName)
 gROOT.Reset()
@@ -26,14 +26,14 @@ graph = gROOT.FindObject(graphname)
 print(graph.GetN())
 graph.SetMarkerSize(0.2)
 graph.SetMarkerStyle(20)
-graph.GetXaxis().SetRangeUser(50,100)
-graph.GetYaxis().SetRangeUser(30, 120)
+graph.GetXaxis().SetRangeUser(0,120)
+graph.GetYaxis().SetRangeUser(0,150)
 graph.Draw("A*")
 
 #'''
 # line y=x
-start = 50.
-end = 100.
+start = 0.
+end = 120.
 line = TLine(start,start,end,end)
 line.SetLineColor(2)
 line.Draw()
