@@ -1,4 +1,5 @@
 // gen vs reco photon energy
+// later also added eta
 
 #include "FWCore/Framework/interface/one/EDAnalyzer.h"
 
@@ -120,8 +121,7 @@ private:
   std::vector<int> JpsiG = {443, 22};
   std::vector<int> MuMu = {13, -13};
 
-  TGraphErrors* gBsPhotons;
-  TH1D* hCompE;
+  TNtupleD* tBsPhotons;
   
   
 };
@@ -150,11 +150,7 @@ MidMarchJpsiG_MC::~MidMarchJpsiG_MC()
 
 void MidMarchJpsiG_MC::beginJob()
 {
-  gBsPhotons = new TGraphErrors();
-  gBsPhotons->SetName("gBsPhotons");
-  gBsPhotons->SetTitle("Matched photons from B0s to J/psi gamma;generated energy;reconstructed energy");
-
-  hCompE = new TH1D("hCompE","Reco photon energy ratio of methods",1000,0.,10.);
+  tBsPhotons = new TNtupleD("tBsPhotons","Matched photons from B0s to J/psi gamma","genEnergy:recoEnergy:recoEnergyError:eta");
 
   cout << "HERE MidMarchJpsiG_MC::beginJob()" << endl;
 }
@@ -165,13 +161,11 @@ void MidMarchJpsiG_MC::endJob()
   TFile myRootFile( theConfig.getParameter<std::string>("outHist").c_str(), "RECREATE");
 
   //write data
-  gBsPhotons->Write();
-  hCompE->Write();
+  tBsPhotons->Write();
 
   myRootFile.Close();
 
-  delete gBsPhotons;
-  delete hCompE;
+  delete tBsPhotons;
 
   cout << "HERE MidMarchJpsiG_MC::endJob()" << endl;
 }
@@ -300,14 +294,14 @@ void MidMarchJpsiG_MC::analyze(
   const reco::Photon* & recoPhoton = recoMatchedPhotons.at(0);
 
   reco::Photon::P4type recoPhotonType = recoPhoton->getCandidateP4type();
-  float recoPhotonEnergy = recoPhoton->getCorrectedEnergy(recoPhotonType);
-  float recoPhotonEnergyError = recoPhoton->getCorrectedEnergyError(recoPhotonType);
+  double recoPhotonEnergy = recoPhoton->getCorrectedEnergy(recoPhotonType);
+  double recoPhotonEnergyError = recoPhoton->getCorrectedEnergyError(recoPhotonType);
+  //double recoPhotonSClusterEta = recoPhoton->superCluster()->eta();
+  double recoPhotonCaloEta = recoPhoton->caloPosition().Eta();
 
-  gBsPhotons->AddPoint(genMatchedPhotons.at(0)->energy(), recoPhotonEnergy);
-  gBsPhotons->SetPointError(gBsPhotons->GetN()-1, 0.0, recoPhotonEnergyError);
+  
+  tBsPhotons->Fill(genMatchedPhotons.at(0)->energy(), recoPhotonEnergy, recoPhotonEnergyError, recoPhotonCaloEta);
 
-  float recoPhotonEnergyFromLV = recoPhoton->p4().energy();
-  hCompE->Fill(recoPhotonEnergy/recoPhotonEnergyFromLV);
 
 
   cout <<"*** Analyze event: " << ev.id() <<" analysed event count:" << ++theEventCount << endl;
