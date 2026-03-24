@@ -64,6 +64,7 @@
 #include "DataFormats/Math/interface/LorentzVector.h"
 
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/Tools.h"
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/PhotonEnergyModifier.h"
 #include "BsToMuMuGammaAnalysis/run3mvaid/interface/MuonMVAID.h"
 
 #include "TH1D.h"
@@ -143,14 +144,17 @@ JpsiGEndMarch::~JpsiGEndMarch()
 
 void JpsiGEndMarch::beginJob()
 {
+  muonMVAIDProducer_ = new MuonMVAID(theConfig);
+
   tOut = new TNtupleD("tOut","Output tuple",
-    "twoMuonsMass:muonsKalmanVxProb:maxMuonsComp:fittedJpsiVxProb:lXY_twoMuons_bSpot:lXY_fittedJpsi_bSpot:dR_photon_twoMuons:dR_photon_Jpsi:twoMuonsPhotonMass:fittedJpsiPhotonMass:lXY_twoMuons_PV:lXY_fittedJpsi_PV:lXY_twoMuons_PV_sign:lXY_fittedJpsi_PV_sign:lXYZ_twoMuons_bestPV:lXYZ_fittedJpsi_bestPV:cosPointingAngle_twoMuons:cosPointingAngle_fittedJpsi:BsXYlifetime_twoMuons:BsXYlifetime_fittedJpsi");
-  
+  "fittedDimuonVertexProb:fittedDimuonMass:maxMuonsVertexComp:lXY_fittedDimuon_bSpot:lXY_fittedDimuon_bSpot_sig:dR_photonFittedDimuon:eta:initPhotonEnergy:modScale:candBsMass:candBsModMass:cosAngleBsBSpot2D:cosAngleModBsBSpot2D:l3D_BsPV:l3D_ModBsPV:cosAngleBsPV3D:cosAngleModBsPV3D:lifetimeBs:lifetimeModBs:muon1Id:muon2Id:tight1:tight2");
   cout << "HERE JpsiGEndMarch::beginJob()" << endl;
 }
 
 void JpsiGEndMarch::endJob()
 {
+  delete muonMVAIDProducer_;
+
   //make a new Root file
   TFile myRootFile( theConfig.getParameter<std::string>("outHist").c_str(), "RECREATE");
 
@@ -180,6 +184,9 @@ void JpsiGEndMarch::analyze(
   ////////////////////////////////////////
 
   if (recoMuons.size() < 2 || recoPhotons.size() < 1)   return;
+
+  // Muon MVA ID
+  std::vector<float> muonMVAIDs = muonMVAIDProducer_->produce(recoMuons);
 
   KalmanVertexFitter kvf(false);
   KinematicParticleFactoryFromTransientTrack pFactory;
@@ -214,7 +221,7 @@ void JpsiGEndMarch::analyze(
       // get the fitted decay vertex
       twoMuonsFitTree->movePointerToTheTop();
       RefCountedKinematicVertex fittedDimuonVertex = twoMuonsFitTree->currentDecayVertex();
-      if (! fittedDimuonVertex->isValid())  continue;      
+      if (! fittedDimuonVertex->vertexIsValid())  continue;      
       double fittedDimuonVertexProb = TMath::Prob(fittedDimuonVertex->chiSquared(),fittedDimuonVertex->degreesOfFreedom());
       if (fittedDimuonVertexProb < 0.01)  continue;
       GlobalPoint dmuVPosGP = fittedDimuonVertex->position();
@@ -243,8 +250,9 @@ void JpsiGEndMarch::analyze(
       if (lXY_fittedDimuon_bSpot_significance < 3.0)  continue;
       
       ////////////LOOP OVER PHOTONS//////////////////////////////
-      for (std::vector<pat::Photon>::const_iterator igamma = recoPhotons.begin(); igamma < recoPhotons.end(); igamma++)
+      for (std::vector<pat::Photon>::const_iterator igamma0 = recoPhotons.begin(); igamma0 < recoPhotons.end(); igamma0++)
       {
+        pat::Photon* igamma = igamma0->clone();
         igamma->setVertex(fittedDimuonVertexPoint);
 
         // photon deltaR
@@ -254,9 +262,13 @@ void JpsiGEndMarch::analyze(
         if (deltaR_photon_fittedDimuon < 0.05)  continue;
 
         // get Lorentz Vector for modified photon energy
-
+        double initPhotonEnergy = photonLV.energy();
+        double eta = igamma->caloPosition().Eta();
+        double modPhotonEnergy = PhotonEnergyModifier::getModPhotonEnergy(initPhotonEnergy, eta);
+        double modScale = modPhotonEnergy / initPhotonEnergy;
+        math::XYZTLorentzVector photonModLV = modScale * photonLV;
         ///////////////////////
-        ///////////////////////
+        // What if == 0.0
         ///////////////////////
 
         // construct B0s candidate Lorentz Vector
@@ -276,32 +288,45 @@ void JpsiGEndMarch::analyze(
         const reco::Vertex & bestPVmod = Tools::bestPV(primaryVertices,
             fittedDimuonVertexPoint, candBsModLV.Vect());
 
+        //
+        // 2D pointing angle to beam spot
+        const math::XYZPoint beamSpotPoint = beamSpot.position(fittedDimuonVertexPoint.z());
+        math::XYZVector bSpotToVtx3D = fittedDimuonVertexPoint - beamSpotPoint;
+        math::XYZVector bSpotToVtx2D (bSpotToVtx3D.x(),bSpotToVtx3D.y(),0.0);
+        double cosAngleBsBSpot2D = bSpotToVtx2D.unit().Dot(candBsLV.Vect()) / candBsLV.Pt();
+        double cosAngleModBsBSpot2D = bSpotToVtx2D.unit().Dot(candBsModLV.Vect()) / candBsModLV.Pt();
         
-
         // pointing angle and the 3D displacement from the corresponding bestPV
-        // muonsKalmanVertex
-        math::XYZVector lXYZ_muonsKalman_PV_Vector = muonsKalmanVertex.position() - bestPV_twoMuons.position();
-        double lXYZ_muonsKalman_PV = TMath::Sqrt(lXYZ_muonsKalman_PV_Vector.Mag2());
-        double cosPointingAngle_muonsKalman_PV = twoMuonsPhotonLV.Vect().unit().Dot(lXYZ_muonsKalman_PV_Vector.unit());
-        // fittedJpsiVertex
-        math::XYZVector lXYZ_fittedJpsi_PV_Vector = fittedJpsiVertexPosition - bestPV_fittedJpsi.position();
-        double lXYZ_fittedJpsi_PV = TMath::Sqrt(lXYZ_fittedJpsi_PV_Vector.Mag2());
-        double cosPointingAngle_fittedJpsi_PV = fittedJpsiPhotonLV.Vect().unit().Dot(lXYZ_fittedJpsi_PV_Vector.unit());
+        // UNmod momentum
+        math::XYZVector v3D_BsPV = fittedDimuonVertexPoint - bestPV.position();
+        double l3D_BsPV = TMath::Sqrt(v3D_BsPV.Mag2());
+        double cosAngleBsPV3D = v3D_BsPV.unit().Dot(candBsLV.Vect().unit());
+        // MOD momentum
+        math::XYZVector v3D_ModBsPV = fittedDimuonVertexPoint - bestPVmod.position();
+        double l3D_ModBsPV = TMath::Sqrt(v3D_ModBsPV.Mag2());
+        double cosAngleModBsPV3D = v3D_ModBsPV.unit().Dot(candBsModLV.Vect().unit());
+        
+        // B0s lifetime [ps] based on lXY_fittedDimuon_beamSpot
+        double lifetimeBs = (lXY_fittedDimuon_bSpot * bsMass) / candBsLV.Pt();
+        lifetimeBs *= 100/3;  // for ps (unit)
+        double lifetimeModBs = (lXY_fittedDimuon_bSpot * bsMass) / candBsModLV.Pt();
+        lifetimeModBs *= 100/3;
 
-        // B0s lifetime [ps] based on lXY
-        // muonsKalmanVertex
-        double lifetimeB0s_muonsKalman = (lXY_muonsKalman_PV * bsMass) / twoMuonsPhotonLV.Vect().Rho();
-        lifetimeB0s_muonsKalman *= 100/3;
-        // fittedJpsiVertex
-        double lifetimeB0s_fittedJpsi = (lXY_fittedJpsi_PV * bsMass) / fittedJpsiPhotonLV.Vect().Rho();
-        lifetimeB0s_fittedJpsi *= 100/3;
+        // muon IDs
+        std::vector<pat::Muon>::const_iterator imB = recoMuons.begin();
+        float muon1Id = muonMVAIDs.at(im1 - imB);
+        float muon2Id = muonMVAIDs.at(im2 - imB);
+        
+        bool tight1 = im1->isTightMuon(primaryVertices.at(0));
+        bool tight2 = im2->isTightMuon(primaryVertices.at(0));
 
-        const double outArray[20] = {twoMuonsM,muonsKalmanVxProb,maxMuonsVertexComp,fittedJpsiVxProb,
-            lXY_muonsKalman_bSpot,lXY_fittedJpsi_bSpot,deltaR_photon_twoMuons,deltaR_photon_Jpsi,
-            twoMuonsPhotonMass,fittedJpsiPhotonMass,lXY_muonsKalman_PV,lXY_fittedJpsi_PV,
-            lXY_muonsKalman_PV_significance,lXY_fittedJpsi_PV_significance,lXYZ_muonsKalman_PV,lXYZ_fittedJpsi_PV,
-            cosPointingAngle_muonsKalman_PV,cosPointingAngle_fittedJpsi_PV,lifetimeB0s_muonsKalman,lifetimeB0s_fittedJpsi};
 
+        // output
+        const double outArray[23] = {fittedDimuonVertexProb,fittedDimuonMass,maxMuonsVertexComp,lXY_fittedDimuon_bSpot,lXY_fittedDimuon_bSpot_significance,
+        deltaR_photon_fittedDimuon,eta,initPhotonEnergy,modScale,candBsMass,candBsModMass,
+        cosAngleBsBSpot2D,cosAngleModBsBSpot2D,l3D_BsPV,l3D_ModBsPV,cosAngleBsPV3D,cosAngleModBsPV3D,
+        lifetimeBs,lifetimeModBs,muon1Id,muon2Id,(double)tight1,(double)tight2};
+        
         tOut->Fill(outArray);
 
 

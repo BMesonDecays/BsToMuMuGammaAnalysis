@@ -4922,3 +4922,65 @@ ERROR 2026-03-11 12:02:16.126 UTC:
 ERROR 2026-03-11 12:02:16.127 UTC: 	   If you can't figure out the problem, please send email to
 ERROR 2026-03-11 12:02:16.127 UTC: 	 	cmstalk+computing-tools@dovecotmta.cern.ch with the crab.log file or crab.log URL.
 ERROR 2026-03-11 12:02:16.127 UTC: 	   Please use 'crab uploadlog' to upload the log file /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log to the CRAB cache.
+DEBUG 2026-03-24 19:30:43.473 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-03-24 19:30:43.473 UTC: 	 Running on: Linux lxplus957.cern.ch 5.14.0-611.27.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Tue Jan 20 05:28:20 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-03-24 19:30:43.473 UTC: 	 Not using Singularity
+DEBUG 2026-03-24 19:30:43.473 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-03-24 19:30:43.473 UTC: 	 Executing command: 'submit'
+DEBUG 2026-03-24 19:30:43.473 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+INFO 2026-03-24 19:30:43.487 UTC: 	 Will use CRAB configuration file crabConfigData.py
+DEBUG 2026-03-24 19:30:43.487 UTC: 	 Loading CRAB configuration file.
+DEBUG 2026-03-24 19:30:43.602 UTC: 	 Overriden parameter General.requestName with '24Bdry'
+DEBUG 2026-03-24 19:30:43.602 UTC: 	 Overriden parameter General.workArea with '24Bdry_BsToJpsiGamma'
+DEBUG 2026-03-24 19:30:43.602 UTC: 	 Overriden parameter Data.outputDatasetTag with '24Bdry_BsToJpsiGamma'
+DEBUG 2026-03-24 19:30:43.603 UTC: 	 Overriden parameter Data.inputDataset with '/ParkingDoubleMuonLowMass2/Run2024B-PromptReco-v1/MINIAOD'
+DEBUG 2026-03-24 19:30:43.603 UTC: 	 Overriden parameter Data.lumiMask with '/eos/user/c/cmsdqm/www/CAF/certification/Collisions24/2024B_Golden.json'
+INFO 2026-03-24 19:30:43.603 UTC: 	 Wrong format in command-line argument '--dryrun'. Expected format is <section-name>.<parameter-name>=<parameter-value>.
+INFO 2026-03-24 19:30:43.603 UTC: 	 If the argument '--dryrun' is an option to the submit command, try 'crab submit --dryrun [value for --dryrun option (if required)] [arguments]'.
+ERROR 2026-03-24 19:30:43.603 UTC: 	 ERROR: Wrong command-line format.
+ERROR 2026-03-24 19:30:43.603 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/submit.py", line 37, in __init__
+    SubCommand.__init__(self, logger, cmdargs, disable_interspersed_args=True)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 326, in __init__
+    self.loadConfig(self.options.config, self.args)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 68, in loadConfig
+    raise ConfigurationException("ERROR: Wrong command-line format.")
+CRABClient.ClientExceptions.ConfigurationException: ERROR: Wrong command-line format.
+INFO 2026-03-24 19:30:43.610 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-03-24 19:41:55.146 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-03-24 19:41:55.146 UTC: 	 Running on: Linux lxplus957.cern.ch 5.14.0-611.27.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Tue Jan 20 05:28:20 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-03-24 19:41:55.146 UTC: 	 Not using Singularity
+DEBUG 2026-03-24 19:41:55.146 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-03-24 19:41:55.146 UTC: 	 Executing command: 'submit'
+DEBUG 2026-03-24 19:41:55.147 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+INFO 2026-03-24 19:41:55.149 UTC: 	 Will use CRAB configuration file crabConfigData.py
+DEBUG 2026-03-24 19:41:55.150 UTC: 	 Loading CRAB configuration file.
+DEBUG 2026-03-24 19:41:55.163 UTC: 	 Overriden parameter General.requestName with '24Bdry'
+DEBUG 2026-03-24 19:41:55.163 UTC: 	 Overriden parameter General.workArea with '24Bdry_BsToJpsiGamma'
+DEBUG 2026-03-24 19:41:55.163 UTC: 	 Overriden parameter Data.outputDatasetTag with '24Bdry_BsToJpsiGamma'
+DEBUG 2026-03-24 19:41:55.163 UTC: 	 Overriden parameter Data.inputDataset with '/ParkingDoubleMuonLowMass2/Run2024B-PromptReco-v1/MINIAOD'
+DEBUG 2026-03-24 19:41:55.163 UTC: 	 Overriden parameter Data.lumiMask with '/eos/user/c/cmsdqm/www/CAF/certification/Collisions24/2024B_Golden.json'
+DEBUG 2026-03-24 19:41:55.163 UTC: 	 Overriden parameter Data.unitsPerJob with 260
+DEBUG 2026-03-24 19:41:55.163 UTC: 	 Will use CRAB plugin ANALYSIS (i.e. will run an analysis job type).
+ERROR 2026-03-24 19:41:55.168 UTC: 	 Working area '/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24Bdry_BsToJpsiGamma/crab_24Bdry' already exists 
+Please change the requestName in the config file
+ERROR 2026-03-24 19:41:55.168 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/submit.py", line 37, in __init__
+    SubCommand.__init__(self, logger, cmdargs, disable_interspersed_args=True)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 328, in __init__
+    self.requestarea, self.requestname, self.logfile = createWorkArea(
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/ClientUtilities.py", line 392, in createWorkArea
+    raise ConfigException("Working area '%s' already exists \nPlease change the requestName in the config file" % fullpath)
+CRABClient.ClientExceptions.ConfigException: Working area '/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24Bdry_BsToJpsiGamma/crab_24Bdry' already exists 
+Please change the requestName in the config file
+INFO 2026-03-24 19:41:55.180 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log

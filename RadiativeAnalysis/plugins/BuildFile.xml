@@ -33,7 +33,7 @@
 
 
 
-<library name="MidMarchJpsiG_MC" file="MidMarchJpsiG_MC.cc">
+<library name="JpsiGEndMarch" file="JpsiGEndMarch.cc">
 </library>
 
 
