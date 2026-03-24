@@ -679,6 +679,8 @@ double DiMuonPt_NoBound_;
 	double photonSCBrem_[2];
 	double photonSCR9_[2];
 	double photonSCHadTowOverEm_[2];
+	double photonMVAScore_[2];
+	bool   photonTightID_[2];
 
 	// Particle flow candidates (photons)
 	double pfCandPt_[2];
@@ -775,6 +777,7 @@ double DiMuonPt_NoBound_;
 	double  GenB_mass_;
 	double  GenBLxy_;
 	double  GenBct2D_;
+	double  GenBct3D_;
 	double  GenMuPlus_pt_;
 	double  GenMuPlus_eta_;
 	double  GenMuPlus_phi_;

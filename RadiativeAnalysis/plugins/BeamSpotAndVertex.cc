@@ -142,12 +142,12 @@ int BeamSpotAndVertex::CosThetaindex(const std::vector<reco::Vertex>& vertex,
 }
 
 int BeamSpotAndVertex::LowestDCAIndex(const std::vector<reco::Vertex>& vertex,
-			RefCountedKinematicVertex bVertex,
+			GlobalPoint bVertex,
 			GlobalVector Bsvec)
 {
 	if(vertex.empty()) return -1;
 
-	math::XYZPoint SV(bVertex->position().x(), bVertex->position().y(), bVertex->position().z());
+	math::XYZPoint SV(bVertex.x(), bVertex.y(), bVertex.z());
 	math::XYZVectorD p3sum(Bsvec.x(), Bsvec.y(), Bsvec.z());
 
 	// compute pca distances for every primary vertex

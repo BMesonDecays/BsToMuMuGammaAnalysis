@@ -151,6 +151,11 @@ private:
   edm::EDGetTokenT<EcalRecHitCollection> ecalrechitEBTok;
   edm::InputTag ecalrechitEE; 
   edm::EDGetTokenT<EcalRecHitCollection> ecalrechitEETok;
+  edm::InputTag valMapTag;
+  edm::EDGetTokenT<edm::ValueMap<float>> valMapTok;
+
+  edm::InputTag valMapPhoTightTag;
+  edm::EDGetTokenT<edm::ValueMap<bool>> valMapPhoTightTok;
 
   //edm::InputTag pfCandTag;
   //edm::EDGetTokenT<edm::View<pat::PackedCandidate>> pfCandTagTok;

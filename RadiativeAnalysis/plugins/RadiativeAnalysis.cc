@@ -78,6 +78,11 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig):
 	ecalrechitEBTok                = consumes<EcalRecHitCollection>(ecalrechitEB);
 	ecalrechitEE                   = iConfig.getParameter<edm::InputTag>("ecalrechit");
 	ecalrechitEETok                = consumes<EcalRecHitCollection>(ecalrechitEE);
+	// valMapTag						= iConfig.getParameter<edm::InputTag>("mvaValuesMap");
+	// valMapTok						= consumes<edm::ValueMap<float>>(valMapTag);
+
+	// valMapPhoTightTag				= iConfig.getParameter<edm::InputTag>("phoTightIDMap");
+	// valMapPhoTightTok				= consumes<edm::ValueMap<bool>>(valMapPhoTightTag);
 
 	//pfCandTag                         = iConfig.getParameter<edm::InputTag>("pfCandTag");
     //pfCandTagTok                      = consumes<edm::View<pat::PackedCandidate>>(pfCandTag);
@@ -210,6 +215,13 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
         iEvent.getByToken(PhotonTagTok, photons);
 	edm::Handle<std::vector<reco::PFCandidate>> pfCandidates;
 	iEvent.getByToken(PFCandTagTok, pfCandidates);
+
+	// edm::Handle<edm::ValueMap<float>> mvaValuesMap;
+	// iEvent.getByToken(valMapTok, mvaValuesMap);
+
+	// edm::Handle<edm::ValueMap<bool>> phoTightIDMap;
+	// iEvent.getByToken(valMapPhoTightTok, phoTightIDMap);
+
 
 	bmmgRootTree_->nMuons_ = muons->size();
 	bmmgRootTree_->nPhotons_ = photons->size();
@@ -370,11 +382,16 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 			bmmgRootTree_->vertexTypeFlag_ = 3;
 		}
 
-		if(selectedMuons->size()==2){
-			vector<float> muonMVAIDs = muonMVAIDProducer_->produce(*selectedMuons);
-			bmmgRootTree_->mu1MVAScore_ = muonMVAIDs[0];
-			bmmgRootTree_->mu2MVAScore_ = muonMVAIDs[1];
-		}
+		// if(selectedMuons->size()==2){
+		// 	vector<float> muonMVAIDs = muonMVAIDProducer_->produce(*selectedMuons);
+		// 	bmmgRootTree_->mu1MVAScore_ = muonMVAIDs[0];
+		// 	bmmgRootTree_->mu2MVAScore_ = muonMVAIDs[1];
+		// }
+		// if(photons->size()>=1){
+		// 	edm::Ref<std::vector<reco::Photon>> phoRef(photons, 0);
+		// 	bool isTight = (*phoTightIDMap)[phoRef];
+		// 	bmmgRootTree_->photonTightID_[0] = isTight;
+		// }
 		
         
 		
@@ -551,6 +568,19 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 				bmmgRootTree_->Bshelicity_recommg_ = helicity;
 				bmmgRootTree_->Bscoplanarity_recommg_ = coplanarity;
 				bmmgRootTree_->isFourBody_ = 0;
+
+				// Fill ID decision for tight photon ID
+				// if (phoTightIDMap.isValid()) {
+				// 	edm::Ref<std::vector<reco::Photon>> phoRef(photons, iPhoton);
+				// 	bool isTight = (*phoTightIDMap)[phoRef];
+				// 	std::cout << "Photon " << iPhoton << " tight ID: " << isTight << "\n";
+				// 	bmmgRootTree_->photonTightID_[iPhoton] = isTight;
+				// }
+				// if (mvaValuesMap.isValid()) {
+				// 	const auto pho = edm::Ref<std::vector<reco::Photon>>(photons, iPhoton);
+				// 	double mvaScore = (*mvaValuesMap)[pho];
+				// 	bmmgRootTree_->photonMVAScore_[iPhoton] = mvaScore;
+				// }
 				
 			}//Photon loop for three body through photon kinematics are saved irrespective of their multiplicity 
 			if (photonVar.size() - excludedPhotons.size() >= 2) {
@@ -699,6 +729,7 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 
 					 bmmgRootTree_->GenBLxy_      = G.BLxy;
 					 bmmgRootTree_->GenBct2D_       = G.Bct2D;
+					 bmmgRootTree_->GenBct3D_       = G.Bct3D;
 
 					 
 					 if (G.hasMuonPlus) {
@@ -778,8 +809,8 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 		            
 
 
-	for (size_t i = 0; i < photons->size() && i < 4; ++i) {
-        const reco::Photon& myphoton = (*photons)[i];
+	for (size_t i = 0; i < selectedPhoton->size() && i < 4; ++i) {
+        const reco::Photon& myphoton = (*selectedPhoton)[i];
         
         
         auto photonMatch = gen.matchPhotonToGen(myphoton);

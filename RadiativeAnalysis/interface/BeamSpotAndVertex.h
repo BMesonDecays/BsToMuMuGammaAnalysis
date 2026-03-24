@@ -74,7 +74,7 @@ class BeamSpotAndVertex{
 			GlobalVector Bsvec);
 	
 	static int LowestDCAIndex(const std::vector<reco::Vertex>& vertex,
-			RefCountedKinematicVertex bVertex,
+			GlobalPoint bVertex,
 			GlobalVector Bsvec);
 			
 	int    NSelectedVertices;

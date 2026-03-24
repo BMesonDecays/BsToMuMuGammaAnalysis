@@ -78,11 +78,9 @@ class TrippleObjectVertex{
 			RadiativeRootTree* rrt);
 
 	private:
-	double calculateCtError(const GlobalPoint& refVertex, 
-							const GlobalError& refVertexErr,
-							const GlobalVector& momentumVec,
+	double calculateCtError(const reco::Vertex& PV,
 							const RefCountedKinematicVertex& bVertex,
-							const char* outputVarName);
+							const RefCountedKinematicParticle& bCand);
       
 };
 

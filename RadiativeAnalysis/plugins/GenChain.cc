@@ -243,12 +243,15 @@ void GenDecayChain::computeLifetimeVariables() {
     extractVertexInfo();
     float dx = info_.Bdecayvtx.X() - info_.Bvtx.X();
     float dy = info_.Bdecayvtx.Y() - info_.Bvtx.Y();
+    float dz = info_.Bdecayvtx.Z() - info_.Bvtx.Z();
     info_.BLxy = sqrt(dx*dx + dy*dy);
+    float BL = sqrt(dx*dx + dy*dy + dz*dz);
     float mB = info_.Bp4.M();
     float ptB = info_.Bp4.Pt();
    
     if (ptB > 0 && mB > 0) {
         info_.Bct2D = info_.BLxy * mB / ptB;
+        info_.Bct3D = BL * mB / info_.Bp4.P();
     }
 }
 

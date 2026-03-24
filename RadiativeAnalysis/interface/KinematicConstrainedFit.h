@@ -14,6 +14,9 @@
 //#include "SimTracker/Records/interface/TrackAssociatorRecord.h"
 #include "RecoVertex/KinematicFitPrimitives/interface/ParticleMass.h"
 #include "RecoVertex/KinematicFitPrimitives/interface/MultiTrackKinematicConstraint.h"
+#include "RecoVertex/KinematicFit/interface/TwoTrackMassKinematicConstraint.h"
+#include "RecoVertex/KinematicFit/interface/CombinedKinematicConstraint.h"
+#include "RecoVertex/KinematicFit/interface/MultiTrackPointingKinematicConstraint.h"
 #include "RecoVertex/KinematicFitPrimitives/interface/KinematicParticleFactoryFromTransientTrack.h"
 #include "RecoVertex/KinematicFit/interface/KinematicConstrainedVertexFitter.h"
 #include "RecoVertex/KinematicFit/interface/TwoTrackMassKinematicConstraint.h"
@@ -53,6 +56,8 @@
 #include <iostream>
 #include <TMath.h>
 
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/ReferenceResonance.h"
+
 class KinematicConstrainedFit{
 	public: 
 		KinematicConstrainedFit();
@@ -72,9 +77,12 @@ class KinematicConstrainedFit{
 		bool TrippleObjectVertexFitRecoPhoton(
 			std::vector<reco::TransientTrack> muonTT,
 			std::vector<reco::TransientTrack> photonTT,
-			const double DiMuonMass, const double DiMuonSigma,
+			ReferenceResonance::ResonanceDetails resonanceDetails,
 			const std::vector<reco::Photon>& photons,
-			TMatrixD& photonCovMatrix);
+			TMatrixD* photonCovMatrix,
+			reco::Vertex PV,
+			const MagneticField& field,
+			const TransientTrackBuilder& theB);
 		bool TetraObjectVertexFitRecoPhoton(
 			std::vector<reco::TransientTrack> muonTT,
 			std::vector<reco::TransientTrack>photonTT,

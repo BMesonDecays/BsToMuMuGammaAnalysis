@@ -472,6 +472,8 @@ bmmgTree_->Branch("DiMuonPt_NoBound", &DiMuonPt_NoBound_, "DiMuonPt_NoBound/D");
   bmmgTree_->Branch("photonSCBrem",&photonSCBrem_,"photonSCBrem[2]/D");
   bmmgTree_->Branch("photonSCR9",&photonSCR9_,"photonSCR9[2]/D");
   bmmgTree_->Branch("photonSCHadTowOverEm",&photonSCHadTowOverEm_,"photonSCHadTowOverEm[2]/D");
+  bmmgTree_->Branch("photonMVAScore",&photonMVAScore_,"photonMVAScore[2]/D");
+  bmmgTree_->Branch("photonTightID",&photonTightID_,"photonTightID[2]/I");
 
 
   bmmgTree_->Branch("pfCandMultiplicity",&pfCandMultiplicity_,"pfCandMultiplicity/I");
@@ -569,6 +571,7 @@ bmmgTree_->Branch("DiMuonPt_NoBound", &DiMuonPt_NoBound_, "DiMuonPt_NoBound/D");
   bmmgTree_->Branch("GenB_mass", &GenB_mass_,"GenB_mass/D");
   bmmgTree_->Branch("GenBLxy", &GenBLxy_,"GenBLxy/D");
   bmmgTree_->Branch("GenBct2D", &GenBct2D_,"GenBct2D/D");
+  bmmgTree_->Branch("GenBct3D", &GenBct3D_,"GenBct3D/D");
   bmmgTree_->Branch("GenMuPlus_pt", &GenMuPlus_pt_,"GenMuPlus_pt/D");
   bmmgTree_->Branch("GenMuPlus_eta", &GenMuPlus_eta_,"GenMuPlus_eta/D");
   bmmgTree_->Branch("GenMuPlus_phi", &GenMuPlus_phi_,"GenMuPlus_phi/D");
@@ -1150,6 +1153,8 @@ DiMuonPt_NoBound_   = -9999999;
 	photonSCBrem_[j]           = -9999999;
 	photonSCR9_[j]             = -9999999;
 	photonSCHadTowOverEm_[j]   = -9999999;
+  photonMVAScore_[j]           = -9999999;
+  photonTightID_[j]            = -9999999;
   }
 
   //Resetting the particle flow candidates
@@ -1257,6 +1262,7 @@ DiMuonPt_NoBound_   = -9999999;
 	GenB_mass_ = -9999999;
 	GenBLxy_ = -9999999;
 	GenBct2D_ = -9999999;
+  GenBct3D_ = -9999999;
 	GenMuPlus_pt_ = -9999999;
 	GenMuPlus_eta_ = -9999999;
 	GenMuPlus_phi_ = -9999999;
@@ -1843,6 +1849,8 @@ bmmgTree_->SetBranchAddress("DiMuonPt_NoBound", &DiMuonPt_NoBound_);
   bmmgTree_->SetBranchAddress("photonSCBrem", &photonSCBrem_);
   bmmgTree_->SetBranchAddress("photonSCR9", &photonSCR9_);
   bmmgTree_->SetBranchAddress("photonSCHadTowOverEm", &photonSCHadTowOverEm_);
+  bmmgTree_->SetBranchAddress("photonMVAScore", &photonMVAScore_ );
+  bmmgTree_->SetBranchAddress("photonTightID", &photonTightID_ );
   
   bmmgTree_->SetBranchAddress("pfCandMultiplicity", &pfCandMultiplicity_ );
   bmmgTree_->SetBranchAddress("pfCandPt", pfCandPt_ );
@@ -1940,6 +1948,7 @@ bmmgTree_->SetBranchAddress("GenB_phi", &GenB_phi_);
 bmmgTree_->SetBranchAddress("GenB_mass", &GenB_mass_);
 bmmgTree_->SetBranchAddress("GenBLxy", &GenBLxy_);
 bmmgTree_->SetBranchAddress("GenBct2D", &GenBct2D_);
+bmmgTree_->SetBranchAddress("GenBct3D", &GenBct3D_);
 bmmgTree_->SetBranchAddress("GenMuPlus_pt", &GenMuPlus_pt_);
 bmmgTree_->SetBranchAddress("GenMuPlus_eta", &GenMuPlus_eta_);
 bmmgTree_->SetBranchAddress("GenMuPlus_phi", &GenMuPlus_phi_);
