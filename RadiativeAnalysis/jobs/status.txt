@@ -1,0 +1,433 @@
+Error: 24B_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset0 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Error: 24B_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset1 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Error: 24B_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset2 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Error: 24B_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset3 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Error: 24B_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset4 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Error: 24B_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset5 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Error: 24B_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset6 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Error: 24B_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset7 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Error: 24C_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset0 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Your identity: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=psajdak/CN=887534/CN=Pawel Sajdak
+Contacting voms-cms-auth.cern.ch:443 [/DC=ch/DC=cern/OU=computers/CN=cms-auth.cern.ch] "cms"... Done
+
+Created proxy in /tmp/x509up_u183200.
+
+Your proxy is valid until Fri Apr  3 12:51:08 2026 CEST
+
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24C_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset1
+Task name:			260325_201420:psajdak_crab_JpsiGEndMarch_resub_dset1
+Grid scheduler - Task Worker:	crab3@vocms0107.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260325_201420%3Apsajdak_crab_JpsiGEndMarch_resub_dset1
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260325_201420%3Apsajdak_crab_JpsiGEndMarch_resub_dset1&from=1774466061000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (40/40)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-49df11db83e66e8a10944563ef299372/USER
+
+No publication information available yet
+
+Warning: the max jobs runtime is less than 30% of the task requested value (480 min), please consider to request a lower value for failed jobs (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 0MB min, 1583MB max, 1361MB ave
+ * Runtime: 0:07:35 min, 0:56:33 max, 0:25:37 ave
+ * CPU eff: 33% min, 159% max, 82% ave
+ * Waste: 7:54:59 (32% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24C_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset1/crab.log
+Error: 24C_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset2 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24C_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset3
+Task name:			260325_201442:psajdak_crab_JpsiGEndMarch_resub_dset3
+Grid scheduler - Task Worker:	crab3@vocms0107.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260325_201442%3Apsajdak_crab_JpsiGEndMarch_resub_dset3
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260325_201442%3Apsajdak_crab_JpsiGEndMarch_resub_dset3&from=1774466082000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (8/8)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-2fc104670698a7080cdcc0ee1c761d26/USER
+
+No publication information available yet
+
+Warning: the max jobs runtime is less than 30% of the task requested value (480 min), please consider to request a lower value for failed jobs (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 1402MB min, 1440MB max, 1417MB ave
+ * Runtime: 0:11:48 min, 0:26:43 max, 0:20:12 ave
+ * CPU eff: 30% min, 68% max, 54% ave
+ * Waste: 0:27:42 (15% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24C_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset3/crab.log
+Error: 24C_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset4 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24C_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset5
+Task name:			260325_201504:psajdak_crab_JpsiGEndMarch_resub_dset5
+Grid scheduler - Task Worker:	crab3@vocms0107.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260325_201504%3Apsajdak_crab_JpsiGEndMarch_resub_dset5
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260325_201504%3Apsajdak_crab_JpsiGEndMarch_resub_dset5&from=1774466104000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (8/8)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-f46011361bb4271d876c016ab53fa110/USER
+
+No publication information available yet
+
+Warning: the max jobs runtime is less than 30% of the task requested value (480 min), please consider to request a lower value for failed jobs (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 1421MB min, 1438MB max, 1422MB ave
+ * Runtime: 0:16:01 min, 0:50:13 max, 0:24:32 ave
+ * CPU eff: 63% min, 73% max, 70% ave
+ * Waste: 0:27:20 (12% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24C_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset5/crab.log
+Error: 24C_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset6 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Error: 24C_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset7 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Error: 24D_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset0 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset1
+Task name:			260325_201526:psajdak_crab_JpsiGEndMarch_resub_dset1
+Grid scheduler - Task Worker:	crab3@vocms0107.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260325_201526%3Apsajdak_crab_JpsiGEndMarch_resub_dset1
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260325_201526%3Apsajdak_crab_JpsiGEndMarch_resub_dset1&from=1774466126000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (8/8)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-66efff8fd170ab8665022ff85c6cd3d4/USER
+
+No publication information available yet
+
+Warning: the max jobs runtime is less than 30% of the task requested value (480 min), please consider to request a lower value for failed jobs (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 0MB min, 1581MB max, 1287MB ave
+ * Runtime: 0:13:30 min, 1:14:45 max, 0:35:34 ave
+ * CPU eff: 26% min, 137% max, 57% ave
+ * Waste: 2:16:08 (32% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24D_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset1/crab.log
+Error: 24D_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset2 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Error: 24D_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset3 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Error: 24D_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset4 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Error: 24D_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset5 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Error: 24D_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset6 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Error: 24D_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset7 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Error: 24F_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset0 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Error: 24F_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset1 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24F_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset2
+Task name:			260325_201548:psajdak_crab_JpsiGEndMarch_resub_dset2
+Grid scheduler - Task Worker:	crab3@vocms0198.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260325_201548%3Apsajdak_crab_JpsiGEndMarch_resub_dset2
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260325_201548%3Apsajdak_crab_JpsiGEndMarch_resub_dset2&from=1774466148000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (4/4)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-917dc7215b5b96702c3df2d127307f7c/USER
+
+No publication information available yet
+
+Warning: the max jobs runtime is less than 30% of the task requested value (480 min), please consider to request a lower value for failed jobs (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 1448MB min, 1457MB max, 1430MB ave
+ * Runtime: 0:34:07 min, 0:50:07 max, 0:43:07 ave
+ * CPU eff: 58% min, 74% max, 66% ave
+ * Waste: 0:02:56 (2% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24F_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset2/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24F_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset3
+Task name:			260325_201610:psajdak_crab_JpsiGEndMarch_resub_dset3
+Grid scheduler - Task Worker:	crab3@vocms0137.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260325_201610%3Apsajdak_crab_JpsiGEndMarch_resub_dset3
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260325_201610%3Apsajdak_crab_JpsiGEndMarch_resub_dset3&from=1774466170000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (11/11)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-1ef5e349db34f4d0590b7a0ebd2aa69c/USER
+
+No publication information available yet
+
+Warning: the max jobs runtime is less than 30% of the task requested value (480 min), please consider to request a lower value for failed jobs (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 1456MB min, 1511MB max, 1463MB ave
+ * Runtime: 0:19:51 min, 1:30:20 max, 0:30:47 ave
+ * CPU eff: 49% min, 82% max, 68% ave
+ * Waste: 0:37:47 (10% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24F_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset3/crab.log
+Error: 24F_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset4 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Error: 24F_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset5 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24F_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset6
+Task name:			260325_201631:psajdak_crab_JpsiGEndMarch_resub_dset6
+Grid scheduler - Task Worker:	crab3@vocms0106.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260325_201631%3Apsajdak_crab_JpsiGEndMarch_resub_dset6
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260325_201631%3Apsajdak_crab_JpsiGEndMarch_resub_dset6&from=1774466191000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (4/4)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-8ba0756c1ceb6415a32d8fb9c17c0b51/USER
+
+No publication information available yet
+
+Warning: the max jobs runtime is less than 30% of the task requested value (480 min), please consider to request a lower value for failed jobs (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 1367MB min, 1386MB max, 1374MB ave
+ * Runtime: 0:21:24 min, 0:32:07 max, 0:26:16 ave
+ * CPU eff: 65% min, 73% max, 69% ave
+ * Waste: 0:19:24 (16% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24F_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset6/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24F_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset7
+Task name:			260325_201653:psajdak_crab_JpsiGEndMarch_resub_dset7
+Grid scheduler - Task Worker:	crab3@vocms0198.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260325_201653%3Apsajdak_crab_JpsiGEndMarch_resub_dset7
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260325_201653%3Apsajdak_crab_JpsiGEndMarch_resub_dset7&from=1774466214000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (8/8)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-ddd37812e85b013175541a3d9f817c5c/USER
+
+No publication information available yet
+
+Warning: the max jobs runtime is less than 30% of the task requested value (480 min), please consider to request a lower value for failed jobs (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 1299MB min, 1522MB max, 1392MB ave
+ * Runtime: 0:22:56 min, 0:41:54 max, 0:29:17 ave
+ * CPU eff: 81% min, 88% max, 84% ave
+ * Waste: 0:31:04 (12% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24F_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset7/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24G_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset0
+Task name:			260325_201715:psajdak_crab_JpsiGEndMarch_resub_dset0
+Grid scheduler - Task Worker:	crab3@vocms0106.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260325_201715%3Apsajdak_crab_JpsiGEndMarch_resub_dset0
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260325_201715%3Apsajdak_crab_JpsiGEndMarch_resub_dset0&from=1774466235000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (4/4)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-01e2cd61c866e6b8eca2526e7f33b7e4/USER
+
+No publication information available yet
+
+Warning: the max jobs runtime is less than 30% of the task requested value (480 min), please consider to request a lower value for failed jobs (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Warning: the average jobs CPU efficiency is less than 50%, please consider to improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task
+
+Summary of run jobs:
+ * Memory: 1461MB min, 1461MB max, 1444MB ave
+ * Runtime: 0:23:44 min, 0:42:22 max, 0:36:37 ave
+ * CPU eff: 23% min, 58% max, 46% ave
+ * Waste: 1:39:21 (40% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24G_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset0/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24G_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset1
+Task name:			260325_201737:psajdak_crab_JpsiGEndMarch_resub_dset1
+Grid scheduler - Task Worker:	crab3@vocms0155.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260325_201737%3Apsajdak_crab_JpsiGEndMarch_resub_dset1
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260325_201737%3Apsajdak_crab_JpsiGEndMarch_resub_dset1&from=1774466257000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (16/16)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-91116749505aa9ed3d6ac9c72db01a4c/USER
+
+No publication information available yet
+
+Warning: the max jobs runtime is less than 30% of the task requested value (480 min), please consider to request a lower value for failed jobs (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 1430MB min, 1526MB max, 1348MB ave
+ * Runtime: 0:12:52 min, 0:49:24 max, 0:29:57 ave
+ * CPU eff: 40% min, 91% max, 58% ave
+ * Waste: 3:21:40 (30% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24G_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset1/crab.log
+Error: 24G_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset2 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24G_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset3
+Task name:			260325_201807:psajdak_crab_JpsiGEndMarch_resub_dset3
+Grid scheduler - Task Worker:	crab3@vocms0120.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260325_201807%3Apsajdak_crab_JpsiGEndMarch_resub_dset3
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260325_201807%3Apsajdak_crab_JpsiGEndMarch_resub_dset3&from=1774466287000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (16/16)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-2e7601c9f9266233fa0f98652cf9e607/USER
+
+No publication information available yet
+
+Summary of run jobs:
+ * Memory: 0MB min, 1708MB max, 1287MB ave
+ * Runtime: 0:19:43 min, 3:33:09 max, 0:40:11 ave
+ * CPU eff: 12% min, 199% max, 61% ave
+ * Waste: 4:28:59 (29% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24G_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset3/crab.log
+Error: 24G_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset4 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24G_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset5
+Task name:			260325_201836:psajdak_crab_JpsiGEndMarch_resub_dset5
+Grid scheduler - Task Worker:	crab3@vocms0199.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260325_201836%3Apsajdak_crab_JpsiGEndMarch_resub_dset5
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260325_201836%3Apsajdak_crab_JpsiGEndMarch_resub_dset5&from=1774466316000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (8/8)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-08dcc2d1f59039624b7813c9e7f109ee/USER
+
+No publication information available yet
+
+Warning: the max jobs runtime is less than 30% of the task requested value (480 min), please consider to request a lower value for failed jobs (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 1505MB min, 1570MB max, 1499MB ave
+ * Runtime: 0:13:41 min, 0:39:06 max, 0:29:15 ave
+ * CPU eff: 78% min, 85% max, 83% ave
+ * Waste: 0:30:00 (11% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24G_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset5/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24G_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset6
+Task name:			260325_201901:psajdak_crab_JpsiGEndMarch_resub_dset6
+Grid scheduler - Task Worker:	crab3@vocms0120.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260325_201901%3Apsajdak_crab_JpsiGEndMarch_resub_dset6
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260325_201901%3Apsajdak_crab_JpsiGEndMarch_resub_dset6&from=1774466341000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (4/4)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-6d8abbcea09611eda48eb80a4064a8b0/USER
+
+No publication information available yet
+
+Warning: the max jobs runtime is less than 30% of the task requested value (480 min), please consider to request a lower value for failed jobs (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 1429MB min, 1541MB max, 1466MB ave
+ * Runtime: 0:31:06 min, 0:43:30 max, 0:38:13 ave
+ * CPU eff: 65% min, 80% max, 73% ave
+ * Waste: 0:06:39 (4% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24G_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset6/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24G_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset7
+Task name:			260325_201926:psajdak_crab_JpsiGEndMarch_resub_dset7
+Grid scheduler - Task Worker:	crab3@vocms0106.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260325_201926%3Apsajdak_crab_JpsiGEndMarch_resub_dset7
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260325_201926%3Apsajdak_crab_JpsiGEndMarch_resub_dset7&from=1774466366000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (4/4)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-99ed53cbbba4a3b521122aab486e0784/USER
+
+No publication information available yet
+
+Warning: the max jobs runtime is less than 30% of the task requested value (480 min), please consider to request a lower value for failed jobs (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 1413MB min, 1553MB max, 1092MB ave
+ * Runtime: 0:21:33 min, 0:54:48 max, 0:34:25 ave
+ * CPU eff: 48% min, 109% max, 79% ave
+ * Waste: 2:10:41 (49% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24G_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset7/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24H_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset0
+Task name:			260325_201949:psajdak_crab_JpsiGEndMarch_resub_dset0
+Grid scheduler - Task Worker:	crab3@vocms0144.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260325_201949%3Apsajdak_crab_JpsiGEndMarch_resub_dset0
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260325_201949%3Apsajdak_crab_JpsiGEndMarch_resub_dset0&from=1774466389000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (59/59)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-aa83700ddb5c49774742f79bccfd8662/USER
+
+No publication information available yet
+
+Warning: the max jobs runtime is less than 30% of the task requested value (480 min), please consider to request a lower value for failed jobs (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 1510MB min, 1510MB max, 1441MB ave
+ * Runtime: 0:12:38 min, 0:47:17 max, 0:26:28 ave
+ * CPU eff: 33% min, 86% max, 76% ave
+ * Waste: 2:58:18 (10% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/24H_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset0/crab.log
+Error: 24H_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset1 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Error: 24H_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset2 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Error: 24H_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset3 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Error: 24H_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset4 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Error: 24H_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset5 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Error: 24H_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset6 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+Error: 24H_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset7 is not a valid CRAB project directory.
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log

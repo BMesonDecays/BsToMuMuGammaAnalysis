@@ -33,9 +33,17 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_mc_FULL','')
 
 
-process.analiza= cms.EDAnalyzer("MidMarchJpsiG_MC",
+process.analiza= cms.EDAnalyzer("JpsiGEndMarch_MC",
   outHist = cms.string('BsToJpsiGammaMC.root'),
+  xgboost_models = cms.vstring(),
+  xgboost_variable_names = cms.vstring(),
 )
+
+xgboost_models = [('Run2022-20231030-1731-Event0', 'run3muonmva'),]
+for entry in xgboost_models:
+  process.analiza.xgboost_models.append(entry[0]),
+  process.analiza.xgboost_variable_names.append(entry[1])
+
 
 process.MyPath = cms.Path(process.analiza)
 

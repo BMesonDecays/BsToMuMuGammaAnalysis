@@ -1,9 +1,10 @@
 #!/usr/bin/bash
 
-tag='JpsiMassG_imp_resub'
+tag='JpsiGEndMarch'
 
-run='24G'
-
-for i in {0..7} ; do
-    crab report --dir ${run}_${tag}_BsToJpsiGamma/crab_${tag}_dset${i} --outputdir reports/${tag}/${run}_${i}
+for run in E I ; do
+    for i in {0..7} ; do
+        crab report --dir 24${run}_${tag}_BsToJpsiGamma/crab_${tag}vol1_dset${i} --outputdir reports/${tag}vol1/24${run}_${i}
+        crab report --dir 24${run}_${tag}_BsToJpsiGamma/crab_${tag}vol2_dset${i} --outputdir reports/${tag}vol2/24${run}_${i}
+    done
 done
