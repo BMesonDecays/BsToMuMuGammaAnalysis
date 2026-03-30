@@ -68,12 +68,17 @@ class KinematicConstrainedFit{
 		bool BsToJpsiPhiFit(
 			std::vector<reco::TransientTrack> t_tracks, const double muonMass, 
 			const  double mass1, const double  mass2);
+
 		bool TrippleObjectVertexFitConvertedPhoton(
-			std::vector<reco::TransientTrack> muonTT, const double muonMass, 
-			std::vector<reco::TransientTrack> electronTT, const double eleMass, bool verbose = true);
+			std::vector<reco::TransientTrack> muonTT, 
+			std::vector<reco::TransientTrack> electronTT,
+			ReferenceResonance::ResonanceDetails resonanceDetails,
+			reco::Vertex PV, bool verbose = true);
+
 		bool TetraObjectVertexFitConvertedPhoton(
 			std::vector<reco::TransientTrack> muonTT, const double muonMass, 
 			std::vector<reco::TransientTrack> electronTT, const double eleMass);
+
 		bool TrippleObjectVertexFitRecoPhoton(
 			std::vector<reco::TransientTrack> muonTT,
 			std::vector<reco::TransientTrack> photonTT,
@@ -83,6 +88,7 @@ class KinematicConstrainedFit{
 			reco::Vertex PV,
 			const MagneticField& field,
 			const TransientTrackBuilder& theB);
+			
 		bool TetraObjectVertexFitRecoPhoton(
 			std::vector<reco::TransientTrack> muonTT,
 			std::vector<reco::TransientTrack>photonTT,

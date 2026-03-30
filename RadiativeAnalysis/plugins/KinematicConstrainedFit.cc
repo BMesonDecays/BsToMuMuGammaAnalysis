@@ -133,10 +133,14 @@ bool KinematicConstrainedFit::BsToJpsiPhiFit(std::vector<reco::TransientTrack> t
 ////////////TripleObjectVertexConvertedPhoton///////////////
 ////////////////////////////////////////////////////////////
 bool KinematicConstrainedFit::TrippleObjectVertexFitConvertedPhoton(
-    const std::vector<reco::TransientTrack> muonTT, const double muonMass,
-    const std::vector<reco::TransientTrack> electronTT, const double eleMass, bool verbose)
+    const std::vector<reco::TransientTrack> muonTT,
+    const std::vector<reco::TransientTrack> electronTT,
+    ReferenceResonance::ResonanceDetails resonanceDetails,
+    reco::Vertex PV, bool verbose)
 {
     const ParticleMass zero_mass = 1e-4f; 
+     float eleMass = 0.000511;
+     float muonMass = 0.10565837;
      float zero_sigma = 1e-4f;
      float eleSigma = 1e-4f;
      float muonSigma = 1e-4f;
@@ -175,19 +179,46 @@ bool KinematicConstrainedFit::TrippleObjectVertexFitConvertedPhoton(
     std::cout << "Muon0 p converted photon case = " << muonTT[0].track().p() << "\n";
     std::cout << "Muon1 p converted photon case = " << muonTT[1].track().p() << "\n";
     // Combine with muons
-    std::vector<RefCountedKinematicParticle> allParticles = {
+    std::vector<RefCountedKinematicParticle> allParticlesGlobal = {
         pFactory.particle(muonTT[0], muonMass, chi, ndf, muonSigma),
         pFactory.particle(muonTT[1], muonMass, chi, ndf, muonSigma),
         fittedPhoton
     };
-    auto fullVertexFitTree = vertexFitter.fit(allParticles);
-    if (!fullVertexFitTree || !fullVertexFitTree->isValid()) {
+
+    // create the constraint
+    GlobalPoint vertexPosition(PV.x(), PV.y(), PV.z());
+    RefCountedKinematicTree vertexFitTreeGlobal;
+    if(resonanceDetails.resonanceFlag == ReferenceResonance::ResonanceFlag::None)
+    {
+        MultiTrackKinematicConstraint* multiPointingConstraint = new MultiTrackPointingKinematicConstraint(vertexPosition);
+        KinematicConstrainedVertexFitter constrainedFitter;
+        vertexFitTreeGlobal = constrainedFitter.fit(allParticlesGlobal, multiPointingConstraint);
+    }
+    else if(resonanceDetails.resonanceFlag == ReferenceResonance::ResonanceFlag::Jpsi
+            || resonanceDetails.resonanceFlag == ReferenceResonance::ResonanceFlag::Phi
+            || resonanceDetails.resonanceFlag == ReferenceResonance::ResonanceFlag::KStar
+    )
+    {
+        double nominalDimuonMass;
+        if(resonanceDetails.resonanceFlag == ReferenceResonance::ResonanceFlag::Jpsi) nominalDimuonMass = ReferenceResonance::Constants::JpsiMass_PDG;
+        else if(resonanceDetails.resonanceFlag == ReferenceResonance::ResonanceFlag::Phi) nominalDimuonMass = ReferenceResonance::Constants::PhiMass_PDG;
+        else if(resonanceDetails.resonanceFlag == ReferenceResonance::ResonanceFlag::KStar) nominalDimuonMass = ReferenceResonance::Constants::KStar0Mass_PDG;
+        
+        MultiTrackKinematicConstraint* massConstraint = new TwoTrackMassKinematicConstraint(nominalDimuonMass);
+        MultiTrackKinematicConstraint* multiPointingConstraint = new MultiTrackPointingKinematicConstraint(vertexPosition);
+        std::vector<MultiTrackKinematicConstraint*> constraints = {massConstraint, multiPointingConstraint};
+        MultiTrackKinematicConstraint* combinedConstraint = new CombinedKinematicConstraint(constraints);
+        KinematicConstrainedVertexFitter constrainedFitter;
+        vertexFitTreeGlobal = constrainedFitter.fit(allParticlesGlobal, combinedConstraint);
+    }
+
+    if (!vertexFitTreeGlobal || !vertexFitTreeGlobal->isValid()) {
         edm::LogInfo("TrippleObjectVertexFit") << "Full vertex fit with muons failed.";
         return false;
     }
-    fullVertexFitTree->movePointerToTheTop();
-    bhadron = fullVertexFitTree->currentParticle();
-    bVertex = fullVertexFitTree->currentDecayVertex();
+    vertexFitTreeGlobal->movePointerToTheTop();
+    bhadron = vertexFitTreeGlobal->currentParticle();
+    bVertex = vertexFitTreeGlobal->currentDecayVertex();
     if (!bVertex || !bVertex->vertexIsValid()) {
         edm::LogInfo("TrippleObjectVertexFit") << "B vertex is not valid.";
         return false;
