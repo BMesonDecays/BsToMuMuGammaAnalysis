@@ -2,20 +2,22 @@
 import ROOT as r
 import sys
 
-histname = "MChTwoMuonsPhotonMassCut4_hlt2"
+histname = "hcandBsMass"
 xmin = 4.8
 xmax = 6.2
 ##########################################
-histfilename = "hMassAfterComp.root"
+histfilename = "hMCcandBsMassCut6.root"
 histfile = r.TFile.Open(histfilename,"READ")
 histo = histfile.Get(histname)
 histo.SetDirectory(0)
 histfile.Close()
+histname = "hMCcandBsMassCut6Single"
 
 # Fitting function
-expression = "0.5*[0]*(exp((-(x-[1])**2)/(2*[2]**2))/([2]*TMath::Sqrt(2*TMath::Pi())) + exp((-(x-[1])**2)/(2*[3]**2))/([3]*TMath::Sqrt(2*TMath::Pi())))"
-fitFunc = r.TF1("fitFunc",expression,xmin,xmax,4)
-fitFunc.SetParameters(15.,5.43,0.1,0.1)
+#expression = "0.5*[0]*(exp((-(x-[1])**2)/(2*[2]**2))/([2]*TMath::Sqrt(2*TMath::Pi())) + exp((-(x-[1])**2)/(2*[3]**2))/([3]*TMath::Sqrt(2*TMath::Pi())))"
+expression = "[0]*(exp((-(x-[1])**2)/(2*[2]**2))/([2]*TMath::Sqrt(2*TMath::Pi())) )"
+fitFunc = r.TF1("fitFunc",expression,xmin,xmax,3)
+fitFunc.SetParameters(15.,5.43,0.1)
 
 results = histo.Fit(fitFunc,"ERSLB")
 

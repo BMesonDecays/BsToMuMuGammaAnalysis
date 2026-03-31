@@ -8,7 +8,7 @@ analysisTag = "JpsiGEndMarch_MC"
 tupleName = "tOut"
 
 # Prepare a directory for the output histograms
-dirPath = 'tupleProjections/'+analysisTag+'/cut_6bin'
+dirPath = 'tupleProjections/'+analysisTag+'/cut_6binSave'
 os.mkdir(dirPath)
 
 # Get the tuple
@@ -88,13 +88,14 @@ for bname in branchNames[:-1]:
 
 tupleFile.Close()
 
-'''
 # save selected histograms
-outFile = r.TFile("hMassAfterComp.root",'UPDATE')
-histoList[8].Write("MChTwoMuonsPhotonMassCut4_hlt2")
+outFile = r.TFile("hMCcandBsMassCut6.root",'UPDATE')
+histoList[10].Write()
 totalCut.Write()
 outFile.Close()
 '''
+'''
+
 
 # Draw histograms and save the images
 for histo in histoList:
