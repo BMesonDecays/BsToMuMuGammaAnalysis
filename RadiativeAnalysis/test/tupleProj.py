@@ -8,10 +8,10 @@ analysisTag = "JpsiGEndMarch"
 tupleName = "tOut"
 
 # Prepare a directory for the output histograms
-dirPath = 'tupleProjections/'+analysisTag+'/cut_7log'
+dirPath = 'tupleProjections/'+analysisTag+'/cut_6Save'
 os.mkdir(dirPath)
 
-logBool = 1
+logBool = 0
 
 # Get the tuple
 tupleFile = r.TFile("./outputData/24allBtoI_cut2_"+analysisTag+".root","READ")
@@ -32,7 +32,7 @@ cutList.append(r.TCut("maxMuonsVertexCompCut","maxMuonsVertexComp < 0.1"))
 #cutList.append(r.TCut("dR_photonFittedDimuonCut","dR_photonFittedDimuon < 0.4 && dR_photonFittedDimuon > 0.14"))
 cutList.append(r.TCut("fittedDimuonMassCut","TMath::Abs(fittedDimuonMass - 3.097) < 0.06"))
 cutList.append(r.TCut("lXY_fittedDimuon_bSpot_sigCut","lXY_fittedDimuon_bSpot_sig > 5.0"))
-cutList.append(r.TCut("lXY_fittedDimuon_bSpotCut","lXY_fittedDimuon_bSpot > 0.5"))
+#cutList.append(r.TCut("lXY_fittedDimuon_bSpotCut","lXY_fittedDimuon_bSpot > 0.5"))
 cutList.append(r.TCut("cosAngleBsBSpot2DCut","cosAngleBsBSpot2D > 0.99"))
 
 totalCut = r.TCut()
@@ -54,8 +54,8 @@ binInfo = {
     branchNames[6] : (100,-3.0,3.0),
     branchNames[7] : (100,0.,200.),
     branchNames[8] : (100,0.9,1.01),
-    branchNames[9] : (100,3.5,7.5),
-    branchNames[10] : (100,3.5,7.5),
+    branchNames[9] : (300,3.5,7.5),
+    branchNames[10] : (300,3.5,7.5),
     branchNames[11] : (100,0.98,1.0),
     branchNames[12] : (100,0.95,1.0),
     branchNames[13] : (100,0.,10.),
@@ -87,10 +87,11 @@ for bname in branchNames[:-2]:
 
 tupleFile.Close()
 
-'''
+#'''
 # save selected histograms
-outFile = r.TFile("hMassAfterCompR.root",'UPDATE')
-histoList[8].Write("hTwoMuonsphotonMassCut4")
+outFile = r.TFile("hCandBsMassCut6.root",'RECREATE')
+histoList[9].Write()
+histoList[10].Write()
 outFile.Close()
 '''
 
@@ -103,7 +104,7 @@ for histo in histoList:
     canvas.Print(dirPath+'/'+str(histo.GetName())+".pdf")
 
 
-'''
+
 # Copy the ntuple limited by the cuts
 outputFile = r.TFile("./outputData/"+datasetName+"_KalmanAnLevelCut.root","RECREATE")
 totalCut.Write()
