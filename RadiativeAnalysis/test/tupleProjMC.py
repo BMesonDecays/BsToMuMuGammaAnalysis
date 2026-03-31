@@ -8,7 +8,7 @@ analysisTag = "JpsiGEndMarch_MC"
 tupleName = "tOut"
 
 # Prepare a directory for the output histograms
-dirPath = 'tupleProjections/'+analysisTag+'/cut_t3'
+dirPath = 'tupleProjections/'+analysisTag+'/cut_6log'
 os.mkdir(dirPath)
 
 # Get the tuple
@@ -24,11 +24,17 @@ for branch in ntuple.GetListOfBranches():
 cutList = []
 
 cutList.append(r.TCut("muonIdCut","muon1Id > 0.7 && muon2Id > 0.7"))
-cutList.append(r.TCut("fittedDimuonVertexProbCut","fittedDimuonVertexProb > 0.1"))
+cutList.append(r.TCut("fittedDimuonVertexProbCut","fittedDimuonVertexProb > 0.2"))
 cutList.append(r.TCut("maxMuonsVertexCompCut","maxMuonsVertexComp < 0.1"))
 
+#cutList.append(r.TCut("dR_photonFittedDimuonCut","dR_photonFittedDimuon < 0.4 && dR_photonFittedDimuon > 0.14"))
+cutList.append(r.TCut("fittedDimuonMassCut","TMath::Abs(fittedDimuonMass - 3.097) < 0.06"))
+cutList.append(r.TCut("lXY_fittedDimuon_bSpot_sigCut","lXY_fittedDimuon_bSpot_sig > 5.0"))
+#cutList.append(r.TCut("lXY_fittedDimuon_bSpotCut","lXY_fittedDimuon_bSpot > 0.5"))
+cutList.append(r.TCut("cosAngleBsBSpot2DCut","cosAngleBsBSpot2D > 0.99"))
+
 # trigger cuts
-#cutList.append(r.TCut("trigger2Cut","hltRes % 1.E3 >= 1.E2"))
+cutList.append(r.TCut("trigger2Cut","triggerRes % 1.E3 >= 1.E2"))
 
 totalCut = r.TCut()
 for cut in cutList:
@@ -43,7 +49,7 @@ binInfo = {
     branchNames[0] : (100,0.0,1.0),
     branchNames[1] : (100,2.8,3.4),
     branchNames[2] : (100,0.,1.),
-    branchNames[3] : (100,0.,10.),
+    branchNames[3] : (100,0.,5.),
     branchNames[4] : (100,0.,150.),
     branchNames[5] : (100,0.,0.6),
     branchNames[6] : (100,-3.0,3.0),
@@ -51,12 +57,12 @@ binInfo = {
     branchNames[8] : (100,0.9,1.01),
     branchNames[9] : (100,3.5,7.5),
     branchNames[10] : (100,3.5,7.5),
-    branchNames[11] : (100,-1.0,1.0),
-    branchNames[12] : (100,-1.0,1.0),
+    branchNames[11] : (100,0.98,1.0),
+    branchNames[12] : (100,0.95,1.0),
     branchNames[13] : (100,0.,10.),
     branchNames[14] : (100,0.,10.),
-    branchNames[15] : (100,-1.0,1.0),
-    branchNames[16] : (100,-1.0,1.0),
+    branchNames[15] : (100,0.9,1.0),
+    branchNames[16] : (100,0.9,1.0),
     branchNames[17] : (100,0.,50.),
     branchNames[18] : (100,0.,50.),
     branchNames[19] : (100,0.,1.),
@@ -93,7 +99,7 @@ outFile.Close()
 # Draw histograms and save the images
 for histo in histoList:
     canvas = r.TCanvas("c"+str(histo.GetTitle()))
-    #canvas.SetLogy(1)
+    canvas.SetLogy(1)
     canvas.cd()
     histo.Draw()
     canvas.Print(dirPath+'/'+str(histo.GetName())+".pdf")
