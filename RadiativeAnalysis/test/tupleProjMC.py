@@ -8,7 +8,7 @@ analysisTag = "JpsiGEndMarch_MC"
 tupleName = "tOut"
 
 # Prepare a directory for the output histograms
-dirPath = 'tupleProjections/'+analysisTag+'/cut_6log'
+dirPath = 'tupleProjections/'+analysisTag+'/cut_6bin'
 os.mkdir(dirPath)
 
 # Get the tuple
@@ -55,8 +55,8 @@ binInfo = {
     branchNames[6] : (100,-3.0,3.0),
     branchNames[7] : (100,0.,200.),
     branchNames[8] : (100,0.9,1.01),
-    branchNames[9] : (100,3.5,7.5),
-    branchNames[10] : (100,3.5,7.5),
+    branchNames[9] : (80,4.5,6.5),
+    branchNames[10] : (80,4.5,6.5),
     branchNames[11] : (100,0.98,1.0),
     branchNames[12] : (100,0.95,1.0),
     branchNames[13] : (100,0.,10.),
@@ -99,7 +99,7 @@ outFile.Close()
 # Draw histograms and save the images
 for histo in histoList:
     canvas = r.TCanvas("c"+str(histo.GetTitle()))
-    canvas.SetLogy(1)
+    #canvas.SetLogy(1)
     canvas.cd()
     histo.Draw()
     canvas.Print(dirPath+'/'+str(histo.GetName())+".pdf")
