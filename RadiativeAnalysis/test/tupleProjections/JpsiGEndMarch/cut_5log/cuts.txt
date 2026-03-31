@@ -1,1 +1,1 @@
-((((((muon1Id > 0.7 && muon2Id > 0.7)&&(fittedDimuonVertexProb > 0.3))&&(maxMuonsVertexComp < 0.1))&&(dR_photonFittedDimuon < 0.4 && dR_photonFittedDimuon > 0.14))&&(TMath::Abs(fittedDimuonMass - 3.097) < 0.06))&&(lXY_fittedDimuon_bSpot_sig > 10.0))&&(cosAngleBsBSpot2D > 0.95)
+(((((muon1Id > 0.7 && muon2Id > 0.7)&&(fittedDimuonVertexProb > 0.2))&&(maxMuonsVertexComp < 0.1))&&(TMath::Abs(fittedDimuonMass - 3.097) < 0.06))&&(lXY_fittedDimuon_bSpot_sig > 5.0))&&(cosAngleBsBSpot2D > 0.9)
