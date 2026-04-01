@@ -8,7 +8,7 @@ analysisTag = "JpsiGEndMarch_MC"
 tupleName = "tOut"
 
 # Prepare a directory for the output histograms
-dirPath = 'tupleProjections/'+analysisTag+'/cut_6binSave'
+dirPath = 'tupleProjections/'+analysisTag+'/cut_0log'
 os.mkdir(dirPath)
 
 # Get the tuple
@@ -23,6 +23,7 @@ for branch in ntuple.GetListOfBranches():
 # Define the cuts
 cutList = []
 
+'''
 cutList.append(r.TCut("muonIdCut","muon1Id > 0.7 && muon2Id > 0.7"))
 cutList.append(r.TCut("fittedDimuonVertexProbCut","fittedDimuonVertexProb > 0.2"))
 cutList.append(r.TCut("maxMuonsVertexCompCut","maxMuonsVertexComp < 0.1"))
@@ -35,7 +36,7 @@ cutList.append(r.TCut("cosAngleBsBSpot2DCut","cosAngleBsBSpot2D > 0.99"))
 
 # trigger cuts
 cutList.append(r.TCut("trigger2Cut","triggerRes % 1.E3 >= 1.E2"))
-
+'''
 totalCut = r.TCut()
 for cut in cutList:
     totalCut += cut
@@ -57,8 +58,8 @@ binInfo = {
     branchNames[8] : (100,0.9,1.01),
     branchNames[9] : (80,4.5,6.5),
     branchNames[10] : (80,4.5,6.5),
-    branchNames[11] : (100,0.98,1.0),
-    branchNames[12] : (100,0.95,1.0),
+    branchNames[11] : (100,-1.0,1.0),
+    branchNames[12] : (100,-1.0,1.0),
     branchNames[13] : (100,0.,10.),
     branchNames[14] : (100,0.,10.),
     branchNames[15] : (100,0.9,1.0),
@@ -100,7 +101,7 @@ outFile.Close()
 # Draw histograms and save the images
 for histo in histoList:
     canvas = r.TCanvas("c"+str(histo.GetTitle()))
-    #canvas.SetLogy(1)
+    canvas.SetLogy(1)
     canvas.cd()
     histo.Draw()
     canvas.Print(dirPath+'/'+str(histo.GetName())+".pdf")
