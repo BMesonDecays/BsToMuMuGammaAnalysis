@@ -6540,3 +6540,1004 @@ Traceback (most recent call last):
     raise ConfigurationException(msg)
 CRABClient.ClientExceptions.ConfigurationException: Error: 24H_JpsiGEndMarch_resub_BsToJpsiGamma/crab_JpsiGEndMarch_resub_dset7 is not a valid CRAB project directory.
 INFO 2026-03-26 10:53:21.642 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-04-02 20:49:20.635 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-02 20:49:20.635 UTC: 	 Running on: Linux lxplus993.cern.ch 5.14.0-611.24.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sat Jan 10 05:12:47 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-02 20:49:20.635 UTC: 	 Not using Singularity
+DEBUG 2026-04-02 20:49:20.635 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-02 20:49:20.635 UTC: 	 Executing command: 'submit'
+DEBUG 2026-04-02 20:49:20.635 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+INFO 2026-04-02 20:49:20.637 UTC: 	 Will use CRAB configuration file crabConfigData.py
+DEBUG 2026-04-02 20:49:20.637 UTC: 	 Loading CRAB configuration file.
+DEBUG 2026-04-02 20:49:20.644 UTC: 	 Overriden parameter General.requestName with 'JpsiGStartApril_dset0_vol1'
+DEBUG 2026-04-02 20:49:20.644 UTC: 	 Overriden parameter General.workArea with '23D_JpsiGStartApril_BsToJpsiGamma'
+DEBUG 2026-04-02 20:49:20.644 UTC: 	 Overriden parameter Data.outputDatasetTag with '23D_JpsiGStartApril_BsToJpsiGamma'
+DEBUG 2026-04-02 20:49:20.644 UTC: 	 Overriden parameter Data.inputDataset with '/ParkingDoubleMuonLowMass0/Run2023D-PromptReco-v1/MINIAOD'
+DEBUG 2026-04-02 20:49:20.644 UTC: 	 Overriden parameter Data.lumiMask with '/eos/user/c/cmsdqm/www/CAF/certification/Collisions23/PromptReco/Cert_Collisions2023_eraD_369803_370790_Golden.json'
+DEBUG 2026-04-02 20:49:20.644 UTC: 	 Overriden parameter Data.unitsPerJob with 200
+DEBUG 2026-04-02 20:49:20.644 UTC: 	 Overriden parameter JobType.maxJobRuntimeMin with 480
+DEBUG 2026-04-02 20:49:20.644 UTC: 	 Will use CRAB plugin ANALYSIS (i.e. will run an analysis job type).
+ERROR 2026-04-02 20:49:20.645 UTC: 	 Working area '/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23D_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset0_vol1' already exists 
+Please change the requestName in the config file
+ERROR 2026-04-02 20:49:20.645 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/submit.py", line 37, in __init__
+    SubCommand.__init__(self, logger, cmdargs, disable_interspersed_args=True)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 328, in __init__
+    self.requestarea, self.requestname, self.logfile = createWorkArea(
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/ClientUtilities.py", line 392, in createWorkArea
+    raise ConfigException("Working area '%s' already exists \nPlease change the requestName in the config file" % fullpath)
+CRABClient.ClientExceptions.ConfigException: Working area '/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23D_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset0_vol1' already exists 
+Please change the requestName in the config file
+INFO 2026-04-02 20:49:20.652 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-04-02 20:49:22.586 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-02 20:49:22.586 UTC: 	 Running on: Linux lxplus993.cern.ch 5.14.0-611.24.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sat Jan 10 05:12:47 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-02 20:49:22.586 UTC: 	 Not using Singularity
+DEBUG 2026-04-02 20:49:22.586 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-02 20:49:22.586 UTC: 	 Executing command: 'submit'
+DEBUG 2026-04-02 20:49:22.586 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+INFO 2026-04-02 20:49:22.587 UTC: 	 Will use CRAB configuration file crabConfigData.py
+DEBUG 2026-04-02 20:49:22.587 UTC: 	 Loading CRAB configuration file.
+DEBUG 2026-04-02 20:49:22.590 UTC: 	 Overriden parameter General.requestName with 'JpsiGStartApril_dset0_vol2'
+DEBUG 2026-04-02 20:49:22.590 UTC: 	 Overriden parameter General.workArea with '23D_JpsiGStartApril_BsToJpsiGamma'
+DEBUG 2026-04-02 20:49:22.590 UTC: 	 Overriden parameter Data.outputDatasetTag with '23D_JpsiGStartApril_BsToJpsiGamma'
+DEBUG 2026-04-02 20:49:22.590 UTC: 	 Overriden parameter Data.inputDataset with '/ParkingDoubleMuonLowMass0/Run2023D-PromptReco-v2/MINIAOD'
+DEBUG 2026-04-02 20:49:22.590 UTC: 	 Overriden parameter Data.lumiMask with '/eos/user/c/cmsdqm/www/CAF/certification/Collisions23/PromptReco/Cert_Collisions2023_eraD_369803_370790_Golden.json'
+DEBUG 2026-04-02 20:49:22.590 UTC: 	 Overriden parameter Data.unitsPerJob with 200
+DEBUG 2026-04-02 20:49:22.590 UTC: 	 Overriden parameter JobType.maxJobRuntimeMin with 480
+DEBUG 2026-04-02 20:49:22.590 UTC: 	 Will use CRAB plugin ANALYSIS (i.e. will run an analysis job type).
+ERROR 2026-04-02 20:49:22.591 UTC: 	 Working area '/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23D_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset0_vol2' already exists 
+Please change the requestName in the config file
+ERROR 2026-04-02 20:49:22.591 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/submit.py", line 37, in __init__
+    SubCommand.__init__(self, logger, cmdargs, disable_interspersed_args=True)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 328, in __init__
+    self.requestarea, self.requestname, self.logfile = createWorkArea(
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/ClientUtilities.py", line 392, in createWorkArea
+    raise ConfigException("Working area '%s' already exists \nPlease change the requestName in the config file" % fullpath)
+CRABClient.ClientExceptions.ConfigException: Working area '/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23D_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset0_vol2' already exists 
+Please change the requestName in the config file
+INFO 2026-04-02 20:49:22.596 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-04-02 20:49:24.599 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-02 20:49:24.599 UTC: 	 Running on: Linux lxplus993.cern.ch 5.14.0-611.24.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sat Jan 10 05:12:47 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-02 20:49:24.599 UTC: 	 Not using Singularity
+DEBUG 2026-04-02 20:49:24.599 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-02 20:49:24.599 UTC: 	 Executing command: 'submit'
+DEBUG 2026-04-02 20:49:24.599 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+INFO 2026-04-02 20:49:24.600 UTC: 	 Will use CRAB configuration file crabConfigData.py
+DEBUG 2026-04-02 20:49:24.600 UTC: 	 Loading CRAB configuration file.
+DEBUG 2026-04-02 20:49:24.606 UTC: 	 Overriden parameter General.requestName with 'JpsiGStartApril_dset1_vol1'
+DEBUG 2026-04-02 20:49:24.606 UTC: 	 Overriden parameter General.workArea with '23D_JpsiGStartApril_BsToJpsiGamma'
+DEBUG 2026-04-02 20:49:24.606 UTC: 	 Overriden parameter Data.outputDatasetTag with '23D_JpsiGStartApril_BsToJpsiGamma'
+DEBUG 2026-04-02 20:49:24.606 UTC: 	 Overriden parameter Data.inputDataset with '/ParkingDoubleMuonLowMass1/Run2023D-PromptReco-v1/MINIAOD'
+DEBUG 2026-04-02 20:49:24.606 UTC: 	 Overriden parameter Data.lumiMask with '/eos/user/c/cmsdqm/www/CAF/certification/Collisions23/PromptReco/Cert_Collisions2023_eraD_369803_370790_Golden.json'
+DEBUG 2026-04-02 20:49:24.606 UTC: 	 Overriden parameter Data.unitsPerJob with 200
+DEBUG 2026-04-02 20:49:24.606 UTC: 	 Overriden parameter JobType.maxJobRuntimeMin with 480
+DEBUG 2026-04-02 20:49:24.607 UTC: 	 Will use CRAB plugin ANALYSIS (i.e. will run an analysis job type).
+ERROR 2026-04-02 20:49:24.607 UTC: 	 Working area '/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23D_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset1_vol1' already exists 
+Please change the requestName in the config file
+ERROR 2026-04-02 20:49:24.607 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/submit.py", line 37, in __init__
+    SubCommand.__init__(self, logger, cmdargs, disable_interspersed_args=True)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 328, in __init__
+    self.requestarea, self.requestname, self.logfile = createWorkArea(
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/ClientUtilities.py", line 392, in createWorkArea
+    raise ConfigException("Working area '%s' already exists \nPlease change the requestName in the config file" % fullpath)
+CRABClient.ClientExceptions.ConfigException: Working area '/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23D_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset1_vol1' already exists 
+Please change the requestName in the config file
+INFO 2026-04-02 20:49:24.614 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-04-02 20:50:15.297 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-02 20:50:15.298 UTC: 	 Running on: Linux lxplus993.cern.ch 5.14.0-611.24.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sat Jan 10 05:12:47 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-02 20:50:15.298 UTC: 	 Not using Singularity
+DEBUG 2026-04-02 20:50:15.298 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-02 20:50:15.298 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-02 20:50:15.298 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-04-02 20:50:15.299 UTC: 	 Error: 23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset0_vol0 is not a valid CRAB project directory.
+ERROR 2026-04-02 20:50:15.299 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset0_vol0 is not a valid CRAB project directory.
+INFO 2026-04-02 20:50:15.302 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-04-02 20:50:34.877 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-02 20:50:34.877 UTC: 	 Running on: Linux lxplus993.cern.ch 5.14.0-611.24.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sat Jan 10 05:12:47 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-02 20:50:34.877 UTC: 	 Not using Singularity
+DEBUG 2026-04-02 20:50:34.877 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-02 20:50:34.877 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-02 20:50:34.877 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-04-02 20:50:34.878 UTC: 	 Error: 23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset1_vol0 is not a valid CRAB project directory.
+ERROR 2026-04-02 20:50:34.878 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset1_vol0 is not a valid CRAB project directory.
+INFO 2026-04-02 20:50:34.883 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-04-02 20:50:55.751 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-02 20:50:55.751 UTC: 	 Running on: Linux lxplus993.cern.ch 5.14.0-611.24.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sat Jan 10 05:12:47 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-02 20:50:55.751 UTC: 	 Not using Singularity
+DEBUG 2026-04-02 20:50:55.751 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-02 20:50:55.751 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-02 20:50:55.751 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-04-02 20:50:55.752 UTC: 	 Error: 23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset2_vol0 is not a valid CRAB project directory.
+ERROR 2026-04-02 20:50:55.753 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset2_vol0 is not a valid CRAB project directory.
+INFO 2026-04-02 20:50:55.758 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-04-02 20:51:15.446 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-02 20:51:15.447 UTC: 	 Running on: Linux lxplus993.cern.ch 5.14.0-611.24.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sat Jan 10 05:12:47 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-02 20:51:15.447 UTC: 	 Not using Singularity
+DEBUG 2026-04-02 20:51:15.447 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-02 20:51:15.447 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-02 20:51:15.447 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-04-02 20:51:15.448 UTC: 	 Error: 23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset3_vol0 is not a valid CRAB project directory.
+ERROR 2026-04-02 20:51:15.448 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset3_vol0 is not a valid CRAB project directory.
+INFO 2026-04-02 20:51:15.453 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-04-02 20:51:34.800 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-02 20:51:34.800 UTC: 	 Running on: Linux lxplus993.cern.ch 5.14.0-611.24.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sat Jan 10 05:12:47 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-02 20:51:34.800 UTC: 	 Not using Singularity
+DEBUG 2026-04-02 20:51:34.800 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-02 20:51:34.800 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-02 20:51:34.800 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-04-02 20:51:34.801 UTC: 	 Error: 23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset4_vol0 is not a valid CRAB project directory.
+ERROR 2026-04-02 20:51:34.802 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset4_vol0 is not a valid CRAB project directory.
+INFO 2026-04-02 20:51:34.812 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-04-02 20:51:54.436 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-02 20:51:54.436 UTC: 	 Running on: Linux lxplus993.cern.ch 5.14.0-611.24.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sat Jan 10 05:12:47 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-02 20:51:54.436 UTC: 	 Not using Singularity
+DEBUG 2026-04-02 20:51:54.436 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-02 20:51:54.436 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-02 20:51:54.437 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-04-02 20:51:54.437 UTC: 	 Error: 23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset5_vol0 is not a valid CRAB project directory.
+ERROR 2026-04-02 20:51:54.438 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset5_vol0 is not a valid CRAB project directory.
+INFO 2026-04-02 20:51:54.443 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-04-02 20:52:14.199 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-02 20:52:14.199 UTC: 	 Running on: Linux lxplus993.cern.ch 5.14.0-611.24.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sat Jan 10 05:12:47 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-02 20:52:14.199 UTC: 	 Not using Singularity
+DEBUG 2026-04-02 20:52:14.199 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-02 20:52:14.199 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-02 20:52:14.199 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-04-02 20:52:14.200 UTC: 	 Error: 23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset6_vol0 is not a valid CRAB project directory.
+ERROR 2026-04-02 20:52:14.201 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset6_vol0 is not a valid CRAB project directory.
+INFO 2026-04-02 20:52:14.206 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-04-02 20:52:33.083 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-02 20:52:33.083 UTC: 	 Running on: Linux lxplus993.cern.ch 5.14.0-611.24.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sat Jan 10 05:12:47 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-02 20:52:33.083 UTC: 	 Not using Singularity
+DEBUG 2026-04-02 20:52:33.083 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-02 20:52:33.083 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-02 20:52:33.084 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-04-02 20:52:33.084 UTC: 	 Error: 23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset7_vol0 is not a valid CRAB project directory.
+ERROR 2026-04-02 20:52:33.085 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset7_vol0 is not a valid CRAB project directory.
+INFO 2026-04-02 20:52:33.089 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-04-02 21:09:12.856 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-02 21:09:12.856 UTC: 	 Running on: Linux lxplus993.cern.ch 5.14.0-611.24.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sat Jan 10 05:12:47 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-02 21:09:12.856 UTC: 	 Not using Singularity
+DEBUG 2026-04-02 21:09:12.856 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-02 21:09:12.856 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-02 21:09:12.856 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-04-02 21:09:12.858 UTC: 	 Error: 23B_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset0_vol0 is not a valid CRAB project directory.
+ERROR 2026-04-02 21:09:12.859 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 23B_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset0_vol0 is not a valid CRAB project directory.
+INFO 2026-04-02 21:09:12.862 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-04-02 21:09:15.122 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-02 21:09:15.123 UTC: 	 Running on: Linux lxplus993.cern.ch 5.14.0-611.24.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sat Jan 10 05:12:47 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-02 21:09:15.123 UTC: 	 Not using Singularity
+DEBUG 2026-04-02 21:09:15.123 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-02 21:09:15.123 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-02 21:09:15.123 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-04-02 21:09:15.125 UTC: 	 Error: 23B_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset1_vol0 is not a valid CRAB project directory.
+ERROR 2026-04-02 21:09:15.125 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 23B_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset1_vol0 is not a valid CRAB project directory.
+INFO 2026-04-02 21:09:15.129 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-04-02 21:09:17.247 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-02 21:09:17.248 UTC: 	 Running on: Linux lxplus993.cern.ch 5.14.0-611.24.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sat Jan 10 05:12:47 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-02 21:09:17.248 UTC: 	 Not using Singularity
+DEBUG 2026-04-02 21:09:17.248 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-02 21:09:17.248 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-02 21:09:17.248 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-04-02 21:09:17.250 UTC: 	 Error: 23B_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset2_vol0 is not a valid CRAB project directory.
+ERROR 2026-04-02 21:09:17.250 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 23B_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset2_vol0 is not a valid CRAB project directory.
+INFO 2026-04-02 21:09:17.254 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-04-02 21:09:19.297 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-02 21:09:19.297 UTC: 	 Running on: Linux lxplus993.cern.ch 5.14.0-611.24.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sat Jan 10 05:12:47 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-02 21:09:19.297 UTC: 	 Not using Singularity
+DEBUG 2026-04-02 21:09:19.297 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-02 21:09:19.297 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-02 21:09:19.297 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-04-02 21:09:19.299 UTC: 	 Error: 23B_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset3_vol0 is not a valid CRAB project directory.
+ERROR 2026-04-02 21:09:19.299 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 23B_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset3_vol0 is not a valid CRAB project directory.
+INFO 2026-04-02 21:09:19.304 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-04-02 21:09:21.145 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-02 21:09:21.146 UTC: 	 Running on: Linux lxplus993.cern.ch 5.14.0-611.24.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sat Jan 10 05:12:47 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-02 21:09:21.146 UTC: 	 Not using Singularity
+DEBUG 2026-04-02 21:09:21.146 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-02 21:09:21.146 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-02 21:09:21.146 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-04-02 21:09:21.148 UTC: 	 Error: 23B_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset4_vol0 is not a valid CRAB project directory.
+ERROR 2026-04-02 21:09:21.148 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 23B_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset4_vol0 is not a valid CRAB project directory.
+INFO 2026-04-02 21:09:21.153 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-04-02 21:09:23.051 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-02 21:09:23.051 UTC: 	 Running on: Linux lxplus993.cern.ch 5.14.0-611.24.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sat Jan 10 05:12:47 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-02 21:09:23.051 UTC: 	 Not using Singularity
+DEBUG 2026-04-02 21:09:23.051 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-02 21:09:23.051 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-02 21:09:23.051 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-04-02 21:09:23.053 UTC: 	 Error: 23B_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset5_vol0 is not a valid CRAB project directory.
+ERROR 2026-04-02 21:09:23.054 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 23B_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset5_vol0 is not a valid CRAB project directory.
+INFO 2026-04-02 21:09:23.059 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-04-02 21:09:24.902 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-02 21:09:24.902 UTC: 	 Running on: Linux lxplus993.cern.ch 5.14.0-611.24.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sat Jan 10 05:12:47 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-02 21:09:24.902 UTC: 	 Not using Singularity
+DEBUG 2026-04-02 21:09:24.902 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-02 21:09:24.902 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-02 21:09:24.902 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-04-02 21:09:24.905 UTC: 	 Error: 23B_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset6_vol0 is not a valid CRAB project directory.
+ERROR 2026-04-02 21:09:24.905 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 23B_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset6_vol0 is not a valid CRAB project directory.
+INFO 2026-04-02 21:09:24.910 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-04-02 21:13:16.171 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-02 21:13:16.172 UTC: 	 Running on: Linux lxplus993.cern.ch 5.14.0-611.24.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sat Jan 10 05:12:47 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-02 21:13:16.172 UTC: 	 Not using Singularity
+DEBUG 2026-04-02 21:13:16.172 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-02 21:13:16.172 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-02 21:13:16.172 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-04-02 21:13:16.178 UTC: 	 Error: 23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset0_vol0 is not a valid CRAB project directory.
+ERROR 2026-04-02 21:13:16.178 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset0_vol0 is not a valid CRAB project directory.
+INFO 2026-04-02 21:13:16.183 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-04-02 21:13:34.895 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-02 21:13:34.895 UTC: 	 Running on: Linux lxplus993.cern.ch 5.14.0-611.24.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sat Jan 10 05:12:47 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-02 21:13:34.895 UTC: 	 Not using Singularity
+DEBUG 2026-04-02 21:13:34.895 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-02 21:13:34.895 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-02 21:13:34.895 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-04-02 21:13:34.897 UTC: 	 Error: 23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset1_vol0 is not a valid CRAB project directory.
+ERROR 2026-04-02 21:13:34.897 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset1_vol0 is not a valid CRAB project directory.
+INFO 2026-04-02 21:13:34.902 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-04-02 21:13:51.196 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-02 21:13:51.197 UTC: 	 Running on: Linux lxplus993.cern.ch 5.14.0-611.24.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sat Jan 10 05:12:47 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-02 21:13:51.197 UTC: 	 Not using Singularity
+DEBUG 2026-04-02 21:13:51.197 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-02 21:13:51.197 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-02 21:13:51.197 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-04-02 21:13:51.199 UTC: 	 Error: 23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset2_vol0 is not a valid CRAB project directory.
+ERROR 2026-04-02 21:13:51.199 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset2_vol0 is not a valid CRAB project directory.
+INFO 2026-04-02 21:13:51.203 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-04-03 19:03:46.741 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-03 19:03:46.741 UTC: 	 Running on: Linux lxplus993.cern.ch 5.14.0-611.24.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sat Jan 10 05:12:47 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-03 19:03:46.741 UTC: 	 Not using Singularity
+DEBUG 2026-04-03 19:03:46.741 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-03 19:03:46.741 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-03 19:03:46.742 UTC: 	 Could not find CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3; creating a new one.
+ERROR 2026-04-03 19:03:46.748 UTC: 	 Unhandled Exception!
+ERROR 2026-04-03 19:03:46.749 UTC: 	 [Errno 13] Permission denied: '/afs/cern.ch/user/p/psajdak/.crab3.2470499'
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 264, in __init__
+    self.crab3dic = self.getConfiDict()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 571, in getConfiDict
+    with open(crabCacheFileName_tmp, 'w') as fd:
+PermissionError: [Errno 13] Permission denied: '/afs/cern.ch/user/p/psajdak/.crab3.2470499'
+ERROR 2026-04-03 19:03:46.752 UTC: 	 ERROR: PermissionError: [Errno 13] Permission denied: '/afs/cern.ch/user/p/psajdak/.crab3.2470499'
+ERROR 2026-04-03 19:03:46.761 UTC: 	 
+ Look for more details in crab.log file /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+ERROR 2026-04-03 19:03:46.762 UTC: 	   If you can't figure out the problem, please send email to
+ERROR 2026-04-03 19:03:46.763 UTC: 	 	cmstalk+computing-tools@dovecotmta.cern.ch with the crab.log file or crab.log URL.
+ERROR 2026-04-03 19:03:46.764 UTC: 	   Please use 'crab uploadlog' to upload the log file /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log to the CRAB cache.
+DEBUG 2026-04-03 19:03:49.332 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-03 19:03:49.332 UTC: 	 Running on: Linux lxplus993.cern.ch 5.14.0-611.24.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sat Jan 10 05:12:47 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-03 19:03:49.332 UTC: 	 Not using Singularity
+DEBUG 2026-04-03 19:03:49.332 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-03 19:03:49.332 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-03 19:03:49.333 UTC: 	 Could not find CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3; creating a new one.
+ERROR 2026-04-03 19:03:49.346 UTC: 	 Unhandled Exception!
+ERROR 2026-04-03 19:03:49.346 UTC: 	 [Errno 13] Permission denied: '/afs/cern.ch/user/p/psajdak/.crab3.2473988'
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 264, in __init__
+    self.crab3dic = self.getConfiDict()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 571, in getConfiDict
+    with open(crabCacheFileName_tmp, 'w') as fd:
+PermissionError: [Errno 13] Permission denied: '/afs/cern.ch/user/p/psajdak/.crab3.2473988'
+ERROR 2026-04-03 19:03:49.348 UTC: 	 ERROR: PermissionError: [Errno 13] Permission denied: '/afs/cern.ch/user/p/psajdak/.crab3.2473988'
+ERROR 2026-04-03 19:03:49.348 UTC: 	 
+ Look for more details in crab.log file /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+ERROR 2026-04-03 19:03:49.349 UTC: 	   If you can't figure out the problem, please send email to
+ERROR 2026-04-03 19:03:49.349 UTC: 	 	cmstalk+computing-tools@dovecotmta.cern.ch with the crab.log file or crab.log URL.
+ERROR 2026-04-03 19:03:49.349 UTC: 	   Please use 'crab uploadlog' to upload the log file /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log to the CRAB cache.
+DEBUG 2026-04-03 19:03:51.379 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-03 19:03:51.379 UTC: 	 Running on: Linux lxplus993.cern.ch 5.14.0-611.24.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sat Jan 10 05:12:47 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-03 19:03:51.379 UTC: 	 Not using Singularity
+DEBUG 2026-04-03 19:03:51.379 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-03 19:03:51.380 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-03 19:03:51.380 UTC: 	 Could not find CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3; creating a new one.
+ERROR 2026-04-03 19:03:51.394 UTC: 	 Unhandled Exception!
+ERROR 2026-04-03 19:03:51.394 UTC: 	 [Errno 13] Permission denied: '/afs/cern.ch/user/p/psajdak/.crab3.2475429'
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 264, in __init__
+    self.crab3dic = self.getConfiDict()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 571, in getConfiDict
+    with open(crabCacheFileName_tmp, 'w') as fd:
+PermissionError: [Errno 13] Permission denied: '/afs/cern.ch/user/p/psajdak/.crab3.2475429'
+ERROR 2026-04-03 19:03:51.395 UTC: 	 ERROR: PermissionError: [Errno 13] Permission denied: '/afs/cern.ch/user/p/psajdak/.crab3.2475429'
+ERROR 2026-04-03 19:03:51.396 UTC: 	 
+ Look for more details in crab.log file /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+ERROR 2026-04-03 19:03:51.396 UTC: 	   If you can't figure out the problem, please send email to
+ERROR 2026-04-03 19:03:51.401 UTC: 	 	cmstalk+computing-tools@dovecotmta.cern.ch with the crab.log file or crab.log URL.
+ERROR 2026-04-03 19:03:51.403 UTC: 	   Please use 'crab uploadlog' to upload the log file /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log to the CRAB cache.
+DEBUG 2026-04-03 19:03:59.435 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-03 19:03:59.435 UTC: 	 Running on: Linux lxplus993.cern.ch 5.14.0-611.24.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sat Jan 10 05:12:47 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-03 19:03:59.435 UTC: 	 Not using Singularity
+DEBUG 2026-04-03 19:03:59.435 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-03 19:03:59.435 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-03 19:04:02.436 UTC: 	 Could not find CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3; creating a new one.
+ERROR 2026-04-03 19:04:02.443 UTC: 	 Unhandled Exception!
+ERROR 2026-04-03 19:04:02.443 UTC: 	 [Errno 13] Permission denied: '/afs/cern.ch/user/p/psajdak/.crab3.2475501'
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 264, in __init__
+    self.crab3dic = self.getConfiDict()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 571, in getConfiDict
+    with open(crabCacheFileName_tmp, 'w') as fd:
+PermissionError: [Errno 13] Permission denied: '/afs/cern.ch/user/p/psajdak/.crab3.2475501'
+ERROR 2026-04-03 19:04:02.446 UTC: 	 ERROR: PermissionError: [Errno 13] Permission denied: '/afs/cern.ch/user/p/psajdak/.crab3.2475501'
+ERROR 2026-04-03 19:04:02.447 UTC: 	 
+ Look for more details in crab.log file /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+ERROR 2026-04-03 19:04:02.448 UTC: 	   If you can't figure out the problem, please send email to
+ERROR 2026-04-03 19:04:02.449 UTC: 	 	cmstalk+computing-tools@dovecotmta.cern.ch with the crab.log file or crab.log URL.
+ERROR 2026-04-03 19:04:02.449 UTC: 	   Please use 'crab uploadlog' to upload the log file /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log to the CRAB cache.
+DEBUG 2026-04-03 19:04:10.495 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-03 19:04:10.495 UTC: 	 Running on: Linux lxplus993.cern.ch 5.14.0-611.24.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sat Jan 10 05:12:47 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-03 19:04:10.495 UTC: 	 Not using Singularity
+DEBUG 2026-04-03 19:04:10.495 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-03 19:04:10.495 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-03 19:04:13.496 UTC: 	 Could not find CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3; creating a new one.
+ERROR 2026-04-03 19:04:13.502 UTC: 	 Unhandled Exception!
+ERROR 2026-04-03 19:04:13.502 UTC: 	 [Errno 13] Permission denied: '/afs/cern.ch/user/p/psajdak/.crab3.2475611'
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 264, in __init__
+    self.crab3dic = self.getConfiDict()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 571, in getConfiDict
+    with open(crabCacheFileName_tmp, 'w') as fd:
+PermissionError: [Errno 13] Permission denied: '/afs/cern.ch/user/p/psajdak/.crab3.2475611'
+ERROR 2026-04-03 19:04:13.504 UTC: 	 ERROR: PermissionError: [Errno 13] Permission denied: '/afs/cern.ch/user/p/psajdak/.crab3.2475611'
+ERROR 2026-04-03 19:04:13.507 UTC: 	 
+ Look for more details in crab.log file /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+ERROR 2026-04-03 19:04:13.508 UTC: 	   If you can't figure out the problem, please send email to
+ERROR 2026-04-03 19:04:13.509 UTC: 	 	cmstalk+computing-tools@dovecotmta.cern.ch with the crab.log file or crab.log URL.
+ERROR 2026-04-03 19:04:13.509 UTC: 	   Please use 'crab uploadlog' to upload the log file /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log to the CRAB cache.
+DEBUG 2026-04-03 19:04:21.529 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-03 19:04:21.530 UTC: 	 Running on: Linux lxplus993.cern.ch 5.14.0-611.24.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sat Jan 10 05:12:47 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-03 19:04:21.530 UTC: 	 Not using Singularity
+DEBUG 2026-04-03 19:04:21.530 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-03 19:04:21.530 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-03 19:04:24.531 UTC: 	 Could not find CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3; creating a new one.
+ERROR 2026-04-03 19:04:24.536 UTC: 	 Unhandled Exception!
+ERROR 2026-04-03 19:04:24.536 UTC: 	 [Errno 13] Permission denied: '/afs/cern.ch/user/p/psajdak/.crab3.2475727'
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 264, in __init__
+    self.crab3dic = self.getConfiDict()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 571, in getConfiDict
+    with open(crabCacheFileName_tmp, 'w') as fd:
+PermissionError: [Errno 13] Permission denied: '/afs/cern.ch/user/p/psajdak/.crab3.2475727'
+ERROR 2026-04-03 19:04:24.538 UTC: 	 ERROR: PermissionError: [Errno 13] Permission denied: '/afs/cern.ch/user/p/psajdak/.crab3.2475727'
+ERROR 2026-04-03 19:04:24.540 UTC: 	 
+ Look for more details in crab.log file /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+ERROR 2026-04-03 19:04:24.541 UTC: 	   If you can't figure out the problem, please send email to
+ERROR 2026-04-03 19:04:24.541 UTC: 	 	cmstalk+computing-tools@dovecotmta.cern.ch with the crab.log file or crab.log URL.
+ERROR 2026-04-03 19:04:24.542 UTC: 	   Please use 'crab uploadlog' to upload the log file /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log to the CRAB cache.
+DEBUG 2026-04-03 19:04:32.543 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-03 19:04:32.544 UTC: 	 Running on: Linux lxplus993.cern.ch 5.14.0-611.24.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Sat Jan 10 05:12:47 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-03 19:04:32.544 UTC: 	 Not using Singularity
+DEBUG 2026-04-03 19:04:32.544 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-03 19:04:32.544 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-03 19:04:35.545 UTC: 	 Could not find CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3; creating a new one.
+ERROR 2026-04-03 19:04:35.556 UTC: 	 Unhandled Exception!
+ERROR 2026-04-03 19:04:35.556 UTC: 	 [Errno 13] Permission denied: '/afs/cern.ch/user/p/psajdak/.crab3.2475833'
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 264, in __init__
+    self.crab3dic = self.getConfiDict()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 571, in getConfiDict
+    with open(crabCacheFileName_tmp, 'w') as fd:
+PermissionError: [Errno 13] Permission denied: '/afs/cern.ch/user/p/psajdak/.crab3.2475833'
+ERROR 2026-04-03 19:04:35.569 UTC: 	 ERROR: PermissionError: [Errno 13] Permission denied: '/afs/cern.ch/user/p/psajdak/.crab3.2475833'
+ERROR 2026-04-03 19:04:35.570 UTC: 	 
+ Look for more details in crab.log file /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+ERROR 2026-04-03 19:04:35.571 UTC: 	   If you can't figure out the problem, please send email to
+ERROR 2026-04-03 19:04:35.571 UTC: 	 	cmstalk+computing-tools@dovecotmta.cern.ch with the crab.log file or crab.log URL.
+ERROR 2026-04-03 19:04:35.572 UTC: 	   Please use 'crab uploadlog' to upload the log file /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log to the CRAB cache.
+DEBUG 2026-04-03 19:37:58.048 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-03 19:37:58.048 UTC: 	 Running on: Linux lxplus936.cern.ch 5.14.0-611.27.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Tue Jan 20 05:28:20 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-03 19:37:58.048 UTC: 	 Not using Singularity
+DEBUG 2026-04-03 19:37:58.048 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-03 19:37:58.048 UTC: 	 Executing command: 'resubmit'
+DEBUG 2026-04-03 19:37:58.048 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+DEBUG 2026-04-03 20:48:32.069 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-03 20:48:32.069 UTC: 	 Running on: Linux lxplus928.cern.ch 5.14.0-611.35.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Tue Feb 17 05:20:41 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-03 20:48:32.069 UTC: 	 Not using Singularity
+DEBUG 2026-04-03 20:48:32.069 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-03 20:48:32.070 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-03 20:48:32.070 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-04-03 20:48:32.073 UTC: 	 Error: 23D_JpsiGStartApril_resub_BsToJpsiGamma/crab_JpsiGStartApril_resub_dset0_vol2 is not a valid CRAB project directory.
+ERROR 2026-04-03 20:48:32.073 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 23D_JpsiGStartApril_resub_BsToJpsiGamma/crab_JpsiGStartApril_resub_dset0_vol2 is not a valid CRAB project directory.
+INFO 2026-04-03 20:48:32.076 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-04-03 20:48:33.837 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-03 20:48:33.837 UTC: 	 Running on: Linux lxplus928.cern.ch 5.14.0-611.35.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Tue Feb 17 05:20:41 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-03 20:48:33.837 UTC: 	 Not using Singularity
+DEBUG 2026-04-03 20:48:33.837 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-03 20:48:33.837 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-03 20:48:33.838 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-04-03 20:48:33.840 UTC: 	 Error: 23D_JpsiGStartApril_resub_BsToJpsiGamma/crab_JpsiGStartApril_resub_dset1_vol1 is not a valid CRAB project directory.
+ERROR 2026-04-03 20:48:33.840 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 23D_JpsiGStartApril_resub_BsToJpsiGamma/crab_JpsiGStartApril_resub_dset1_vol1 is not a valid CRAB project directory.
+INFO 2026-04-03 20:48:33.844 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-04-03 20:48:35.560 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-03 20:48:35.560 UTC: 	 Running on: Linux lxplus928.cern.ch 5.14.0-611.35.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Tue Feb 17 05:20:41 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-03 20:48:35.560 UTC: 	 Not using Singularity
+DEBUG 2026-04-03 20:48:35.560 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-03 20:48:35.560 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-03 20:48:35.560 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-04-03 20:48:35.561 UTC: 	 Error: 23D_JpsiGStartApril_resub_BsToJpsiGamma/crab_JpsiGStartApril_resub_dset1_vol2 is not a valid CRAB project directory.
+ERROR 2026-04-03 20:48:35.562 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 23D_JpsiGStartApril_resub_BsToJpsiGamma/crab_JpsiGStartApril_resub_dset1_vol2 is not a valid CRAB project directory.
+INFO 2026-04-03 20:48:35.565 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-04-03 20:48:37.384 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-03 20:48:37.385 UTC: 	 Running on: Linux lxplus928.cern.ch 5.14.0-611.35.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Tue Feb 17 05:20:41 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-03 20:48:37.385 UTC: 	 Not using Singularity
+DEBUG 2026-04-03 20:48:37.385 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-03 20:48:37.385 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-03 20:48:37.385 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-04-03 20:48:37.387 UTC: 	 Error: 23D_JpsiGStartApril_resub_BsToJpsiGamma/crab_JpsiGStartApril_resub_dset2_vol1 is not a valid CRAB project directory.
+ERROR 2026-04-03 20:48:37.387 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 23D_JpsiGStartApril_resub_BsToJpsiGamma/crab_JpsiGStartApril_resub_dset2_vol1 is not a valid CRAB project directory.
+INFO 2026-04-03 20:48:37.391 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-04-03 20:48:39.197 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-03 20:48:39.198 UTC: 	 Running on: Linux lxplus928.cern.ch 5.14.0-611.35.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Tue Feb 17 05:20:41 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-03 20:48:39.198 UTC: 	 Not using Singularity
+DEBUG 2026-04-03 20:48:39.198 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-03 20:48:39.198 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-03 20:48:39.198 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-04-03 20:48:39.201 UTC: 	 Error: 23D_JpsiGStartApril_resub_BsToJpsiGamma/crab_JpsiGStartApril_resub_dset2_vol2 is not a valid CRAB project directory.
+ERROR 2026-04-03 20:48:39.201 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 23D_JpsiGStartApril_resub_BsToJpsiGamma/crab_JpsiGStartApril_resub_dset2_vol2 is not a valid CRAB project directory.
+INFO 2026-04-03 20:48:39.206 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-04-03 20:48:40.794 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-03 20:48:40.795 UTC: 	 Running on: Linux lxplus928.cern.ch 5.14.0-611.35.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Tue Feb 17 05:20:41 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-03 20:48:40.795 UTC: 	 Not using Singularity
+DEBUG 2026-04-03 20:48:40.795 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-03 20:48:40.795 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-03 20:48:40.795 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-04-03 20:48:40.797 UTC: 	 Error: 23D_JpsiGStartApril_resub_BsToJpsiGamma/crab_JpsiGStartApril_resub_dset3_vol1 is not a valid CRAB project directory.
+ERROR 2026-04-03 20:48:40.797 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 23D_JpsiGStartApril_resub_BsToJpsiGamma/crab_JpsiGStartApril_resub_dset3_vol1 is not a valid CRAB project directory.
+INFO 2026-04-03 20:48:40.800 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-04-03 20:48:46.659 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-03 20:48:46.659 UTC: 	 Running on: Linux lxplus928.cern.ch 5.14.0-611.35.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Tue Feb 17 05:20:41 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-03 20:48:46.659 UTC: 	 Not using Singularity
+DEBUG 2026-04-03 20:48:46.659 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-03 20:48:46.659 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-03 20:48:46.660 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-04-03 20:48:46.662 UTC: 	 Error: 23D_JpsiGStartApril_resub_BsToJpsiGamma/crab_JpsiGStartApril_resub_dset4_vol1 is not a valid CRAB project directory.
+ERROR 2026-04-03 20:48:46.662 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 23D_JpsiGStartApril_resub_BsToJpsiGamma/crab_JpsiGStartApril_resub_dset4_vol1 is not a valid CRAB project directory.
+INFO 2026-04-03 20:48:46.668 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-04-03 20:48:48.400 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-03 20:48:48.400 UTC: 	 Running on: Linux lxplus928.cern.ch 5.14.0-611.35.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Tue Feb 17 05:20:41 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-03 20:48:48.400 UTC: 	 Not using Singularity
+DEBUG 2026-04-03 20:48:48.400 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-03 20:48:48.401 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-03 20:48:48.401 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-04-03 20:48:48.402 UTC: 	 Error: 23D_JpsiGStartApril_resub_BsToJpsiGamma/crab_JpsiGStartApril_resub_dset4_vol2 is not a valid CRAB project directory.
+ERROR 2026-04-03 20:48:48.403 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 23D_JpsiGStartApril_resub_BsToJpsiGamma/crab_JpsiGStartApril_resub_dset4_vol2 is not a valid CRAB project directory.
+INFO 2026-04-03 20:48:48.406 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-04-03 20:49:02.031 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-03 20:49:02.031 UTC: 	 Running on: Linux lxplus928.cern.ch 5.14.0-611.35.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Tue Feb 17 05:20:41 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-03 20:49:02.031 UTC: 	 Not using Singularity
+DEBUG 2026-04-03 20:49:02.031 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-03 20:49:02.031 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-03 20:49:02.031 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-04-03 20:49:02.033 UTC: 	 Error: 23D_JpsiGStartApril_resub_BsToJpsiGamma/crab_JpsiGStartApril_resub_dset6_vol2 is not a valid CRAB project directory.
+ERROR 2026-04-03 20:49:02.034 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 23D_JpsiGStartApril_resub_BsToJpsiGamma/crab_JpsiGStartApril_resub_dset6_vol2 is not a valid CRAB project directory.
+INFO 2026-04-03 20:49:02.037 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-04-03 20:49:03.813 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-03 20:49:03.813 UTC: 	 Running on: Linux lxplus928.cern.ch 5.14.0-611.35.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Tue Feb 17 05:20:41 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-03 20:49:03.813 UTC: 	 Not using Singularity
+DEBUG 2026-04-03 20:49:03.813 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-03 20:49:03.813 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-03 20:49:03.814 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-04-03 20:49:03.816 UTC: 	 Error: 23D_JpsiGStartApril_resub_BsToJpsiGamma/crab_JpsiGStartApril_resub_dset7_vol1 is not a valid CRAB project directory.
+ERROR 2026-04-03 20:49:03.816 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 23D_JpsiGStartApril_resub_BsToJpsiGamma/crab_JpsiGStartApril_resub_dset7_vol1 is not a valid CRAB project directory.
+INFO 2026-04-03 20:49:03.820 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-04-03 20:49:05.549 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-03 20:49:05.549 UTC: 	 Running on: Linux lxplus928.cern.ch 5.14.0-611.35.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Tue Feb 17 05:20:41 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-03 20:49:05.549 UTC: 	 Not using Singularity
+DEBUG 2026-04-03 20:49:05.549 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-03 20:49:05.549 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-03 20:49:05.549 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-04-03 20:49:05.551 UTC: 	 Error: 23D_JpsiGStartApril_resub_BsToJpsiGamma/crab_JpsiGStartApril_resub_dset7_vol2 is not a valid CRAB project directory.
+ERROR 2026-04-03 20:49:05.551 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 23D_JpsiGStartApril_resub_BsToJpsiGamma/crab_JpsiGStartApril_resub_dset7_vol2 is not a valid CRAB project directory.
+INFO 2026-04-03 20:49:05.556 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-04-03 20:52:46.109 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-03 20:52:46.109 UTC: 	 Running on: Linux lxplus936.cern.ch 5.14.0-611.27.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Tue Jan 20 05:28:20 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-03 20:52:46.109 UTC: 	 Not using Singularity
+DEBUG 2026-04-03 20:52:46.109 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-03 20:52:46.109 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-03 20:52:46.110 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-04-03 20:52:46.112 UTC: 	 Error: 23C_JpsiGStartApril_resub_BsToJpsiGamma/crab_JpsiGStartApril_resub_dset0_vol1 is not a valid CRAB project directory.
+ERROR 2026-04-03 20:52:46.113 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 23C_JpsiGStartApril_resub_BsToJpsiGamma/crab_JpsiGStartApril_resub_dset0_vol1 is not a valid CRAB project directory.
+INFO 2026-04-03 20:52:46.118 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-04-03 20:52:48.614 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-03 20:52:48.614 UTC: 	 Running on: Linux lxplus936.cern.ch 5.14.0-611.27.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Tue Jan 20 05:28:20 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-03 20:52:48.614 UTC: 	 Not using Singularity
+DEBUG 2026-04-03 20:52:48.614 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-03 20:52:48.614 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-03 20:52:48.614 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-04-03 20:52:48.615 UTC: 	 Error: 23C_JpsiGStartApril_resub_BsToJpsiGamma/crab_JpsiGStartApril_resub_dset0_vol2 is not a valid CRAB project directory.
+ERROR 2026-04-03 20:52:48.616 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 23C_JpsiGStartApril_resub_BsToJpsiGamma/crab_JpsiGStartApril_resub_dset0_vol2 is not a valid CRAB project directory.
+INFO 2026-04-03 20:52:48.629 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-04-03 20:52:51.064 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-03 20:52:51.064 UTC: 	 Running on: Linux lxplus936.cern.ch 5.14.0-611.27.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Tue Jan 20 05:28:20 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-03 20:52:51.064 UTC: 	 Not using Singularity
+DEBUG 2026-04-03 20:52:51.064 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-03 20:52:51.064 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-03 20:52:51.064 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-04-03 20:52:51.065 UTC: 	 Error: 23C_JpsiGStartApril_resub_BsToJpsiGamma/crab_JpsiGStartApril_resub_dset0_vol3 is not a valid CRAB project directory.
+ERROR 2026-04-03 20:52:51.066 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 23C_JpsiGStartApril_resub_BsToJpsiGamma/crab_JpsiGStartApril_resub_dset0_vol3 is not a valid CRAB project directory.
+INFO 2026-04-03 20:52:51.078 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-04-03 20:52:53.411 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-03 20:52:53.412 UTC: 	 Running on: Linux lxplus936.cern.ch 5.14.0-611.27.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Tue Jan 20 05:28:20 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-03 20:52:53.412 UTC: 	 Not using Singularity
+DEBUG 2026-04-03 20:52:53.412 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-03 20:52:53.412 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-03 20:52:53.412 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-04-03 20:52:53.412 UTC: 	 Error: 23C_JpsiGStartApril_resub_BsToJpsiGamma/crab_JpsiGStartApril_resub_dset0_vol4 is not a valid CRAB project directory.
+ERROR 2026-04-03 20:52:53.413 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 23C_JpsiGStartApril_resub_BsToJpsiGamma/crab_JpsiGStartApril_resub_dset0_vol4 is not a valid CRAB project directory.
+INFO 2026-04-03 20:52:53.419 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log
+DEBUG 2026-04-03 20:52:57.386 UTC: 	 CRAB Client version: v3.251020
+DEBUG 2026-04-03 20:52:57.387 UTC: 	 Running on: Linux lxplus936.cern.ch 5.14.0-611.27.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Tue Jan 20 05:28:20 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2026-04-03 20:52:57.387 UTC: 	 Not using Singularity
+DEBUG 2026-04-03 20:52:57.387 UTC: 	 Operating System: Red Hat Enterprise Linux 9.7 (Plow)
+DEBUG 2026-04-03 20:52:57.387 UTC: 	 Executing command: 'status'
+DEBUG 2026-04-03 20:52:57.387 UTC: 	 Found CRAB cache file /afs/cern.ch/user/p/psajdak/.crab3
+ERROR 2026-04-03 20:52:57.388 UTC: 	 Error: 23C_JpsiGStartApril_resub_BsToJpsiGamma/crab_JpsiGStartApril_resub_dset1_vol2 is not a valid CRAB project directory.
+ERROR 2026-04-03 20:52:57.389 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/status.py", line 50, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.251020.00/lib/CRABClient/Commands/SubCommand.py", line 691, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: Error: 23C_JpsiGStartApril_resub_BsToJpsiGamma/crab_JpsiGStartApril_resub_dset1_vol2 is not a valid CRAB project directory.
+INFO 2026-04-03 20:52:57.397 UTC: 	 Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/crab.log

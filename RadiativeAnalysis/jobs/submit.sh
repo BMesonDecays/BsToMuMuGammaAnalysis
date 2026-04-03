@@ -1,13 +1,14 @@
 #!/usr/bin/bash
 
-tag='JpsiGEndMarch'
+tag='JpsiGStartApril'
+run='23D'
 
-for run in B C D F G H ; do
-	for i in {0..7} ; do
-		crab submit --config='crabConfigData.py' General.requestName=${tag}_dset${i} \
-		General.workArea=24${run}_${tag}_BsToJpsiGamma Data.outputDatasetTag=24${run}_${tag}_BsToJpsiGamma \
-		Data.inputDataset=/ParkingDoubleMuonLowMass${i}/Run2024${run}-PromptReco-v1/MINIAOD \
-		Data.lumiMask=/eos/user/c/cmsdqm/www/CAF/certification/Collisions24/2024${run}_Golden.json \
-		Data.unitsPerJob=200 JobType.maxJobRuntimeMin=600
+for i in {0..7} ; do
+	for j in {1..2} ; do
+		crab submit --config='crabConfigData.py' General.requestName=${tag}_dset${i}_vol${j} \
+		General.workArea=${run}_${tag}_BsToJpsiGamma Data.outputDatasetTag=${run}_${tag}_BsToJpsiGamma \
+		Data.inputDataset=/ParkingDoubleMuonLowMass${i}/Run20${run}-PromptReco-v${j}/MINIAOD \
+		Data.lumiMask=/eos/user/c/cmsdqm/www/CAF/certification/Collisions23/PromptReco/Cert_Collisions2023_eraD_369803_370790_Golden.json \
+		Data.unitsPerJob=200 JobType.maxJobRuntimeMin=480
 	done
 done

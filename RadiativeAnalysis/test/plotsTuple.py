@@ -3,14 +3,14 @@ import ROOT as r
 import sys
 
 # Get the tuple
-tupleFile = r.TFile("KalmanAnglesExtraJpsiG_MCfull.root","READ")
+tupleFile = r.TFile("JpsiGStartApril_MC.root","READ")
 ntuple = tupleFile.Get("tOut")
 ntuple.Print()
 
 # Create a histogram
-branchName = "photonDirChange"
-histo = r.TH1D("h"+branchName, "cos "+branchName+" KalmanAnglesExtra", 100,0.999999,1.0)
-ntuple.Project("h"+branchName, branchName)
+branchName = "dPhi"
+histo = r.TH1D("h"+branchName, "cos "+branchName, 100,0.9,1.)
+ntuple.Project("h"+branchName, "TMath::Cos(dPhi)")
 histo.SetDirectory(0)
 
 tupleFile.Close()
