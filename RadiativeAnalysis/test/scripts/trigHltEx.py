@@ -6,12 +6,9 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-analysisTag = "JpsiGEndMarch_MC"
-tupleName = "tOut"
-
 # Get the tuple
-tupleFile = r.TFile("./outputData/"+analysisTag+".root","READ")
-ntuple = tupleFile.Get(tupleName)
+tupleFile = r.TFile("./outputData/23BCD_JpsiGStartApril.root","READ")
+ntuple = tupleFile.Get("tOut")
 
 triggerRes = [(int)(getattr(event, "triggerRes")) for event in ntuple]
 triggerRes = ["{:08d}".format(x) for x in triggerRes]
@@ -31,4 +28,4 @@ with open("new.txt",'w') as f:
                        'display.max_columns', None, 
                        'display.width', 2000, 
                        'display.precision', 2):
-        print(df.corr(),file=f)
+        print(df.corr().round(2),file=f)

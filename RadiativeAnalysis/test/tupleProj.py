@@ -4,17 +4,17 @@ import sys
 import os
 import numpy as np
 
-analysisTag = "JpsiGEndMarch"
+analysisTag = "JpsiGStartApril"
 tupleName = "tOut"
 
 # Prepare a directory for the output histograms
-dirPath = 'tupleProjections/'+analysisTag+'/cut_6Save'
+dirPath = 'tupleProjections/'+analysisTag+'/cut2_tight'
 os.mkdir(dirPath)
 
 logBool = 0
 
 # Get the tuple
-tupleFile = r.TFile("./outputData/24allBtoI_cut2_"+analysisTag+".root","READ")
+tupleFile = r.TFile("./outputData/23BCD_"+analysisTag+"_cut2.root","READ")
 ntuple = tupleFile.Get(tupleName)
 
 # Make a list with branch names
@@ -26,14 +26,19 @@ for branch in ntuple.GetListOfBranches():
 cutList = []
 
 cutList.append(r.TCut("muonIdCut","muon1Id > 0.7 && muon2Id > 0.7"))
-cutList.append(r.TCut("fittedDimuonVertexProbCut","fittedDimuonVertexProb > 0.2"))
+cutList.append(r.TCut("fittedDimuonVertexProbCut","fittedDimuonVertexProb > 0.1"))
 cutList.append(r.TCut("maxMuonsVertexCompCut","maxMuonsVertexComp < 0.1"))
+cutList.append(r.TCut("tightMuonCut","tight1 == 1.0 && tight2 == 1.0"))
+#cutList.append(r.TCut("lXY_fittedDimuon_bSpot_sigCut","lXY_fittedDimuon_bSpot_sig > 10.0"))
+#cutList.append(r.TCut("cosAnDimuonBSpot2DCut","cosAnDimuonBSpot2D < -0.8"))
 
+'''
 #cutList.append(r.TCut("dR_photonFittedDimuonCut","dR_photonFittedDimuon < 0.4 && dR_photonFittedDimuon > 0.14"))
 cutList.append(r.TCut("fittedDimuonMassCut","TMath::Abs(fittedDimuonMass - 3.097) < 0.06"))
-cutList.append(r.TCut("lXY_fittedDimuon_bSpot_sigCut","lXY_fittedDimuon_bSpot_sig > 5.0"))
 #cutList.append(r.TCut("lXY_fittedDimuon_bSpotCut","lXY_fittedDimuon_bSpot > 0.5"))
 cutList.append(r.TCut("cosAngleBsBSpot2DCut","cosAngleBsBSpot2D > 0.99"))
+
+'''
 
 totalCut = r.TCut()
 for cut in cutList:
@@ -54,20 +59,23 @@ binInfo = {
     branchNames[6] : (100,-3.0,3.0),
     branchNames[7] : (100,0.,200.),
     branchNames[8] : (100,0.9,1.01),
-    branchNames[9] : (300,3.5,7.5),
-    branchNames[10] : (300,3.5,7.5),
-    branchNames[11] : (100,0.98,1.0),
-    branchNames[12] : (100,0.95,1.0),
+    branchNames[9] : (100,3.5,7.5),
+    branchNames[10] : (100,3.5,7.5),
+    branchNames[11] : (100,-1.0,1.0),
+    branchNames[12] : (100,-1.0,1.0),
     branchNames[13] : (100,0.,10.),
     branchNames[14] : (100,0.,10.),
-    branchNames[15] : (100,0.9,1.0),
-    branchNames[16] : (100,0.9,1.0),
+    branchNames[15] : (100,-1.0,1.0),
+    branchNames[16] : (100,-1.0,1.0),
     branchNames[17] : (100,0.,50.),
     branchNames[18] : (100,0.,50.),
     branchNames[19] : (100,0.,1.),
     branchNames[20] : (100,0.,1.),
-    branchNames[21] : (100,0.,1.),
-    branchNames[22] : (100,0.,1.)
+    branchNames[21] : (2,0.,1.+1.E-8),
+    branchNames[22] : (2,0.,1.+1.E-8),
+    branchNames[23] : (100,-1.,1.),
+    branchNames[24] : (100,-1.,1.),
+    branchNames[25] : (100,-1.,1.)
 }
 
 # For "Mod" histos, removes entries without modScale
@@ -75,9 +83,10 @@ totalCutMod = totalCut + r.TCut("modScaleCut","modScale > 0.0")
 
 # Create and fill the histograms
 histoList = []
-for bname in branchNames[:-2]:
+for bname in branchNames[:-1]:
     binning = binInfo[bname]
     histo = r.TH1D("h"+bname,bname, binning[0],binning[1],binning[2])
+    histo.SetFillColorAlpha(18, 0.4)
     if ("Mod" in bname):
         ntuple.Project("h"+bname,bname, str(totalCutMod))
     else:
@@ -85,15 +94,8 @@ for bname in branchNames[:-2]:
     histo.SetDirectory(0)
     histoList.append(histo)
 
-tupleFile.Close()
 
-#'''
-# save selected histograms
-outFile = r.TFile("hCandBsMassCut6.root",'RECREATE')
-histoList[9].Write()
-histoList[10].Write()
-outFile.Close()
-'''
+tupleFile.Close()
 
 # Draw histograms and save the images
 for histo in histoList:
@@ -105,13 +107,19 @@ for histo in histoList:
 
 
 
+'''
+# save selected histograms
+outFile = r.TFile("hCandBsMassCut6.root",'RECREATE')
+histoList[9].Write()
+histoList[10].Write()
+outFile.Close()
+
+
 # Copy the ntuple limited by the cuts
-outputFile = r.TFile("./outputData/"+datasetName+"_KalmanAnLevelCut.root","RECREATE")
+outputFile = r.TFile("./outputData/23BCD_"+analysisTag+"_cut2.root","RECREATE")
 totalCut.Write()
 newNtuple = ntuple.CopyTree(str(totalCut))
 newNtuple.Write()
 outputFile.Close()
-tupleFile.Close()
-
 
 '''

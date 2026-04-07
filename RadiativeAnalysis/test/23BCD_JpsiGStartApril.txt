@@ -1,0 +1,9 @@
+HLT_DoubleMu2_Jpsi_LowPt_v5                384584
+HLT_DoubleMu4_3_Jpsi_v26                   817261
+HLT_DoubleMu4_3_LowMass_v12                  3955
+HLT_DoubleMu4_JpsiTrkTrk_Displaced_v18      13182
+HLT_DoubleMu4_Jpsi_Displaced_v18           285693
+HLT_DoubleMu4_Jpsi_NoVertexing_v18        1177581
+HLT_DoubleMu4_LowMass_Displaced_v12         55681
+HLT_DoubleMu4_MuMuTrk_Displaced_v26             0
+dtype: int64

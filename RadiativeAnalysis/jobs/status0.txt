@@ -1,0 +1,718 @@
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset0_vol1
+Task name:			260402_174225:psajdak_crab_JpsiGStartApril_dset0_vol1
+Grid scheduler - Task Worker:	crab3@vocms0122.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260402_174225%3Apsajdak_crab_JpsiGStartApril_dset0_vol1
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260402_174225%3Apsajdak_crab_JpsiGStartApril_dset0_vol1&from=1775148145000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (82/82)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-0cf2e24f8149acce265d626d8784cc38/USER
+
+No publication information available yet
+
+Summary of run jobs:
+ * Memory: 1564MB min, 1721MB max, 1572MB ave
+ * Runtime: 0:27:49 min, 1:56:58 max, 0:54:56 ave
+ * CPU eff: 78% min, 241% max, 110% ave
+ * Waste: 74:30:14 (50% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset0_vol1/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset0_vol2
+Task name:			260402_174254:psajdak_crab_JpsiGStartApril_dset0_vol2
+Grid scheduler - Task Worker:	crab3@vocms0107.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260402_174254%3Apsajdak_crab_JpsiGStartApril_dset0_vol2
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260402_174254%3Apsajdak_crab_JpsiGStartApril_dset0_vol2&from=1775148174000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (18/18)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-5e46e976f6208b6b6cb9ad85b2352b5c/USER
+
+No publication information available yet
+
+Summary of run jobs:
+ * Memory: 1569MB min, 1708MB max, 1528MB ave
+ * Runtime: 0:46:26 min, 2:03:41 max, 1:22:50 ave
+ * CPU eff: 77% min, 122% max, 87% ave
+ * Waste: 14:02:23 (36% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset0_vol2/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset0_vol3
+Task name:			260402_174321:psajdak_crab_JpsiGStartApril_dset0_vol3
+Grid scheduler - Task Worker:	crab3@vocms0122.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260402_174321%3Apsajdak_crab_JpsiGStartApril_dset0_vol3
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260402_174321%3Apsajdak_crab_JpsiGStartApril_dset0_vol3&from=1775148202000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (23/23)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-f453091da980377858fef951ca9fab71/USER
+
+No publication information available yet
+
+Summary of run jobs:
+ * Memory: 1406MB min, 1705MB max, 1604MB ave
+ * Runtime: 0:23:55 min, 1:53:08 max, 1:10:31 ave
+ * CPU eff: 78% min, 92% max, 90% ave
+ * Waste: 15:23:23 (36% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset0_vol3/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset0_vol4
+Task name:			260402_174347:psajdak_crab_JpsiGStartApril_dset0_vol4
+Grid scheduler - Task Worker:	crab3@vocms0120.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260402_174347%3Apsajdak_crab_JpsiGStartApril_dset0_vol4
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260402_174347%3Apsajdak_crab_JpsiGStartApril_dset0_vol4&from=1775148228000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (158/158)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-61b7b54d329986842386c063be185d9f/USER
+
+No publication information available yet
+
+Summary of run jobs:
+ * Memory: 1501MB min, 1689MB max, 1521MB ave
+ * Runtime: 0:23:49 min, 5:44:08 max, 1:58:35 ave
+ * CPU eff: 25% min, 89% max, 55% ave
+ * Waste: 150:30:39 (33% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset0_vol4/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset1_vol1
+Task name:			260402_174414:psajdak_crab_JpsiGStartApril_dset1_vol1
+Grid scheduler - Task Worker:	crab3@vocms0196.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260402_174414%3Apsajdak_crab_JpsiGStartApril_dset1_vol1
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260402_174414%3Apsajdak_crab_JpsiGStartApril_dset1_vol1&from=1775148254000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (82/82)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-1a611a54d59717a3ab70324ca5c48c2f/USER
+
+No publication information available yet
+
+Summary of run jobs:
+ * Memory: 1103MB min, 1708MB max, 1307MB ave
+ * Runtime: 0:34:08 min, 2:00:53 max, 1:05:37 ave
+ * CPU eff: 53% min, 155% max, 81% ave
+ * Waste: 27:23:37 (23% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset1_vol1/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset1_vol2
+Task name:			260402_174440:psajdak_crab_JpsiGStartApril_dset1_vol2
+Grid scheduler - Task Worker:	crab3@vocms0196.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260402_174440%3Apsajdak_crab_JpsiGStartApril_dset1_vol2
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260402_174440%3Apsajdak_crab_JpsiGStartApril_dset1_vol2&from=1775148280000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (18/18)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-8aa23866f03c0ae72079bab38278ebde/USER
+
+No publication information available yet
+
+Summary of run jobs:
+ * Memory: 1482MB min, 1482MB max, 1402MB ave
+ * Runtime: 0:50:05 min, 2:07:56 max, 1:30:18 ave
+ * CPU eff: 71% min, 89% max, 86% ave
+ * Waste: 25:35:23 (49% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset1_vol2/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset1_vol3
+Task name:			260402_174506:psajdak_crab_JpsiGStartApril_dset1_vol3
+Grid scheduler - Task Worker:	crab3@vocms0198.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260402_174506%3Apsajdak_crab_JpsiGStartApril_dset1_vol3
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260402_174506%3Apsajdak_crab_JpsiGStartApril_dset1_vol3&from=1775148306000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (23/23)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-ad3dd652890712b34adab24c8a9edb85/USER
+
+No publication information available yet
+
+Summary of run jobs:
+ * Memory: 1583MB min, 1710MB max, 1538MB ave
+ * Runtime: 0:35:33 min, 2:45:52 max, 1:33:00 ave
+ * CPU eff: 48% min, 87% max, 74% ave
+ * Waste: 21:54:53 (38% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset1_vol3/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset1_vol4
+Task name:			260402_174533:psajdak_crab_JpsiGStartApril_dset1_vol4
+Grid scheduler - Task Worker:	crab3@vocms0122.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260402_174533%3Apsajdak_crab_JpsiGStartApril_dset1_vol4
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260402_174533%3Apsajdak_crab_JpsiGStartApril_dset1_vol4&from=1775148334000&to=now
+Status on the scheduler:	SUBMITTED
+
+Jobs status:                    finished     		 46.2% ( 73/158)
+				idle         		 50.6% ( 80/158)
+				running      		  2.5% (  4/158)
+				transferring 		  0.6% (  1/158)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-86f6814f6f9d3335485254baf2984c48/USER
+
+No publication information available yet
+
+Summary of run jobs:
+ * Memory: 0MB min, 1708MB max, 1604MB ave
+ * Runtime: 0:00:00 min, 3:13:48 max, 1:06:55 ave
+ * CPU eff: 33% min, 155% max, 94% ave
+ * Waste: 66:31:31 (45% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset1_vol4/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset2_vol1
+Task name:			260402_174600:psajdak_crab_JpsiGStartApril_dset2_vol1
+Grid scheduler - Task Worker:	crab3@vocms0195.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260402_174600%3Apsajdak_crab_JpsiGStartApril_dset2_vol1
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260402_174600%3Apsajdak_crab_JpsiGStartApril_dset2_vol1&from=1775148360000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (82/82)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-553f4812200cf8698b1195124362066f/USER
+
+No publication information available yet
+
+Summary of run jobs:
+ * Memory: 1544MB min, 1762MB max, 1555MB ave
+ * Runtime: 0:22:43 min, 2:08:31 max, 1:02:04 ave
+ * CPU eff: 69% min, 88% max, 81% ave
+ * Waste: 45:23:15 (35% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset2_vol1/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset2_vol2
+Task name:			260402_174627:psajdak_crab_JpsiGStartApril_dset2_vol2
+Grid scheduler - Task Worker:	crab3@vocms0195.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260402_174627%3Apsajdak_crab_JpsiGStartApril_dset2_vol2
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260402_174627%3Apsajdak_crab_JpsiGStartApril_dset2_vol2&from=1775148387000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (18/18)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-4b82902bd1fc4b5b6334baea578bfe57/USER
+
+No publication information available yet
+
+Summary of run jobs:
+ * Memory: 1519MB min, 1581MB max, 1471MB ave
+ * Runtime: 0:42:46 min, 5:10:33 max, 2:13:07 ave
+ * CPU eff: 25% min, 88% max, 54% ave
+ * Waste: 14:38:13 (27% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset2_vol2/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset2_vol3
+Task name:			260402_174724:psajdak_crab_JpsiGStartApril_dset2_vol3
+Grid scheduler - Task Worker:	crab3@vocms0144.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260402_174724%3Apsajdak_crab_JpsiGStartApril_dset2_vol3
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260402_174724%3Apsajdak_crab_JpsiGStartApril_dset2_vol3&from=1775148444000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (23/23)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-017cdead7f97c062851f805f15c3d0d1/USER
+
+No publication information available yet
+
+Summary of run jobs:
+ * Memory: 1477MB min, 1739MB max, 1562MB ave
+ * Runtime: 0:25:57 min, 2:00:12 max, 1:07:44 ave
+ * CPU eff: 77% min, 134% max, 85% ave
+ * Waste: 20:23:34 (44% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset2_vol3/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset2_vol4
+Task name:			260402_174750:psajdak_crab_JpsiGStartApril_dset2_vol4
+Grid scheduler - Task Worker:	crab3@vocms0196.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260402_174750%3Apsajdak_crab_JpsiGStartApril_dset2_vol4
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260402_174750%3Apsajdak_crab_JpsiGStartApril_dset2_vol4&from=1775148470000&to=now
+Status on the scheduler:	FAILED
+
+Jobs status:                    failed       		  4.4% (  7/158)
+				finished     		 95.6% (151/158)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-77c16521fe8af6dd1aa982a512d1a7e7/USER
+
+No publication information available yet
+
+Error Summary: (use crab status --verboseErrors for details about the errors)
+
+  7 jobs failed with exit code 50664
+
+Have a look at https://twiki.cern.ch/twiki/bin/viewauth/CMSPublic/JobExitCodes for a description of the exit codes.
+
+Summary of run jobs:
+ * Memory: 1455MB min, 1850MB max, 1388MB ave
+ * Runtime: 0:19:24 min, 10:00:25 max, 2:04:13 ave
+ * CPU eff: 3% min, 180% max, 59% ave
+ * Waste: 232:49:28 (42% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset2_vol4/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset3_vol1
+Task name:			260402_174819:psajdak_crab_JpsiGStartApril_dset3_vol1
+Grid scheduler - Task Worker:	crab3@vocms0144.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260402_174819%3Apsajdak_crab_JpsiGStartApril_dset3_vol1
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260402_174819%3Apsajdak_crab_JpsiGStartApril_dset3_vol1&from=1775148499000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (82/82)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-abe76c3fc196708dd2c16d7006edcd93/USER
+
+No publication information available yet
+
+Summary of run jobs:
+ * Memory: 1457MB min, 1706MB max, 1515MB ave
+ * Runtime: 0:24:42 min, 4:43:48 max, 1:15:24 ave
+ * CPU eff: 62% min, 89% max, 76% ave
+ * Waste: 43:55:13 (30% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset3_vol1/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset3_vol2
+Task name:			260402_174847:psajdak_crab_JpsiGStartApril_dset3_vol2
+Grid scheduler - Task Worker:	crab3@vocms0107.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260402_174847%3Apsajdak_crab_JpsiGStartApril_dset3_vol2
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260402_174847%3Apsajdak_crab_JpsiGStartApril_dset3_vol2&from=1775148527000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (18/18)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-b910b5b326074968ec7269935bde263b/USER
+
+No publication information available yet
+
+Summary of run jobs:
+ * Memory: 1708MB min, 1708MB max, 1518MB ave
+ * Runtime: 0:38:08 min, 1:28:45 max, 1:06:49 ave
+ * CPU eff: 87% min, 248% max, 120% ave
+ * Waste: 17:15:01 (46% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset3_vol2/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset3_vol3
+Task name:			260402_174915:psajdak_crab_JpsiGStartApril_dset3_vol3
+Grid scheduler - Task Worker:	crab3@vocms0196.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260402_174915%3Apsajdak_crab_JpsiGStartApril_dset3_vol3
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260402_174915%3Apsajdak_crab_JpsiGStartApril_dset3_vol3&from=1775148555000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (23/23)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-d84b08bff508e2f8f8dbbdeda8394dcc/USER
+
+No publication information available yet
+
+Summary of run jobs:
+ * Memory: 1516MB min, 1611MB max, 1490MB ave
+ * Runtime: 0:27:46 min, 2:43:29 max, 1:02:21 ave
+ * CPU eff: 85% min, 91% max, 88% ave
+ * Waste: 3:46:50 (14% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset3_vol3/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset3_vol4
+Task name:			260402_174942:psajdak_crab_JpsiGStartApril_dset3_vol4
+Grid scheduler - Task Worker:	crab3@vocms0196.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260402_174942%3Apsajdak_crab_JpsiGStartApril_dset3_vol4
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260402_174942%3Apsajdak_crab_JpsiGStartApril_dset3_vol4&from=1775148582000&to=now
+Status on the scheduler:	SUBMITTED
+
+Jobs status:                    finished     		 45.6% ( 72/158)
+				idle         		 53.2% ( 84/158)
+				running      		  0.6% (  1/158)
+				transferring 		  0.6% (  1/158)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-9548b617c8436c8f17cd6e3ea3233caa/USER
+
+No publication information available yet
+
+Summary of run jobs:
+ * Memory: 0MB min, 1824MB max, 1599MB ave
+ * Runtime: 0:00:00 min, 1:29:54 max, 0:57:55 ave
+ * CPU eff: 56% min, 209% max, 94% ave
+ * Waste: 27:18:16 (28% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset3_vol4/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset4_vol1
+Task name:			260402_175011:psajdak_crab_JpsiGStartApril_dset4_vol1
+Grid scheduler - Task Worker:	crab3@vocms0121.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260402_175011%3Apsajdak_crab_JpsiGStartApril_dset4_vol1
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260402_175011%3Apsajdak_crab_JpsiGStartApril_dset4_vol1&from=1775148611000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (82/82)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-1f827ccfcaf0928864159738fe6cd32a/USER
+
+No publication information available yet
+
+Summary of run jobs:
+ * Memory: 1483MB min, 1708MB max, 1627MB ave
+ * Runtime: 0:24:53 min, 1:59:27 max, 0:59:10 ave
+ * CPU eff: 83% min, 239% max, 125% ave
+ * Waste: 66:37:17 (45% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset4_vol1/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset4_vol2
+Task name:			260402_175037:psajdak_crab_JpsiGStartApril_dset4_vol2
+Grid scheduler - Task Worker:	crab3@vocms0144.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260402_175037%3Apsajdak_crab_JpsiGStartApril_dset4_vol2
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260402_175037%3Apsajdak_crab_JpsiGStartApril_dset4_vol2&from=1775148638000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (18/18)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-aa7b7c9e1697782e5cf2e52938afa300/USER
+
+No publication information available yet
+
+Summary of run jobs:
+ * Memory: 1443MB min, 1505MB max, 1465MB ave
+ * Runtime: 0:53:59 min, 3:33:17 max, 1:43:33 ave
+ * CPU eff: 57% min, 84% max, 76% ave
+ * Waste: 18:01:51 (37% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset4_vol2/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset4_vol3
+Task name:			260402_175104:psajdak_crab_JpsiGStartApril_dset4_vol3
+Grid scheduler - Task Worker:	crab3@vocms0195.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260402_175104%3Apsajdak_crab_JpsiGStartApril_dset4_vol3
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260402_175104%3Apsajdak_crab_JpsiGStartApril_dset4_vol3&from=1775148664000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (23/23)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-5487f24c7d9df5f8a6c51d32b2f2c5f9/USER
+
+No publication information available yet
+
+Summary of run jobs:
+ * Memory: 1472MB min, 1568MB max, 1468MB ave
+ * Runtime: 0:35:14 min, 3:51:44 max, 1:42:26 ave
+ * CPU eff: 54% min, 90% max, 73% ave
+ * Waste: 21:24:11 (35% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset4_vol3/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset4_vol4
+Task name:			260402_175130:psajdak_crab_JpsiGStartApril_dset4_vol4
+Grid scheduler - Task Worker:	crab3@vocms0122.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260402_175130%3Apsajdak_crab_JpsiGStartApril_dset4_vol4
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260402_175130%3Apsajdak_crab_JpsiGStartApril_dset4_vol4&from=1775148690000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (158/158)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-52ad74b53646583a29b2cd4e09be34be/USER
+
+No publication information available yet
+
+Summary of run jobs:
+ * Memory: 1481MB min, 1664MB max, 1497MB ave
+ * Runtime: 0:20:51 min, 2:40:51 max, 1:23:14 ave
+ * CPU eff: 59% min, 182% max, 80% ave
+ * Waste: 110:47:45 (34% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset4_vol4/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset5_vol1
+Task name:			260402_175159:psajdak_crab_JpsiGStartApril_dset5_vol1
+Grid scheduler - Task Worker:	crab3@vocms0137.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260402_175159%3Apsajdak_crab_JpsiGStartApril_dset5_vol1
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260402_175159%3Apsajdak_crab_JpsiGStartApril_dset5_vol1&from=1775148719000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (82/82)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-6426dcba9c318cf382894f7d215a9823/USER
+
+No publication information available yet
+
+Summary of run jobs:
+ * Memory: 1504MB min, 1708MB max, 1423MB ave
+ * Runtime: 0:29:24 min, 2:24:05 max, 1:04:23 ave
+ * CPU eff: 61% min, 114% max, 79% ave
+ * Waste: 33:22:22 (27% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset5_vol1/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset5_vol2
+Task name:			260402_175254:psajdak_crab_JpsiGStartApril_dset5_vol2
+Grid scheduler - Task Worker:	crab3@vocms0155.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260402_175254%3Apsajdak_crab_JpsiGStartApril_dset5_vol2
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260402_175254%3Apsajdak_crab_JpsiGStartApril_dset5_vol2&from=1775148775000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (18/18)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-1a6c0c21e7c3bb7aefb25e371803355d/USER
+
+No publication information available yet
+
+Summary of run jobs:
+ * Memory: 1708MB min, 1708MB max, 1453MB ave
+ * Runtime: 0:46:46 min, 2:50:45 max, 1:40:02 ave
+ * CPU eff: 69% min, 138% max, 94% ave
+ * Waste: 30:34:36 (50% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset5_vol2/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset5_vol3
+Task name:			260402_175321:psajdak_crab_JpsiGStartApril_dset5_vol3
+Grid scheduler - Task Worker:	crab3@vocms0120.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260402_175321%3Apsajdak_crab_JpsiGStartApril_dset5_vol3
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260402_175321%3Apsajdak_crab_JpsiGStartApril_dset5_vol3&from=1775148801000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (23/23)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-d997e69233e9ca16b9a66c42c44df0c4/USER
+
+No publication information available yet
+
+Summary of run jobs:
+ * Memory: 1285MB min, 1561MB max, 1418MB ave
+ * Runtime: 0:51:39 min, 3:20:03 max, 1:49:15 ave
+ * CPU eff: 67% min, 89% max, 82% ave
+ * Waste: 33:42:31 (45% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset5_vol3/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset5_vol4
+Task name:			260402_175346:psajdak_crab_JpsiGStartApril_dset5_vol4
+Grid scheduler - Task Worker:	crab3@vocms0122.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260402_175346%3Apsajdak_crab_JpsiGStartApril_dset5_vol4
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260402_175346%3Apsajdak_crab_JpsiGStartApril_dset5_vol4&from=1775148827000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (158/158)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-8988e1cc812181c88648db225142bc18/USER
+
+No publication information available yet
+
+Summary of run jobs:
+ * Memory: 1416MB min, 1617MB max, 1456MB ave
+ * Runtime: 0:15:08 min, 2:54:55 max, 1:20:47 ave
+ * CPU eff: 79% min, 91% max, 87% ave
+ * Waste: 106:33:58 (33% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset5_vol4/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset6_vol1
+Task name:			260402_175413:psajdak_crab_JpsiGStartApril_dset6_vol1
+Grid scheduler - Task Worker:	crab3@vocms0122.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260402_175413%3Apsajdak_crab_JpsiGStartApril_dset6_vol1
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260402_175413%3Apsajdak_crab_JpsiGStartApril_dset6_vol1&from=1775148853000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (82/82)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-8494756fb4b70c11eb8355668db4e174/USER
+
+No publication information available yet
+
+Summary of run jobs:
+ * Memory: 1478MB min, 1657MB max, 1523MB ave
+ * Runtime: 0:22:49 min, 3:07:15 max, 1:07:44 ave
+ * CPU eff: 52% min, 87% max, 76% ave
+ * Waste: 43:36:53 (32% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset6_vol1/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset6_vol2
+Task name:			260402_175439:psajdak_crab_JpsiGStartApril_dset6_vol2
+Grid scheduler - Task Worker:	crab3@vocms0198.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260402_175439%3Apsajdak_crab_JpsiGStartApril_dset6_vol2
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260402_175439%3Apsajdak_crab_JpsiGStartApril_dset6_vol2&from=1775148879000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (18/18)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-b56b31b69fd38ae116279aa8ba4dcce5/USER
+
+No publication information available yet
+
+Summary of run jobs:
+ * Memory: 1476MB min, 1504MB max, 1447MB ave
+ * Runtime: 0:51:24 min, 2:54:13 max, 1:40:59 ave
+ * CPU eff: 52% min, 88% max, 75% ave
+ * Waste: 14:43:05 (33% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset6_vol2/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset6_vol3
+Task name:			260402_175505:psajdak_crab_JpsiGStartApril_dset6_vol3
+Grid scheduler - Task Worker:	crab3@vocms0195.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260402_175505%3Apsajdak_crab_JpsiGStartApril_dset6_vol3
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260402_175505%3Apsajdak_crab_JpsiGStartApril_dset6_vol3&from=1775148905000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (23/23)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-8097de107caaf46f9a230a35a7d0cb11/USER
+
+No publication information available yet
+
+Summary of run jobs:
+ * Memory: 1501MB min, 1708MB max, 1374MB ave
+ * Runtime: 0:22:31 min, 1:58:03 max, 0:52:25 ave
+ * CPU eff: 79% min, 192% max, 94% ave
+ * Waste: 12:11:03 (38% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset6_vol3/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset6_vol4
+Task name:			260402_175530:psajdak_crab_JpsiGStartApril_dset6_vol4
+Grid scheduler - Task Worker:	crab3@vocms0106.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260402_175530%3Apsajdak_crab_JpsiGStartApril_dset6_vol4
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260402_175530%3Apsajdak_crab_JpsiGStartApril_dset6_vol4&from=1775148930000&to=now
+Status on the scheduler:	SUBMITTED
+
+Jobs status:                    finished     		 44.3% ( 70/158)
+				idle         		 55.7% ( 88/158)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-8d95441cd4d89cb4a70bfddc29d312f3/USER
+
+No publication information available yet
+
+Summary of run jobs:
+ * Memory: 0MB min, 1801MB max, 1595MB ave
+ * Runtime: 0:00:00 min, 1:59:29 max, 0:59:47 ave
+ * CPU eff: 52% min, 213% max, 102% ave
+ * Waste: 58:10:42 (45% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset6_vol4/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset7_vol1
+Task name:			260402_175556:psajdak_crab_JpsiGStartApril_dset7_vol1
+Grid scheduler - Task Worker:	crab3@vocms0196.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260402_175556%3Apsajdak_crab_JpsiGStartApril_dset7_vol1
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260402_175556%3Apsajdak_crab_JpsiGStartApril_dset7_vol1&from=1775148956000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (82/82)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-15ffa2b625c8cc4c040c327090c143f1/USER
+
+No publication information available yet
+
+Summary of run jobs:
+ * Memory: 1527MB min, 1568MB max, 1463MB ave
+ * Runtime: 0:29:11 min, 2:16:49 max, 1:06:20 ave
+ * CPU eff: 52% min, 90% max, 79% ave
+ * Waste: 37:05:47 (29% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset7_vol1/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset7_vol2
+Task name:			260402_175622:psajdak_crab_JpsiGStartApril_dset7_vol2
+Grid scheduler - Task Worker:	crab3@vocms0194.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260402_175622%3Apsajdak_crab_JpsiGStartApril_dset7_vol2
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260402_175622%3Apsajdak_crab_JpsiGStartApril_dset7_vol2&from=1775148982000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (18/18)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-e706a21c92f44e84ef6ab62b6a6c3087/USER
+
+No publication information available yet
+
+Summary of run jobs:
+ * Memory: 1511MB min, 1561MB max, 1474MB ave
+ * Runtime: 0:43:39 min, 2:20:28 max, 1:17:22 ave
+ * CPU eff: 68% min, 82% max, 79% ave
+ * Waste: 14:51:46 (39% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset7_vol2/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset7_vol3
+Task name:			260402_175648:psajdak_crab_JpsiGStartApril_dset7_vol3
+Grid scheduler - Task Worker:	crab3@vocms0195.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260402_175648%3Apsajdak_crab_JpsiGStartApril_dset7_vol3
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260402_175648%3Apsajdak_crab_JpsiGStartApril_dset7_vol3&from=1775149008000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (23/23)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-c4233b091661c3a868eb2f2481da50b4/USER
+
+No publication information available yet
+
+Summary of run jobs:
+ * Memory: 1519MB min, 1708MB max, 1502MB ave
+ * Runtime: 0:34:44 min, 1:27:33 max, 1:01:33 ave
+ * CPU eff: 74% min, 165% max, 92% ave
+ * Waste: 12:31:12 (35% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset7_vol3/crab.log
+Rucio client intialized for account psajdak
+CRAB project directory:		/eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset7_vol4
+Task name:			260402_175719:psajdak_crab_JpsiGStartApril_dset7_vol4
+Grid scheduler - Task Worker:	crab3@vocms0121.cern.ch - crab-prod-tw01
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/260402_175719%3Apsajdak_crab_JpsiGStartApril_dset7_vol4
+Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=psajdak&var-task=260402_175719%3Apsajdak_crab_JpsiGStartApril_dset7_vol4&from=1775149039000&to=now
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished     		100.0% (158/158)
+
+Output dataset:			/FakeDataset/fakefile-FakePublish-e49638dd34d59094229a3d3a8f503935/USER
+
+No publication information available yet
+
+Summary of run jobs:
+ * Memory: 1475MB min, 1903MB max, 1547MB ave
+ * Runtime: 0:17:49 min, 3:07:55 max, 1:23:42 ave
+ * CPU eff: 43% min, 129% max, 83% ave
+ * Waste: 136:21:11 (38% of total)
+
+Log file is /eos/home-p/psajdak/CMSSW_14_1_1/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/jobs/23C_JpsiGStartApril_BsToJpsiGamma/crab_JpsiGStartApril_dset7_vol4/crab.log

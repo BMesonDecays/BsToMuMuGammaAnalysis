@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-tag='JpsiGStartApril'
+tag='JpsiGStartApril_resub'
 run='23C'
 
 for i in {0..7} ; do
