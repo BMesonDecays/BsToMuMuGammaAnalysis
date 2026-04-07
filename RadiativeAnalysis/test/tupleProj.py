@@ -8,7 +8,7 @@ analysisTag = "JpsiGStartApril"
 tupleName = "tOut"
 
 # Prepare a directory for the output histograms
-dirPath = 'tupleProjections/'+analysisTag+'/cut2_tight'
+dirPath = 'tupleProjections/'+analysisTag+'/cut6_tight_Save3'
 os.mkdir(dirPath)
 
 logBool = 0
@@ -26,18 +26,17 @@ for branch in ntuple.GetListOfBranches():
 cutList = []
 
 cutList.append(r.TCut("muonIdCut","muon1Id > 0.7 && muon2Id > 0.7"))
-cutList.append(r.TCut("fittedDimuonVertexProbCut","fittedDimuonVertexProb > 0.1"))
+cutList.append(r.TCut("fittedDimuonVertexProbCut","fittedDimuonVertexProb > 0.2"))
 cutList.append(r.TCut("maxMuonsVertexCompCut","maxMuonsVertexComp < 0.1"))
+cutList.append(r.TCut("fittedDimuonMassCut","TMath::Abs(fittedDimuonMass - 3.097) < 0.06"))
 cutList.append(r.TCut("tightMuonCut","tight1 == 1.0 && tight2 == 1.0"))
-#cutList.append(r.TCut("lXY_fittedDimuon_bSpot_sigCut","lXY_fittedDimuon_bSpot_sig > 10.0"))
-#cutList.append(r.TCut("cosAnDimuonBSpot2DCut","cosAnDimuonBSpot2D < -0.8"))
+cutList.append(r.TCut("lXY_fittedDimuon_bSpot_sigCut","lXY_fittedDimuon_bSpot_sig > 5.0"))
+cutList.append(r.TCut("cosAngleBsBSpot2DCut","cosAngleBsBSpot2D > 0.99"))
 
 '''
 #cutList.append(r.TCut("dR_photonFittedDimuonCut","dR_photonFittedDimuon < 0.4 && dR_photonFittedDimuon > 0.14"))
-cutList.append(r.TCut("fittedDimuonMassCut","TMath::Abs(fittedDimuonMass - 3.097) < 0.06"))
 #cutList.append(r.TCut("lXY_fittedDimuon_bSpotCut","lXY_fittedDimuon_bSpot > 0.5"))
-cutList.append(r.TCut("cosAngleBsBSpot2DCut","cosAngleBsBSpot2D > 0.99"))
-
+cutList.append(r.TCut("cosAnDimuonBSpot2DCut","cosAnDimuonBSpot2D < -0.8"))
 '''
 
 totalCut = r.TCut()
@@ -59,14 +58,14 @@ binInfo = {
     branchNames[6] : (100,-3.0,3.0),
     branchNames[7] : (100,0.,200.),
     branchNames[8] : (100,0.9,1.01),
-    branchNames[9] : (100,3.5,7.5),
-    branchNames[10] : (100,3.5,7.5),
-    branchNames[11] : (100,-1.0,1.0),
-    branchNames[12] : (100,-1.0,1.0),
+    branchNames[9] : (300,3.5,7.5),
+    branchNames[10] : (300,3.5,7.5),
+    branchNames[11] : (100,0.95,1.0),
+    branchNames[12] : (100,0.95,1.0),
     branchNames[13] : (100,0.,10.),
     branchNames[14] : (100,0.,10.),
-    branchNames[15] : (100,-1.0,1.0),
-    branchNames[16] : (100,-1.0,1.0),
+    branchNames[15] : (100,0.9,1.0),
+    branchNames[16] : (100,0.9,1.0),
     branchNames[17] : (100,0.,50.),
     branchNames[18] : (100,0.,50.),
     branchNames[19] : (100,0.,1.),
@@ -75,7 +74,7 @@ binInfo = {
     branchNames[22] : (2,0.,1.+1.E-8),
     branchNames[23] : (100,-1.,1.),
     branchNames[24] : (100,-1.,1.),
-    branchNames[25] : (100,-1.,1.)
+    branchNames[25] : (100,0.95,1.)
 }
 
 # For "Mod" histos, removes entries without modScale
@@ -105,14 +104,15 @@ for histo in histoList:
     histo.Draw()
     canvas.Print(dirPath+'/'+str(histo.GetName())+".pdf")
 
-
-
-'''
 # save selected histograms
-outFile = r.TFile("hCandBsMassCut6.root",'RECREATE')
+outFile = r.TFile("hMass300Cut6tight.root",'RECREATE')
 histoList[9].Write()
 histoList[10].Write()
 outFile.Close()
+
+
+
+'''
 
 
 # Copy the ntuple limited by the cuts

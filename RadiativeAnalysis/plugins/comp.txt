@@ -1,0 +1,196 @@
+--- JpsiGEndMarch.cc	2026-03-24 19:34:07.037056825 +0100
++++ JpsiGStartApril.cc	2026-04-02 18:08:42.789341346 +0200
+@@ -1,5 +1,5 @@
+-// based on JpsiMassG
+-// started on March 22 2026
++// based on JpsiGEndMarch
++// started on April 2 2026
+ 
+ #include "FWCore/Framework/interface/one/EDAnalyzer.h"
+ 
+@@ -89,14 +89,14 @@
+ using namespace std;
+ 
+ //object definition
+-class JpsiGEndMarch : public edm::one::EDAnalyzer<> {
++class JpsiGStartApril : public edm::one::EDAnalyzer<> {
+ public:
+ 
+   //constructor, function is called when new object is created
+-  explicit JpsiGEndMarch(const edm::ParameterSet& conf);
++  explicit JpsiGStartApril(const edm::ParameterSet& conf);
+ 
+   //destructor, function is called when object is destroyed
+-  ~JpsiGEndMarch();
++  ~JpsiGStartApril();
+ 
+   //edm filter plugin specific functions
+   virtual void beginJob();
+@@ -113,6 +113,7 @@
+   edm::EDGetTokenT < vector<reco::Vertex> > theVertexToken; 
+   edm::EDGetTokenT < vector<pat::PackedCandidate> > thePackedCandidateToken;
+ 
++  edm::EDGetTokenT < edm::TriggerResults > theTriggerResultsToken;
+   edm::ESGetToken<MagneticField, IdealMagneticFieldRecord> m_fieldToken;
+   edm::EDGetTokenT < reco::BeamSpot > theBeamSpotToken;
+ 
+@@ -120,9 +121,19 @@
+ 
+   TNtupleD* tOut;
+ 
++  // HLT paths
++  std::string path0 = "HLT_DoubleMu2_Jpsi_LowPt_v";
++  std::string path1 = "HLT_DoubleMu4_3_Jpsi_v";
++  std::string path2 = "HLT_DoubleMu4_3_LowMass_v";
++  std::string path3 = "HLT_DoubleMu4_JpsiTrkTrk_Displaced_v";
++  std::string path4 = "HLT_DoubleMu4_Jpsi_Displaced_v";
++  std::string path5 = "HLT_DoubleMu4_Jpsi_NoVertexing_v";
++  std::string path6 = "HLT_DoubleMu4_LowMass_Displaced_v";
++  std::string path7 = "HLT_DoubleMu4_MuMuTrk_Displaced_v";
++
+ };
+ 
+-JpsiGEndMarch::JpsiGEndMarch(const edm::ParameterSet& conf)
++JpsiGStartApril::JpsiGStartApril(const edm::ParameterSet& conf)
+   : theConfig(conf), theEventCount(0)
+ {
+   cout <<" CTORXX" << endl;
+@@ -131,27 +142,28 @@
+   thePhotonToken = consumes< vector<pat::Photon>  >( edm::InputTag("slimmedPhotons"));
+   theVertexToken = consumes< vector<reco::Vertex>  >( edm::InputTag("offlineSlimmedPrimaryVertices"));
+   thePackedCandidateToken = consumes< vector<pat::PackedCandidate> >(edm::InputTag("packedPFCandidates"));
++  theTriggerResultsToken = consumes< edm::TriggerResults > (edm::InputTag("TriggerResults","","HLT"));
+   theBeamSpotToken = consumes< reco::BeamSpot >( edm::InputTag("offlineBeamSpot"));
+ 
+   m_fieldToken = esConsumes<MagneticField, IdealMagneticFieldRecord>();
+ 
+ }
+ 
+-JpsiGEndMarch::~JpsiGEndMarch()
++JpsiGStartApril::~JpsiGStartApril()
+ {
+   cout <<" DTOR" << endl;
+ }
+ 
+-void JpsiGEndMarch::beginJob()
++void JpsiGStartApril::beginJob()
+ {
+   muonMVAIDProducer_ = new MuonMVAID(theConfig);
+ 
+   tOut = new TNtupleD("tOut","Output tuple",
+-  "fittedDimuonVertexProb:fittedDimuonMass:maxMuonsVertexComp:lXY_fittedDimuon_bSpot:lXY_fittedDimuon_bSpot_sig:dR_photonFittedDimuon:eta:initPhotonEnergy:modScale:candBsMass:candBsModMass:cosAngleBsBSpot2D:cosAngleModBsBSpot2D:l3D_BsPV:l3D_ModBsPV:cosAngleBsPV3D:cosAngleModBsPV3D:lifetimeBs:lifetimeModBs:muon1Id:muon2Id:tight1:tight2");
+-  cout << "HERE JpsiGEndMarch::beginJob()" << endl;
++  "fittedDimuonVertexProb:fittedDimuonMass:maxMuonsVertexComp:lXY_fittedDimuon_bSpot:lXY_fittedDimuon_bSpot_sig:dR_photonFittedDimuon:eta:initPhotonEnergy:modScale:candBsMass:candBsModMass:cosAngleBsBSpot2D:cosAngleModBsBSpot2D:l3D_BsPV:l3D_ModBsPV:cosAngleBsPV3D:cosAngleModBsPV3D:lifetimeBs:lifetimeModBs:muon1Id:muon2Id:tight1:tight2:dEta:cosDPhi:cosAnDimuonBSpot2D:triggerRes");
++  cout << "HERE JpsiGStartApril::beginJob()" << endl;
+ }
+ 
+-void JpsiGEndMarch::endJob()
++void JpsiGStartApril::endJob()
+ {
+   delete muonMVAIDProducer_;
+ 
+@@ -165,13 +177,13 @@
+ 
+   delete tOut;
+ 
+-  cout << "HERE JpsiGEndMarch::endJob()" << endl;
++  cout << "HERE JpsiGStartApril::endJob()" << endl;
+ }
+ 
+-void JpsiGEndMarch::analyze(
++void JpsiGStartApril::analyze(
+     const edm::Event& ev, const edm::EventSetup& es)
+ {
+-  std::cout << " -------------------------------- HERE JpsiGEndMarch::analyze "<< std::endl;
++  std::cout << " -------------------------------- HERE JpsiGStartApril::analyze "<< std::endl;
+ 
+   const std::vector<pat::Muon> & recoMuons = ev.get(theMuonToken);
+   const std::vector<pat::Photon> & recoPhotons = ev.get(thePhotonToken);
+@@ -180,6 +192,10 @@
+   const reco::BeamSpot & beamSpot = ev.get(theBeamSpotToken);
+ 
+   auto const& field = es.getData(m_fieldToken);  
++
++  // trigger info
++  const edm::TriggerResults & triggerResults = ev.get(theTriggerResultsToken);
++  edm::TriggerNames triggerNames = ev.triggerNames(triggerResults);
+   
+   ////////////////////////////////////////
+ 
+@@ -248,7 +264,13 @@
+       double lXY_fittedDimuon_bSpot = lXY_fittedDimuon_bSpot_Vec.at(0);
+       double lXY_fittedDimuon_bSpot_significance = lXY_fittedDimuon_bSpot / lXY_fittedDimuon_bSpot_Vec.at(1);
+       if (lXY_fittedDimuon_bSpot_significance < 3.0)  continue;
+-      
++
++      // beam spot pointing angle of the dimuon alone
++      const math::XYZPoint beamSpotPoint = beamSpot.position(fittedDimuonVertexPoint.z());
++      math::XYZVector bSpotToVtx3D = fittedDimuonVertexPoint - beamSpotPoint;
++      math::XYZVector bSpotToVtx2D (bSpotToVtx3D.x(),bSpotToVtx3D.y(),0.0);
++      double cosAngleDimuonBSpot2D = bSpotToVtx2D.unit().Dot(fittedDimuonLV.Vect()) / fittedDimuonLV.Pt();
++    
+       ////////////LOOP OVER PHOTONS//////////////////////////////
+       for (std::vector<pat::Photon>::const_iterator igamma0 = recoPhotons.begin(); igamma0 < recoPhotons.end(); igamma0++)
+       {
+@@ -261,6 +283,10 @@
+         if (deltaR_photon_fittedDimuon > 0.5) continue;
+         if (deltaR_photon_fittedDimuon < 0.05)  continue;
+ 
++        // photon deltaEta and deltaPhi wrt. dimuon
++        double deltaEta_photon_fittedDimuon = photonLV.Eta() - fittedDimuonLV.Eta();
++        double cosDeltaPhi_photon_fittedDimuon = TMath::Cos(photonLV.Phi() - fittedDimuonLV.Phi());
++
+         // get Lorentz Vector for modified photon energy
+         double initPhotonEnergy = photonLV.energy();
+         double eta = igamma->caloPosition().Eta();
+@@ -290,9 +316,6 @@
+ 
+         //
+         // 2D pointing angle to beam spot
+-        const math::XYZPoint beamSpotPoint = beamSpot.position(fittedDimuonVertexPoint.z());
+-        math::XYZVector bSpotToVtx3D = fittedDimuonVertexPoint - beamSpotPoint;
+-        math::XYZVector bSpotToVtx2D (bSpotToVtx3D.x(),bSpotToVtx3D.y(),0.0);
+         double cosAngleBsBSpot2D = bSpotToVtx2D.unit().Dot(candBsLV.Vect()) / candBsLV.Pt();
+         double cosAngleModBsBSpot2D = bSpotToVtx2D.unit().Dot(candBsModLV.Vect()) / candBsModLV.Pt();
+         
+@@ -320,12 +343,30 @@
+         bool tight1 = im1->isTightMuon(primaryVertices.at(0));
+         bool tight2 = im2->isTightMuon(primaryVertices.at(0));
+ 
++        // HLT paths
++        double triggerRes = 0.0;
++        for (unsigned int i=0; i < triggerResults.size();i++)
++        {
++          if (!triggerResults.accept(i))  continue;
++          std::string name = triggerNames.triggerName(i);
++          
++          if (!name.compare(0,26,path0))  triggerRes += 1.E0;
++          else if (!name.compare(0,22,path1))  triggerRes += 1.E1;
++          else if (!name.compare(0,25,path2))  triggerRes += 1.E2;
++          else if (!name.compare(0,36,path3))  triggerRes += 1.E3;
++          else if (!name.compare(0,30,path4))  triggerRes += 1.E4;
++          else if (!name.compare(0,32,path5))  triggerRes += 1.E5;
++          else if (!name.compare(0,33,path6))  triggerRes += 1.E6;
++          else if (!name.compare(0,33,path7))  triggerRes += 1.E7;      
++        }
++
+ 
+         // output
+-        const double outArray[23] = {fittedDimuonVertexProb,fittedDimuonMass,maxMuonsVertexComp,lXY_fittedDimuon_bSpot,lXY_fittedDimuon_bSpot_significance,
++        const double outArray[27] = {fittedDimuonVertexProb,fittedDimuonMass,maxMuonsVertexComp,lXY_fittedDimuon_bSpot,lXY_fittedDimuon_bSpot_significance,
+         deltaR_photon_fittedDimuon,eta,initPhotonEnergy,modScale,candBsMass,candBsModMass,
+         cosAngleBsBSpot2D,cosAngleModBsBSpot2D,l3D_BsPV,l3D_ModBsPV,cosAngleBsPV3D,cosAngleModBsPV3D,
+-        lifetimeBs,lifetimeModBs,muon1Id,muon2Id,(double)tight1,(double)tight2};
++        lifetimeBs,lifetimeModBs,muon1Id,muon2Id,(double)tight1,(double)tight2,
++        deltaEta_photon_fittedDimuon,cosDeltaPhi_photon_fittedDimuon,cosAngleDimuonBSpot2D,triggerRes};
+         
+         tOut->Fill(outArray);
+ 
+@@ -339,4 +380,4 @@
+   cout <<"*** Analyze event: " << ev.id() <<" analysed event count:" << ++theEventCount << endl;
+ }
+ 
+-DEFINE_FWK_MODULE(JpsiGEndMarch);
+\ No newline at end of file
++DEFINE_FWK_MODULE(JpsiGStartApril);
+\ No newline at end of file
