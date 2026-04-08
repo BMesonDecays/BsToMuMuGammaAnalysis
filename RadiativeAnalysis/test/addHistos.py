@@ -4,8 +4,8 @@ import sys
 import os
 import numpy as np
 
-fileDet = "100Cut6"
-histname = "hcandBsModMass"
+fileDet = "300Cut6tight"
+histname = "hcandBsMass"
 
 # Open files and get histograms
 f1 = r.TFile.Open("hMass"+fileDet+".root")
@@ -29,3 +29,7 @@ h1.Draw("hist")
 
 c.Print(fileDet+histname+".pdf")
 input('press enter to exit')
+
+outFile = r.TFile(fileDet+histname+".root",'RECREATE')
+h1.Write()
+outFile.Close()

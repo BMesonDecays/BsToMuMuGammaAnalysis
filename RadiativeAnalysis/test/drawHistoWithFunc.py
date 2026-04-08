@@ -4,21 +4,21 @@ import sys
 
 
 # Get the histogram
-histfilename = "hCandBsMassCut6.root"
-histname = "hcandBsModMass"
-histfile = r.TFile.Open(histfilename,"READ")
+histfilename = "300Cut6hcandBsMass"
+histname = "hcandBsMass"
+histfile = r.TFile.Open(histfilename+'.root',"READ")
 histo = histfile.Get(histname)
 histo.SetDirectory(0)
 histfile.Close()
 
 # Get the function
-funcFileName = "JpsiGEndMarchMCmassFits/hMCcandBsModMassCut6"+"_fitFunc.root"
+funcFileName = "JpsiGEndMarchMCmassFits/hMCcandBsMassCut6"+"_fitFunc.root"
 funcName = "fitFunc"
 funcFile = r.TFile.Open(funcFileName,"READ")
 func = funcFile.Get(funcName)
 
 # Set the function parameters
-func.SetParameter(0,1.73)
+func.SetParameter(0,2.264)
 func.SetLineWidth(1)
 
 #histo.SetAxisRange(0.,180.,"Y")
@@ -28,9 +28,9 @@ histo.SetAxisRange(4.8,6.2,"X")
 # Draw and save
 canvas = r.TCanvas("canvas")
 canvas.cd()
-histo.Draw()
+histo.Draw("histo")
 func.Draw("same")
-canvas.Print("temp.pdf")
+canvas.Print("signal"+histfilename+".pdf")
 input('press enter to exit')
 
 funcFile.Close()
