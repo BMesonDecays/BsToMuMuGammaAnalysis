@@ -1,4 +1,5 @@
 // JpsiGEndMarch_MC with added angle variables
+// later modified to include more
 
 #include "FWCore/Framework/interface/one/EDAnalyzer.h"
 
@@ -163,7 +164,7 @@ void JpsiGStartApril_MC::beginJob()
   muonMVAIDProducer_ = new MuonMVAID(theConfig);
 
   tOut = new TNtupleD("tOut","Output tuple",
-  "fittedDimuonVertexProb:fittedDimuonMass:maxMuonsVertexComp:lXY_fittedDimuon_bSpot:lXY_fittedDimuon_bSpot_sig:dR_photonFittedDimuon:eta:initPhotonEnergy:modScale:candBsMass:candBsModMass:cosAngleBsBSpot2D:cosAngleModBsBSpot2D:l3D_BsPV:l3D_ModBsPV:cosAngleBsPV3D:cosAngleModBsPV3D:lifetimeBs:lifetimeModBs:muon1Id:muon2Id:tight1:tight2:dEta:dPhi:cosAnDimuonBSpot2D:triggerRes");
+  "fittedDimuonVertexProb:fittedDimuonMass:maxMuonsVertexComp:lXY_fittedDimuon_bSpot:lXY_fittedDimuon_bSpot_sig:dR_photonFittedDimuon:etaPhoton:initPhotonEnergy:modScale:candBsMass:candBsModMass:cosAngleBsBSpot2D:cosAngleModBsBSpot2D:l3D_BsPV:l3D_ModBsPV:cosAngleBsPV3D:cosAngleModBsPV3D:lifetimeBs:lifetimeModBs:muon1Id:muon2Id:tight1:tight2:dEta:cosdPhi:cosAnDimuonBSpot2D:pTdimuon:pTphoton:etaDimuon:triggerRes");
   cout << "HERE JpsiGStartApril_MC::beginJob()" << endl;
 }
 
@@ -346,7 +347,7 @@ void JpsiGStartApril_MC::analyze(
   // get the fitted dimuon state
   RefCountedKinematicParticle fittedDimuon = twoMuonsFitTree->currentParticle();
   double fittedDimuonMass = fittedDimuon->currentState().mass();
-  if (std::fabs(fittedDimuonMass - jpsiMass) > 0.15) return;      
+  //if (std::fabs(fittedDimuonMass - jpsiMass) > 0.15) return;      
 
   // construct the fittedDimuon Lorentz Vector
   GlobalVector fittedDimuonMom = fittedDimuon->currentState().globalMomentum();
@@ -363,7 +364,7 @@ void JpsiGStartApril_MC::analyze(
   std::vector<double> lXY_fittedDimuon_bSpot_Vec = Tools::beamSpotVertexLxy(beamSpot, *fittedDimuonVertex);
   double lXY_fittedDimuon_bSpot = lXY_fittedDimuon_bSpot_Vec.at(0);
   double lXY_fittedDimuon_bSpot_significance = lXY_fittedDimuon_bSpot / lXY_fittedDimuon_bSpot_Vec.at(1);
-  if (lXY_fittedDimuon_bSpot_significance < 3.0)  return;
+  //if (lXY_fittedDimuon_bSpot_significance < 3.0)  return;
 
   // beam spot pointing angle of the dimuon alone
   const math::XYZPoint beamSpotPoint = beamSpot.position(fittedDimuonVertexPoint.z());
@@ -383,7 +384,7 @@ void JpsiGStartApril_MC::analyze(
 
   // photon deltaEta and deltaPhi wrt. dimuon
   double deltaEta_photon_fittedDimuon = photonLV.Eta() - fittedDimuonLV.Eta();
-  double deltaPhi_photon_fittedDimuon = photonLV.Phi() - fittedDimuonLV.Phi();
+  double cosDeltaPhi_photon_fittedDimuon = TMath::Cos(photonLV.Phi() - fittedDimuonLV.Phi());
 
   // get Lorentz Vector for modified photon energy
   double initPhotonEnergy = photonLV.energy();
@@ -402,8 +403,8 @@ void JpsiGStartApril_MC::analyze(
   // initial check of B0s mass
   double candBsMass = candBsLV.M();
   double candBsModMass = candBsModLV.M();
-  if (std::fabs(candBsMass - bsMass) > 1.5
-    && std::fabs(candBsModMass - bsMass) > 1.5) return;
+  //if (std::fabs(candBsMass - bsMass) > 1.5
+  //  && std::fabs(candBsModMass - bsMass) > 1.5) return;
 
   //
   // PV selection
@@ -463,11 +464,12 @@ void JpsiGStartApril_MC::analyze(
 
 
   // output
-  const double outArray[27] = {fittedDimuonVertexProb,fittedDimuonMass,maxMuonsVertexComp,lXY_fittedDimuon_bSpot,lXY_fittedDimuon_bSpot_significance,
+  const double outArray[30] = {fittedDimuonVertexProb,fittedDimuonMass,maxMuonsVertexComp,lXY_fittedDimuon_bSpot,lXY_fittedDimuon_bSpot_significance,
   deltaR_photon_fittedDimuon,eta,initPhotonEnergy,modScale,candBsMass,candBsModMass,
   cosAngleBsBSpot2D,cosAngleModBsBSpot2D,l3D_BsPV,l3D_ModBsPV,cosAngleBsPV3D,cosAngleModBsPV3D,
   lifetimeBs,lifetimeModBs,muon1Id,muon2Id,(double)tight1,(double)tight2,
-  deltaEta_photon_fittedDimuon,deltaPhi_photon_fittedDimuon,cosAngleDimuonBSpot2D,triggerRes};
+  deltaEta_photon_fittedDimuon,cosDeltaPhi_photon_fittedDimuon,cosAngleDimuonBSpot2D,
+  fittedDimuonLV.Pt(),photonLV.Pt(),fittedDimuonLV.Eta(),triggerRes};
   
   tOut->Fill(outArray);
 

@@ -33,7 +33,7 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_mc_FULL','')
 
 
-process.analiza= cms.EDAnalyzer("JpsiGEndMarch_MC",
+process.analiza= cms.EDAnalyzer("JpsiGStartApril_MC",
   outHist = cms.string('BsToJpsiGammaMC.root'),
   xgboost_models = cms.vstring(),
   xgboost_variable_names = cms.vstring(),
