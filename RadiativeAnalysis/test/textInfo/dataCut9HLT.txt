@@ -1,0 +1,26 @@
+Cuts:
+((((((muon1Id > 0.7 && muon2Id > 0.7)&&(fittedDimuonVertexProb > 0.2))&&(maxMuonsVertexComp < 0.1))&&(TMath::Abs(fittedDimuonMass - 3.097) < 0.06))&&(lXY_fittedDimuon_bSpot_sig > 5.0))&&(cosAngleBsBSpot2D > 0.99998))&&(cosAnDimuonBSpot2D > 0.98)
+
+DoubleMu2_Jpsi_LowPt               244
+DoubleMu4_3_Jpsi                  2022
+DoubleMu4_3_LowMass                  8
+DoubleMu4_JpsiTrkTrk_Displaced      35
+DoubleMu4_Jpsi_Displaced            37
+DoubleMu4_Jpsi_NoVertexing        2193
+DoubleMu4_LowMass_Displaced        122
+DoubleMu4_MuMuTrk_Displaced          0
+dtype: int64
+
+Total entries: 2267
+ 
+Correlations:
+
+                                DoubleMu2_Jpsi_LowPt  DoubleMu4_3_Jpsi  DoubleMu4_3_LowMass  DoubleMu4_JpsiTrkTrk_Displaced  DoubleMu4_Jpsi_Displaced  DoubleMu4_Jpsi_NoVertexing  DoubleMu4_LowMass_Displaced  DoubleMu4_MuMuTrk_Displaced
+DoubleMu2_Jpsi_LowPt                            1.00              0.12                -0.02                           -0.03                      0.29                        0.06                         0.02                          NaN
+DoubleMu4_3_Jpsi                                0.12              1.00                 0.02                            0.04                      0.04                        0.53                         0.02                          NaN
+DoubleMu4_3_LowMass                            -0.02              0.02                 1.00                            0.48                     -0.01                        0.01                        -0.01                          NaN
+DoubleMu4_JpsiTrkTrk_Displaced                 -0.03              0.04                 0.48                            1.00                     -0.02                        0.02                        -0.03                          NaN
+DoubleMu4_Jpsi_Displaced                        0.29              0.04                -0.01                           -0.02                      1.00                        0.02                         0.03                          NaN
+DoubleMu4_Jpsi_NoVertexing                      0.06              0.53                 0.01                            0.02                      0.02                        1.00                         0.04                          NaN
+DoubleMu4_LowMass_Displaced                     0.02              0.02                -0.01                           -0.03                      0.03                        0.04                         1.00                          NaN
+DoubleMu4_MuMuTrk_Displaced                      NaN               NaN                  NaN                             NaN                       NaN                         NaN                          NaN                          NaN

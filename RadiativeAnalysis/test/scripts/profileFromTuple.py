@@ -5,7 +5,7 @@ import sys
 etaMin = 1.65
 etaMax = 2.5
 
-tupleFileName = "genRecoPhotonEnergyCaloEta.root"
+tupleFileName = "genRecoPhotonEt.root"
 tupleName = "tBsPhotons"
 outputName = "EES"
 
@@ -13,8 +13,9 @@ outputName = "EES"
 tupleFile = r.TFile(tupleFileName,"READ")
 ntuple = tupleFile.Get(tupleName)
 
-cutString = "TMath::Abs(eta) > "+str(etaMin)
-cutString += " && TMath::Abs(eta) < "+str(etaMax)
+cutString = ""
+#cutString = "TMath::Abs(eta) > "+str(etaMin)
+#cutString += " && TMath::Abs(eta) < "+str(etaMax)
 #cutString += " && recoEnergy - genEnergy > -3.0"
 #cutString += " && recoEnergy - genEnergy < 4.0"
 print(cutString)
@@ -22,12 +23,12 @@ print(cutString)
 newNtuple = ntuple.CopyTree(cutString)
 nPoints = newNtuple.GetEntries()
 
-prof = r.TProfile("prof",outputName+" Photon energy;E_{gen};E_{reco}",20,10.0,80.0)
+prof = r.TProfile("prof",outputName+" Photon energy;E_{gen}^{T};E_{reco}^{T}",20,0.0,50.0)
 
 
 for i in range(nPoints):
     newNtuple.GetEntry(i)
-    prof.Fill(newNtuple.genEnergy,newNtuple.recoEnergy,1/newNtuple.recoEnergyError)
+    prof.Fill(newNtuple.genEt,newNtuple.recoEt)#,1/newNtuple.recoEnergyError)
 
 
 # Drawing
@@ -43,8 +44,8 @@ prof.SetStats(0)
 prof.Draw("||")
 
 # line y=x
-start = 10.
-end = 80.
+start = 0.
+end = 50.
 line = r.TLine(start,start,end,end)
 line.SetLineColor(4)
 line.Draw("same")

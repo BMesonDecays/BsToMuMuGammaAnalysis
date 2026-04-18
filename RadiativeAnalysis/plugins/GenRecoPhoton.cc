@@ -89,14 +89,14 @@
 using namespace std;
 
 //object definition
-class MidMarchJpsiG_MC : public edm::one::EDAnalyzer<> {
+class GenRecoPhoton : public edm::one::EDAnalyzer<> {
 public:
 
   //constructor, function is called when new object is created
-  explicit MidMarchJpsiG_MC(const edm::ParameterSet& conf);
+  explicit GenRecoPhoton(const edm::ParameterSet& conf);
 
   //destructor, function is called when object is destroyed
-  ~MidMarchJpsiG_MC();
+  ~GenRecoPhoton();
 
   //edm filter plugin specific functions
   virtual void beginJob();
@@ -126,7 +126,7 @@ private:
   
 };
 
-MidMarchJpsiG_MC::MidMarchJpsiG_MC(const edm::ParameterSet& conf)
+GenRecoPhoton::GenRecoPhoton(const edm::ParameterSet& conf)
   : theConfig(conf), theEventCount(0)
 {
   cout <<" CTORXX" << endl;
@@ -143,19 +143,19 @@ MidMarchJpsiG_MC::MidMarchJpsiG_MC(const edm::ParameterSet& conf)
 
 }
 
-MidMarchJpsiG_MC::~MidMarchJpsiG_MC()
+GenRecoPhoton::~GenRecoPhoton()
 {
   cout <<" DTOR" << endl;
 }
 
-void MidMarchJpsiG_MC::beginJob()
+void GenRecoPhoton::beginJob()
 {
-  tBsPhotons = new TNtupleD("tBsPhotons","Matched photons from B0s to J/psi gamma","genEnergy:recoEnergy:recoEnergyError:eta");
+  tBsPhotons = new TNtupleD("tBsPhotons","Matched photons from B0s to J/psi gamma","vtxDiff:genEnergy:recoEnergy:recoEnergyError:eta:genEt:recoEt");
 
-  cout << "HERE MidMarchJpsiG_MC::beginJob()" << endl;
+  cout << "HERE GenRecoPhoton::beginJob()" << endl;
 }
 
-void MidMarchJpsiG_MC::endJob()
+void GenRecoPhoton::endJob()
 {
   //make a new Root file
   TFile myRootFile( theConfig.getParameter<std::string>("outHist").c_str(), "RECREATE");
@@ -167,13 +167,13 @@ void MidMarchJpsiG_MC::endJob()
 
   delete tBsPhotons;
 
-  cout << "HERE MidMarchJpsiG_MC::endJob()" << endl;
+  cout << "HERE GenRecoPhoton::endJob()" << endl;
 }
 
-void MidMarchJpsiG_MC::analyze(
+void GenRecoPhoton::analyze(
     const edm::Event& ev, const edm::EventSetup& es)
 {
-  std::cout << " -------------------------------- HERE MidMarchJpsiG_MC::analyze "<< std::endl;
+  std::cout << " -------------------------------- HERE GenRecoPhoton::analyze "<< std::endl;
 
   const std::vector<reco::GenParticle> & genPar = ev.get(theGenParticleToken);
   const std::vector<reco::Muon> & recoMuons = ev.get(theMuonToken);
@@ -292,19 +292,30 @@ void MidMarchJpsiG_MC::analyze(
   ///////////////END OF THE GENPARTICLE SECTION/////////////////////////
 
   const reco::Photon* & recoPhoton = recoMatchedPhotons.at(0);
+  reco::Photon* clonedPhoton = recoPhoton->clone();
+  clonedPhoton->setVertex(genMatchedPhotons.at(0)->vertex());
 
+  // is genPhoton vertex already set to J/psi vertex
+  const math::XYZPoint jpsiVtx = genJpsiPtr->vertex();
+  const math::XYZPoint genPhotonVtx = genMatchedPhotons.at(0)->vertex();
+  double vtxDiff = TMath::Sqrt((genPhotonVtx - jpsiVtx).Mag2());
+
+  
   reco::Photon::P4type recoPhotonType = recoPhoton->getCandidateP4type();
   double recoPhotonEnergy = recoPhoton->getCorrectedEnergy(recoPhotonType);
   double recoPhotonEnergyError = recoPhoton->getCorrectedEnergyError(recoPhotonType);
   //double recoPhotonSClusterEta = recoPhoton->superCluster()->eta();
   double recoPhotonCaloEta = recoPhoton->caloPosition().Eta();
 
+
+
   
-  tBsPhotons->Fill(genMatchedPhotons.at(0)->energy(), recoPhotonEnergy, recoPhotonEnergyError, recoPhotonCaloEta);
+  tBsPhotons->Fill(vtxDiff, genMatchedPhotons.at(0)->energy(), recoPhotonEnergy, recoPhotonEnergyError, recoPhotonCaloEta,
+    TMath::Sqrt(genMatchedPhotons.at(0)->et2()), TMath::Sqrt(clonedPhoton->et2()));
 
 
 
   cout <<"*** Analyze event: " << ev.id() <<" analysed event count:" << ++theEventCount << endl;
 }
 
-DEFINE_FWK_MODULE(MidMarchJpsiG_MC);
+DEFINE_FWK_MODULE(GenRecoPhoton);
