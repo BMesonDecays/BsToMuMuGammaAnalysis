@@ -34,7 +34,7 @@ process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_data', '')
 #process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_mc_FULL','')
 
 
-process.analiza= cms.EDAnalyzer("JpsiGStartApril",
+process.analiza= cms.EDAnalyzer("JpsiGMidApril",
   outHist = cms.string('BsToJpsiGammaData.root'),
   xgboost_models = cms.vstring(),
   xgboost_variable_names = cms.vstring(),

@@ -33,7 +33,7 @@
 
 
 
-<library name="GenRecoPhoton" file="GenRecoPhoton.cc">
+<library name="JpsiGMidApril" file="JpsiGMidApril.cc">
 </library>
 
 

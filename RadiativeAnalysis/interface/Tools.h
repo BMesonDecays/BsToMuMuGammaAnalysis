@@ -266,6 +266,54 @@ namespace Tools{
       return maxVertexProb;
     }
 
+
+    // pT balance at the PV
+    std::vector<double> getPtBalanceVars (const reco::Vertex & bestPV, const reco::Vertex & bestPVmod,
+        math::XYZTLorentzVector & fittedDimuonLV, math::XYZTLorentzVector & photonLV, math::XYZTLorentzVector & photonModLV)
+    {
+        math::XYZTLorentzVector candBsLV = fittedDimuonLV + photonLV;
+        math::XYZTLorentzVector candBsModLV = fittedDimuonLV + photonModLV;
+
+        math::XYZVector pSumAtPV (0.0,0.0,0.0);
+        for (auto iTrackRef = bestPV.tracks_begin(); iTrackRef < bestPV.tracks_end(); iTrackRef++)
+        {
+            pSumAtPV += iTrackRef->get()->innerMomentum();
+        }
+
+        // for PV selected with modified photon energy
+        math::XYZVector pSumAtPVmod (0.0,0.0,0.0);    
+        for (auto iTrackRef = bestPVmod.tracks_begin(); iTrackRef < bestPVmod.tracks_end(); iTrackRef++)
+        {
+        pSumAtPVmod += iTrackRef->get()->innerMomentum();
+        }
+        
+        // get the missing transverse momentum
+        math::XYZVector pTMissAtPV (-pSumAtPV.x(),-pSumAtPV.y(),0.0);
+        math::XYZVector pTMissAtPVmod (-pSumAtPVmod.x(),-pSumAtPVmod.y(),0.0);
+
+        // calculate direction compatibility with the dimuon and candBs (dimuon+photon)
+        double cosDimuonPtMiss = pTMissAtPV.unit().Dot(fittedDimuonLV.Vect()) / fittedDimuonLV.Pt();
+        double cosDimuonPtMissMod = pTMissAtPVmod.unit().Dot(fittedDimuonLV.Vect()) / fittedDimuonLV.Pt();
+
+        double cosCandBsPtMiss = pTMissAtPV.unit().Dot(candBsLV.Vect()) / candBsLV.Pt();
+        double cosCandBsPtMissMod = pTMissAtPVmod.unit().Dot(candBsModLV.Vect()) / candBsModLV.Pt();
+
+        // check if the dimuon and photon are consistent with the missing transverse momentum
+        math::XYZVector pTMissMinusDimuon = pTMissAtPV - fittedDimuonLV.Vect();
+        math::XYZVector pTMissModMinusDimuon = pTMissAtPVmod - fittedDimuonLV.Vect();
+
+        math::XYZVector pTMissMinusDimuonMinusPhoton = pTMissMinusDimuon - photonLV.Vect();
+        math::XYZVector pTMissMinusDimuonMinusPhotonMod = pTMissModMinusDimuon - photonModLV.Vect();
+
+        
+        std::vector<double> ptBalanceVars = {pTMissAtPV.Rho(),pTMissAtPVmod.Rho(),
+            cosDimuonPtMiss,cosDimuonPtMissMod,cosCandBsPtMiss,cosCandBsPtMissMod,
+            pTMissMinusDimuon.Rho(),pTMissModMinusDimuon.Rho(),
+            pTMissMinusDimuonMinusPhoton.Rho(),pTMissMinusDimuonMinusPhotonMod.Rho()};
+
+        return ptBalanceVars;
+    }
+
     
 
 

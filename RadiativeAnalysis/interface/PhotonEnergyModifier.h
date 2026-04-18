@@ -4,38 +4,43 @@
 
 namespace PhotonEnergyModifier{
 
-
     double getModPhotonEnergy (double initE, double eta)
     {
-        double a0 = 0.0;   // intercept
+        double a0 = 0.0;  // intercept
         double a1 = 0.0;  // slope
 
         // EB
         if (std::fabs(eta) < 1.479)
         {
-            if (initE < 40.0){
-                a0 = 0.90;
-                a1 = 0.974;
+            if (initE < 20.0){
+                a0 = 0.806;
+                a1 = 0.980;
             }
-            else if (initE < 120.0){
-                a0 = 1.0;
-                a1 = 1.007;
+            else if (initE < 35.0){
+                a0 = -0.670;
+                a1 = 1.035;
             }
-        }
-        // EES
-        else if (std::fabs(eta) > 1.65 && std::fabs(eta) < 2.5)
-        {
-            if (initE < 54.0){
-                a0 = 4.0;
-                a1 = 0.928;
-            }
-            else if (initE < 100.0){
-                a0 = 2.3;
-                a1 = 0.978;
+            else {  // no modification
+                a0 = 0.0;
+                a1 = 1.0;
             }
         }
 
-        if (a1 == 0.0)  return 0.0;
+        // EES
+        else if (std::fabs(eta) > 1.65 && std::fabs(eta) < 2.5)
+        {
+            if (initE < 50.0){
+                a0 = 3.09;
+                a1 = 0.952;
+            }
+            else if (initE < 90.0){
+                a0 = 2.7;
+                a1 = 0.972;
+            }
+        }
+
+
+        if (a1 == 0.0)  return 0.0; // eta or initE out of range
 
         double val = initE - a0;
         val /= a1;
