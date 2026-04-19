@@ -1,0 +1,1 @@
+grep -B 6 "Status on the scheduler: SUBMITTED" status.txt | grep "CRAB project directory" | cut -f 3 | cut -d '/' -f 10-11 | xargs -I {} crab kill -d {}

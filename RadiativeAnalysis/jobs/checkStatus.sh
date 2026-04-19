@@ -1,11 +1,10 @@
 #!/usr/bin/bash
 
-tag='JpsiGStartApril_resub'
-run='23C'
+tag='JpsiGMidApril_resub2'
 
-for i in {0..7} ; do
-    for j in {1..4} ; do
-        crab status -d ${run}_${tag}_BsToJpsiGamma/crab_${tag}_dset${i}_vol${j} >> status.txt
-    done
+for run in B C D F G H ; do
+	for i in {0..7} ; do
+        crab status -d 24${run}_${tag}_BsToJpsiGamma/crab_${tag}_dset${i} >> status.txt
+	done
+    echo -e "\n\n" >> status.txt
 done
-
