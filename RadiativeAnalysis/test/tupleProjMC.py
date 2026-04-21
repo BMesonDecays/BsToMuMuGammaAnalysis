@@ -9,7 +9,7 @@ tupleName = "tOut"
 
 # Prepare a directory for the output histograms
 logBool = 0
-dirPath = 'tupleProjections/'+analysisTag+'/cut7'
+dirPath = 'tupleProjections/'+analysisTag+'/cut8_g'
 if logBool  :
     dirPath += 'log'
 os.mkdir(dirPath)
@@ -27,7 +27,7 @@ for branch in ntuple.GetListOfBranches():
 cutList = []
 
 cutList.append(r.TCut("muonIdCut","muon1Id > 0.7 && muon2Id > 0.7"))
-cutList.append(r.TCut("fittedDimuonVertexProbCut","fittedDimuonVertexProb > 0.1"))
+cutList.append(r.TCut("fittedDimuonVertexProbCut","fittedDimuonVertexProb > 0.2"))
 cutList.append(r.TCut("maxMuonsVertexCompCut","maxMuonsVertexComp < 0.1"))
 cutList.append(r.TCut("fittedDimuonMassCut","TMath::Abs(fittedDimuonMass - 3.097) < 0.06"))
 cutList.append(r.TCut("lXY_fittedDimuon_bSpot_sigCut","lXY_fittedDimuon_bSpot_sig > 5.0"))
@@ -77,7 +77,7 @@ binInfo = {
     branchNames[21] : (2,0.,1.+1.E-8),
     branchNames[22] : (2,0.,1.+1.E-8),
     branchNames[23] : (100,-0.6,0.6),
-    branchNames[24] : (100,0.984,1.),
+    branchNames[24] : (100,0.9,1.),
     branchNames[25] : (100,0.984,1.),   #dimuon
     branchNames[26] : (100,0.0,80.0),
     branchNames[27] : (100,0.0,50.0),
@@ -120,8 +120,8 @@ for histo in histoList:
     canvas = r.TCanvas("c"+str(histo.GetTitle()))
     canvas.SetLogy(logBool)
     canvas.cd()
-    #histo.SetStats(0)
-    #histo.SetLabelSize(0.03)
+    histo.SetStats(0)
+    histo.SetLabelSize(0.03)
     histo.Draw()
     canvas.Print(dirPath+'/'+str(histo.GetName())+".pdf")
 
