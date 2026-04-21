@@ -25,9 +25,25 @@ r.gROOT.GetListOfFunctions().Add(func)
 funcD = func.Clone("funcD")
 r.gROOT.GetListOfFunctions().Add(funcD)
 funcD.SetParameter(0,9.55)
-funcD.SetParameter(1,5.3519)
+#funcD.SetParameter(1,5.3519)
+
 
 funcSum = r.TF1("funcSum","funcS + funcD",4.8,6.1)
+funcSum.SetParameter(4,9.55)
+funcSum.SetParameter(5,5.280)
+funcSum.SetParameter(6,funcD.GetParameter(2))
+funcSum.SetParameter(7,funcD.GetParameter(3))
+funcSum.SetParameter(1,5.367)
+
+funcSum.Print()
+#r.gROOT.GetListOfFunctions().Print()
+
+params = funcSum.GetParameters() # Returns a C-style array
+param_list = [params[i] for i in range(funcSum.GetNpar())]
+print(param_list)
+
+
+
 
 #histo.SetAxisRange(0.,180.,"Y")
 #histo.SetAxisRange(3.8,7.,"X")
@@ -40,5 +56,6 @@ histo.Draw("histo")
 funcSum.Draw("same")
 canvas.Print("signalTemp.pdf")
 input('press enter to exit')
+
 
 funcFile.Close()
