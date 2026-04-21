@@ -8,8 +8,8 @@ analysisTag = "JpsiGMidApril_24"
 tupleName = "tOut"
 
 # Prepare a directory for the output histograms
-logBool = 1
-dirPath = 'tupleProjections/'+analysisTag+'/cut6_g'
+logBool = 0
+dirPath = 'tupleProjections/'+analysisTag+'/cut7'
 if logBool  :
     dirPath += 'log'
 os.mkdir(dirPath)
@@ -33,6 +33,7 @@ cutList.append(r.TCut("fittedDimuonMassCut","TMath::Abs(fittedDimuonMass - 3.097
 cutList.append(r.TCut("lXY_fittedDimuon_bSpot_sigCut","lXY_fittedDimuon_bSpot_sig > 5.0"))
 cutList.append(r.TCut("cosAnDimuonBSpot2DCut","cosAnDimuonBSpot2D > 0.985"))
 cutList.append(r.TCut("cosAngleBsBSpot2DCut","cosAngleBsBSpot2D > 0.99998"))
+cutList.append(r.TCut("cosAngleBsPV3DCut","cosAngleBsPV3D > 0.9999"))
 '''
 cutList.append(r.TCut("tightMuonCut","tight1 == 1.0 && tight2 == 1.0"))
 cutList.append(r.TCut("dR_photonFittedDimuonCut","dR_photonFittedDimuon < 0.4 && dR_photonFittedDimuon > 0.14"))
@@ -107,8 +108,8 @@ for histo in histoList:
     canvas = r.TCanvas("c"+str(histo.GetTitle()))
     canvas.SetLogy(logBool)
     canvas.cd()
-    histo.SetStats(0)
-    histo.SetLabelSize(0.03)
+    #histo.SetStats(0)
+    #histo.SetLabelSize(0.03)
     histo.Draw()
     canvas.Print(dirPath+'/'+str(histo.GetName())+".pdf")
 
