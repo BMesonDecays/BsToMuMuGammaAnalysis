@@ -4,12 +4,13 @@ import sys
 import os
 import numpy as np
 
-fileDet = "300Cut6tight"
+cutTitle = "cut8h"
 histname = "hcandBsMass"
+rebinN = 10
 
 # Open files and get histograms
-f1 = r.TFile.Open("hMass"+fileDet+".root")
-f2 = r.TFile.Open("hEndMarchMass"+fileDet+".root")
+f1 = r.TFile.Open("JpsiGStartApril_23"+cutTitle+".root")
+f2 = r.TFile.Open("JpsiGMidApril_24"+cutTitle+".root")
 
 h1 = f1.Get(histname)
 h2 = f2.Get(histname)
@@ -22,14 +23,16 @@ h2.Sumw2()
 h1.Add(h2)
 h1.SetFillColorAlpha(18, 0.4)
 
+# Rebin the histogram
+h1 = h1.Rebin(rebinN)
 
 # Draw and keep the canvas alive
 c = r.TCanvas()
 h1.Draw("hist")
 
-c.Print(fileDet+histname+".pdf")
+c.Print("JpsiGStartMidApril_23_24_"+cutTitle+"reb"+str(rebinN)+".pdf")
 input('press enter to exit')
 
-outFile = r.TFile(fileDet+histname+".root",'RECREATE')
+outFile = r.TFile("JpsiGStartMidApril_23_24_"+cutTitle+"reb"+str(rebinN)+".root",'RECREATE')
 h1.Write()
 outFile.Close()

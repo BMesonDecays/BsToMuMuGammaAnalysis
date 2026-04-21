@@ -1,0 +1,124 @@
+--- JpsiGStartApril.cc	2026-04-02 18:08:42.789341346 +0200
++++ JpsiGMidApril.cc	2026-04-18 21:04:21.860263730 +0200
+@@ -1,5 +1,5 @@
+-// based on JpsiGEndMarch
+-// started on April 2 2026
++// based on JpsiGStartApril
++// new photon energy modification
+ 
+ #include "FWCore/Framework/interface/one/EDAnalyzer.h"
+ 
+@@ -89,14 +89,14 @@
+ using namespace std;
+ 
+ //object definition
+-class JpsiGStartApril : public edm::one::EDAnalyzer<> {
++class JpsiGMidApril : public edm::one::EDAnalyzer<> {
+ public:
+ 
+   //constructor, function is called when new object is created
+-  explicit JpsiGStartApril(const edm::ParameterSet& conf);
++  explicit JpsiGMidApril(const edm::ParameterSet& conf);
+ 
+   //destructor, function is called when object is destroyed
+-  ~JpsiGStartApril();
++  ~JpsiGMidApril();
+ 
+   //edm filter plugin specific functions
+   virtual void beginJob();
+@@ -133,7 +133,7 @@
+ 
+ };
+ 
+-JpsiGStartApril::JpsiGStartApril(const edm::ParameterSet& conf)
++JpsiGMidApril::JpsiGMidApril(const edm::ParameterSet& conf)
+   : theConfig(conf), theEventCount(0)
+ {
+   cout <<" CTORXX" << endl;
+@@ -149,21 +149,21 @@
+ 
+ }
+ 
+-JpsiGStartApril::~JpsiGStartApril()
++JpsiGMidApril::~JpsiGMidApril()
+ {
+   cout <<" DTOR" << endl;
+ }
+ 
+-void JpsiGStartApril::beginJob()
++void JpsiGMidApril::beginJob()
+ {
+   muonMVAIDProducer_ = new MuonMVAID(theConfig);
+ 
+   tOut = new TNtupleD("tOut","Output tuple",
+-  "fittedDimuonVertexProb:fittedDimuonMass:maxMuonsVertexComp:lXY_fittedDimuon_bSpot:lXY_fittedDimuon_bSpot_sig:dR_photonFittedDimuon:eta:initPhotonEnergy:modScale:candBsMass:candBsModMass:cosAngleBsBSpot2D:cosAngleModBsBSpot2D:l3D_BsPV:l3D_ModBsPV:cosAngleBsPV3D:cosAngleModBsPV3D:lifetimeBs:lifetimeModBs:muon1Id:muon2Id:tight1:tight2:dEta:cosDPhi:cosAnDimuonBSpot2D:triggerRes");
+-  cout << "HERE JpsiGStartApril::beginJob()" << endl;
++  "fittedDimuonVertexProb:fittedDimuonMass:maxMuonsVertexComp:lXY_fittedDimuon_bSpot:lXY_fittedDimuon_bSpot_sig:dR_photonFittedDimuon:eta:initPhotonEnergy:modScale:candBsMass:candBsModMass:cosAngleBsBSpot2D:cosAngleModBsBSpot2D:l3D_BsPV:l3D_ModBsPV:cosAngleBsPV3D:cosAngleModBsPV3D:lifetimeBs:lifetimeModBs:muon1Id:muon2Id:tight1:tight2:dEta:cosDPhi:cosAnDimuonBSpot2D:triggerRes:bestPVs_dz:dimuonPt:photonPt:photonModPt:candBsPt:candBsModPt");
++  cout << "HERE JpsiGMidApril::beginJob()" << endl;
+ }
+ 
+-void JpsiGStartApril::endJob()
++void JpsiGMidApril::endJob()
+ {
+   delete muonMVAIDProducer_;
+ 
+@@ -177,13 +177,13 @@
+ 
+   delete tOut;
+ 
+-  cout << "HERE JpsiGStartApril::endJob()" << endl;
++  cout << "HERE JpsiGMidApril::endJob()" << endl;
+ }
+ 
+-void JpsiGStartApril::analyze(
++void JpsiGMidApril::analyze(
+     const edm::Event& ev, const edm::EventSetup& es)
+ {
+-  std::cout << " -------------------------------- HERE JpsiGStartApril::analyze "<< std::endl;
++  std::cout << " -------------------------------- HERE JpsiGMidApril::analyze "<< std::endl;
+ 
+   const std::vector<pat::Muon> & recoMuons = ev.get(theMuonToken);
+   const std::vector<pat::Photon> & recoPhotons = ev.get(thePhotonToken);
+@@ -314,6 +314,8 @@
+         const reco::Vertex & bestPVmod = Tools::bestPV(primaryVertices,
+             fittedDimuonVertexPoint, candBsModLV.Vect());
+ 
++        double bestPVtoBestPVmod_z = bestPVmod.z() - bestPV.z();
++
+         //
+         // 2D pointing angle to beam spot
+         double cosAngleBsBSpot2D = bSpotToVtx2D.unit().Dot(candBsLV.Vect()) / candBsLV.Pt();
+@@ -340,8 +342,8 @@
+         float muon1Id = muonMVAIDs.at(im1 - imB);
+         float muon2Id = muonMVAIDs.at(im2 - imB);
+         
+-        bool tight1 = im1->isTightMuon(primaryVertices.at(0));
+-        bool tight2 = im2->isTightMuon(primaryVertices.at(0));
++        bool tight1 = im1->isTightMuon(bestPV);
++        bool tight2 = im2->isTightMuon(bestPV);
+ 
+         // HLT paths
+         double triggerRes = 0.0;
+@@ -362,11 +364,12 @@
+ 
+ 
+         // output
+-        const double outArray[27] = {fittedDimuonVertexProb,fittedDimuonMass,maxMuonsVertexComp,lXY_fittedDimuon_bSpot,lXY_fittedDimuon_bSpot_significance,
++        const double outArray[33] = {fittedDimuonVertexProb,fittedDimuonMass,maxMuonsVertexComp,lXY_fittedDimuon_bSpot,lXY_fittedDimuon_bSpot_significance,
+         deltaR_photon_fittedDimuon,eta,initPhotonEnergy,modScale,candBsMass,candBsModMass,
+         cosAngleBsBSpot2D,cosAngleModBsBSpot2D,l3D_BsPV,l3D_ModBsPV,cosAngleBsPV3D,cosAngleModBsPV3D,
+         lifetimeBs,lifetimeModBs,muon1Id,muon2Id,(double)tight1,(double)tight2,
+-        deltaEta_photon_fittedDimuon,cosDeltaPhi_photon_fittedDimuon,cosAngleDimuonBSpot2D,triggerRes};
++        deltaEta_photon_fittedDimuon,cosDeltaPhi_photon_fittedDimuon,cosAngleDimuonBSpot2D,triggerRes,
++        bestPVtoBestPVmod_z,fittedDimuonLV.Pt(),photonLV.Pt(),photonModLV.Pt(),candBsLV.Pt(),candBsModLV.Pt()};
+         
+         tOut->Fill(outArray);
+ 
+@@ -380,4 +383,4 @@
+   cout <<"*** Analyze event: " << ev.id() <<" analysed event count:" << ++theEventCount << endl;
+ }
+ 
+-DEFINE_FWK_MODULE(JpsiGStartApril);
+\ No newline at end of file
++DEFINE_FWK_MODULE(JpsiGMidApril);
+\ No newline at end of file

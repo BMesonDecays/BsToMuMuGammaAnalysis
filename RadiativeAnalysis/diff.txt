@@ -1,0 +1,196 @@
+--- JpsiGEndMarch_MC.cc	2026-03-26 14:31:28.522165111 +0100
++++ JpsiGMidApril_MC.cc	2026-04-18 19:37:25.766756717 +0200
+@@ -1,4 +1,4 @@
+-// JpsiGEndMarch adapted for MC
++// JpsiGStartApril_MC with pT balance at PV
+ 
+ #include "FWCore/Framework/interface/one/EDAnalyzer.h"
+ 
+@@ -88,14 +88,14 @@
+ using namespace std;
+ 
+ //object definition
+-class JpsiGEndMarch_MC : public edm::one::EDAnalyzer<> {
++class JpsiGMidApril_MC : public edm::one::EDAnalyzer<> {
+ public:
+ 
+   //constructor, function is called when new object is created
+-  explicit JpsiGEndMarch_MC(const edm::ParameterSet& conf);
++  explicit JpsiGMidApril_MC(const edm::ParameterSet& conf);
+ 
+   //destructor, function is called when object is destroyed
+-  ~JpsiGEndMarch_MC();
++  ~JpsiGMidApril_MC();
+ 
+   //edm filter plugin specific functions
+   virtual void beginJob();
+@@ -123,6 +123,7 @@
+   std::vector<int> MuMu = {13, -13};
+ 
+   TNtupleD* tOut;
++  TNtupleD* tPtBalance;
+ 
+   // HLT paths
+   std::string path0 = "HLT_DoubleMu2_Jpsi_LowPt_v";
+@@ -136,7 +137,7 @@
+ 
+ };
+ 
+-JpsiGEndMarch_MC::JpsiGEndMarch_MC(const edm::ParameterSet& conf)
++JpsiGMidApril_MC::JpsiGMidApril_MC(const edm::ParameterSet& conf)
+   : theConfig(conf), theEventCount(0)
+ {
+   cout <<" CTORXX" << endl;
+@@ -153,21 +154,25 @@
+ 
+ }
+ 
+-JpsiGEndMarch_MC::~JpsiGEndMarch_MC()
++JpsiGMidApril_MC::~JpsiGMidApril_MC()
+ {
+   cout <<" DTOR" << endl;
+ }
+ 
+-void JpsiGEndMarch_MC::beginJob()
++void JpsiGMidApril_MC::beginJob()
+ {
+   muonMVAIDProducer_ = new MuonMVAID(theConfig);
+ 
+   tOut = new TNtupleD("tOut","Output tuple",
+-  "fittedDimuonVertexProb:fittedDimuonMass:maxMuonsVertexComp:lXY_fittedDimuon_bSpot:lXY_fittedDimuon_bSpot_sig:dR_photonFittedDimuon:eta:initPhotonEnergy:modScale:candBsMass:candBsModMass:cosAngleBsBSpot2D:cosAngleModBsBSpot2D:l3D_BsPV:l3D_ModBsPV:cosAngleBsPV3D:cosAngleModBsPV3D:lifetimeBs:lifetimeModBs:muon1Id:muon2Id:tight1:tight2:triggerRes");
+-  cout << "HERE JpsiGEndMarch_MC::beginJob()" << endl;
++  "fittedDimuonVertexProb:fittedDimuonMass:maxMuonsVertexComp:lXY_fittedDimuon_bSpot:lXY_fittedDimuon_bSpot_sig:dR_photonFittedDimuon:etaPhoton:initPhotonEnergy:modScale:candBsMass:candBsModMass:cosAngleBsBSpot2D:cosAngleModBsBSpot2D:l3D_BsPV:l3D_ModBsPV:cosAngleBsPV3D:cosAngleModBsPV3D:lifetimeBs:lifetimeModBs:muon1Id:muon2Id:tight1:tight2:dEta:cosdPhi:cosAnDimuonBSpot2D:pTdimuon:pTphoton:etaDimuon:triggerRes:tight1selPV:tight2selPV");
++
++  tPtBalance = new TNtupleD("tPtBalance","pT balance at PV",
++  "pTMiss:pTMissMod:cosDimuonPtMiss:cosDimuonPtMissMod:cosCandBsPtMiss:cosCandBsPtMissMod:pTMissMinusDimuon:pTMissModMinusDimuon:pTMissMinusDimuonMinusPhoton:pTMissMinusDimuonMinusPhotonMod");
++
++  cout << "HERE JpsiGMidApril_MC::beginJob()" << endl;
+ }
+ 
+-void JpsiGEndMarch_MC::endJob()
++void JpsiGMidApril_MC::endJob()
+ {
+   delete muonMVAIDProducer_;
+ 
+@@ -176,18 +181,20 @@
+ 
+   //write data
+   tOut->Write();
++  tPtBalance->Write();
+ 
+   myRootFile.Close();
+ 
+   delete tOut;
++  delete tPtBalance;
+ 
+-  cout << "HERE JpsiGEndMarch_MC::endJob()" << endl;
++  cout << "HERE JpsiGMidApril_MC::endJob()" << endl;
+ }
+ 
+-void JpsiGEndMarch_MC::analyze(
++void JpsiGMidApril_MC::analyze(
+     const edm::Event& ev, const edm::EventSetup& es)
+ {
+-  std::cout << " -------------------------------- HERE JpsiGEndMarch_MC::analyze "<< std::endl;
++  std::cout << " -------------------------------- HERE JpsiGMidApril_MC::analyze "<< std::endl;
+ 
+   const std::vector<reco::GenParticle> & genPar = ev.get(theGenParticleToken);
+   const std::vector<reco::Muon> & recoMuons = ev.get(theMuonToken);
+@@ -346,7 +353,7 @@
+   // get the fitted dimuon state
+   RefCountedKinematicParticle fittedDimuon = twoMuonsFitTree->currentParticle();
+   double fittedDimuonMass = fittedDimuon->currentState().mass();
+-  if (std::fabs(fittedDimuonMass - jpsiMass) > 0.15) return;      
++  //if (std::fabs(fittedDimuonMass - jpsiMass) > 0.15) return;      
+ 
+   // construct the fittedDimuon Lorentz Vector
+   GlobalVector fittedDimuonMom = fittedDimuon->currentState().globalMomentum();
+@@ -363,7 +370,13 @@
+   std::vector<double> lXY_fittedDimuon_bSpot_Vec = Tools::beamSpotVertexLxy(beamSpot, *fittedDimuonVertex);
+   double lXY_fittedDimuon_bSpot = lXY_fittedDimuon_bSpot_Vec.at(0);
+   double lXY_fittedDimuon_bSpot_significance = lXY_fittedDimuon_bSpot / lXY_fittedDimuon_bSpot_Vec.at(1);
+-  if (lXY_fittedDimuon_bSpot_significance < 3.0)  return;
++  //if (lXY_fittedDimuon_bSpot_significance < 3.0)  return;
++
++  // beam spot pointing angle of the dimuon alone
++  const math::XYZPoint beamSpotPoint = beamSpot.position(fittedDimuonVertexPoint.z());
++  math::XYZVector bSpotToVtx3D = fittedDimuonVertexPoint - beamSpotPoint;
++  math::XYZVector bSpotToVtx2D (bSpotToVtx3D.x(),bSpotToVtx3D.y(),0.0);
++  double cosAngleDimuonBSpot2D = bSpotToVtx2D.unit().Dot(fittedDimuonLV.Vect()) / fittedDimuonLV.Pt();
+   
+   ////////////PHOTON//////////////////////////////
+   reco::Photon* igamma = recoMatchedPhotons.at(0)->clone();
+@@ -372,8 +385,12 @@
+   // photon deltaR
+   math::XYZTLorentzVector photonLV = igamma->p4();
+   double deltaR_photon_fittedDimuon = reco::deltaR(fittedDimuonLV,photonLV);
+-  if (deltaR_photon_fittedDimuon > 0.5) return;
+-  if (deltaR_photon_fittedDimuon < 0.05)  return;
++  //if (deltaR_photon_fittedDimuon > 0.5) return;
++  //if (deltaR_photon_fittedDimuon < 0.05)  return;
++
++  // photon deltaEta and deltaPhi wrt. dimuon
++  double deltaEta_photon_fittedDimuon = photonLV.Eta() - fittedDimuonLV.Eta();
++  double cosDeltaPhi_photon_fittedDimuon = TMath::Cos(photonLV.Phi() - fittedDimuonLV.Phi());
+ 
+   // get Lorentz Vector for modified photon energy
+   double initPhotonEnergy = photonLV.energy();
+@@ -392,8 +409,8 @@
+   // initial check of B0s mass
+   double candBsMass = candBsLV.M();
+   double candBsModMass = candBsModLV.M();
+-  if (std::fabs(candBsMass - bsMass) > 1.5
+-    && std::fabs(candBsModMass - bsMass) > 1.5) return;
++  //if (std::fabs(candBsMass - bsMass) > 1.5
++  //  && std::fabs(candBsModMass - bsMass) > 1.5) return;
+ 
+   //
+   // PV selection
+@@ -404,9 +421,6 @@
+ 
+   //
+   // 2D pointing angle to beam spot
+-  const math::XYZPoint beamSpotPoint = beamSpot.position(fittedDimuonVertexPoint.z());
+-  math::XYZVector bSpotToVtx3D = fittedDimuonVertexPoint - beamSpotPoint;
+-  math::XYZVector bSpotToVtx2D (bSpotToVtx3D.x(),bSpotToVtx3D.y(),0.0);
+   double cosAngleBsBSpot2D = bSpotToVtx2D.unit().Dot(candBsLV.Vect()) / candBsLV.Pt();
+   double cosAngleModBsBSpot2D = bSpotToVtx2D.unit().Dot(candBsModLV.Vect()) / candBsModLV.Pt();
+   
+@@ -436,6 +450,8 @@
+   pat::Muon m2pat (*im2);
+   bool tight1 = m1pat.isTightMuon(primaryVertices.at(0));
+   bool tight2 = m2pat.isTightMuon(primaryVertices.at(0));
++  bool tight1_selPV = m1pat.isTightMuon(bestPV);
++  bool tight2_selPV = m2pat.isTightMuon(bestPV);
+ 
+   // HLT paths
+   double triggerRes = 0.0;
+@@ -456,16 +472,23 @@
+ 
+ 
+   // output
+-  const double outArray[24] = {fittedDimuonVertexProb,fittedDimuonMass,maxMuonsVertexComp,lXY_fittedDimuon_bSpot,lXY_fittedDimuon_bSpot_significance,
++  const double outArray[32] = {fittedDimuonVertexProb,fittedDimuonMass,maxMuonsVertexComp,lXY_fittedDimuon_bSpot,lXY_fittedDimuon_bSpot_significance,
+   deltaR_photon_fittedDimuon,eta,initPhotonEnergy,modScale,candBsMass,candBsModMass,
+   cosAngleBsBSpot2D,cosAngleModBsBSpot2D,l3D_BsPV,l3D_ModBsPV,cosAngleBsPV3D,cosAngleModBsPV3D,
+-  lifetimeBs,lifetimeModBs,muon1Id,muon2Id,(double)tight1,(double)tight2,triggerRes};
++  lifetimeBs,lifetimeModBs,muon1Id,muon2Id,(double)tight1,(double)tight2,
++  deltaEta_photon_fittedDimuon,cosDeltaPhi_photon_fittedDimuon,cosAngleDimuonBSpot2D,
++  fittedDimuonLV.Pt(),photonLV.Pt(),fittedDimuonLV.Eta(),triggerRes,(double)tight1_selPV,(double)tight2_selPV};
+   
+   tOut->Fill(outArray);
+ 
++  // pT balance at PV
++  std::vector<double> ptBalanceVars = Tools::getPtBalanceVars(bestPV,bestPVmod,fittedDimuonLV,photonLV,photonModLV);
++  auto pTBalArray = ptBalanceVars.data();
++
++  tPtBalance->Fill(pTBalArray);
+   
+ 
+   cout <<"*** Analyze event: " << ev.id() <<" analysed event count:" << ++theEventCount << endl;
+ }
+ 
+-DEFINE_FWK_MODULE(JpsiGEndMarch_MC);
+\ No newline at end of file
++DEFINE_FWK_MODULE(JpsiGMidApril_MC);
+\ No newline at end of file

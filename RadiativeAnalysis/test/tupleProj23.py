@@ -4,7 +4,7 @@ import sys
 import os
 import numpy as np
 
-analysisTag = "JpsiGMidApril_24"
+analysisTag = "JpsiGStartApril_23"
 tupleName = "tOut"
 
 # Prepare a directory for the output histograms
@@ -15,7 +15,7 @@ if logBool  :
 os.mkdir(dirPath)
 
 # Get the tuple
-tupleFile = r.TFile("./outputData/24allBtoI_JpsiGMidApril_cut1.root","READ")
+tupleFile = r.TFile("./outputData/23BCD_JpsiGStartApril_cut2.root","READ")
 ntuple = tupleFile.Get(tupleName)
 
 # Make a list with branch names
@@ -75,14 +75,8 @@ binInfo = {
     branchNames[22] : (2,0.,1.+1.E-8),
     branchNames[23] : (100,-0.6,0.6),
     branchNames[24] : (100,0.9,1.),
-    branchNames[25] : (100,0.984,1.),   #dimuon
+    branchNames[25] : (100,0.984,1.)   #dimuon
     # triggerRes
-    branchNames[27] : (100,-3.0,3.0),
-    branchNames[28] : (100,0.0,80.0),
-    branchNames[29] : (100,0.0,50.0),
-    branchNames[30] : (100,0.0,50.0),
-    branchNames[31] : (100,0.0,120.0),
-    branchNames[32] : (100,0.0,120.0)
 }
 
 # For "Mod" histos, removes entries without modScale
