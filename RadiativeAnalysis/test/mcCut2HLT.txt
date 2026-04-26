@@ -1,0 +1,24 @@
+Cuts:
+(((((dR_photonFittedDimuon < 0.5 && dR_photonFittedDimuon > 0.05)&&(muon1Id > 0.7 && muon2Id > 0.7))&&(fittedDimuonVertexProb > 0.1))&&(maxMuonsVertexComp < 0.1))&&(TMath::Abs(fittedDimuonMass - 3.097) < 0.06))&&(lXY_fittedDimuon_bSpot_sig > 5.0)
+
+DoubleMu4_LowMass_Displaced       233
+DoubleMu4_Jpsi_NoVertexing        241
+DoubleMu4_Jpsi_Displaced          232
+DoubleMu4_JpsiTrkTrk_Displaced      1
+DoubleMu4_3_LowMass               282
+DoubleMu4_3_Jpsi                  282
+DoubleMu2_Jpsi_LowPt                0
+dtype: int64
+
+Total entries: 402
+ 
+Correlations:
+
+                                DoubleMu4_LowMass_Displaced  DoubleMu4_Jpsi_NoVertexing  DoubleMu4_Jpsi_Displaced  DoubleMu4_JpsiTrkTrk_Displaced  DoubleMu4_3_LowMass  DoubleMu4_3_Jpsi  DoubleMu2_Jpsi_LowPt
+DoubleMu4_LowMass_Displaced                            1.00                        0.95                      0.99                            0.04                 0.77              0.77                   NaN
+DoubleMu4_Jpsi_NoVertexing                             0.95                        1.00                      0.95                            0.04                 0.79              0.79                   NaN
+DoubleMu4_Jpsi_Displaced                               0.99                        0.95                      1.00                            0.04                 0.76              0.76                   NaN
+DoubleMu4_JpsiTrkTrk_Displaced                         0.04                        0.04                      0.04                            1.00                 0.03              0.03                   NaN
+DoubleMu4_3_LowMass                                    0.77                        0.79                      0.76                            0.03                 1.00              1.00                   NaN
+DoubleMu4_3_Jpsi                                       0.77                        0.79                      0.76                            0.03                 1.00              1.00                   NaN
+DoubleMu2_Jpsi_LowPt                                    NaN                         NaN                       NaN                             NaN                  NaN               NaN                   NaN

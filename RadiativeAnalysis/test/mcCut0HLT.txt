@@ -1,0 +1,24 @@
+Cuts:
+(((dR_photonFittedDimuon < 0.5 && dR_photonFittedDimuon > 0.05)&&(TMath::Abs(fittedDimuonMass - 3.097) < 0.15))&&(lXY_fittedDimuon_bSpot_sig > 3.0))&&(fittedDimuonVertexProb > 0.01)
+
+DoubleMu4_LowMass_Displaced       1197
+DoubleMu4_Jpsi_NoVertexing        1341
+DoubleMu4_Jpsi_Displaced          1193
+DoubleMu4_JpsiTrkTrk_Displaced     159
+DoubleMu4_3_LowMass               1607
+DoubleMu4_3_Jpsi                  1607
+DoubleMu2_Jpsi_LowPt                 0
+dtype: int64
+
+Total entries: 2987
+ 
+Correlations:
+
+                                DoubleMu4_LowMass_Displaced  DoubleMu4_Jpsi_NoVertexing  DoubleMu4_Jpsi_Displaced  DoubleMu4_JpsiTrkTrk_Displaced  DoubleMu4_3_LowMass  DoubleMu4_3_Jpsi  DoubleMu2_Jpsi_LowPt
+DoubleMu4_LowMass_Displaced                            1.00                        0.90                      1.00                            0.29                 0.76              0.76                   NaN
+DoubleMu4_Jpsi_NoVertexing                             0.90                        1.00                      0.90                            0.26                 0.82              0.82                   NaN
+DoubleMu4_Jpsi_Displaced                               1.00                        0.90                      1.00                            0.29                 0.75              0.76                   NaN
+DoubleMu4_JpsiTrkTrk_Displaced                         0.29                        0.26                      0.29                            1.00                 0.22              0.22                   NaN
+DoubleMu4_3_LowMass                                    0.76                        0.82                      0.75                            0.22                 1.00              1.00                   NaN
+DoubleMu4_3_Jpsi                                       0.76                        0.82                      0.76                            0.22                 1.00              1.00                   NaN
+DoubleMu2_Jpsi_LowPt                                    NaN                         NaN                       NaN                             NaN                  NaN               NaN                   NaN

@@ -1,0 +1,24 @@
+Cuts:
+((((((((dR_photonFittedDimuon < 0.5 && dR_photonFittedDimuon > 0.05)&&(muon1Id > 0.7 && muon2Id > 0.7))&&(fittedDimuonVertexProb > 0.2))&&(maxMuonsVertexComp < 0.1))&&(TMath::Abs(fittedDimuonMass - 3.097) < 0.06))&&(lXY_fittedDimuon_bSpot_sig > 5.0))&&(cosAngleBsBSpot2D > 0.99998))&&(cosAnDimuonBSpot2D > 0.985))&&(cosAngleBsPV3D > 0.9999)
+
+DoubleMu4_LowMass_Displaced       4973
+DoubleMu4_Jpsi_NoVertexing          26
+DoubleMu4_Jpsi_Displaced            79
+DoubleMu4_JpsiTrkTrk_Displaced      63
+DoubleMu4_3_LowMass               5441
+DoubleMu4_3_Jpsi                   243
+DoubleMu2_Jpsi_LowPt              4480
+dtype: int64
+
+Total entries: 5654
+ 
+Correlations:
+
+                                DoubleMu4_LowMass_Displaced  DoubleMu4_Jpsi_NoVertexing  DoubleMu4_Jpsi_Displaced  DoubleMu4_JpsiTrkTrk_Displaced  DoubleMu4_3_LowMass  DoubleMu4_3_Jpsi  DoubleMu2_Jpsi_LowPt
+DoubleMu4_LowMass_Displaced                            1.00                        0.02                      0.04                            0.04                 0.53              0.04                  0.26
+DoubleMu4_Jpsi_NoVertexing                             0.02                        1.00                      0.55                           -0.01                 0.01             -0.01                  0.02
+DoubleMu4_Jpsi_Displaced                               0.04                        0.55                      1.00                           -0.01                 0.02             -0.02                  0.04
+DoubleMu4_JpsiTrkTrk_Displaced                         0.04                       -0.01                     -0.01                            1.00                 0.02             -0.02                 -0.02
+DoubleMu4_3_LowMass                                    0.53                        0.01                      0.02                            0.02                 1.00              0.04                  0.35
+DoubleMu4_3_Jpsi                                       0.04                       -0.01                     -0.02                           -0.02                 0.04              1.00                  0.01
+DoubleMu2_Jpsi_LowPt                                   0.26                        0.02                      0.04                           -0.02                 0.35              0.01                  1.00
