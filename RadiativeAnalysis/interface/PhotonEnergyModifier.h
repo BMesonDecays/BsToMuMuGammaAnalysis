@@ -4,6 +4,17 @@
 
 namespace PhotonEnergyModifier{
 
+    double getSzymonsModPhotonEnergy (double initE, double eta = 0.0)
+    {
+        double a0 = 0.599366;  // intercept
+        double a1 = 1.02408;  // slope
+
+        double val = initE - a0;
+        val /= a1;
+        
+        return val;
+    }
+
     double getModPhotonEnergy (double initE, double eta)
     {
         double a0 = 0.0;  // intercept

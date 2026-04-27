@@ -1,4 +1,6 @@
 // JpsiGStartApril_MC with pT balance at PV
+// Szymon's photon energy modification used later
+// added candBsGenPhotonMass
 
 #include "FWCore/Framework/interface/one/EDAnalyzer.h"
 
@@ -164,7 +166,7 @@ void JpsiGMidApril_MC::beginJob()
   muonMVAIDProducer_ = new MuonMVAID(theConfig);
 
   tOut = new TNtupleD("tOut","Output tuple",
-  "fittedDimuonVertexProb:fittedDimuonMass:maxMuonsVertexComp:lXY_fittedDimuon_bSpot:lXY_fittedDimuon_bSpot_sig:dR_photonFittedDimuon:etaPhoton:initPhotonEnergy:modScale:candBsMass:candBsModMass:cosAngleBsBSpot2D:cosAngleModBsBSpot2D:l3D_BsPV:l3D_ModBsPV:cosAngleBsPV3D:cosAngleModBsPV3D:lifetimeBs:lifetimeModBs:muon1Id:muon2Id:tight1:tight2:dEta:cosdPhi:cosAnDimuonBSpot2D:pTdimuon:pTphoton:etaDimuon:triggerRes:tight1selPV:tight2selPV");
+  "fittedDimuonVertexProb:fittedDimuonMass:maxMuonsVertexComp:lXY_fittedDimuon_bSpot:lXY_fittedDimuon_bSpot_sig:dR_photonFittedDimuon:etaPhoton:initPhotonEnergy:modScale:candBsMass:candBsModMass:cosAngleBsBSpot2D:cosAngleModBsBSpot2D:l3D_BsPV:l3D_ModBsPV:cosAngleBsPV3D:cosAngleModBsPV3D:lifetimeBs:lifetimeModBs:muon1Id:muon2Id:tight1:tight2:dEta:cosdPhi:cosAnDimuonBSpot2D:pTdimuon:pTphoton:etaDimuon:triggerRes:tight1selPV:tight2selPV:candBsGenPhotonMass");
 
   tPtBalance = new TNtupleD("tPtBalance","pT balance at PV",
   "pTMiss:pTMissMod:cosDimuonPtMiss:cosDimuonPtMissMod:cosCandBsPtMiss:cosCandBsPtMissMod:pTMissMinusDimuon:pTMissModMinusDimuon:pTMissMinusDimuonMinusPhoton:pTMissMinusDimuonMinusPhotonMod");
@@ -395,7 +397,7 @@ void JpsiGMidApril_MC::analyze(
   // get Lorentz Vector for modified photon energy
   double initPhotonEnergy = photonLV.energy();
   double eta = igamma->caloPosition().Eta();
-  double modPhotonEnergy = PhotonEnergyModifier::getModPhotonEnergy(initPhotonEnergy, eta);
+  double modPhotonEnergy = PhotonEnergyModifier::getSzymonsModPhotonEnergy(initPhotonEnergy, eta);
   double modScale = modPhotonEnergy / initPhotonEnergy;
   math::XYZTLorentzVector photonModLV = modScale * photonLV;
   ///////////////////////
@@ -405,10 +407,14 @@ void JpsiGMidApril_MC::analyze(
   // construct B0s candidate Lorentz Vector
   math::XYZTLorentzVector candBsLV = fittedDimuonLV + photonLV;
   math::XYZTLorentzVector candBsModLV = fittedDimuonLV + photonModLV;
+  // gen photon energy
+  math::XYZTLorentzVector genPhotonLV = genMatchedPhotons.at(0)->p4();
+  math::XYZTLorentzVector candBsGenPhotonLV = fittedDimuonLV + genPhotonLV;
 
   // initial check of B0s mass
   double candBsMass = candBsLV.M();
   double candBsModMass = candBsModLV.M();
+  double candBsGenPhotonMass = candBsGenPhotonLV.M();
   //if (std::fabs(candBsMass - bsMass) > 1.5
   //  && std::fabs(candBsModMass - bsMass) > 1.5) return;
 
@@ -472,12 +478,12 @@ void JpsiGMidApril_MC::analyze(
 
 
   // output
-  const double outArray[32] = {fittedDimuonVertexProb,fittedDimuonMass,maxMuonsVertexComp,lXY_fittedDimuon_bSpot,lXY_fittedDimuon_bSpot_significance,
+  const double outArray[33] = {fittedDimuonVertexProb,fittedDimuonMass,maxMuonsVertexComp,lXY_fittedDimuon_bSpot,lXY_fittedDimuon_bSpot_significance,
   deltaR_photon_fittedDimuon,eta,initPhotonEnergy,modScale,candBsMass,candBsModMass,
   cosAngleBsBSpot2D,cosAngleModBsBSpot2D,l3D_BsPV,l3D_ModBsPV,cosAngleBsPV3D,cosAngleModBsPV3D,
   lifetimeBs,lifetimeModBs,muon1Id,muon2Id,(double)tight1,(double)tight2,
   deltaEta_photon_fittedDimuon,cosDeltaPhi_photon_fittedDimuon,cosAngleDimuonBSpot2D,
-  fittedDimuonLV.Pt(),photonLV.Pt(),fittedDimuonLV.Eta(),triggerRes,(double)tight1_selPV,(double)tight2_selPV};
+  fittedDimuonLV.Pt(),photonLV.Pt(),fittedDimuonLV.Eta(),triggerRes,(double)tight1_selPV,(double)tight2_selPV,candBsGenPhotonMass};
   
   tOut->Fill(outArray);
 
