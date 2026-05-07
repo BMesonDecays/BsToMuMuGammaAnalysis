@@ -11,8 +11,8 @@ tupleFile = r.TFile(tag+".root","READ")
 ntuple = tupleFile.Get("tOut")
 
 # Save restricted tuple
-outputFile = r.TFile(tag+"_MuonsMatchedDiff.root","RECREATE")
-newNtuple = ntuple.CopyTree("dRMuon1 < 100.0 && dRMuon2 < 100.0 && twoReMaMuonsDR > 0.0")
+outputFile = r.TFile(tag+"_AllReco.root","RECREATE")
+newNtuple = ntuple.CopyTree("GenDecay == 1.0 && dRPhoton < 100.0 && twoReMaMuonsDR < 100.0")
 newNtuple.Write()
 outputFile.Close()
 tupleFile.Close()
