@@ -35,7 +35,7 @@ for fs in range(nJobs):
   jobId =str(fs).zfill(3)
   execCommand = ['cmsRun','./analysisMC_job.py', jobId, str(files_splitted[fs]).strip('[]')]
   print ('execCommand #',fs,' is: ', execCommand)
-  p=subprocess.Popen(execCommand,stdout=open('JpsiGMidAprilSzGenPh_jobs/out_'+jobId+'.txt','w'), stderr=subprocess.STDOUT)
+  p=subprocess.Popen(execCommand,stdout=open('McSampleDetails_jobs/out_'+jobId+'.txt','w'), stderr=subprocess.STDOUT)
   subprocess.run(['sleep','5'])
   myProc.append( (p, jobId) )
 

@@ -33,7 +33,7 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_mc_FULL','')
 
 
-process.analiza= cms.EDAnalyzer("GenRecoPhoton",
+process.analiza= cms.EDAnalyzer("McSampleDetails",
   outHist = cms.string('BsToJpsiGammaMC.root'),
   xgboost_models = cms.vstring(),
   xgboost_variable_names = cms.vstring(),

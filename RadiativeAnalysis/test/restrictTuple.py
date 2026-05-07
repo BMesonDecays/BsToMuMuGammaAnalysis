@@ -4,14 +4,15 @@ import sys
 import os
 import numpy as np
 
-tag = "JpsiGMidApril_MC"
+tag = "McSampleDetails"
 
 # Get the tuple
-tupleFile = r.TFile("./outputData/"+tag+".root","READ")
+tupleFile = r.TFile(tag+".root","READ")
 ntuple = tupleFile.Get("tOut")
 
 # Save restricted tuple
-outputFile = r.TFile(tag+"_EES.root","RECREATE")
-newNtuple = ntuple.CopyTree("TMath::Abs(etaPhoton) > 1.65 && TMath::Abs(etaPhoton) < 2.5 && initPhotonEnergy < 90.0")
+outputFile = r.TFile(tag+"_MuonsMatchedDiff.root","RECREATE")
+newNtuple = ntuple.CopyTree("dRMuon1 < 100.0 && dRMuon2 < 100.0 && twoReMaMuonsDR > 0.0")
 newNtuple.Write()
 outputFile.Close()
+tupleFile.Close()
