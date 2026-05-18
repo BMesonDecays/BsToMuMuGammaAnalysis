@@ -14,11 +14,13 @@ public:
     /// Select the muon pair from a vector of reco::Muon objects
     std::vector<reco::Muon> selectMuonPair(
         const std::vector<reco::Muon>& muons,
-        const TransientTrackBuilder& transientTrackBuilder);
+        const TransientTrackBuilder& transientTrackBuilder,
+        const reco::BeamSpot& beamSpot,
+        std::vector<float> mvaScores);
 
 private:
     /// Check if a muon passes selection criteria
-    bool passMuonSelection(const reco::Muon& muon) const;
+    bool passMuonSelection(const reco::Muon& mu1, const reco::Muon& mu2) const;
 };
 
 #endif
