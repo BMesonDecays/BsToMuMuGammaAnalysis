@@ -78,8 +78,8 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig):
 	ecalrechitEBTok                = consumes<EcalRecHitCollection>(ecalrechitEB);
 	ecalrechitEE                   = iConfig.getParameter<edm::InputTag>("ecalrechit");
 	ecalrechitEETok                = consumes<EcalRecHitCollection>(ecalrechitEE);
-	// valMapTag						= iConfig.getParameter<edm::InputTag>("mvaValuesMap");
-	// valMapTok						= consumes<edm::ValueMap<float>>(valMapTag);
+	valMapTag						= iConfig.getParameter<edm::InputTag>("mvaValuesMap");
+	valMapTok						= consumes<edm::ValueMap<float>>(valMapTag);
 
 	// valMapPhoTightTag				= iConfig.getParameter<edm::InputTag>("phoTightIDMap");
 	// valMapPhoTightTok				= consumes<edm::ValueMap<bool>>(valMapPhoTightTag);
@@ -216,8 +216,8 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	edm::Handle<std::vector<reco::PFCandidate>> pfCandidates;
 	iEvent.getByToken(PFCandTagTok, pfCandidates);
 
-	// edm::Handle<edm::ValueMap<float>> mvaValuesMap;
-	// iEvent.getByToken(valMapTok, mvaValuesMap);
+	edm::Handle<edm::ValueMap<float>> mvaValuesMap;
+	iEvent.getByToken(valMapTok, mvaValuesMap);
 
 	// edm::Handle<edm::ValueMap<bool>> phoTightIDMap;
 	// iEvent.getByToken(valMapPhoTightTok, phoTightIDMap);
@@ -321,17 +321,45 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 	    //edm::Handle<View<pat::PackedCandidate>> pfCands;
 	    //iEvent.getByToken(pfCandTagTok, pfCands);
 
+		// muons mva id scores
+		std::vector<float> muonMVAIDs = muonMVAIDProducer_->produce(*muons);
+		// photon mva id scores
+		std::vector<float> photonMVAIDs;
+		photonMVAIDs.reserve(photons->size());
+		if(mvaValuesMap.isValid()){
+			for(size_t i = 0; i < photons->size(); ++i){
+				const edm::Ptr<reco::Photon> phoPtr(photons, i);
+				float phoMva = -99.f;
+				if (mvaValuesMap->contains(phoPtr.id())) {
+					phoMva = (*mvaValuesMap)[phoPtr];
+				} else if (mvaValuesMap->idSize() == 1 && phoPtr.id() == edm::ProductID() && phoPtr.key() < mvaValuesMap->size()) {
+					phoMva = mvaValuesMap->begin()[phoPtr.key()];
+				} else {
+					edm::LogWarning("RadiativeAnalysis")
+						<< "Missing compatible photon MVA entry for photon index " << i
+						<< " in run:lumi:event " << iEvent.id().run() << ":"
+						<< iEvent.luminosityBlock() << ":" << iEvent.id().event();
+				}
+				photonMVAIDs.push_back(phoMva);
+			}
+		} else {
+			edm::LogError("RadiativeAnalysis") << "Failed to retrieve MVA values map for photons.";
+			photonMVAIDs.assign(photons->size(), -99.f);
+		}
+		
+
+
 		// select 2 muons with the highest vertex probability and opposite charge
 		vector<reco::Muon>* selectedMuons = new vector<reco::Muon>();
 		MuonSelector muonSelector;
-		*selectedMuons = muonSelector.selectMuonPair(*muons, trackBuilder);
+		*selectedMuons = muonSelector.selectMuonPair(*muons, trackBuilder, *vertexBeamSpot, muonMVAIDs);
 
 		PhotonSelector photonSelector;
 		vector<pat::CompositeCandidate>* selectedConvPhoton = new vector<pat::CompositeCandidate>();
 		*selectedConvPhoton = photonSelector.selectConvertedPhoton(*convPhotons, *selectedMuons, trackBuilder);
 
 		vector<reco::Photon>* selectedPhoton = new vector<reco::Photon>();
-		*selectedPhoton = photonSelector.selectPhoton(*photons, *selectedMuons, trackBuilder);
+		*selectedPhoton = photonSelector.selectPhoton(*photons, *selectedMuons, trackBuilder, photonMVAIDs);
 
 		std::cout << "Selected Muons: " << selectedMuons->size() << ", Selected Photons: " << selectedPhoton->size() << std::endl;
 	   
@@ -354,33 +382,33 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 
 		}
 
-		vector<pat::CompositeCandidate>* selectedConvPhotons = new vector<pat::CompositeCandidate>();
-		*selectedConvPhotons = photonSelector.selectConvertedPhotons(*convPhotons, *selectedMuons, trackBuilder);
-		vector<reco::Photon>* selectedPhotons = new vector<reco::Photon>();
-		*selectedPhotons = photonSelector.selectPhotons(*photons, *selectedMuons, trackBuilder);
-		if(selectedMuons->size()>=2 && (selectedConvPhotons->size() >=2 || selectedPhotons->size() >=2)){
-			TetraObjectVertex tetradcObservables;
-			decayVariables = tetradcObservables.TetraObjectVertexObservables(
-				*selectedMuons, 
-				*selectedPhotons,
-			    *recVtxs,	
-				lazyTools, 
-				*selectedConvPhotons, 
-				bsandvtxVar, 
-				theBField, 
-				nominalMuonMass, 
-				nominalElectronMass, 
-				trackBuilder,
-				bmmgRootTree_);
-		        bmmgRootTree_->vertexTypeFlag_ = 2;
-		}
+		// vector<pat::CompositeCandidate>* selectedConvPhotons = new vector<pat::CompositeCandidate>();
+		// *selectedConvPhotons = photonSelector.selectConvertedPhotons(*convPhotons, *selectedMuons, trackBuilder);
+		// vector<reco::Photon>* selectedPhotons = new vector<reco::Photon>();
+		// *selectedPhotons = photonSelector.selectPhotons(*photons, *selectedMuons, trackBuilder, photonMVAIDs);
+		// if(selectedMuons->size()>=2 && (selectedConvPhotons->size() >=2 || selectedPhotons->size() >=2)){
+		// 	TetraObjectVertex tetradcObservables;
+		// 	decayVariables = tetradcObservables.TetraObjectVertexObservables(
+		// 		*selectedMuons, 
+		// 		*selectedPhotons,
+		// 	    *recVtxs,	
+		// 		lazyTools, 
+		// 		*selectedConvPhotons, 
+		// 		bsandvtxVar, 
+		// 		theBField, 
+		// 		nominalMuonMass, 
+		// 		nominalElectronMass, 
+		// 		trackBuilder,
+		// 		bmmgRootTree_);
+		//         bmmgRootTree_->vertexTypeFlag_ = 2;
+		// }
 
-		if(selectedMuons->size()==2 && tracks->size()>=2){
-			ReferenceModeratorVertex refmodvtxObservables;
-			decayVariables = refmodvtxObservables.ReferenceModeratorVertexObservables(*selectedMuons, *tracks, bsandvtxVar, theBField, 
-			nominalMuonMass, nominalKaonMass, bmmgRootTree_);
-			bmmgRootTree_->vertexTypeFlag_ = 3;
-		}
+		// if(selectedMuons->size()==2 && tracks->size()>=2){
+		// 	ReferenceModeratorVertex refmodvtxObservables;
+		// 	decayVariables = refmodvtxObservables.ReferenceModeratorVertexObservables(*selectedMuons, *tracks, bsandvtxVar, theBField, 
+		// 	nominalMuonMass, nominalKaonMass, bmmgRootTree_);
+		// 	bmmgRootTree_->vertexTypeFlag_ = 3;
+		// }
 
 		// if(selectedMuons->size()==2){
 		// 	vector<float> muonMVAIDs = muonMVAIDProducer_->produce(*selectedMuons);
@@ -577,8 +605,13 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 				// 	bmmgRootTree_->photonTightID_[iPhoton] = isTight;
 				// }
 				// if (mvaValuesMap.isValid()) {
-				// 	const auto pho = edm::Ref<std::vector<reco::Photon>>(photons, iPhoton);
-				// 	double mvaScore = (*mvaValuesMap)[pho];
+				// 	const edm::Ptr<reco::Photon> phoPtr(photons, iPhoton);
+				// 	double mvaScore = -99.;
+				// 	if (mvaValuesMap->contains(phoPtr.id())) {
+				// 		mvaScore = (*mvaValuesMap)[phoPtr];
+				// 	} else if (mvaValuesMap->idSize() == 1 && phoPtr.id() == edm::ProductID() && phoPtr.key() < mvaValuesMap->size()) {
+				// 		mvaScore = mvaValuesMap->begin()[phoPtr.key()];
+				// 	}
 				// 	bmmgRootTree_->photonMVAScore_[iPhoton] = mvaScore;
 				// }
 				
