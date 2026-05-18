@@ -28,29 +28,43 @@ PhotonSelector::~PhotonSelector() {}
 std::vector<reco::Photon> PhotonSelector::selectPhoton(
     const std::vector<reco::Photon>& photons,
     const std::vector<reco::Muon>& muons,
-    const TransientTrackBuilder& transientTrackBuilder) {
+    const TransientTrackBuilder& transientTrackBuilder,
+    std::vector<float> photonMVAIDs) {
     
     std::vector<reco::Photon> selectedPhotons;
 
-    if(photons.size() == 0 || muons.size() < 2) {
+    if(photons.size() == 0 || muons.size() < 2 || photonMVAIDs.size() != photons.size()) {
         return selectedPhotons; // Return empty if no photons or less than 2 muons
     }
+
+    // reject photons with id score less than -0.07
+    std::vector<reco::Photon> passingPhotons;
+    for(long unsigned int i = 0; i < photons.size(); ++i) {
+        if(photonMVAIDs.at(i) >= -0.07) {
+            passingPhotons.push_back(photons[i]);
+        }
+    }
+
+    if (passingPhotons.empty()) {
+        return selectedPhotons;
+    }
+
     
     reco::Candidate::LorentzVector muonPairP4 = muons[0].p4() + muons[1].p4();
 
     std::vector<double> dimuonPhotonDeltaRs;
-    for(auto pho : photons)
+    for(auto pho : passingPhotons)
     {
         double dR = deltaR(muonPairP4.eta(), muonPairP4.phi(), pho.eta(), pho.phi());
         dimuonPhotonDeltaRs.push_back(dR);
     }
 
-    std::vector<size_t> photonIndicesSortedByDeltaR(photons.size());
+    std::vector<size_t> photonIndicesSortedByDeltaR(passingPhotons.size());
     std::iota(photonIndicesSortedByDeltaR.begin(), photonIndicesSortedByDeltaR.end(), 0);
     std::sort(photonIndicesSortedByDeltaR.begin(), photonIndicesSortedByDeltaR.end(),
        [&dimuonPhotonDeltaRs](size_t i1, size_t i2) { return dimuonPhotonDeltaRs[i1] < dimuonPhotonDeltaRs[i2]; });
     
-    selectedPhotons.push_back(photons[photonIndicesSortedByDeltaR[0]]);
+    selectedPhotons.push_back(passingPhotons[photonIndicesSortedByDeltaR[0]]);
 
     return selectedPhotons;
 }
@@ -58,14 +72,27 @@ std::vector<reco::Photon> PhotonSelector::selectPhoton(
 std::vector<reco::Photon> PhotonSelector::selectPhotons(
     const std::vector<reco::Photon>& photons,
     const std::vector<reco::Muon>& muons,
-    const TransientTrackBuilder& transientTrackBuilder) {
+    const TransientTrackBuilder& transientTrackBuilder,
+    std::vector<float> photonMVAIDs) {
     
     std::vector<reco::Photon> selectedPhotons;
 
-    if(photons.size() < 2 || muons.size() < 2) {
+    if(photons.size() < 2 || muons.size() < 2 || photonMVAIDs.size() != photons.size()) {
         return selectedPhotons; // Return empty if less than 2 photons or less than 2 muons
     }
     
+    // reject photons with id score less than -0.07
+    std::vector<reco::Photon> passingPhotons;
+    for(long unsigned int i = 0; i < photons.size(); ++i) {
+        if(photonMVAIDs.at(i) >= -0.07) {
+            passingPhotons.push_back(photons[i]);
+        }
+    }
+
+    if (passingPhotons.size() < 2) {
+        return selectedPhotons;
+    }
+
     reco::Candidate::LorentzVector muonPairP4 = muons[0].p4() + muons[1].p4();
 
     // select a photon pair with the smallest deltaR to the dimuon system, and if it passes the selection criteria, add it to the selectedPhotons vector
@@ -73,14 +100,14 @@ std::vector<reco::Photon> PhotonSelector::selectPhotons(
     reco::Photon selectedPho2;
     double minDeltaR = std::numeric_limits<double>::max();
 
-    if(photons.size() > 1)
+    if(passingPhotons.size() > 1)
     {
-        for(long unsigned int i = 0; i < photons.size(); i++)
+        for(long unsigned int i = 0; i < passingPhotons.size(); i++)
         {
-            for(long unsigned int j = i + 1; j < photons.size(); j++)
+            for(long unsigned int j = i + 1; j < passingPhotons.size(); j++)
             {
-                reco::Photon pho1 = photons[i];
-                reco::Photon pho2 = photons[j];
+                reco::Photon pho1 = passingPhotons[i];
+                reco::Photon pho2 = passingPhotons[j];
                 reco::Candidate::LorentzVector photonPairP4 = pho1.p4() + pho2.p4();
                 double dR = deltaR(muonPairP4.eta(), muonPairP4.phi(), photonPairP4.eta(), photonPairP4.phi());
                 if(dR < minDeltaR)

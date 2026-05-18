@@ -17,12 +17,14 @@ public:
     std::vector<reco::Photon> selectPhoton(
         const std::vector<reco::Photon>& photons,
         const std::vector<reco::Muon>& muons,
-        const TransientTrackBuilder& transientTrackBuilder);
+        const TransientTrackBuilder& transientTrackBuilder,
+        std::vector<float> photonMVAIDs);
     
     std::vector<reco::Photon> selectPhotons(
         const std::vector<reco::Photon>& photons,
         const std::vector<reco::Muon>& muons,
-        const TransientTrackBuilder& transientTrackBuilder);
+        const TransientTrackBuilder& transientTrackBuilder,
+        std::vector<float> photonMVAIDs);
 
     std::vector<pat::CompositeCandidate> selectConvertedPhoton(
         const std::vector<pat::CompositeCandidate>& conversions,
