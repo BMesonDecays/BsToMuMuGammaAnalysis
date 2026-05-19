@@ -191,15 +191,15 @@ process.CaloGeometryBuilder = cms.ESProducer("CaloGeometryBuilder",
 )
 
 # photon ID
-# from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
-# dataFormat = DataFormat.AOD
-# switchOnVIDPhotonIdProducer(process, dataFormat)
-# # id_modules = ["RecoEgamma.PhotonIdentification.Identification.mvaPhotonID_Winter22_122X_V1_cff"]
+from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
+dataFormat = DataFormat.AOD
+switchOnVIDPhotonIdProducer(process, dataFormat)
+id_modules = ["RecoEgamma.PhotonIdentification.Identification.mvaPhotonID_Winter22_122X_V1_cff"]
 # id_modules = ["RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_RunIIIWinter22_122X_V1_cff"]
-# for idmod in id_modules:
-#     setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
-# process.photonMVAValueMapProducer.src = cms.InputTag("photons")
-# process.egmPhotonIDs.physicsObjectSrc = cms.InputTag("photons")
+for idmod in id_modules:
+    setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
+process.photonMVAValueMapProducer.src = cms.InputTag("photons")
+process.egmPhotonIDs.physicsObjectSrc = cms.InputTag("photons")
 
 
 # egamma post reco tools corrections
@@ -330,7 +330,7 @@ process.dumpES = cms.EDAnalyzer("PrintEventSetupContent")
 process.espath = cms.Path(process.dumpES)
 
 #process.ntup = cms.Path(process.allPiTracks * process.allKTracks * process.kTracks * process.piTracks * process.bVertexAnalysis )
-# process.ntup = cms.Path(process.egmPhotonIDSequence*process.oniaPhotonCandidates*process.bmmgVertexAnalysis )
+process.ntup = cms.Path(process.egmPhotonIDSequence*process.oniaPhotonCandidates*process.bmmgVertexAnalysis )
 # process.ntup = cms.Path(process.egammaPostRecoSeq*process.oniaPhotonCandidates*process.bmmgVertexAnalysis )
 process.ntup = cms.Path(process.oniaPhotonCandidates*process.bmmgVertexAnalysis )
 
