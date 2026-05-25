@@ -239,9 +239,9 @@ for (size_t i = 0; i < photons.size(); ++i) {
         rrt->DeltaRPhoton1Photon2_mmrecogg_ = deltaR(photon1.eta(), photon1.phi(), photon2.eta(), photon2.phi());
 
         std::vector<reco::TransientTrack> ttrk_photons;
-        //TMatrixD* covPtr = nullptr;
+        TMatrixD* covPtr;
         //std::vector<std::unique_ptr<TMatrixD>> covPtrs;
-        std::vector<TMatrixD> covPtrs;
+        std::vector<TMatrixD*> covPtrs;
 
         for (const auto& photon : {photon1, photon2}) {
             GlobalPoint vertexPostion(bsAndVtxInfo.pv_x, bsAndVtxInfo.pv_y, bsAndVtxInfo.pv_z);
@@ -250,30 +250,34 @@ for (size_t i = 0; i < photons.size(); ++i) {
             FreeTrajectoryState photonFTS(vertexPostion, vertexDirection, photon_charge, &bField);
 
             // Optional debugging
-            std::cout << "Photon FTS: " 
-            << photonFTS.position().x() 
-            << "\t"<< photonFTS.position().y() 
-            << "\t" << photonFTS.position().z() <<"\n";
-
-            reco::TransientTrack transientrackforPhoton = transientTrackBuilder.build(photonFTS);
+            // std::cout << "Photon FTS: " 
+            // << photonFTS.position().x() 
+            // << "\t"<< photonFTS.position().y() 
+            // << "\t" << photonFTS.position().z() <<"\n";
 
             // Photon covariance and error
             TMatrixD cov(lazyTools.covariancesXYZ(*photon.superCluster()));
             //covPtrs.push_back(std::make_unique<TMatrixD>(cov));
-            covPtrs.push_back(cov); // Store the covariance matrix for each photon
-            //covPtr = new TMatrixD(cov);
+            covPtr = new TMatrixD(cov);
+            covPtrs.push_back(covPtr);
             AlgebraicSymMatrix66 photonCov{ROOT::Math::SMatrixIdentity()};
-            AlgebraicVector6 diagonal(1., 1., 1., 1., 1., 1.);
+            AlgebraicVector6 diagonal(1e6, 1e6, 1e6, 1e6, 1e6, 1e6);
             photonCov.SetDiagonal(diagonal);
             CartesianTrajectoryError photonErr(photonCov);
             photonFTS.setCartesianError(photonErr);
 
+            reco::TransientTrack transientrackforPhoton = transientTrackBuilder.build(photonFTS);
+
             ttrk_photons.push_back(transientrackforPhoton);
         }
 
+        GlobalPoint SVKalman(tv.position().x(), tv.position().y(), tv.position().z());
+        GlobalVector Bsp3sum = GlobalVector(BCand.Px(), BCand.Py(), BCand.Pz());
+        int lowestDCAIndex = BeamSpotAndVertex::LowestDCAIndex(PVs, SVKalman, Bsp3sum);
+        reco::Vertex PVlowestDCA = PVs[lowestDCAIndex];
 
         KinematicConstrainedFit BCandFitter;
-        bool fitSuccess = BCandFitter.TetraObjectVertexFitRecoPhoton(ttrk_muons, ttrk_photons, dcv.dimuonMass, 0.001, {photon1, photon2}, covPtrs);
+        bool fitSuccess = BCandFitter.TetraObjectVertexFitRecoPhoton(ttrk_muons, ttrk_photons, resonanceResult, {photon1, photon2}, covPtrs, PVlowestDCA, bField, transientTrackBuilder);
         if (!fitSuccess) continue;
 
         rrt->VertexfitBsMass_mmrecogg_ = BCandFitter.getBhadronMass();

@@ -382,26 +382,27 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 
 		}
 
-		// vector<pat::CompositeCandidate>* selectedConvPhotons = new vector<pat::CompositeCandidate>();
-		// *selectedConvPhotons = photonSelector.selectConvertedPhotons(*convPhotons, *selectedMuons, trackBuilder);
-		// vector<reco::Photon>* selectedPhotons = new vector<reco::Photon>();
-		// *selectedPhotons = photonSelector.selectPhotons(*photons, *selectedMuons, trackBuilder, photonMVAIDs);
-		// if(selectedMuons->size()>=2 && (selectedConvPhotons->size() >=2 || selectedPhotons->size() >=2)){
-		// 	TetraObjectVertex tetradcObservables;
-		// 	decayVariables = tetradcObservables.TetraObjectVertexObservables(
-		// 		*selectedMuons, 
-		// 		*selectedPhotons,
-		// 	    *recVtxs,	
-		// 		lazyTools, 
-		// 		*selectedConvPhotons, 
-		// 		bsandvtxVar, 
-		// 		theBField, 
-		// 		nominalMuonMass, 
-		// 		nominalElectronMass, 
-		// 		trackBuilder,
-		// 		bmmgRootTree_);
-		//         bmmgRootTree_->vertexTypeFlag_ = 2;
-		// }
+		vector<pat::CompositeCandidate>* selectedConvPhotons = new vector<pat::CompositeCandidate>();
+		*selectedConvPhotons = photonSelector.selectConvertedPhotons(*convPhotons, *selectedMuons, trackBuilder);
+		vector<reco::Photon>* selectedPhotons = new vector<reco::Photon>();
+		*selectedPhotons = photonSelector.selectPhotons(*photons, *selectedMuons, trackBuilder, photonMVAIDs);
+		
+		if(selectedMuons->size()>=2 && (selectedConvPhotons->size() >=2 || selectedPhotons->size() >=2)){
+			TetraObjectVertex tetradcObservables;
+			decayVariables = tetradcObservables.TetraObjectVertexObservables(
+				*selectedMuons, 
+				*selectedPhotons,
+			    *recVtxs,	
+				lazyTools, 
+				*selectedConvPhotons, 
+				bsandvtxVar, 
+				theBField, 
+				nominalMuonMass, 
+				nominalElectronMass, 
+				trackBuilder,
+				bmmgRootTree_);
+		        bmmgRootTree_->vertexTypeFlag_ = 2;
+		}
 
 		// if(selectedMuons->size()==2 && tracks->size()>=2){
 		// 	ReferenceModeratorVertex refmodvtxObservables;
