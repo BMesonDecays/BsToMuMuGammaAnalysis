@@ -119,7 +119,7 @@ else:
 cmsRun makeTree_BsMuMuGamma_MC_AOD.py nEvents=30000 outputFile=myBMMGPhiGammaTree.root
 """
 
-process.source = cms.Source('PoolSource', fileNames =cms.untracked.vstring("file:/eos/user/s/sslawins/CMSSW_14_1_1/src/UserCode/Analysis/test/crab/BsToMuMuGamma_filtered_eb_es_merged.root") )
+process.source = cms.Source('PoolSource', fileNames =cms.untracked.vstring("file:/eos/user/s/sslawins/data/official_BsToMuMuGammaMC.root") )
 
 
 # process.source = cms.Source("PoolSource",
@@ -128,7 +128,7 @@ process.source = cms.Source('PoolSource', fileNames =cms.untracked.vstring("file
 #                             fileNames = cms.untracked.vstring()
 #                             )
 
-# #prefixPath4 = '/eos/user/a/almuhamm/MuSampleSharedDirectory/BPAG_AOD/mmgamma/0000'
+#prefixPath4 = '/eos/user/a/almuhamm/MuSampleSharedDirectory/BPAG_AOD/mmgamma/0000'
 # prefixPath1 ='/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToJpsiGamma_MCTunesRun3ECM13p6TeV/BsToJpsiGamma_CMSSW_12_4_11_patch3_19_01_2025/250119_174005/0001/'
 # prefixPath2 ='/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToPhiGamma_MCTunesRun3ECM13p6TeV/BsToPhiGamma_CMSSW_12_4_11_patch3_06_12_2024/241206_105826/0000/'
 # prefixPath3 ='/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToKStarGamma_MCTunesRun3ECM13p6TeV/BsToKStarGamma_CMSSW_12_4_11_patch3_02_01_2024/250110_222730/0001/'
@@ -136,6 +136,7 @@ process.source = cms.Source('PoolSource', fileNames =cms.untracked.vstring("file
 # prefixPath5 ='/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToJpsiPi0_MCTunesRun3ECM13p6TeV/BsToJpsiPi0_CMSSW_12_4_11_patch3_30_11_2024/241209_175957/0000'
 # prefixPath6 = '/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToJpsiEta_MCTunesRun3ECM13p6TeV/BsToJpsiEta_CMSSW_12_4_11_patch3_09_01_2024/250109_235331/0000'
 # prefixPath7 = '/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_Pi0ToGammaGamma_Pi0PythiaGun/Pi0ToGammaGamma_CMSSW_12_4_11_patch3_12_12_2024/241212_131944/0000'
+# prefixPath8 = '/eos/user/s/sslawins/downloaded_dataset/BdTo2MuG_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/BsToMuMuGamma_analysis/260419_200141/0000'
 # fileList1 = glob.glob(prefixPath1+'/*.root')
 # fileList2 = glob.glob(prefixPath2+'/*.root')
 # fileList3 = glob.glob(prefixPath3+'/*.root')
@@ -143,9 +144,10 @@ process.source = cms.Source('PoolSource', fileNames =cms.untracked.vstring("file
 # fileList5 = glob.glob(prefixPath5+'/*.root')
 # fileList6 = glob.glob(prefixPath6+'/*.root')
 # fileList7 = glob.glob(prefixPath7+'/*.root')
+# fileList8 = glob.glob(prefixPath8+'/*.root')
 # #fileList =  fileList1 + fileList2 + fileList3 + fileList4 + fileList5
 # #random.shuffle(fileList)
-# fileList_mix = ['file:'+aFile for aFile in fileList4]
+# fileList_mix = ['file:'+aFile for aFile in fileList8]
 # process.source.fileNames = fileList_mix
 
 
@@ -268,7 +270,10 @@ process.bmmgVertexAnalysis = cms.EDAnalyzer("RadiativeAnalysis",
                                           xgboost_variable_names = cms.vstring(),
                                           mvaValuesMap     = cms.InputTag("photonMVAValueMapProducer:PhotonMVAEstimatorRunIIIWinter22v1Values"),
                                           phoTightIDMap     = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-RunIIIWinter22-122X-V1-tight"),
-                                          phoEnergyCorrMap     = cms.InputTag("calibratedPhotons:ecalEnergyPostCorr")
+                                          phoEnergyCorrMap     = cms.InputTag("calibratedPhotons:ecalEnergyPostCorr"),
+                                          muMVACut = cms.double(0.83),
+                                          photonMVACut = cms.double(-0.07)
+                                          
 
 )
 
@@ -332,7 +337,7 @@ process.espath = cms.Path(process.dumpES)
 #process.ntup = cms.Path(process.allPiTracks * process.allKTracks * process.kTracks * process.piTracks * process.bVertexAnalysis )
 process.ntup = cms.Path(process.egmPhotonIDSequence*process.oniaPhotonCandidates*process.bmmgVertexAnalysis )
 # process.ntup = cms.Path(process.egammaPostRecoSeq*process.oniaPhotonCandidates*process.bmmgVertexAnalysis )
-process.ntup = cms.Path(process.oniaPhotonCandidates*process.bmmgVertexAnalysis )
+# process.ntup = cms.Path(process.oniaPhotonCandidates*process.bmmgVertexAnalysis )
 
 #process.filter = cms.Path(process.noScraping)
 process.schedule = cms.Schedule(process.ntup,process.espath)

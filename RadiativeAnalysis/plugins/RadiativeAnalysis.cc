@@ -129,6 +129,9 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig):
 	verbose_                          = iConfig.getParameter<bool>("verbose");
 	TestVerbose_                      = iConfig.getParameter<bool>("TestVerbose");
 
+	muMVACut_                         = iConfig.getParameter<double>("muMVACut");
+	photonMVACut_                     = iConfig.getParameter<double>("photonMVACut");
+
 	event_counter_ = 0;
 	elecounter_    = 0;
 	muoncounter_   = 0;
@@ -352,14 +355,14 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 		// select 2 muons with the highest vertex probability and opposite charge
 		vector<reco::Muon>* selectedMuons = new vector<reco::Muon>();
 		MuonSelector muonSelector;
-		*selectedMuons = muonSelector.selectMuonPair(*muons, trackBuilder, *vertexBeamSpot, muonMVAIDs);
+		*selectedMuons = muonSelector.selectMuonPair(*muons, trackBuilder, *vertexBeamSpot, muonMVAIDs, muMVACut_);
 
 		PhotonSelector photonSelector;
 		vector<pat::CompositeCandidate>* selectedConvPhoton = new vector<pat::CompositeCandidate>();
 		*selectedConvPhoton = photonSelector.selectConvertedPhoton(*convPhotons, *selectedMuons, trackBuilder);
 
 		vector<reco::Photon>* selectedPhoton = new vector<reco::Photon>();
-		*selectedPhoton = photonSelector.selectPhoton(*photons, *selectedMuons, trackBuilder, photonMVAIDs);
+		*selectedPhoton = photonSelector.selectPhoton(*photons, *selectedMuons, trackBuilder, photonMVAIDs, photonMVACut_);
 
 		std::cout << "Selected Muons: " << selectedMuons->size() << ", Selected Photons: " << selectedPhoton->size() << std::endl;
 	   
@@ -385,7 +388,7 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 		vector<pat::CompositeCandidate>* selectedConvPhotons = new vector<pat::CompositeCandidate>();
 		*selectedConvPhotons = photonSelector.selectConvertedPhotons(*convPhotons, *selectedMuons, trackBuilder);
 		vector<reco::Photon>* selectedPhotons = new vector<reco::Photon>();
-		*selectedPhotons = photonSelector.selectPhotons(*photons, *selectedMuons, trackBuilder, photonMVAIDs);
+		*selectedPhotons = photonSelector.selectPhotons(*photons, *selectedMuons, trackBuilder, photonMVAIDs, photonMVACut_);
 		
 		if(selectedMuons->size()>=2 && (selectedConvPhotons->size() >=2 || selectedPhotons->size() >=2)){
 			TetraObjectVertex tetradcObservables;

@@ -14,7 +14,8 @@ std::vector<reco::Muon> MuonSelector::selectMuonPair(
     const std::vector<reco::Muon>& muons,
     const TransientTrackBuilder& transientTrackBuilder,
     const reco::BeamSpot& beamSpot,
-    std::vector<float> mvaScores) {
+    std::vector<float> mvaScores,
+    double mvaCut) {
     
     
     // Form pairs from selected muons
@@ -29,7 +30,7 @@ std::vector<reco::Muon> MuonSelector::selectMuonPair(
             if (!passMuonSelection(mu1, mu2)) continue;
             double mvaScore1 = mvaScores.at(i);
             double mvaScore2 = mvaScores.at(j);
-            if (mvaScore1 < 0.83 || mvaScore2 < 0.83) continue;
+            if (mvaScore1 < mvaCut || mvaScore2 < mvaCut) continue;
             
             // Create transient tracks
             auto tt1 = transientTrackBuilder.build(mu1.muonBestTrack());

@@ -29,7 +29,8 @@ std::vector<reco::Photon> PhotonSelector::selectPhoton(
     const std::vector<reco::Photon>& photons,
     const std::vector<reco::Muon>& muons,
     const TransientTrackBuilder& transientTrackBuilder,
-    std::vector<float> photonMVAIDs) {
+    std::vector<float> photonMVAIDs,
+    double photonMVAcut) {
     
     std::vector<reco::Photon> selectedPhotons;
 
@@ -40,7 +41,7 @@ std::vector<reco::Photon> PhotonSelector::selectPhoton(
     // reject photons with id score less than -0.07
     std::vector<reco::Photon> passingPhotons;
     for(long unsigned int i = 0; i < photons.size(); ++i) {
-        if(photonMVAIDs.at(i) >= -0.07) {
+        if(photonMVAIDs.at(i) >= photonMVAcut) {
             passingPhotons.push_back(photons[i]);
         }
     }
@@ -73,7 +74,8 @@ std::vector<reco::Photon> PhotonSelector::selectPhotons(
     const std::vector<reco::Photon>& photons,
     const std::vector<reco::Muon>& muons,
     const TransientTrackBuilder& transientTrackBuilder,
-    std::vector<float> photonMVAIDs) {
+    std::vector<float> photonMVAIDs,
+    double photonMVAcut) {
     
     std::vector<reco::Photon> selectedPhotons;
 
@@ -84,7 +86,7 @@ std::vector<reco::Photon> PhotonSelector::selectPhotons(
     // reject photons with id score less than -0.07
     std::vector<reco::Photon> passingPhotons;
     for(long unsigned int i = 0; i < photons.size(); ++i) {
-        if(photonMVAIDs.at(i) >= -0.07) {
+        if(photonMVAIDs.at(i) >= photonMVAcut) {
             passingPhotons.push_back(photons[i]);
         }
     }

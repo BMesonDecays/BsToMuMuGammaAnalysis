@@ -16,7 +16,8 @@ public:
         const std::vector<reco::Muon>& muons,
         const TransientTrackBuilder& transientTrackBuilder,
         const reco::BeamSpot& beamSpot,
-        std::vector<float> mvaScores);
+        std::vector<float> mvaScores,
+        double mvaCut);
 
 private:
     /// Check if a muon passes selection criteria
