@@ -16,6 +16,16 @@ options.parseArguments()
 
 process = cms.Process("MUMUGamma")
 
+#from RecoEgamma.PhotonIdentification.photonIDValueMapProducer_cff import *
+#from RecoEgamma.PhotonIdentification.egmPhotonIDs_cff import *
+#from RecoEgamma.PhotonIdentification.photonMVAValueMapProducer_cfi import *
+#from RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_RunIIIWinter22_122X_V1_cff import *
+#from RecoEgamma.PhotonIdentification.Identification.mvaPhotonID_Winter22_122X_V1_cff import *
+
+#process.load("RecoEgamma.PhotonIdentification.egmPhotonIDs_cff")
+#process.load("RecoEgamma.PhotonIdentification.photonIDValueMapProducer_cff")
+#process.load("RecoEgamma.PhotonIdentification.photonMVAValueMapProducer_cfi")
+
 
 process.load("Configuration.StandardSequences.MagneticField_cff")
 process.load("Configuration.StandardSequences.Reconstruction_cff")
@@ -28,8 +38,8 @@ process.load('SimGeneral.MixingModule.mixNoPU_cfi')
 process.load("TrackingTools.TransientTrack.TransientTrackBuilder_cfi")
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 from Configuration.AlCa.GlobalTag import GlobalTag
-#process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_mc_FULL','')
-process.GlobalTag = GlobalTag(process.GlobalTag, '124X_mcRun3_2022_realistic_v12','')
+process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_mc_FULL','')
+#process.GlobalTag = GlobalTag(process.GlobalTag, '124X_mcRun3_2022_realistic_v12','')
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 #process.load("Geometry.CaloEventSetup.CaloGeometry_cfi")
 #process.load("Configuration.Geometry.GeometryECALHCAL_cff")
@@ -119,7 +129,8 @@ else:
 cmsRun makeTree_BsMuMuGamma_MC_AOD.py nEvents=30000 outputFile=myBMMGPhiGammaTree.root
 """
 
-process.source = cms.Source('PoolSource', fileNames =cms.untracked.vstring("file:/eos/user/s/sslawins/CMSSW_14_1_1/src/UserCode/Analysis/test/crab/BsToMuMuGamma_filtered_eb_es_merged.root") )
+process.source = cms.Source('PoolSource', 
+        fileNames =cms.untracked.vstring("root://cms-xrd-global.cern.ch//store/mc/Run3Summer22DRPremix/BsTo2MuG_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/AODSIM/124X_mcRun3_2022_realistic_v12-v2/100000/24ac371a-2c39-4db3-b046-c91b49c12819.root") )
 
 
 # process.source = cms.Source("PoolSource",
@@ -194,8 +205,8 @@ process.CaloGeometryBuilder = cms.ESProducer("CaloGeometryBuilder",
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 dataFormat = DataFormat.AOD
 switchOnVIDPhotonIdProducer(process, dataFormat)
-id_modules = ["RecoEgamma.PhotonIdentification.Identification.mvaPhotonID_Winter22_122X_V1_cff"]
-# id_modules = ["RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_RunIIIWinter22_122X_V1_cff"]
+#id_modules = ["RecoEgamma.PhotonIdentification.Identification.mvaPhotonID_Winter22_122X_V1_cff"]
+id_modules = ["RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_RunIIIWinter22_122X_V1_cff"]
 for idmod in id_modules:
     setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
 process.photonMVAValueMapProducer.src = cms.InputTag("photons")
@@ -229,12 +240,21 @@ process.bmmgVertexAnalysis = cms.EDAnalyzer("RadiativeAnalysis",
                                           vertexBeamSpot                = cms.InputTag("offlineBeamSpot"),
                                           primaryvertex                 = cms.InputTag("offlinePrimaryVertices"),
                                           triggerbits                   = cms.InputTag("TriggerResults",'',"HLT"),
+                                          triggerSummary                = cms.InputTag("hltTriggerSummaryAOD","","HLT"),
+                                          HLTprocess                    = cms.untracked.string("HLT"),
                                           pfCandTag                     = cms.InputTag("generalTracks"),
                                           pfSupcluster                  = cms.InputTag("particleFlowSuperClusterECAL","particleFlowSuperClusterECALBarrel"),
-                                          ecalrechit                    = cms.InputTag("reducedEcalRecHitsEB"),
+                                          ecalrechitEB                  = cms.InputTag("reducedEcalRecHitsEB"),
+                                          ecalrechitEE                  = cms.InputTag("reducedEcalRecHitsEE"),
+                                          ecalrechitES                  = cms.InputTag("reducedEcalRecHitsES"),
                                           convertedPhotons              = cms.InputTag("oniaPhotonCandidates","conversions"),
-                                          PFCandTag                   = cms.InputTag("particleFlow"),
+                                          PFCandTag                     = cms.InputTag("particleFlow"),
                                           #IsoTrackTag                   = cms.InputTag("isolatedTracks"),
+                                          xgboost_models                = cms.vstring(),
+                                          xgboost_variable_names        = cms.vstring(),
+                                          mvaValuesMap                  = cms.InputTag("photonMVAValueMapProducer:PhotonMVAEstimatorRunIIIWinter22v1Values"),
+                                          phoTightIDMap                 = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-RunIIIWinter22-122X-V1-tight"),
+                                          phoEnergyCorrMap              = cms.InputTag("calibratedPhotons:ecalEnergyPostCorr"),
                                           StoreDeDxInfo                 = cms.bool(True),
                                           PionZeroMassWindowNoFit       = cms.double(0.05),#05),
                                           EtaMesonMassWindowNoFit       = cms.double(0.05),#017),
@@ -263,12 +283,8 @@ process.bmmgVertexAnalysis = cms.EDAnalyzer("RadiativeAnalysis",
                                           EtaMesonPDGMass               = cms.double(0.5478),
                                           EtaPrimePDGMass               = cms.double(0.9577),
                                           PsiPDGMass                    = cms.double(3.6860),
-                                          outputFile                    = cms.untracked.string(options.outputFile),
-                                          xgboost_models = cms.vstring(),
-                                          xgboost_variable_names = cms.vstring(),
-                                          mvaValuesMap     = cms.InputTag("photonMVAValueMapProducer:PhotonMVAEstimatorRunIIIWinter22v1Values"),
-                                          phoTightIDMap     = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-RunIIIWinter22-122X-V1-tight"),
-                                          phoEnergyCorrMap     = cms.InputTag("calibratedPhotons:ecalEnergyPostCorr")
+                                          outputFile                    = cms.untracked.string(options.outputFile)
+                                          
 
 )
 
@@ -318,22 +334,24 @@ process.primaryVertexFilter = cms.EDFilter("GoodVertexFilter",
 """
 
 
-# can I do a replace of patMuons with the sequence that includes the trigger matching?
+#can I do a replace of patMuons with the sequence that includes the trigger matching?
 #process.patDefaultSequence.replace(process.patMuons,process.patMuonsWithoutTrigger * process.patTriggerMatching * process.patMuons)
 #process.vertex = cms.Path(process.inclusiveVertexing * process.inclusiveMergedVertices * process.selectedVertices * process.bcandidates)
 #process.pat = cms.Path( process.patDefaultSequence )
 #process.pat = cms.Path(process.patDefaultSequence)
 #print(process.pat)
 
-process.SimpleMemoryCheck = cms.Service("SimpleMemoryCheck", ignoreTotal = cms.untracked.int32(1))
-process.dumpES = cms.EDAnalyzer("PrintEventSetupContent")
-process.espath = cms.Path(process.dumpES)
+#process.SimpleMemoryCheck = cms.Service("SimpleMemoryCheck", ignoreTotal = cms.untracked.int32(1))
+#process.dumpES = cms.EDAnalyzer("PrintEventSetupContent")
+#process.espath = cms.Path(process.dumpES)
 
 #process.ntup = cms.Path(process.allPiTracks * process.allKTracks * process.kTracks * process.piTracks * process.bVertexAnalysis )
 process.ntup = cms.Path(process.egmPhotonIDSequence*process.oniaPhotonCandidates*process.bmmgVertexAnalysis )
-# process.ntup = cms.Path(process.egammaPostRecoSeq*process.oniaPhotonCandidates*process.bmmgVertexAnalysis )
-process.ntup = cms.Path(process.oniaPhotonCandidates*process.bmmgVertexAnalysis )
+#process.ntup = cms.Path(process.egammaPostRecoSeq*process.oniaPhotonCandidates*process.bmmgVertexAnalysis )
+#process.ntup = cms.Path(process.oniaPhotonCandidates*process.bmmgVertexAnalysis )
 
 #process.filter = cms.Path(process.noScraping)
-process.schedule = cms.Schedule(process.ntup,process.espath)
+#process.schedule = cms.Schedule(process.ntup,process.espath)
+process.schedule = cms.Schedule(process.ntup)
+
 
