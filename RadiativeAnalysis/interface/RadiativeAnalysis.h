@@ -71,7 +71,7 @@
 //#include "HLTrigger/HLTcore/interface/HLTPrescaleProvider.h"
 
 
-class RadiativeAnalysis : public edm::one::EDAnalyzer<edm::one::SharedResources> {
+class RadiativeAnalysis : public edm::one::EDAnalyzer<edm::one::SharedResources,edm::one::WatchRuns> {
 public:
   explicit RadiativeAnalysis(const edm::ParameterSet&);
   ~RadiativeAnalysis() override;

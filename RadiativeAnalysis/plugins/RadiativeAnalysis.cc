@@ -73,7 +73,7 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig):
 		triggerobjTok                     = consumes<edm::View<pat::TriggerObjectStandAlone>>(triggerobj);
 	}
 	triggerSummaryTag              = iConfig.getUntrackedParameter<edm::InputTag>("triggerSummary");
-	triggerSummaryTok              = consumes<trigger::TriggerEvent>(triggerSummaryTag_);
+	triggerSummaryTok              = consumes<trigger::TriggerEvent>(triggerSummaryTag);
 	pfSupcluster                   = iConfig.getParameter<edm::InputTag>("pfSupcluster");
 	pfSupclusterTok                = consumes<std::vector<reco::SuperCluster>>(pfSupcluster);
 	ecalrechitEB                   = iConfig.getParameter<edm::InputTag>("ecalrechitEB");
@@ -131,7 +131,7 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig):
 	outputFile_                       = iConfig.getUntrackedParameter<std::string>("outputFile");
 	verbose_                          = iConfig.getParameter<bool>("verbose");
 	TestVerbose_                      = iConfig.getParameter<bool>("TestVerbose");
-	hltProcess_                       = iConfig.getUntrackedParameter<std::string>("HLTprocess","HLT"));
+	hltProcess_                       = iConfig.getUntrackedParameter<std::string>("HLTprocess","HLT");
 	hltConfigInitialized_             = false;
 
 	event_counter_ = 0;
@@ -178,6 +178,10 @@ void RadiativeAnalysis::beginRun(const edm::Run& iRun, const edm::EventSetup& iS
         edm::LogInfo("RadiativeAnalysis")
             << "HLT menu changed. Table: " << hltConfig_.tableName();
 }
+//------------Do not know when to use this function------------------
+void RadiativeAnalysis::endRun(const edm::Run&,const edm::EventSetup&)
+{
+}
 //------------- get filters for a given HLT path (helper function) -------------
 std::vector<std::string>RadiativeAnalysis::getFiltersForPath(const std::string& pathName) const
 {
@@ -210,6 +214,8 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	excludedPhotons.clear();
 	int nBs=0;
 	bmmgRootTree_->resetEntries();
+	
+
 	bmmgRootTree_->runNumber_   = iEvent.id().run();
 	bmmgRootTree_->eventNumber_ = (unsigned int)iEvent.id().event();
 	bmmgRootTree_->lumiSection_ = iEvent.luminosityBlock();
@@ -314,15 +320,6 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
     // substring-collision bugs fixed with _v anchor)
     // =========================================================
 
-	trigMatch_DoubleMu4_3_Bs_.clear(); 
-	trigMatch_DoubleMu4_3_Jpsi_.clear();
-	trigMatch_DoubleMu4_3_LowMass_.clear(); 
-	trigMatch_DoubleMu4_LowMass_Displaced_.clear();
-	trigMatch_DoubleMu4_3_Photon4_BsToMMG_.clear();
-	trigMatch_DoubleMu4_3_Displaced_Photon4_BsToMMG_.clear();
-	trigMatch_DoubleMu4_JpsiTrkTrk_Displaced_.clear();
-	trigMatch_DoubleMu4_Jpsi_NoVertexing_.clear();
-	trigMatch_DoubleMu4_Jpsi_Displaced_.clear();
 
     edm::Handle<edm::TriggerResults> hltbits;
     iEvent.getByToken(triggerbitsTok, hltbits);
@@ -377,9 +374,10 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
             bmmgRootTree_->triggerbit_HLTDimuon4JpsiDisplaced_                   = hltbits->accept(itrig);
         else if (trigName.find("HLT_DoubleMu4_Jpsi_NoVertexing_v") != std::string::npos)
             bmmgRootTree_->triggerbit_HLTDimuon4JpsiNoVertexing_                 = hltbits->accept(itrig);
-        else if (trigName.find("HLT_DoubleMu4_3_Jpsi_v") != std::string::npos)
-            bmmgRootTree_->triggerbit_HLTDimuon4Jpsi_                            = hltbits->accept(itrig);
+       
     }
+
+
 
     // =========================================================
     // TRIGGER OBJECT MATCHING — AOD path, no hardcoded filters
@@ -387,7 +385,7 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
     muTrigMatchMap_.clear();
 
     edm::Handle<trigger::TriggerEvent> trigSummary;
-    iEvent.getByToken(triggerSummaryTok_, trigSummary);
+    iEvent.getByToken(triggerSummaryTok, trigSummary);
 
     if (!trigSummary.isValid()) {
         edm::LogWarning("RadiativeAnalysis") 
@@ -473,28 +471,25 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
         // --- Step C: write per-muon match booleans into ntuple ---
         // (clear vectors then fill per muon — matches your existing push_back style)
-        bmmgRootTree_->trigMatch_DoubleMu4_3_Bs_.clear();
-        bmmgRootTree_->trigMatch_DoubleMu4_3_Jpsi_.clear();
-        bmmgRootTree_->trigMatch_DoubleMu4_3_LowMass_.clear();
-        bmmgRootTree_->trigMatch_DoubleMu4_LowMass_Displaced_.clear();
-        bmmgRootTree_->trigMatch_DoubleMu4_3_Photon4_BsToMMG_.clear();
-        bmmgRootTree_->trigMatch_DoubleMu4_3_Displaced_Photon4_BsToMMG_.clear();
-        bmmgRootTree_->trigMatch_DoubleMu4_JpsiTrkTrk_Displaced_.clear();
-        bmmgRootTree_->trigMatch_DoubleMu4_Jpsi_NoVertexing_.clear();
-        bmmgRootTree_->trigMatch_DoubleMu4_Jpsi_Displaced_.clear();
+        bmmgRootTree_->trigMatch_DoubleMu4_3_Bs_->clear();
+        bmmgRootTree_->trigMatch_DoubleMu4_3_LowMass_->clear();
+        bmmgRootTree_->trigMatch_DoubleMu4_LowMass_Displaced_->clear();
+        bmmgRootTree_->trigMatch_DoubleMu4_3_Photon4_BsToMMG_->clear();
+        bmmgRootTree_->trigMatch_DoubleMu4_3_Displaced_Photon4_BsToMMG_->clear();
+        bmmgRootTree_->trigMatch_DoubleMu4_JpsiTrkTrk_Displaced_->clear();
+        bmmgRootTree_->trigMatch_DoubleMu4_Jpsi_NoVertexing_->clear();
+        bmmgRootTree_->trigMatch_DoubleMu4_Jpsi_Displaced_->clear();
 
-        auto fillMatch = [&](const std::string& path, std::vector<int>& branch) {
+        auto fillMatch = [&](const std::string& path, std::vector<int>* branch) {
             auto it = muTrigMatchMap_.find(path);
             const size_t nMu = muons->size();
             for (size_t iMu = 0; iMu < nMu; ++iMu)
-                branch.push_back(
+                branch->push_back(
                     (it != muTrigMatchMap_.end() && it->second[iMu]) ? 1 : 0);
         };
 
         fillMatch("HLT_DoubleMu4_3_Bs",
                    bmmgRootTree_->trigMatch_DoubleMu4_3_Bs_);
-        fillMatch("HLT_DoubleMu4_3_Jpsi",
-                   bmmgRootTree_->trigMatch_DoubleMu4_3_Jpsi_);
         fillMatch("HLT_DoubleMu4_3_LowMass",
                    bmmgRootTree_->trigMatch_DoubleMu4_3_LowMass_);
         fillMatch("HLT_DoubleMu4_LowMass_Displaced",
