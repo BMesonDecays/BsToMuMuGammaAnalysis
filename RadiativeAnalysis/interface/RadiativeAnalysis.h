@@ -62,11 +62,16 @@
 #include "DataFormats/PatCandidates/interface/PackedTriggerPrescales.h"
 #include <TLorentzVector.h>
 #include "BsToMuMuGammaAnalysis/run3mvaid/interface/MuonMVAID.h"
+#include "FWCore/Common/interface/TriggerNames.h"
+#include "DataFormats/HLTReco/interface/TriggerEvent.h"
+#include "DataFormats/HLTReco/interface/TriggerObject.h"
+#include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
+
 
 //#include "HLTrigger/HLTcore/interface/HLTPrescaleProvider.h"
 
 
-class RadiativeAnalysis : public edm::one::EDAnalyzer<edm::one::SharedResources> {
+class RadiativeAnalysis : public edm::one::EDAnalyzer<edm::one::SharedResources,edm::one::WatchRuns> {
 public:
   explicit RadiativeAnalysis(const edm::ParameterSet&);
   ~RadiativeAnalysis() override;
@@ -80,6 +85,8 @@ public:
   void setFitParGamma(RefCountedKinematicTree& myTree);
   void setFitParHyp1(RefCountedKinematicTree& myTree);
   void setFitParHyp2(RefCountedKinematicTree& myTree);
+  void beginRun(const edm::Run& iRun, const edm::EventSetup& iSetup) override;
+  void endRun(const edm::Run& iRun, const edm::EventSetup& iSetup) override;
 private:
   
   bool MCmatching(const reco::Candidate & particle,  edm::Handle<edm::View<reco::GenParticle>>& genParticles,
@@ -107,6 +114,9 @@ private:
   int FindMuonAncestor(const pat::Muon theMu, edm::Handle<edm::View<reco::GenParticle>>& genParticles);
   int LookForMotherStringId(reco::GenParticle theGenP);
   short int LookForMotherString(reco::GenParticle theGenP);
+ 
+  // -------------------------------------------------------------------------
+
   const TrackerGeometry* m_tracker;
   bool isMCstudy_;
   bool isMINIAOD_;
@@ -146,11 +156,15 @@ private:
   edm::InputTag triggerobj;
   edm::EDGetTokenT<edm::View<pat::TriggerObjectStandAlone>> triggerobjTok;
   edm::InputTag pfSupcluster; 
+   edm::InputTag triggerSummaryTag;
+  edm::EDGetTokenT<trigger::TriggerEvent> triggerSummaryTok;
   edm::EDGetTokenT<std::vector<reco::SuperCluster>>pfSupclusterTok; 
   edm::InputTag ecalrechitEB; 
   edm::EDGetTokenT<EcalRecHitCollection> ecalrechitEBTok;
   edm::InputTag ecalrechitEE; 
   edm::EDGetTokenT<EcalRecHitCollection> ecalrechitEETok;
+  edm::InputTag ecalrechitES;
+  edm::EDGetTokenT<EcalRecHitCollection> ecalrechitESTok;
   edm::InputTag valMapTag;
   edm::EDGetTokenT<edm::ValueMap<float>> valMapTok;
 
@@ -169,7 +183,12 @@ private:
   edm::ESGetToken<MagneticField, IdealMagneticFieldRecord> theBFieldTok;
   edm::ESGetToken<CaloGeometry, CaloGeometryRecord> caloGeomTok;
   unique_ptr<EcalClusterLazyToolsBase::ESGetTokens> iSetupGetTok;
- 
+  
+  HLTConfigProvider                                hltConfig_;
+  bool                                             hltConfigInitialized_;
+  std::string                                      hltProcess_;
+  std::map<std::string, std::vector<bool>>         muTrigMatchMap_;// map: HLT path base name -> per-muon match bool vector (filled per event)
+  std::vector<std::string> getFiltersForPath(const std::string& pathName) const;// Private helper: intrinsically extracts terminal filter labels for a path
 
   
 

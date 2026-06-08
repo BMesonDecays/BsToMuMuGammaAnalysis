@@ -14,6 +14,20 @@ void RadiativeRootTree::createTree(const std::string filename)
   int bufsize = 256000;
   // create tree structure
   bmmgTree_ = new TTree("BMMGTree","BMMGTree",bufsize);
+
+
+
+  trigMatch_DoubleMu4_3_Bs_ = new std::vector<int>(); 
+	trigMatch_DoubleMu4_3_LowMass_ = new std::vector<int>(); 
+	trigMatch_DoubleMu4_LowMass_Displaced_ = new std::vector<int>(); 
+	trigMatch_DoubleMu4_3_Photon4_BsToMMG_ = new std::vector<int>();
+	trigMatch_DoubleMu4_3_Displaced_Photon4_BsToMMG_ = new std::vector<int>(); 
+	trigMatch_DoubleMu4_JpsiTrkTrk_Displaced_ = new std::vector<int>(); 
+	trigMatch_DoubleMu4_Jpsi_NoVertexing_ = new std::vector<int>();
+	trigMatch_DoubleMu4_Jpsi_Displaced_ = new std::vector<int>();
+
+
+
   bmmgTree_->Branch("runNumber",&runNumber_ ,"runNumber/I");
   bmmgTree_->Branch("eventNumber",&eventNumber_,"eventNumber/i");
   bmmgTree_->Branch("lumiSection",&lumiSection_,"lumiSection/I");
@@ -54,6 +68,14 @@ void RadiativeRootTree::createTree(const std::string filename)
   bmmgTree_->Branch("triggerbit_HLTDimuon4JpsiDisplaced", &triggerbit_HLTDimuon4JpsiDisplaced_,"triggerbit_HLTDimuon4JpsiDisplaced_/I");
   bmmgTree_->Branch("triggerbit_HLTDimuon4JpsiNoVertexing",&triggerbit_HLTDimuon4JpsiNoVertexing_,"triggerbit_HLTDimuon4JpsiNoVertexing_/I");
   bmmgTree_->Branch("triggerbit_HLTDimuon4JpsiTrkTrkDisplaced",&triggerbit_HLTDimuon4JpsiTrkTrkDisplaced_,"triggerbit_HLTDimuon4JpsiTrkTrkDisplaced_/I");
+  bmmgTree_->Branch("trigMatch_DoubleMu4_3_Bs", "vector<int>", trigMatch_DoubleMu4_3_Bs_); 
+  bmmgTree_->Branch("trigMatch_DoubleMu4_3_LowMass", "vector<int>", trigMatch_DoubleMu4_3_LowMass_); 
+  bmmgTree_->Branch("trigMatch_DoubleMu4_LowMass_Displaced", "vector<int>", trigMatch_DoubleMu4_LowMass_Displaced_); 
+  bmmgTree_->Branch("trigMatch_DoubleMu4_3_Photon4_BsToMMG", "vector<int>", trigMatch_DoubleMu4_3_Photon4_BsToMMG_);
+  bmmgTree_->Branch("trigMatch_DoubleMu4_3_Displaced_Photon4_BsToMMG","vector<int>", trigMatch_DoubleMu4_3_Displaced_Photon4_BsToMMG_); 
+  bmmgTree_->Branch("trigMatch_DoubleMu4_JpsiTrkTrk_Displaced", "vector<int>", trigMatch_DoubleMu4_JpsiTrkTrk_Displaced_);
+  bmmgTree_->Branch("trigMatch_DoubleMu4_Jpsi_NoVertexing", "vector<int>", trigMatch_DoubleMu4_Jpsi_NoVertexing_);
+  bmmgTree_->Branch("trigMatch_DoubleMu4_Jpsi_Displaced", "vector<int>", trigMatch_DoubleMu4_Jpsi_Displaced_);
   bmmgTree_->Branch("mu1Pt_beffit", &mu1Pt_beffit_,"mu1Pt_beffit/D");
   bmmgTree_->Branch("mu1Pz_beffit", &mu1Pz_beffit_,"mu1Pz_beffit/D");
   bmmgTree_->Branch("mu1Eta_beffit", &mu1Eta_beffit_,"mu1Eta_beffit/D");

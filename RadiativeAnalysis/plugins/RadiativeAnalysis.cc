@@ -56,7 +56,7 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig):
 	/*SuperClusterTag                   = iConfig.getParameter<edm::InputTag>("SuperClusterTag");
 	SuperClusterTagTok                = consumes<edm::View<reco::SuperCluster>>(SuperClusterTag);
 	OOTSuperClusterTag                = iConfig.getParameter<edm::InputTag>("OOTSuperClusterTag");
-        OOTSuperClusterTagTok             = consumes<edm::View<reco::SuperCluster>>(OOTSuperClusterTag);
+    OOTSuperClusterTagTok             = consumes<edm::View<reco::SuperCluster>>(OOTSuperClusterTag);
 	*/
 	PUInfo                            = iConfig.getParameter<edm::InputTag>("PUInfo");
 	PUInfoTok                         = consumes<edm::View<PileupSummaryInfo>>(PUInfo);
@@ -72,25 +72,28 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig):
 		triggerobj                        = iConfig.getParameter<edm::InputTag>("triggerobj");
 		triggerobjTok                     = consumes<edm::View<pat::TriggerObjectStandAlone>>(triggerobj);
 	}
+	triggerSummaryTag              = iConfig.getUntrackedParameter<edm::InputTag>("triggerSummary");
+	triggerSummaryTok              = consumes<trigger::TriggerEvent>(triggerSummaryTag);
 	pfSupcluster                   = iConfig.getParameter<edm::InputTag>("pfSupcluster");
 	pfSupclusterTok                = consumes<std::vector<reco::SuperCluster>>(pfSupcluster);
-	ecalrechitEB                   = iConfig.getParameter<edm::InputTag>("ecalrechit");
+	ecalrechitEB                   = iConfig.getParameter<edm::InputTag>("ecalrechitEB");
 	ecalrechitEBTok                = consumes<EcalRecHitCollection>(ecalrechitEB);
-	ecalrechitEE                   = iConfig.getParameter<edm::InputTag>("ecalrechit");
+	ecalrechitEE                   = iConfig.getParameter<edm::InputTag>("ecalrechitEE");
 	ecalrechitEETok                = consumes<EcalRecHitCollection>(ecalrechitEE);
-	valMapTag						= iConfig.getParameter<edm::InputTag>("mvaValuesMap");
-	valMapTok						= consumes<edm::ValueMap<float>>(valMapTag);
-
-	// valMapPhoTightTag				= iConfig.getParameter<edm::InputTag>("phoTightIDMap");
-	// valMapPhoTightTok				= consumes<edm::ValueMap<bool>>(valMapPhoTightTag);
+	ecalrechitES                   = iConfig.getParameter<edm::InputTag>("ecalrechitES");
+	ecalrechitESTok                = consumes<EcalRecHitCollection>(ecalrechitES);
+	valMapTag					   = iConfig.getParameter<edm::InputTag>("mvaValuesMap");
+	valMapTok					   = consumes<edm::ValueMap<float>>(valMapTag);
+	valMapPhoTightTag				= iConfig.getParameter<edm::InputTag>("phoTightIDMap");
+	valMapPhoTightTok				= consumes<edm::ValueMap<bool>>(valMapPhoTightTag);
 
 	//pfCandTag                         = iConfig.getParameter<edm::InputTag>("pfCandTag");
     //pfCandTagTok                      = consumes<edm::View<pat::PackedCandidate>>(pfCandTag);
 	trackTag                          = iConfig.getParameter<edm::InputTag>("pfCandTag");
 	trackTagTok                       = consumes<std::vector<reco::Track>>(trackTag);
 	if(isMINIAOD_){
-		IsoTrackTag                       = iConfig.getParameter<edm::InputTag>("IsoTrackTag");
-		IsoTrackTagTok                    = consumes<edm::View<pat::IsolatedTrack>>(IsoTrackTag);
+		IsoTrackTag                   = iConfig.getParameter<edm::InputTag>("IsoTrackTag");
+		IsoTrackTagTok                = consumes<edm::View<pat::IsolatedTrack>>(IsoTrackTag);
 	}
 	convertedPhotonsTag               = iConfig.getParameter<edm::InputTag>("convertedPhotons");
 	convertedPhotonsTagTok            = consumes<std::vector<pat::CompositeCandidate>>(convertedPhotonsTag);
@@ -128,6 +131,8 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig):
 	outputFile_                       = iConfig.getUntrackedParameter<std::string>("outputFile");
 	verbose_                          = iConfig.getParameter<bool>("verbose");
 	TestVerbose_                      = iConfig.getParameter<bool>("TestVerbose");
+	hltProcess_                       = iConfig.getUntrackedParameter<std::string>("HLTprocess","HLT");
+	hltConfigInitialized_             = false;
 
 	muMVACut_                         = iConfig.getParameter<double>("muMVACut");
 	photonMVACut_                     = iConfig.getParameter<double>("photonMVACut");
@@ -163,7 +168,48 @@ void RadiativeAnalysis::endJob() {
   cout << "Max amount of Tag muons         : " << tagmucounter_ <<  endl;
   cout << "Max number of photon            : " << photoncounter_ << endl;
 }
+void RadiativeAnalysis::beginRun(const edm::Run& iRun, const edm::EventSetup& iSetup)
+{
+    bool changed = true;
+    hltConfigInitialized_ = hltConfig_.init(iRun, iSetup, hltProcess_, changed);
+    if (!hltConfigInitialized_) {
+        edm::LogError("RadiativeAnalysis") 
+            << "HLTConfigProvider::init failed for process: " << hltProcess_;
+        return;
+    }
+    if (changed)
+        edm::LogInfo("RadiativeAnalysis")
+            << "HLT menu changed. Table: " << hltConfig_.tableName();
+}
+//------------Do not know when to use this function------------------
+void RadiativeAnalysis::endRun(const edm::Run&,const edm::EventSetup&)
+{
+}
+//------------- get filters for a given HLT path (helper function) -------------
+std::vector<std::string>RadiativeAnalysis::getFiltersForPath(const std::string& pathName) const
+{
+    std::vector<std::string> filters;
+    if (!hltConfigInitialized_) return filters;
+	const std::vector<std::string>& modules = hltConfig_.moduleLabels(pathName);
 
+    // Walk backwards through modules; collect terminal EDFilter-type modules.
+    // Stop as soon as we leave the filter region (hit a producer going backward).
+    for (int iMod = static_cast<int>(modules.size()) - 1; iMod >= 0; --iMod) {
+        const std::string& mod     = modules[iMod];
+        const std::string  modType = hltConfig_.moduleType(mod);
+        const std::string  edmType = hltConfig_.moduleEDMType(mod);
+
+        // Skip pure bookkeeping modules that never write TriggerObjects
+        if (modType == "HLTBool" || modType == "TriggerResultsFilter") continue;
+        if (edmType == "EDFilter") {
+            filters.push_back(mod);
+        } else {
+            // Once we walk back into producer territory, stop
+            if (!filters.empty()) break;
+        }
+    }
+    return filters;
+}
 // ------------ method called for each event  ------------
 void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 
@@ -171,6 +217,8 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	excludedPhotons.clear();
 	int nBs=0;
 	bmmgRootTree_->resetEntries();
+	
+
 	bmmgRootTree_->runNumber_   = iEvent.id().run();
 	bmmgRootTree_->eventNumber_ = (unsigned int)iEvent.id().event();
 	bmmgRootTree_->lumiSection_ = iEvent.luminosityBlock();
@@ -215,15 +263,15 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	iEvent.getByToken(ecalrechitEBTok, ecalRecHits);
 	//std::cout<< " super cluster multiplicity : "<< supercluster->size()<< "\n";
 	edm::Handle<std::vector<reco::Photon>> photons;
-        iEvent.getByToken(PhotonTagTok, photons);
+    iEvent.getByToken(PhotonTagTok, photons);
 	edm::Handle<std::vector<reco::PFCandidate>> pfCandidates;
 	iEvent.getByToken(PFCandTagTok, pfCandidates);
 
 	edm::Handle<edm::ValueMap<float>> mvaValuesMap;
 	iEvent.getByToken(valMapTok, mvaValuesMap);
 
-	// edm::Handle<edm::ValueMap<bool>> phoTightIDMap;
-	// iEvent.getByToken(valMapPhoTightTok, phoTightIDMap);
+	edm::Handle<edm::ValueMap<bool>> phoTightIDMap;
+	iEvent.getByToken(valMapPhoTightTok, phoTightIDMap);
 
 
 	bmmgRootTree_->nMuons_ = muons->size();
@@ -266,58 +314,204 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
         //const auto& trackBuilder = iSetup.getData(trackBuilderTok);
        	
 
-     edm::Handle<edm::TriggerResults> hltbits;
-	 iEvent.getByToken(triggerbitsTok, hltbits);
-	 std::vector<std::string> triggersOfInterest = {
-                "HLT_DoubleMu4_3_Bs",
-                "HLT_DoubleMu4_3_Jpsi",
-                "HLT_DoubleMu4_3_LowMass",
-                "HLT_DoubleMu4_LowMass_Displaced",
-                "HLT_DoubleMu4_3_Photon4_BsToMMG",
-                "HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG",
-                "HLT_DoubleMu4_JpsiTrkTrk_Displaced",
-                "HLT_DoubleMu4_Jpsi_NoVertexing",
-                "HLT_DoubleMu4_Jpsi_Displaced",
-               
+
+
+
+
+     // =========================================================
+    // TRIGGER BITS — path-level decisions (unchanged logic,
+    // substring-collision bugs fixed with _v anchor)
+    // =========================================================
+
+
+    edm::Handle<edm::TriggerResults> hltbits;
+    iEvent.getByToken(triggerbitsTok, hltbits);
+
+    static const std::vector<std::string> triggersOfInterest = {
+        "HLT_DoubleMu4_3_Bs",
+        "HLT_DoubleMu4_3_Jpsi",
+        "HLT_DoubleMu4_3_LowMass",
+        "HLT_DoubleMu4_LowMass_Displaced",
+        "HLT_DoubleMu4_3_Photon4_BsToMMG",
+        "HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG",
+        "HLT_DoubleMu4_JpsiTrkTrk_Displaced",
+        "HLT_DoubleMu4_Jpsi_NoVertexing",
+        "HLT_DoubleMu4_Jpsi_Displaced",
+    };
+
+    const edm::TriggerNames& triggerNames_ = iEvent.triggerNames(*hltbits);
+
+    if (isMINIAOD_) {
+        edm::Handle<edm::View<pat::TriggerObjectStandAlone>> triggerObjects;
+        iEvent.getByToken(triggerobjTok, triggerObjects);
+        edm::Handle<pat::PackedTriggerPrescales> triggerPrescales;
+        iEvent.getByToken(prescaleTok, triggerPrescales);
+        if (!triggerPrescales.isValid()) {
+            edm::LogError("TriggerPrescales") << "Trigger prescales handle invalid!";
+            return;
+        }
+        pat::PackedTriggerPrescales nonConstTriggerPrescales = *triggerPrescales;
+        nonConstTriggerPrescales.setTriggerNames(triggerNames_);
+    }
+
+    // --- path-level bit saving ---
+    // Note: longer paths checked BEFORE shorter substrings to prevent
+    // "HLT_DoubleMu4_3_LowMass" matching inside "..._Displaced" etc.
+    const int ntrigs = hltbits->size();
+    for (int itrig = 0; itrig != ntrigs; ++itrig) {
+        const std::string trigName = triggerNames_.triggerName(itrig);
+        // anchor to _v so "LowMass" cannot fire "LowMass_Displaced"
+        if (trigName.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG_v") != std::string::npos)
+            bmmgRootTree_->triggerbit_HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG_ = hltbits->accept(itrig);
+        else if (trigName.find("HLT_DoubleMu4_3_Photon4_BsToMMG_v") != std::string::npos)
+            bmmgRootTree_->triggerbit_HLT_DoubleMu4_3_Photon4_BsToMMG_           = hltbits->accept(itrig);
+        else if (trigName.find("HLT_DoubleMu4_LowMass_Displaced_v") != std::string::npos)
+            bmmgRootTree_->triggerbit_HLT_DoubleMu4_LowMass_Displaced_           = hltbits->accept(itrig);
+        else if (trigName.find("HLT_DoubleMu4_3_LowMass_v") != std::string::npos)
+            bmmgRootTree_->triggerbit_HLT_DoubleMu4_LowMass_                     = hltbits->accept(itrig);
+        else if (trigName.find("HLT_DoubleMu4_3_Bs_v") != std::string::npos)
+            bmmgRootTree_->triggerbit_HLT_DoubleMu4_3_Bs_                        = hltbits->accept(itrig);
+        else if (trigName.find("HLT_DoubleMu4_JpsiTrkTrk_Displaced_v") != std::string::npos)
+            bmmgRootTree_->triggerbit_HLTDimuon4JpsiTrkTrkDisplaced_             = hltbits->accept(itrig);
+        else if (trigName.find("HLT_DoubleMu4_Jpsi_Displaced_v") != std::string::npos)
+            bmmgRootTree_->triggerbit_HLTDimuon4JpsiDisplaced_                   = hltbits->accept(itrig);
+        else if (trigName.find("HLT_DoubleMu4_Jpsi_NoVertexing_v") != std::string::npos)
+            bmmgRootTree_->triggerbit_HLTDimuon4JpsiNoVertexing_                 = hltbits->accept(itrig);
+       
+    }
+
+
+
+    // =========================================================
+    // TRIGGER OBJECT MATCHING — AOD path, no hardcoded filters
+    // =========================================================
+    muTrigMatchMap_.clear();
+
+    edm::Handle<trigger::TriggerEvent> trigSummary;
+    iEvent.getByToken(triggerSummaryTok, trigSummary);
+
+    if (!trigSummary.isValid()) {
+        edm::LogWarning("RadiativeAnalysis") 
+            << "TriggerEvent handle invalid — skipping object matching";
+    } else if (hltConfigInitialized_) {
+
+        const trigger::TriggerObjectCollection& allObjects = trigSummary->getObjects();
+
+        // --- Step A: for each path of interest, resolve versioned name,
+        //             extract filters intrinsically, collect trigger objects ---
+        // map: base path name -> [one TriggerObjectCollection per filter leg]
+        std::map<std::string,
+                 std::vector<trigger::TriggerObjectCollection>> pathFilterObjects;
+
+        for (const std::string& basePath : triggersOfInterest) {
+
+            // Resolve versioned path name from this event's menu
+            std::string resolvedPath;
+            for (int itrig = 0; itrig != ntrigs; ++itrig) {
+                const std::string name = triggerNames_.triggerName(itrig);
+                if (name.find(basePath + "_v") != std::string::npos) {
+                    resolvedPath = name;
+                    break;
+                }
+            }
+            if (resolvedPath.empty()) continue; // not in this menu
+
+            // Intrinsically get filter labels from HLTConfigProvider
+            const std::vector<std::string> filterLabels =
+                getFiltersForPath(resolvedPath);
+
+            // Retrieve TriggerObjects for each filter leg
+            std::vector<trigger::TriggerObjectCollection> filterObjsForPath;
+            filterObjsForPath.reserve(filterLabels.size());
+
+            for (const std::string& filterLabel : filterLabels) {
+                trigger::TriggerObjectCollection filterObjs;
+                const edm::InputTag filterTag(filterLabel, "", hltProcess_);
+                const size_t filterIdx = trigSummary->filterIndex(filterTag);
+                if (filterIdx < trigSummary->sizeFilters()) {
+                    const trigger::Keys& keys = trigSummary->filterKeys(filterIdx);
+                    filterObjs.reserve(keys.size());
+                    for (size_t k = 0; k < keys.size(); ++k)
+                        filterObjs.push_back(allObjects[keys[k]]);
+                }
+                filterObjsForPath.push_back(std::move(filterObjs));
+            }
+            pathFilterObjects[basePath] = std::move(filterObjsForPath);
+        }
+
+        // --- Step B: per-muon ΔR matching ---
+        // A muon matches a path iff it ΔR-matches ≥1 object in EVERY
+        // filter leg of that path (AND logic across legs)
+        const size_t nMuons = muons->size();
+
+        for (const std::string& basePath : triggersOfInterest) {
+            std::vector<bool> muMatchVec(nMuons, false);
+
+            auto it = pathFilterObjects.find(basePath);
+            if (it != pathFilterObjects.end() && !it->second.empty()) {
+                const auto& filterLegs = it->second;
+
+                for (size_t iMu = 0; iMu < nMuons; ++iMu) {
+                    const reco::Muon& mu = (*muons)[iMu];
+                    bool matchedAllLegs  = true;
+
+                    for (const auto& legObjs : filterLegs) {
+                        bool matchedThisLeg = false;
+                        for (const trigger::TriggerObject& tObj : legObjs) {
+                            if (reco::deltaR(mu.eta(), mu.phi(),
+                                             tObj.eta(), tObj.phi()) < 0.1) {
+                                matchedThisLeg = true;
+                                break;
+                            }
+                        }
+                        if (!matchedThisLeg) { matchedAllLegs = false; break; }
+                    }
+                    muMatchVec[iMu] = matchedAllLegs;
+                }
+            }
+            muTrigMatchMap_[basePath] = std::move(muMatchVec);
+        }
+
+        // --- Step C: write per-muon match booleans into ntuple ---
+        // (clear vectors then fill per muon — matches your existing push_back style)
+        bmmgRootTree_->trigMatch_DoubleMu4_3_Bs_->clear();
+        bmmgRootTree_->trigMatch_DoubleMu4_3_LowMass_->clear();
+        bmmgRootTree_->trigMatch_DoubleMu4_LowMass_Displaced_->clear();
+        bmmgRootTree_->trigMatch_DoubleMu4_3_Photon4_BsToMMG_->clear();
+        bmmgRootTree_->trigMatch_DoubleMu4_3_Displaced_Photon4_BsToMMG_->clear();
+        bmmgRootTree_->trigMatch_DoubleMu4_JpsiTrkTrk_Displaced_->clear();
+        bmmgRootTree_->trigMatch_DoubleMu4_Jpsi_NoVertexing_->clear();
+        bmmgRootTree_->trigMatch_DoubleMu4_Jpsi_Displaced_->clear();
+
+        auto fillMatch = [&](const std::string& path, std::vector<int>* branch) {
+            auto it = muTrigMatchMap_.find(path);
+            const size_t nMu = muons->size();
+            for (size_t iMu = 0; iMu < nMu; ++iMu)
+                branch->push_back(
+                    (it != muTrigMatchMap_.end() && it->second[iMu]) ? 1 : 0);
         };
 
-        const  edm::TriggerNames & triggerNames_ = iEvent.triggerNames(*hltbits);
-		if(isMINIAOD_){
-		 edm::Handle<edm::View<pat::TriggerObjectStandAlone>> triggerObjects;
-                 iEvent.getByToken(triggerobjTok, triggerObjects);
-                 edm::Handle<pat::PackedTriggerPrescales> triggerPrescales;
-                 iEvent.getByToken(prescaleTok, triggerPrescales);
+        fillMatch("HLT_DoubleMu4_3_Bs",
+                   bmmgRootTree_->trigMatch_DoubleMu4_3_Bs_);
+        fillMatch("HLT_DoubleMu4_3_LowMass",
+                   bmmgRootTree_->trigMatch_DoubleMu4_3_LowMass_);
+        fillMatch("HLT_DoubleMu4_LowMass_Displaced",
+                   bmmgRootTree_->trigMatch_DoubleMu4_LowMass_Displaced_);
+        fillMatch("HLT_DoubleMu4_3_Photon4_BsToMMG",
+                   bmmgRootTree_->trigMatch_DoubleMu4_3_Photon4_BsToMMG_);
+        fillMatch("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG",
+                   bmmgRootTree_->trigMatch_DoubleMu4_3_Displaced_Photon4_BsToMMG_);
+        fillMatch("HLT_DoubleMu4_JpsiTrkTrk_Displaced",
+                   bmmgRootTree_->trigMatch_DoubleMu4_JpsiTrkTrk_Displaced_);
+        fillMatch("HLT_DoubleMu4_Jpsi_NoVertexing",
+                   bmmgRootTree_->trigMatch_DoubleMu4_Jpsi_NoVertexing_);
+        fillMatch("HLT_DoubleMu4_Jpsi_Displaced",
+                   bmmgRootTree_->trigMatch_DoubleMu4_Jpsi_Displaced_);
 
-		if (!triggerPrescales.isValid()) {
-                edm::LogError("TriggerPrescales") << "Trigger prescales handle is invalid!";
-                return;
-        }
-		 pat::PackedTriggerPrescales nonConstTriggerPrescales = *triggerPrescales;
-		 nonConstTriggerPrescales.setTriggerNames(triggerNames_);
+    } // end trigSummary.isValid() && hltConfigInitialized_
 
-	}
-	
-	int ntrigs = hltbits->size();
-	for (int itrig = 0; itrig != ntrigs; ++itrig){
-		TString trigName = triggerNames_.triggerName(itrig);
-		std::string triggerNameStd =  trigName.Data();
-		for (const std::string& baselineTrigName : triggersOfInterest) {
-			if (triggerNameStd.find(baselineTrigName) != std::string::npos) {
-				//if(hltbits->accept(itrig)==1)std::cout << "Matched Trigger: " << trigName << ",  decision : "<< hltbits->accept(itrig) << "\n";
-			}
-		}
 
-		
-if(triggerNameStd.find("HLT_DoubleMu4_Jpsi_Displaced")!=std::string::npos)      bmmgRootTree_->triggerbit_HLTDimuon4JpsiDisplaced_           = hltbits->accept(itrig);
-if(triggerNameStd.find("HLT_DoubleMu4_Jpsi_NoVertexing")!=std::string::npos)    bmmgRootTree_->triggerbit_HLTDimuon4JpsiNoVertexing_         = hltbits->accept(itrig);
-if(triggerNameStd.find("HLT_DoubleMu4_JpsiTrkTrk_Displaced")!=std::string::npos)bmmgRootTree_->triggerbit_HLTDimuon4JpsiTrkTrkDisplaced_     = hltbits->accept(itrig);
-if(triggerNameStd.find("HLT_DoubleMu4_3_LowMass")!=std::string::npos)           bmmgRootTree_->triggerbit_HLT_DoubleMu4_LowMass_             = hltbits->accept(itrig);
-if(triggerNameStd.find("HLT_DoubleMu4_LowMass_Displaced")!=std::string::npos)   bmmgRootTree_->triggerbit_HLT_DoubleMu4_LowMass_Displaced_   = hltbits->accept(itrig);
-if(triggerNameStd.find("HLT_DoubleMu4_3_Bs")!=std::string::npos)                bmmgRootTree_->triggerbit_HLT_DoubleMu4_3_Bs_                = hltbits->accept(itrig);
-if(triggerNameStd.find("HLT_DoubleMu4_3_Photon4_BsToMMG")!=std::string::npos)   bmmgRootTree_->triggerbit_HLT_DoubleMu4_3_Photon4_BsToMMG_   = hltbits->accept(itrig);
-if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string::npos) bmmgRootTree_->triggerbit_HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG_ = hltbits->accept(itrig);
-                
-	}
+
 
 
         
@@ -602,22 +796,22 @@ if(triggerNameStd.find("HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG")!=std::string
 				bmmgRootTree_->isFourBody_ = 0;
 
 				// Fill ID decision for tight photon ID
-				// if (phoTightIDMap.isValid()) {
-				// 	edm::Ref<std::vector<reco::Photon>> phoRef(photons, iPhoton);
-				// 	bool isTight = (*phoTightIDMap)[phoRef];
-				// 	std::cout << "Photon " << iPhoton << " tight ID: " << isTight << "\n";
-				// 	bmmgRootTree_->photonTightID_[iPhoton] = isTight;
-				// }
-				// if (mvaValuesMap.isValid()) {
-				// 	const edm::Ptr<reco::Photon> phoPtr(photons, iPhoton);
-				// 	double mvaScore = -99.;
-				// 	if (mvaValuesMap->contains(phoPtr.id())) {
-				// 		mvaScore = (*mvaValuesMap)[phoPtr];
-				// 	} else if (mvaValuesMap->idSize() == 1 && phoPtr.id() == edm::ProductID() && phoPtr.key() < mvaValuesMap->size()) {
-				// 		mvaScore = mvaValuesMap->begin()[phoPtr.key()];
-				// 	}
-				// 	bmmgRootTree_->photonMVAScore_[iPhoton] = mvaScore;
-				// }
+				 if (phoTightIDMap.isValid()) {
+				edm::Ref<std::vector<reco::Photon>> phoRef(photons, iPhoton);
+				 	bool isTight = (*phoTightIDMap)[phoRef];
+				 	std::cout << "Photon " << iPhoton << " tight ID: " << isTight << "\n";
+				 	bmmgRootTree_->photonTightID_[iPhoton] = isTight;
+				 }
+				 if (mvaValuesMap.isValid()) {
+				 	const edm::Ptr<reco::Photon> phoPtr(photons, iPhoton);
+				 	double mvaScore = -99.;
+				 	if (mvaValuesMap->contains(phoPtr.id())) {
+				 		mvaScore = (*mvaValuesMap)[phoPtr];
+				 	} else if (mvaValuesMap->idSize() == 1 && phoPtr.id() == edm::ProductID() && phoPtr.key() < mvaValuesMap->size()) {
+				 		mvaScore = mvaValuesMap->begin()[phoPtr.key()];
+				 	}
+				 	bmmgRootTree_->photonMVAScore_[iPhoton] = mvaScore;
+				 }
 				
 			}//Photon loop for three body through photon kinematics are saved irrespective of their multiplicity 
 			if (photonVar.size() - excludedPhotons.size() >= 2) {

@@ -38,5 +38,7 @@
   <use name="DataFormats/EgammaReco"/>
   <use name="CondFormats/EcalObjects"/>
   <use name="CalibCalorimetry/EcalLaserCorrection"/>
+  <use name="HLTrigger/HLTcore"/>
+  <use name="HLTrigger/HLTfilters"/>
   <flags EDM_PLUGIN="1"/>
 </library>
