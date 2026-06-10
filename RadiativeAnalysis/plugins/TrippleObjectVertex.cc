@@ -709,6 +709,8 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
                             // PV variants with fitted momentum
                 rrt->VertexfitBsCtErr2D_mmrecog_ = calculateCt2DError(PVlowestDCA, bVertex, bs);
 
+                rrt->VertexfitBsCtErr3D_mmrecog_ = calculateCt3DError(PVlowestDCA, bVertex, bs);
+
                 // rrt->VertexfitBsCtErr2DClosestZ_mmrecog_ = calculateCtError(
                 //     GlobalPoint(PVvtxClosestZ.x(), PVvtxClosestZ.y(), PVvtxClosestZ.z()),
                 //     PVvtxClosestZ.covariance(), Bsvec, bVertex, "PV_closestZ");
