@@ -136,6 +136,11 @@ process.source = cms.Source('PoolSource',
         )
 
 
+# process.source = cms.Source('PoolSource', 
+#         fileNames =cms.untracked.vstring(
+#         "file:/eos/user/s/sslawins/data/official_BsToMuMuGammaMC.root",
+#         )
+# )
 # process.source = cms.Source("PoolSource",
 #                             duplicateCheckMode = cms.untracked.string('noDuplicateCheck'),
 #                             skipEvents = cms.untracked.uint32(0),
@@ -289,11 +294,6 @@ process.bmmgVertexAnalysis = cms.EDAnalyzer("RadiativeAnalysis",
                                           EtaPrimePDGMass               = cms.double(0.9577),
                                           PsiPDGMass                    = cms.double(3.6860),
                                           outputFile                    = cms.untracked.string(options.outputFile),
-                                          xgboost_models = cms.vstring(),
-                                          xgboost_variable_names = cms.vstring(),
-                                          mvaValuesMap     = cms.InputTag("photonMVAValueMapProducer:PhotonMVAEstimatorRunIIIWinter22v1Values"),
-                                          phoTightIDMap     = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-RunIIIWinter22-122X-V1-tight"),
-                                          phoEnergyCorrMap     = cms.InputTag("calibratedPhotons:ecalEnergyPostCorr"),
                                           muMVACut = cms.double(0.83),
                                           photonMVACut = cms.double(-0.07)
                                           

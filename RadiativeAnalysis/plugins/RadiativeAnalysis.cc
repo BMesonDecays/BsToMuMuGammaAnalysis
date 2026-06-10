@@ -36,6 +36,7 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig):
 	nominalEtaPrimeMass(0.957780),
 	nominalKaonMass(0.493677)
 {
+	generatorInfoTok                   = consumes<GenRunInfoProduct, edm::InRun>(edm::InputTag("generator"));
 	isMCstudy_                        = iConfig.getParameter<bool>("isMCstudy");
 	isMINIAOD_                        = iConfig.getParameter<bool>("isMINIAOD");
 	genParticlesLabel                 = iConfig.getParameter<edm::InputTag>("genParticlesLabel");
@@ -183,11 +184,15 @@ void RadiativeAnalysis::beginRun(const edm::Run& iRun, const edm::EventSetup& iS
 
 	}
        
-	
+}
+//------------Do not know when to use this function------------------
+void RadiativeAnalysis::endRun(const edm::Run& iRun,const edm::EventSetup& iSetup)
+{
+
 	std::cout << ">>> before getByLabel" << std::endl;
 
    edm::Handle<GenRunInfoProduct> genRunInfo;
-   iRun.getByLabel("generator", genRunInfo);
+   iRun.getByToken(generatorInfoTok, genRunInfo);
 
     std::cout << ">>> after getByLabel" << std::endl;
 
@@ -205,21 +210,18 @@ void RadiativeAnalysis::beginRun(const edm::Run& iRun, const edm::EventSetup& iS
 
     double lumiEquivalent_ = -1.0;
 
-// Equivalent luminosity
-if (genXsec_ > 0 && filterEff_ > 0 && nEvents_ > 0)
-  lumiEquivalent_ = nEvents_ / (genXsec_ * filterEff_);
-else
-  lumiEquivalent_ = -1.0;
+	// Equivalent luminosity
+	if (genXsec_ > 0 && filterEff_ > 0 && nEvents_ > 0)
+	lumiEquivalent_ = nEvents_ / (genXsec_ * filterEff_);
+	else
+	lumiEquivalent_ = -1.0;
 
-std::cout << "GenXsec: " << genXsec_
-          << " FilterEff: " << filterEff_
-          << " nEvents: " << nEvents_
-          << " LumiEquivalent: " << lumiEquivalent_
-          << std::endl;
-}
-//------------Do not know when to use this function------------------
-void RadiativeAnalysis::endRun(const edm::Run&,const edm::EventSetup&)
-{
+	std::cout << "GenXsec: " << genXsec_
+			<< " FilterEff: " << filterEff_
+			<< " nEvents: " << nEvents_
+			<< " LumiEquivalent: " << lumiEquivalent_
+			<< std::endl;
+
 }
 //------------- get filters for a given HLT path (helper function) -------------
 std::vector<std::string>RadiativeAnalysis::getFiltersForPath(const std::string& pathName) const

@@ -126,6 +126,7 @@ private:
   MuonMVAID* muonMVAIDProducer_;
 
   edm::ParameterSet theConfig_;
+  edm::EDGetTokenT<GenRunInfoProduct> generatorInfoTok;
   edm::InputTag genParticlesLabel;
   edm::EDGetTokenT<edm::View<reco::GenParticle>> genParticlesTok;
   edm::InputTag MuonTag;
