@@ -10,7 +10,7 @@ from os.path import isfile, join
 import glob
 
 options = VarParsing("analysis")
-options.register("nEvents", 5000, VarParsing.multiplicity.singleton, VarParsing.varType.int, "Number of events to process")
+options.register("nEvents", -1, VarParsing.multiplicity.singleton, VarParsing.varType.int, "Number of events to process")
 # options.register("outputFile", "default_output.root", VarParsing.multiplicity.singleton, VarParsing.varType.string, "Output file name")
 options.parseArguments()
 
@@ -50,7 +50,7 @@ process.load("FWCore.MessageLogger.MessageLogger_cfi")
 #process.es_prefer_CastorGeometry = cms.ESPrefer("CastorGeometryFromDBEP", "")  # Add this
 #process.es_prefer_CaloTowerGeometry = cms.ESPrefer("CaloTowerGeometryFromDBEP", "")
 #process.es_prefer_EcalBarrelGeometry = cms.ESPrefer("EcalBarrelGeometryFromDBEP", "")
-
+process.load("GeneratorInterface.Core.genXSecAnalyzer_cfi")
 
 import HeavyFlavorAnalysis.Onia2MuMu.OniaPhotonConversionProducer_cfi
 process.oniaPhotonCandidates = HeavyFlavorAnalysis.Onia2MuMu.OniaPhotonConversionProducer_cfi.PhotonCandidates.clone()
@@ -130,7 +130,10 @@ cmsRun makeTree_BsMuMuGamma_MC_AOD.py nEvents=30000 outputFile=myBMMGPhiGammaTre
 """
 
 process.source = cms.Source('PoolSource', 
-        fileNames =cms.untracked.vstring("root://cms-xrd-global.cern.ch//store/mc/Run3Summer22DRPremix/BsTo2MuG_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/AODSIM/124X_mcRun3_2022_realistic_v12-v2/100000/24ac371a-2c39-4db3-b046-c91b49c12819.root") )
+        fileNames =cms.untracked.vstring(
+        "root://cms-xrd-global.cern.ch//store/mc/Run3Summer22DRPremix/BsTo2MuG_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/AODSIM/124X_mcRun3_2022_realistic_v12-v2/100000/24ac371a-2c39-4db3-b046-c91b49c12819.root",
+        "root://cms-xrd-global.cern.ch//store/mc/Run3Summer22DRPremix/BsTo2MuG_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/AODSIM/124X_mcRun3_2022_realistic_v12-v2/100000/1576f693-e6cc-486f-88b5-55426e1151b9.root") 
+        )
 
 
 # process.source = cms.Source("PoolSource",
@@ -355,7 +358,7 @@ process.primaryVertexFilter = cms.EDFilter("GoodVertexFilter",
 #process.espath = cms.Path(process.dumpES)
 
 #process.ntup = cms.Path(process.allPiTracks * process.allKTracks * process.kTracks * process.piTracks * process.bVertexAnalysis )
-process.ntup = cms.Path(process.egmPhotonIDSequence*process.oniaPhotonCandidates*process.bmmgVertexAnalysis )
+process.ntup = cms.Path(process.egmPhotonIDSequence*process.oniaPhotonCandidates*process.bmmgVertexAnalysis*process.genXSecAnalyzer )
 #process.ntup = cms.Path(process.egammaPostRecoSeq*process.oniaPhotonCandidates*process.bmmgVertexAnalysis )
 #process.ntup = cms.Path(process.oniaPhotonCandidates*process.bmmgVertexAnalysis )
 

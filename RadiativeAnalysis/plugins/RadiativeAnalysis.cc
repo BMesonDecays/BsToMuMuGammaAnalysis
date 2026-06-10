@@ -72,7 +72,7 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig):
 		triggerobj                        = iConfig.getParameter<edm::InputTag>("triggerobj");
 		triggerobjTok                     = consumes<edm::View<pat::TriggerObjectStandAlone>>(triggerobj);
 	}
-	triggerSummaryTag              = iConfig.getUntrackedParameter<edm::InputTag>("triggerSummary");
+	triggerSummaryTag              = iConfig.getParameter<edm::InputTag>("triggerSummary");
 	triggerSummaryTok              = consumes<trigger::TriggerEvent>(triggerSummaryTag);
 	pfSupcluster                   = iConfig.getParameter<edm::InputTag>("pfSupcluster");
 	pfSupclusterTok                = consumes<std::vector<reco::SuperCluster>>(pfSupcluster);
@@ -177,9 +177,45 @@ void RadiativeAnalysis::beginRun(const edm::Run& iRun, const edm::EventSetup& iS
             << "HLTConfigProvider::init failed for process: " << hltProcess_;
         return;
     }
-    if (changed)
-        edm::LogInfo("RadiativeAnalysis")
+    if (changed){
+		 edm::LogInfo("RadiativeAnalysis")
             << "HLT menu changed. Table: " << hltConfig_.tableName();
+
+	}
+       
+	
+	std::cout << ">>> before getByLabel" << std::endl;
+
+   edm::Handle<GenRunInfoProduct> genRunInfo;
+   iRun.getByLabel("generator", genRunInfo);
+
+    std::cout << ">>> after getByLabel" << std::endl;
+
+    if (!genRunInfo.isValid()) {
+      edm::LogWarning("GenRunInfo") << "GenRunInfoProduct not found!";
+      return;
+    }
+
+     double genXsec_   = genRunInfo->internalXSec().value();
+     double filterEff_ = genRunInfo->filterEfficiency();
+
+    // IMPORTANT: GenRunInfoProduct does NOT store event counts.
+    // This must be provided from event loop or counters elsewhere.
+    double nEvents_ = 0.0;  // placeholder; must be filled externally
+
+    double lumiEquivalent_ = -1.0;
+
+// Equivalent luminosity
+if (genXsec_ > 0 && filterEff_ > 0 && nEvents_ > 0)
+  lumiEquivalent_ = nEvents_ / (genXsec_ * filterEff_);
+else
+  lumiEquivalent_ = -1.0;
+
+std::cout << "GenXsec: " << genXsec_
+          << " FilterEff: " << filterEff_
+          << " nEvents: " << nEvents_
+          << " LumiEquivalent: " << lumiEquivalent_
+          << std::endl;
 }
 //------------Do not know when to use this function------------------
 void RadiativeAnalysis::endRun(const edm::Run&,const edm::EventSetup&)
@@ -222,6 +258,7 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	bmmgRootTree_->runNumber_   = iEvent.id().run();
 	bmmgRootTree_->eventNumber_ = (unsigned int)iEvent.id().event();
 	bmmgRootTree_->lumiSection_ = iEvent.luminosityBlock();
+	
 	if(isMCstudy_){
 		edm:: Handle<edm::View<PileupSummaryInfo> > PUinfo;
 		iEvent.getByToken( PUInfoTok, PUinfo);

@@ -66,6 +66,7 @@
 #include "DataFormats/HLTReco/interface/TriggerEvent.h"
 #include "DataFormats/HLTReco/interface/TriggerObject.h"
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
+#include "SimDataFormats/GeneratorProducts/interface/GenRunInfoProduct.h"
 
 
 //#include "HLTrigger/HLTcore/interface/HLTPrescaleProvider.h"
