@@ -36,8 +36,8 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_mc_FULL','')
 
 
-process.analiza= cms.EDAnalyzer("McSampleDetails",
-  outHist = cms.string('McSampleDetails_jobs/BsToJpsiGammaMC'+jobId+'.root'),
+process.analiza= cms.EDAnalyzer("getDeltaR_MC",
+  outHist = cms.string('getDeltaR_MC_jobs/BsToJpsiGammaMC'+jobId+'.root'),
   xgboost_models = cms.vstring(),
   xgboost_variable_names = cms.vstring(),
 )

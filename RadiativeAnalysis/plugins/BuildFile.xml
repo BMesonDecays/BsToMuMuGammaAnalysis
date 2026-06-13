@@ -33,7 +33,7 @@
 
 
 
-<library name="McSampleDetails" file="McSampleDetails.cc">
+<library name="getDeltaR_MC" file="getDeltaR_MC.cc">
 </library>
 
 
