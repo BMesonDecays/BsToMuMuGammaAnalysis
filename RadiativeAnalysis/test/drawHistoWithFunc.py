@@ -5,7 +5,7 @@ import sys
 lumiRatio = 1.07 * (5/8) /10
 
 # Get the histogram
-histfilename = "./looserPointingAng/JpsiGStartMidApril_23_24_looserPointingAngcut4_reb5.root"
+histfilename = "./looserPointingAng/JpsiGStartMidApril_23_24_looserPointingAngcut4_reb8.root"
 histname = "hcandBsMass"
 histfile = r.TFile.Open(histfilename,"READ")
 histo = histfile.Get(histname)
@@ -37,13 +37,13 @@ funcFile.Close()
 
 #histo.SetAxisRange(0.,180.,"Y")
 #histo.SetAxisRange(3.8,7.,"X")
-histo.SetAxisRange(5.0,6.1,"X")
+histo.SetAxisRange(4.6,7.0,"X")
 histo.SetFillColorAlpha(18, 0.4)
 
 # Draw and save
 canvas = r.TCanvas("canvas")
 canvas.cd()
 histo.Draw("histo")
-func.Draw("same")
+#func.Draw("same")
 canvas.Print("signalTemp.pdf")
 input('press enter to exit')
