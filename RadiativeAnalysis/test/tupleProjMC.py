@@ -8,8 +8,8 @@ analysisTag = "JpsiGMidApril_MC_looserPointingAng"
 tupleName = "tOut"
 
 # Prepare a directory for the output histograms
-logBool = 1
-dirPath = 'tupleProjections/'+analysisTag+'/cut4'
+logBool = 0
+dirPath = 'tupleProjections/'+analysisTag+'/cut3stats'
 if logBool  :
     dirPath += 'log'
 os.mkdir(dirPath)
@@ -27,7 +27,7 @@ for branch in ntuple.GetListOfBranches():
 cutList = []
 
 cutList.append(r.TCut("muonIdCut","muon1Id > 0.7 && muon2Id > 0.7"))
-cutList.append(r.TCut("fittedDimuonVertexProbCut","fittedDimuonVertexProb > 0.2"))
+cutList.append(r.TCut("fittedDimuonVertexProbCut","fittedDimuonVertexProb > 0.1"))
 cutList.append(r.TCut("maxMuonsVertexCompCut","maxMuonsVertexComp < 0.1"))
 cutList.append(r.TCut("fittedDimuonMassCut","TMath::Abs(fittedDimuonMass - 3.097) < 0.06"))
 cutList.append(r.TCut("lXY_fittedDimuon_bSpot_sigCut","lXY_fittedDimuon_bSpot_sig > 5.0"))
@@ -123,7 +123,7 @@ for histo in histoList:
     canvas = r.TCanvas("c"+str(histo.GetTitle()))
     canvas.SetLogy(logBool)
     canvas.cd()
-    histo.SetStats(0)
+    histo.SetStats(1)
     histo.SetLabelSize(0.03)
     histo.Draw()
     canvas.Print(dirPath+'/'+str(histo.GetName())+".pdf")

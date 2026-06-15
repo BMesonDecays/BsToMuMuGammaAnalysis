@@ -4,12 +4,12 @@ import sys
 import os
 import numpy as np
 
-cutTitle = "8hImp"
+#cutTitle = "8hImp"
 histname = "hcandBsMass"
-rebinN = 5
+rebinN = 10
 
 # Open files and get histograms
-f1 = r.TFile.Open("JpsiGMidApril_MC"+cutTitle+".root")
+f1 = r.TFile.Open("./outputData/JpsiGMidApril_MC_looserPointingAngcut4.root")
 
 h1 = f1.Get(histname)
 
@@ -22,9 +22,10 @@ h1 = h1.Rebin(rebinN)
 c = r.TCanvas()
 h1.Draw("hist")
 
-c.Print("JpsiGMidApril_MC_"+cutTitle+"reb"+str(rebinN)+".pdf")
+c.Print("JpsiGMidApril_MC_looserPointingAngcut4_"+"reb"+str(rebinN)+".pdf")
 input('press enter to exit')
 
-outFile = r.TFile("JpsiGMidApril_MC_"+cutTitle+"reb"+str(rebinN)+".root",'RECREATE')
+
+outFile = r.TFile("JpsiGMidApril_MC_looserPointingAngcut4_"+"reb"+str(rebinN)+".root",'RECREATE')
 h1.Write()
 outFile.Close()

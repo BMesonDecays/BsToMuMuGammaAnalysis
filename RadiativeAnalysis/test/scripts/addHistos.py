@@ -4,16 +4,16 @@ import sys
 import os
 import numpy as np
 
-cutTitle = "cut8h"
-histname = "hcandBsMass"
+#cutTitle = "cut8h"
+#histname = "hcandBsMass"
 rebinN = 10
 
 # Open files and get histograms
-f1 = r.TFile.Open("JpsiGStartApril_23"+cutTitle+".root")
-f2 = r.TFile.Open("JpsiGMidApril_24"+cutTitle+".root")
+f1 = r.TFile.Open("./outputData/JpsiGMidApril_24_looserPointingAngcut4.root")
+#f2 = r.TFile.Open("JpsiGMidApril_24"+cutTitle+".root")
 
-h1 = f1.Get(histname)
-h2 = f2.Get(histname)
+h1 = f1.Get("hcandBsMass")
+h2 = f1.Get("23")
 
 # Ensure errors are handled properly
 h1.Sumw2()
@@ -30,9 +30,10 @@ h1 = h1.Rebin(rebinN)
 c = r.TCanvas()
 h1.Draw("hist")
 
-c.Print("JpsiGStartMidApril_23_24_"+cutTitle+"reb"+str(rebinN)+".pdf")
+c.Print("JpsiGStartMidApril_23_24_looserPointingAngcut4_"+"reb"+str(rebinN)+".pdf")
 input('press enter to exit')
 
-outFile = r.TFile("JpsiGStartMidApril_23_24_"+cutTitle+"reb"+str(rebinN)+".root",'RECREATE')
+
+outFile = r.TFile("JpsiGStartMidApril_23_24_looserPointingAngcut4_"+"reb"+str(rebinN)+".root",'RECREATE')
 h1.Write()
 outFile.Close()
