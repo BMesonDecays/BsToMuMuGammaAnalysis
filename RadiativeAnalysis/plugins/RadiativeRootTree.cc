@@ -31,6 +31,16 @@ void RadiativeRootTree::createTree(const std::string filename)
   bmmgTree_->Branch("runNumber",&runNumber_ ,"runNumber/I");
   bmmgTree_->Branch("eventNumber",&eventNumber_,"eventNumber/i");
   bmmgTree_->Branch("lumiSection",&lumiSection_,"lumiSection/I");
+  bmmgTree_->Branch("GenXsec",&GenXsec_,"GenXsec/D");
+  bmmgTree_->Branch("GenXsecErr",&GenXsecErr_,"GenXsecErr/D");
+  bmmgTree_->Branch("FilterEff",&FilterEff_,"FilterEff/D");
+  bmmgTree_->Branch("FilterEffErr",&FilterEffErr_,"FilterEffErr/D");
+  bmmgTree_->Branch("nEvents",&nEvents_,"nEvents/I");
+  bmmgTree_->Branch("LumiEquivalent",&LumiEquivalent_,"LumiEquivalent/D");
+  bmmgTree_->Branch("LumiEquivalentErr",&LumiEquivalentErr_,"LumiEquivalentErr/D");
+
+ 
+	
   bmmgTree_->Branch("PUinteraction",&PUinteraction_,"PUinteraction/I");
   bmmgTree_->Branch("PUTrueinteraction",&PUTrueinteraction_,"PUTrueinteraction/I");
   bmmgTree_->Branch("isPV",&isPV_,"isPV/I");
@@ -682,6 +692,19 @@ void RadiativeRootTree::resetEntries()
 	runNumber_          = -9999999;
 	eventNumber_        = -9999999;
 	lumiSection_        = -9999999;
+  GenXsec_              = -9999999;
+  GenXsecErr_           = -9999999;
+  FilterEff_           = -9999999;
+  FilterEffErr_         = -9999999;
+  nEvents_              = -9999999;
+  LumiEquivalent_       = -9999999;
+  LumiEquivalentErr_    = -9999999;
+
+  
+
+	
+
+	
 	PUinteraction_      = -9999999;
 	PUTrueinteraction_  = -9999999;
 	NVerticesbeforecut_ = -9999999;
@@ -1418,6 +1441,16 @@ void RadiativeRootTree::setBranchAddresses(){
   bmmgTree_->SetBranchAddress("runNumber", &runNumber_);
   bmmgTree_->SetBranchAddress("eventNumber", &eventNumber_);
   bmmgTree_->SetBranchAddress("lumiSection", &lumiSection_ );
+  bmmgTree_->SetBranchAddress("GenXsec", &GenXsec_);
+  bmmgTree_->SetBranchAddress("GenXsecErr", &GenXsecErr_);
+  bmmgTree_->SetBranchAddress("FilterEff", &FilterEff_);
+  bmmgTree_->SetBranchAddress("FilterEffErr", &FilterEffErr_);
+  bmmgTree_->SetBranchAddress("nEvents", &nEvents_);
+  bmmgTree_->SetBranchAddress("LumiEquivalent", &LumiEquivalent_);
+  bmmgTree_->SetBranchAddress("LumiEquivalentErr", &LumiEquivalentErr_);
+
+
+  
   bmmgTree_->SetBranchAddress("PUinteraction", &PUinteraction_);
   bmmgTree_->SetBranchAddress("PUTrueinteraction", &PUTrueinteraction_);
   bmmgTree_->SetBranchAddress("NVerticesbeforecut",&NVerticesbeforecut_);

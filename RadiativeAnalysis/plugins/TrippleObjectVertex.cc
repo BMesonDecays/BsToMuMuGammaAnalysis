@@ -612,7 +612,7 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
 
             for (size_t i = 0; i < photons.size(); ++i) {
             dcv.vertexFitFlag_mmrecog = 2;
-            std::cout<<" The vertex fit flag is set to 2 for the reco photons : "<<dcv.vertexFitFlag_mmrecog<<"\n";
+            //std::cout<<" The vertex fit flag is set to 2 for the reco photons : "<<dcv.vertexFitFlag_mmrecog<<"\n";
             reco::Photon photon = photons[i];
 
             // photon energy correction
@@ -634,7 +634,7 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
             BCand = photonvec + muonTrack1 + muonTrack2;
             MassLimits m_lim;
             if (BCand.M() < m_lim.BsMassCutLower || BCand.M() > m_lim.BsMassCutUpper) continue;
-            std::cout<<"mass B Reco Photon Case : "<<BCand.M()<<"\n";
+            //std::cout<<"mass B Reco Photon Case : "<<BCand.M()<<"\n";
             //std::vector<reco::TransientTrack> ttrk_photons = {reco::TransientTrack(photon.superCluster()->seed().trackRef(), &bField)};
             GlobalPoint vertexPostion(bsAndVtxInfo.pv_x, bsAndVtxInfo.pv_y, bsAndVtxInfo.pv_z);
             GlobalVector vertexDirection(photon.px(), photon.py(), photon.pz());

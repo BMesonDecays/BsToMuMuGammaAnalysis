@@ -67,12 +67,13 @@
 #include "DataFormats/HLTReco/interface/TriggerObject.h"
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenRunInfoProduct.h"
+#include "SimDataFormats/GeneratorProducts/interface/GenFilterInfo.h"
 
 
 //#include "HLTrigger/HLTcore/interface/HLTPrescaleProvider.h"
 
 
-class RadiativeAnalysis : public edm::one::EDAnalyzer<edm::one::SharedResources,edm::one::WatchRuns> {
+class RadiativeAnalysis : public edm::one::EDAnalyzer<edm::one::SharedResources,edm::one::WatchRuns, edm::one::WatchLuminosityBlocks> {
 public:
   explicit RadiativeAnalysis(const edm::ParameterSet&);
   ~RadiativeAnalysis() override;
@@ -86,6 +87,8 @@ public:
   void setFitParGamma(RefCountedKinematicTree& myTree);
   void setFitParHyp1(RefCountedKinematicTree& myTree);
   void setFitParHyp2(RefCountedKinematicTree& myTree);
+  void beginLuminosityBlock(const edm::LuminosityBlock&, const edm::EventSetup&) override;
+  void endLuminosityBlock(const edm::LuminosityBlock& iLumi, const edm::EventSetup&  iSetup) override;
   void beginRun(const edm::Run& iRun, const edm::EventSetup& iSetup) override;
   void endRun(const edm::Run& iRun, const edm::EventSetup& iSetup) override;
 private:
@@ -126,6 +129,9 @@ private:
   MuonMVAID* muonMVAIDProducer_;
 
   edm::ParameterSet theConfig_;
+  edm::EDGetTokenT<GenRunInfoProduct> generatorInfoTok;
+  edm::EDGetTokenT<GenFilterInfo> genFilterTok;
+
   edm::InputTag genParticlesLabel;
   edm::EDGetTokenT<edm::View<reco::GenParticle>> genParticlesTok;
   edm::InputTag MuonTag;
@@ -196,7 +202,10 @@ private:
   bool StoreDeDxInfo_;
   bool verbose_;
   bool TestVerbose_;
-  
+  double genXsec_ ;
+  double genXsecErr_ ;
+  double  lumiEquivalent_;
+  double lumiEquivalentErr_;
   
   
   const double nominalJpsiMass;
@@ -254,6 +263,8 @@ private:
   double PsiPhotonDCA          = -9999999;
   double minVtxP               = -9999999;
   double KKDCA                = -9999999; 
+  double filterEff_ = 1.0;
+  double filterEffErr_ = 0.0;
   double MinPtVertex = 0.0;
   int    NSelectedVertices;
   double PtSumVertex = 0.0;

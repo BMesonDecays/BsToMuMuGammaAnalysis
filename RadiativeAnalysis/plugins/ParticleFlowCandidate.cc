@@ -88,13 +88,17 @@ std::vector<ParticleFlowCandidate::PFCandidateVariables> ParticleFlowCandidate::
             }
         //std::cout<<" ========================================================================="<<"\n";
         if (!irecoPFCandidate.photonRef().isNull())
-            std::cout << "Photon pt = " << irecoPFCandidate.photonRef()->pt() << "\n";
+           // std::cout << "Photon pt = " <<
+         irecoPFCandidate.photonRef()->pt();// << "\n";
         if (!irecoPFCandidate.gsfElectronRef().isNull())
-            std::cout << "GSF Electron eta = " << irecoPFCandidate.gsfElectronRef()->eta() << "\n";
+           // std::cout << "GSF Electron eta = " << 
+         irecoPFCandidate.gsfElectronRef()->eta();// << "\n";
         if (!irecoPFCandidate.conversionRef().isNull())
-            std::cout << "Conversion z = " << irecoPFCandidate.conversionRef()->conversionVertex().z() << "\n";
+           // std::cout << "Conversion z = " <<
+         irecoPFCandidate.conversionRef()->conversionVertex().z();// << "\n";
         if (!irecoPFCandidate.superClusterRef().isNull())
-            std::cout << "SC energy = " << irecoPFCandidate.superClusterRef()->energy() << "\n";
+        //    std::cout << "SC energy = " << 
+        irecoPFCandidate.superClusterRef()->energy();// << "\n";
 
         //std::cout << "---------------------------------------------check other refrences --------------------------\n";
         pfcandVars.push_back(pfcandVar);

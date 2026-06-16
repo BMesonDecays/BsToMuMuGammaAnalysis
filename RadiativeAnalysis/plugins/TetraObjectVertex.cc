@@ -250,11 +250,11 @@ for (size_t i = 0; i < photons.size(); ++i) {
             FreeTrajectoryState photonFTS(vertexPostion, vertexDirection, photon_charge, &bField);
 
             // Optional debugging
-            std::cout << "Photon FTS: " 
+            /*std::cout << "Photon FTS: " 
             << photonFTS.position().x() 
             << "\t"<< photonFTS.position().y() 
             << "\t" << photonFTS.position().z() <<"\n";
-
+*/
             reco::TransientTrack transientrackforPhoton = transientTrackBuilder.build(photonFTS);
 
             // Photon covariance and error
