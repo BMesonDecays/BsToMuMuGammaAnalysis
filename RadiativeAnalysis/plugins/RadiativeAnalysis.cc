@@ -1132,10 +1132,7 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 ////////////////////////////////////////////////////////////
 ////////////////End Job///////////////////////////////////
 void RadiativeAnalysis::endJob() {
-  bmmgRootTree_->writeFile();
-  delete bmmgRootTree_;
-
-  delete muonMVAIDProducer_;
+  
   cout << "Total number of Events          : " << event_counter_ << endl;
   cout << "Total number of Tagged muons    : " << muoncounter_   << endl;
   cout << "Total number of Tagged electrons: " << elecounter_    << endl;
@@ -1177,6 +1174,9 @@ void RadiativeAnalysis::endJob() {
 
     
 
+  bmmgRootTree_->writeFile();
+  delete bmmgRootTree_;
+  delete muonMVAIDProducer_;
 	      
 }
 
