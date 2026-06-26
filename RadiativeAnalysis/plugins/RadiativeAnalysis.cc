@@ -1172,7 +1172,7 @@ void RadiativeAnalysis::endJob() {
 	std::cout << "GenXsec = " << genXsec_ << " +/- " << genXsecErr_ <<"\n";
 	std::cout << "LumiEquivalent = " << lumiEquivalent_ << " +/- " << lumiEquivalentErr_ <<"\n";
 
-    
+bmmgRootTree_->fill();    
 
   bmmgRootTree_->writeFile();
   delete bmmgRootTree_;
