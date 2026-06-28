@@ -136,6 +136,9 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig):
 	hltProcess_                       = iConfig.getUntrackedParameter<std::string>("HLTprocess","HLT");
 	hltConfigInitialized_             = false;
 
+	muMVACut_                         = iConfig.getParameter<double>("muMVACut");
+	photonMVACut_                     = iConfig.getParameter<double>("photonMVACut");
+
 	event_counter_ = 0;
 	elecounter_    = 0;
 	muoncounter_   = 0;
@@ -582,7 +585,7 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 		*selectedConvPhoton = photonSelector.selectConvertedPhoton(*convPhotons, *selectedMuons, trackBuilder);
 
 		vector<reco::Photon>* selectedPhoton = new vector<reco::Photon>();
-		*selectedPhoton = photonSelector.selectPhoton(*photons, *selectedMuons, trackBuilder, photonMVAIDs);
+		*selectedPhoton = photonSelector.selectPhoton(*photons, *selectedMuons, trackBuilder, photonMVAIDs, photonMVACut_);
 
 		//std::cout << "Selected Muons: " << selectedMuons->size() << ", Selected Photons: " << selectedPhoton->size() << std::endl;
 	   
@@ -603,6 +606,29 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 				bmmgRootTree_);
 		        bmmgRootTree_->vertexTypeFlag_ = 1;
 
+		}
+
+
+		vector<pat::CompositeCandidate>* selectedConvPhotons = new vector<pat::CompositeCandidate>();
+		*selectedConvPhotons = photonSelector.selectConvertedPhotons(*convPhotons, *selectedMuons, trackBuilder);
+		vector<reco::Photon>* selectedPhotons = new vector<reco::Photon>();
+		*selectedPhotons = photonSelector.selectPhotons(*photons, *selectedMuons, trackBuilder, photonMVAIDs, photonMVACut_);
+		
+		if(selectedMuons->size()>=2 && (selectedConvPhotons->size() >=2 || selectedPhotons->size() >=2)){
+			TetraObjectVertex tetradcObservables;
+			decayVariables = tetradcObservables.TetraObjectVertexObservables(
+				*selectedMuons, 
+				*selectedPhotons,
+			    *recVtxs,	
+				lazyTools, 
+				*selectedConvPhotons, 
+				bsandvtxVar, 
+				theBField, 
+				nominalMuonMass, 
+				nominalElectronMass, 
+				trackBuilder,
+				bmmgRootTree_);
+		        bmmgRootTree_->vertexTypeFlag_ = 2;
 		}
 
 		// vector<pat::CompositeCandidate>* selectedConvPhotons = new vector<pat::CompositeCandidate>();

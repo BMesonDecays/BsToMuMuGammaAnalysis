@@ -289,10 +289,9 @@ process.bmmgVertexAnalysis = cms.EDAnalyzer("RadiativeAnalysis",
                                           EtaMesonPDGMass               = cms.double(0.5478),
                                           EtaPrimePDGMass               = cms.double(0.9577),
                                           PsiPDGMass                    = cms.double(3.6860),
-                                          outputFile                    = cms.untracked.string(options.outputFile)
-                                          
-
-)
+                                          outputFile                    = cms.untracked.string(options.outputFile),
+                                          muMVACut = cms.double(0.83),
+                                          photonMVACut = cms.double(-0.07))
 
 xgboost_models = [
     ('Run2022-20231030-1731-Event0', 'run3muonmva'),

@@ -92,9 +92,13 @@ class KinematicConstrainedFit{
 		bool TetraObjectVertexFitRecoPhoton(
 			std::vector<reco::TransientTrack> muonTT,
 			std::vector<reco::TransientTrack>photonTT,
-			const double DiMuonMass, const double DiMuonSigma, 
-			const std::vector<reco::Photon>& photons,
-			std::vector<TMatrixD>&  photonCovMatrix);
+			ReferenceResonance::ResonanceDetails resonanceDetails, 
+			const std::vector<reco::Photon>& photons, 
+			std::vector<TMatrixD*> photonCovMatrices,
+			reco::Vertex PV,
+			const MagneticField& field,
+			const TransientTrackBuilder& theB);
+
 
 		double getBhadronProb() {return vtxprob_Bhadron;}
 		double getBhadronMass() {return mass_Bhadron;}

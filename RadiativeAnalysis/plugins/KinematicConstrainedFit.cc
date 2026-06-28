@@ -486,61 +486,168 @@ bool KinematicConstrainedFit::TetraObjectVertexFitConvertedPhoton(
 bool KinematicConstrainedFit::TetraObjectVertexFitRecoPhoton(
     std::vector<reco::TransientTrack> muonTT,
     std::vector<reco::TransientTrack>photonTT,
-    const double DiMuonMass, const double DiMuonSigma, 
-    const std::vector<reco::Photon>& photons,
-    std::vector<TMatrixD>&  photonCovMatrix){
-    //    TMatrixD& photonCovMatrix){
+    ReferenceResonance::ResonanceDetails resonanceDetails, 
+    const std::vector<reco::Photon>& photons, 
+    std::vector<TMatrixD*> photonCovMatrices,
+    reco::Vertex PV,
+    const MagneticField& field,
+    const TransientTrackBuilder& theB){
     float muonMass = 0.10565837;
     float muon_sigma = 0.0000000001;
     float chi = 0.;
     float ndf = 0.;
     const ParticleMass photon_mass(0.);
     float photon_sigma = 1E-6;
-    if (muonTT.size() < 2 || photons.size() < 1) {
-        edm::LogWarning("TrippleObjectVertexFit") << "Insufficient input tracks.";
+    if (muonTT.size() < 2 || photons.size() < 2) {
+        edm::LogWarning("TetraObjectVertexFit") << "Insufficient input tracks.";
         return false;
     }
     KinematicParticleFactoryFromTransientTrack pFactory;
-    std::vector<RefCountedKinematicParticle> allParticlesMu;
-    allParticlesMu.push_back(pFactory.particle (muonTT[0], muonMass, chi, ndf, muon_sigma));
-    allParticlesMu.push_back(pFactory.particle (muonTT[1], muonMass, chi, ndf, muon_sigma));
+
     KinematicParticleVertexFitter Fitter;
-    RefCountedKinematicTree dimuonTree = Fitter.fit(allParticlesMu);
-    if (!dimuonTree || !dimuonTree->isValid()) {
-        edm::LogInfo("TrippleObjectVertexFit") << "Dimuon vertex fit failed.";
-        return false;
-    }
-    KinematicParticleFitter constFitter;
-    KinematicConstraint * dimuon_const = new MassKinematicConstraint(DiMuonMass, DiMuonSigma);
-    dimuonTree = constFitter.fit(dimuon_const,dimuonTree);
-    if (!dimuonTree || !dimuonTree->isValid()) {
-        edm::LogInfo("TrippleObjectVertexFit") << "Dimuon vertex fit failed.";
-        return false;
-    }
-    dimuonTree->movePointerToTheTop();
-    RefCountedKinematicParticle dimuon = dimuonTree->currentParticle();
+
     std::vector<RefCountedKinematicParticle> photonKinematicParticles;
-    photonKinematicParticles.push_back(pFactory.particle(photonTT[0], photon_mass, float(0), 
-    float(0), photon_sigma, &photons[0], &photonCovMatrix[0]));
-    photonKinematicParticles.push_back(pFactory.particle(photonTT[1], photon_mass, float(0), 
-    float(0), photon_sigma, &photons[1], &photonCovMatrix[1]));
-    photonKinematicParticles.push_back(dimuon);
+    photonKinematicParticles.push_back(pFactory.particle (muonTT[0], muonMass, chi, ndf, muon_sigma));
+    photonKinematicParticles.push_back(pFactory.particle (muonTT[1], muonMass, chi, ndf, muon_sigma));
+    photonKinematicParticles.push_back(pFactory.particle(photonTT[0], photon_mass, float(0), float(0), photon_sigma, &photons[0], photonCovMatrices[0]));
+    photonKinematicParticles.push_back(pFactory.particle(photonTT[1], photon_mass, float(0), float(0), photon_sigma, &photons[1], photonCovMatrices[1]));
     auto fullVertexFitTree = Fitter.fit(photonKinematicParticles);
     if (!fullVertexFitTree || !fullVertexFitTree->isValid()) {
-        edm::LogInfo("TrippleObjectVertexFit") << "Full vertex fit with muons failed.";
+        edm::LogInfo("TetraObjectVertexFit") << "Full vertex fit with muons failed.";
         return false;
     }
-    fullVertexFitTree->movePointerToTheTop();
 
-    bhadron = fullVertexFitTree->currentParticle();
-    bVertex = fullVertexFitTree->currentDecayVertex();
+
+        /////////////////////
+        // try global fit
+        /////////////////////
+        vector<RefCountedKinematicParticle> allParticlesGlobal;
+        fullVertexFitTree->movePointerToTheTop();
+        fullVertexFitTree->movePointerToTheFirstChild();
+        RefCountedKinematicParticle mu1Global = fullVertexFitTree->currentParticle();
+        FreeTrajectoryState fts(mu1Global->currentState().globalPosition(), mu1Global->currentState().globalMomentum(), mu1Global->currentState().particleCharge(), &field);
+        AlgebraicSymMatrix66 muonCov;
+        AlgebraicSymMatrix77 muonCov77 = mu1Global->currentState().kinematicParametersError().matrix();
+        for (int i = 0; i < 6; i++)
+        {
+          for (int j = 0; j < 6; j++)
+          {
+            muonCov(i, j) = muonCov77(i, j);
+          }
+        }
+        CartesianTrajectoryError muonErr(muonCov);
+        fts.setCartesianError(muonErr);
+        reco::TransientTrack muonTTGlobal = theB.build(fts);
+        float sigma = 0.001;
+        mu1Global = pFactory.particle(muonTTGlobal, mu1Global->currentState().mass(), float(0), float(0), sigma);
+        allParticlesGlobal.push_back(mu1Global);
+
+        fullVertexFitTree->movePointerToTheNextChild();
+        RefCountedKinematicParticle mu2Global = fullVertexFitTree->currentParticle();
+        FreeTrajectoryState fts2(mu2Global->currentState().globalPosition(), mu2Global->currentState().globalMomentum(), mu2Global->currentState().particleCharge(), &field);
+        AlgebraicSymMatrix66 muonCov2;
+        AlgebraicSymMatrix77 muonCov77_2 = mu2Global->currentState().kinematicParametersError().matrix();
+        for (int i = 0; i < 6; i++)
+        {
+          for (int j = 0; j < 6; j++)
+          {
+            muonCov2(i, j) = muonCov77_2(i, j);
+          }
+        }
+        CartesianTrajectoryError muonErr2(muonCov2);
+        fts2.setCartesianError(muonErr2);
+        reco::TransientTrack muonTTGlobal2 = theB.build(fts2);
+        mu2Global = pFactory.particle(muonTTGlobal2, mu2Global->currentState().mass(), float(0), float(0), sigma);
+        allParticlesGlobal.push_back(mu2Global);
+
+        fullVertexFitTree->movePointerToTheNextChild();
+        RefCountedKinematicParticle phoGlobal = fullVertexFitTree->currentParticle();
+        FreeTrajectoryState fts3(phoGlobal->currentState().globalPosition(), phoGlobal->currentState().globalMomentum(), phoGlobal->currentState().particleCharge(), &field);
+        AlgebraicSymMatrix66 photonCov;
+        AlgebraicSymMatrix77 photonCov77 = phoGlobal->currentState().kinematicParametersError().matrix();
+        for (int i = 0; i < 6; i++)
+        {
+          for (int j = 0; j < 6; j++)
+          {
+            photonCov(i, j) = photonCov77(i, j);
+          }
+        }
+        CartesianTrajectoryError photonErr(photonCov);
+        fts3.setCartesianError(photonErr);
+        reco::TransientTrack phoTTGlobal = theB.build(fts3);
+        float sigma3 = 0.001;
+        phoGlobal = pFactory.particle(phoTTGlobal, phoGlobal->currentState().mass(), float(0), float(0), sigma3);
+
+        allParticlesGlobal.push_back(phoGlobal);
+
+        // photon 2
+        fullVertexFitTree->movePointerToTheNextChild();
+        RefCountedKinematicParticle phoGlobal2 = fullVertexFitTree->currentParticle();
+        FreeTrajectoryState fts4(phoGlobal2->currentState().globalPosition(), phoGlobal2->currentState().globalMomentum(), phoGlobal2->currentState().particleCharge(), &field);
+        AlgebraicSymMatrix66 photonCov_2;
+        AlgebraicSymMatrix77 photonCov77_2 = phoGlobal2->currentState().kinematicParametersError().matrix();
+        for (int i = 0; i < 6; i++)
+        {
+          for (int j = 0; j < 6; j++)
+          {
+            photonCov_2(i, j) = photonCov77_2(i, j);
+          }
+        }
+        CartesianTrajectoryError photonErr2(photonCov_2);
+        fts4.setCartesianError(photonErr2);
+        reco::TransientTrack phoTTGlobal2 = theB.build(fts4);
+        float sigma4 = 0.001;
+        phoGlobal2 = pFactory.particle(phoTTGlobal2, phoGlobal2->currentState().mass(), float(0), float(0), sigma4);
+
+        allParticlesGlobal.push_back(phoGlobal2);
+
+
+        fullVertexFitTree->movePointerToTheTop();
+
+        // create the constraint
+        GlobalPoint vertexPosition(PV.x(), PV.y(), PV.z());
+        RefCountedKinematicTree vertexFitTreeGlobal;
+        if(resonanceDetails.resonanceFlag == ReferenceResonance::ResonanceFlag::None)
+        {
+            MultiTrackKinematicConstraint* multiPointingConstraint = new MultiTrackPointingKinematicConstraint(vertexPosition);
+            KinematicConstrainedVertexFitter constrainedFitter;
+            vertexFitTreeGlobal = constrainedFitter.fit(allParticlesGlobal, multiPointingConstraint);
+        }
+        else if(resonanceDetails.resonanceFlag == ReferenceResonance::ResonanceFlag::Jpsi
+                || resonanceDetails.resonanceFlag == ReferenceResonance::ResonanceFlag::Phi
+                || resonanceDetails.resonanceFlag == ReferenceResonance::ResonanceFlag::KStar
+        )
+        {
+            double nominalDimuonMass;
+            if(resonanceDetails.resonanceFlag == ReferenceResonance::ResonanceFlag::Jpsi) nominalDimuonMass = ReferenceResonance::Constants::JpsiMass_PDG;
+            else if(resonanceDetails.resonanceFlag == ReferenceResonance::ResonanceFlag::Phi) nominalDimuonMass = ReferenceResonance::Constants::PhiMass_PDG;
+            else if(resonanceDetails.resonanceFlag == ReferenceResonance::ResonanceFlag::KStar) nominalDimuonMass = ReferenceResonance::Constants::KStar0Mass_PDG;
+            
+            MultiTrackKinematicConstraint* massConstraint = new TwoTrackMassKinematicConstraint(nominalDimuonMass);
+            MultiTrackKinematicConstraint* multiPointingConstraint = new MultiTrackPointingKinematicConstraint(vertexPosition);
+            std::vector<MultiTrackKinematicConstraint*> constraints = {massConstraint, multiPointingConstraint};
+            MultiTrackKinematicConstraint* combinedConstraint = new CombinedKinematicConstraint(constraints);
+            KinematicConstrainedVertexFitter constrainedFitter;
+            vertexFitTreeGlobal = constrainedFitter.fit(allParticlesGlobal, combinedConstraint);
+        }
+
+
+    if(!vertexFitTreeGlobal || !vertexFitTreeGlobal->isValid()) {
+        edm::LogInfo("TetraObjectVertexFit") << "Global fit with pointing constraint failed.";
+        return false;
+    }
+
+    vertexFitTreeGlobal->movePointerToTheTop();
+
+    bhadron = vertexFitTreeGlobal->currentParticle();
+    bVertex = vertexFitTreeGlobal->currentDecayVertex();
     if (!bVertex || !bVertex->vertexIsValid()) {
-        edm::LogInfo("TrippleObjectVertexFit") << "B vertex is not valid.";
+        edm::LogInfo("TetraObjectVertexFit") << "B vertex is not valid.";
         return false;
     }
     vtxprob_Bhadron = TMath::Prob(bhadron->chiSquared(), static_cast<int>(bhadron->degreesOfFreedom()));
     mass_Bhadron    = bhadron->currentState().mass();
-    delete dimuon_const;
+    // delete dimuon_const;
     return true;
 
 }

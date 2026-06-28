@@ -244,6 +244,10 @@ private:
   double EtaMesonPDGMass_;
   double EtaPrimePDGMass_;
 
+  double muMVACut_;
+  double photonMVACut_;
+
+
   unsigned int tagmucounter_;
   unsigned int event_counter_;
   unsigned int elecounter_;

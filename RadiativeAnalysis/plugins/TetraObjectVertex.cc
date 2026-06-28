@@ -239,9 +239,9 @@ for (size_t i = 0; i < photons.size(); ++i) {
         rrt->DeltaRPhoton1Photon2_mmrecogg_ = deltaR(photon1.eta(), photon1.phi(), photon2.eta(), photon2.phi());
 
         std::vector<reco::TransientTrack> ttrk_photons;
-        //TMatrixD* covPtr = nullptr;
+        TMatrixD* covPtr;
         //std::vector<std::unique_ptr<TMatrixD>> covPtrs;
-        std::vector<TMatrixD> covPtrs;
+        std::vector<TMatrixD*> covPtrs;
 
         for (const auto& photon : {photon1, photon2}) {
             GlobalPoint vertexPostion(bsAndVtxInfo.pv_x, bsAndVtxInfo.pv_y, bsAndVtxInfo.pv_z);
@@ -250,30 +250,34 @@ for (size_t i = 0; i < photons.size(); ++i) {
             FreeTrajectoryState photonFTS(vertexPostion, vertexDirection, photon_charge, &bField);
 
             // Optional debugging
-            /*std::cout << "Photon FTS: " 
-            << photonFTS.position().x() 
-            << "\t"<< photonFTS.position().y() 
-            << "\t" << photonFTS.position().z() <<"\n";
-*/
-            reco::TransientTrack transientrackforPhoton = transientTrackBuilder.build(photonFTS);
+            // std::cout << "Photon FTS: " 
+            // << photonFTS.position().x() 
+            // << "\t"<< photonFTS.position().y() 
+            // << "\t" << photonFTS.position().z() <<"\n";
 
             // Photon covariance and error
             TMatrixD cov(lazyTools.covariancesXYZ(*photon.superCluster()));
             //covPtrs.push_back(std::make_unique<TMatrixD>(cov));
-            covPtrs.push_back(cov); // Store the covariance matrix for each photon
-            //covPtr = new TMatrixD(cov);
+            covPtr = new TMatrixD(cov);
+            covPtrs.push_back(covPtr);
             AlgebraicSymMatrix66 photonCov{ROOT::Math::SMatrixIdentity()};
-            AlgebraicVector6 diagonal(1., 1., 1., 1., 1., 1.);
+            AlgebraicVector6 diagonal(1e6, 1e6, 1e6, 1e6, 1e6, 1e6);
             photonCov.SetDiagonal(diagonal);
             CartesianTrajectoryError photonErr(photonCov);
             photonFTS.setCartesianError(photonErr);
 
+            reco::TransientTrack transientrackforPhoton = transientTrackBuilder.build(photonFTS);
+
             ttrk_photons.push_back(transientrackforPhoton);
         }
 
+        GlobalPoint SVKalman(tv.position().x(), tv.position().y(), tv.position().z());
+        GlobalVector Bsp3sum = GlobalVector(BCand.Px(), BCand.Py(), BCand.Pz());
+        int lowestDCAIndex = BeamSpotAndVertex::LowestDCAIndex(PVs, SVKalman, Bsp3sum);
+        reco::Vertex PVlowestDCA = PVs[lowestDCAIndex];
 
         KinematicConstrainedFit BCandFitter;
-        bool fitSuccess = BCandFitter.TetraObjectVertexFitRecoPhoton(ttrk_muons, ttrk_photons, dcv.dimuonMass, 0.001, {photon1, photon2}, covPtrs);
+        bool fitSuccess = BCandFitter.TetraObjectVertexFitRecoPhoton(ttrk_muons, ttrk_photons, resonanceResult, {photon1, photon2}, covPtrs, PVlowestDCA, bField, transientTrackBuilder);
         if (!fitSuccess) continue;
 
         rrt->VertexfitBsMass_mmrecogg_ = BCandFitter.getBhadronMass();
@@ -293,14 +297,15 @@ for (size_t i = 0; i < photons.size(); ++i) {
 
         // 3D and 2D decay length using PV and BS
         reco::Vertex PVvtxHightestPt = PVs[bsAndVtxInfo.VtxIndex];
-        rrt->BsCt3D_mmrecogg_ = m_lim.BsPDGMass * ((bVertex->position().x() - PVvtxHightestPt.x()) * Bsvec.x() +
-                                        (bVertex->position().y() - PVvtxHightestPt.y()) * Bsvec.y() +
-                                        (bVertex->position().z() - PVvtxHightestPt.z()) * Bsvec.z()) /
-                                        Bsvec.mag2();
 
-        rrt->BsCt2D_mmrecogg_ = m_lim.BsPDGMass * ((bVertex->position().x() - PVvtxHightestPt.x()) * Bsvec.x() +
-                                        (bVertex->position().y() - PVvtxHightestPt.y()) * Bsvec.y()) /
-                                        (Bsvec.x()*Bsvec.x() + Bsvec.y()*Bsvec.y());
+
+        rrt->BsCt3D_mmrecogg_ = calculateCt3D(PVlowestDCA, bVertex, bs);
+
+        rrt->BsCt2D_mmrecogg_ = calculateCt2D(PVlowestDCA, bVertex, bs);
+
+        rrt->VertexfitBsCtErr2D_mmrecogg_ = calculateCt2DError(PVlowestDCA, bVertex, bs);
+
+        rrt->VertexfitBsCtErr3D_mmrecogg_ = calculateCt3DError(PVlowestDCA, bVertex, bs);
 
         rrt->BsCt2DBS_mmrecogg_ = m_lim.BsPDGMass * ((bVertex->position().x() - bsAndVtxInfo.bs_x) * Bsvec.x() +
                                           (bVertex->position().y() - bsAndVtxInfo.bs_y) * Bsvec.y()) /
@@ -315,4 +320,103 @@ for (size_t i = 0; i < photons.size(); ++i) {
 }//end of muon loop 1
 }//end of muon loop 2
     return dcv;
+}
+
+double TetraObjectVertex::calculateCt2D(const reco::Vertex& PV,
+                                     const RefCountedKinematicVertex& bVertex,
+                                     const RefCountedKinematicParticle& bCand)
+{
+    MassLimits m_lim;
+    VertexDistanceXY d;
+    const GlobalPoint mySV = bVertex->position();
+    const GlobalError mySVErr = bVertex->error();
+    const GlobalPoint refVertex(PV.x(), PV.y(), PV.z());
+    const GlobalError refVertexErr = PV.error();
+    GlobalVector momentumVec = bCand->currentState().globalMomentum();
+    
+    Measurement1D VtxDist = d.distance(VertexState(mySV, mySVErr), VertexState(refVertex, refVertexErr));
+    double transmom = std::sqrt(momentumVec.y()*momentumVec.y() + momentumVec.x()*momentumVec.x());
+    if(transmom == 0) return -1.0; // sentinel value
+    return m_lim.BsPDGMass * VtxDist.value() / transmom;
+}
+
+double TetraObjectVertex::calculateCt3D(const reco::Vertex& PV,
+                                     const RefCountedKinematicVertex& bVertex,
+                                     const RefCountedKinematicParticle& bCand)
+{
+    MassLimits m_lim;
+    VertexDistance3D d;
+    const GlobalPoint mySV = bVertex->position();
+    const GlobalError mySVErr = bVertex->error();
+    const GlobalPoint refVertex(PV.x(), PV.y(), PV.z());
+    const GlobalError refVertexErr = PV.error();
+    GlobalVector momentumVec = bCand->currentState().globalMomentum();
+    
+    Measurement1D VtxDist = d.distance(VertexState(mySV, mySVErr), VertexState(refVertex, refVertexErr));
+    double momMag = momentumVec.mag();
+    if(momMag == 0) return -1.0; // sentinel value
+    return m_lim.BsPDGMass * VtxDist.value() / momMag;
+}
+
+double TetraObjectVertex::calculateCt2DError(const reco::Vertex& PV,
+							                 const RefCountedKinematicVertex& bVertex,
+							                 const RefCountedKinematicParticle& bCand)
+{
+    MassLimits m_lim;
+    VertexDistanceXY d;
+    const GlobalPoint mySV = bVertex->position();
+    const GlobalError mySVErr = bVertex->error();
+    const GlobalPoint refVertex(PV.x(), PV.y(), PV.z());
+    const GlobalError refVertexErr = PV.error();
+    GlobalVector momentumVec = bCand->currentState().globalMomentum();
+    AlgebraicSymMatrix77 momErr = bCand->currentState().kinematicParametersError().matrix();
+    
+    Measurement1D VtxDist = d.distance(VertexState(mySV, mySVErr), VertexState(refVertex, refVertexErr));
+    double VtxDistErr = VtxDist.error();
+    double transmom = std::sqrt(momentumVec.y()*momentumVec.y() + momentumVec.x()*momentumVec.x());
+
+    // transverse momentum error calculation
+    double dpx = std::sqrt(momErr(3,3));
+    double dpy = std::sqrt(momErr(4,4));
+
+    double dpt = std::sqrt( std::pow(momentumVec.x()*dpx, 2) + std::pow(momentumVec.y()*dpy, 2) ) / transmom;
+    
+    if(transmom == 0 || VtxDist.value() == 0) return -1.0; // sentinel value
+    
+    double firstTerm2 = std::pow(m_lim.BsPDGMass * VtxDistErr / transmom, 2.);
+    double secondTerm2 = std::pow(m_lim.BsPDGMass * VtxDist.value() * dpt / (transmom*transmom), 2.);
+
+    return std::sqrt(firstTerm2 + secondTerm2);
+}
+
+double TetraObjectVertex::calculateCt3DError(const reco::Vertex& PV,
+                                             const RefCountedKinematicVertex& bVertex,
+                                             const RefCountedKinematicParticle& bCand)
+{
+    MassLimits m_lim;
+    VertexDistance3D d;
+    const GlobalPoint mySV = bVertex->position();
+    const GlobalError mySVErr = bVertex->error();
+    const GlobalPoint refVertex(PV.x(), PV.y(), PV.z());
+    const GlobalError refVertexErr = PV.error();
+    GlobalVector momentumVec = bCand->currentState().globalMomentum();
+    AlgebraicSymMatrix77 momErr = bCand->currentState().kinematicParametersError().matrix();
+    
+    Measurement1D VtxDist = d.distance(VertexState(mySV, mySVErr), VertexState(refVertex, refVertexErr));
+    double VtxDistErr = VtxDist.error();
+    double momMag = momentumVec.mag();
+
+    // momentum magnitude error calculation
+    double dpx = std::sqrt(momErr(3,3));
+    double dpy = std::sqrt(momErr(4,4));
+    double dpz = std::sqrt(momErr(5,5));
+
+    double dmomMag = std::sqrt( std::pow(momentumVec.x()*dpx, 2) + std::pow(momentumVec.y()*dpy, 2) + std::pow(momentumVec.z()*dpz, 2) ) / momMag;
+    
+    if(momMag == 0 || VtxDist.value() == 0) return -1.0; // sentinel value
+    
+    double firstTerm2 = std::pow(m_lim.BsPDGMass * VtxDistErr / momMag, 2.);
+    double secondTerm2 = std::pow(m_lim.BsPDGMass * VtxDist.value() * dmomMag / (momMag*momMag), 2.);
+
+    return std::sqrt(firstTerm2 + secondTerm2);
 }
