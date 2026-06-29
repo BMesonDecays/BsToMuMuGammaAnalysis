@@ -50,22 +50,41 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
             if (flag == 1) {
                 dcv.dimuonMass_Jpsi = resonanceResult.mass;dcv.dimuonEta_Jpsi = resonanceResult.eta;
                 dcv.dimuonPhi_Jpsi = resonanceResult.phi;dcv.dimuonPt_Jpsi = resonanceResult.pt;// Jpsi
+                rrt->DiMuonMass_Jpsi_ = resonanceResult.mass; rrt->DiMuonEta_Jpsi_ = resonanceResult.eta;
+                rrt->DiMuonPhi_Jpsi_ = resonanceResult.phi; rrt->DiMuonPt_Jpsi_ = resonanceResult.pt;
+
+               
+
+
             }
             else if (flag == 2) {  
-                dcv.dimuonMass_Phi = resonanceResult.mass;dcv.dimuonEta_Phi = resonanceResult.eta;
+               dcv.dimuonMass_Phi = resonanceResult.mass;dcv.dimuonEta_Phi = resonanceResult.eta;
                 dcv.dimuonPhi_Phi = resonanceResult.phi;dcv.dimuonPt_Phi = resonanceResult.pt;// Phi
-            }
+
+                
+                rrt->DiMuonMass_Phi_ = resonanceResult.mass; rrt->DiMuonEta_Phi_ = resonanceResult.eta;
+                rrt->DiMuonPhi_Phi_ = resonanceResult.phi; rrt->DiMuonPt_Phi_ = resonanceResult.pt; 
+
+                  }
             else if (flag == 3) {  
                 dcv.dimuonMass_Kstar0 = resonanceResult.mass;dcv.dimuonEta_Kstar0 = resonanceResult.eta;
                 dcv.dimuonPhi_Kstar0 = resonanceResult.phi;dcv.dimuonPt_Kstar0 = resonanceResult.pt;// KStar
+                rrt->DiMuonMass_Kstar0_ = resonanceResult.mass; rrt->DiMuonEta_Kstar0_ = resonanceResult.eta;
+                rrt->DiMuonPhi_Kstar0_ = resonanceResult.phi; rrt->DiMuonPt_Kstar0_ = resonanceResult.pt; 
+
+
             }
             else if (flag == 4) {  
                 dcv.dimuonMass_NoBound = resonanceResult.mass;dcv.dimuonEta_NoBound = resonanceResult.eta;
                 dcv.dimuonPhi_NoBound = resonanceResult.phi;dcv.dimuonPt_NoBound = resonanceResult.pt;// NonResonant
+                rrt->DiMuonMass_NoBound_ = resonanceResult.mass; rrt->DiMuonEta_NoBound_ = resonanceResult.eta;
+                rrt->DiMuonPhi_NoBound_ = resonanceResult.phi; rrt->DiMuonPt_NoBound_ = resonanceResult.pt; 
             }
 
             }
             
+
+
             reco::TransientTrack muonTT1(muTrack1, &bField);
             reco::TransientTrack muonTT2(muTrack2, &bField);
             KalmanVertexFitter kvf(true);
@@ -540,35 +559,6 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
 
 
 
-
-
-
-
-
-
-
-
-                    
-            
-
-
-                   
-
-
-
-
-                    
-
-
-                    
-
-
-
-
-
-
-
-                    
 
 
 

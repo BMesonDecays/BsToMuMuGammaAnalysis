@@ -43,7 +43,11 @@ DecayChainVariables TetraObjectVertex::TetraObjectVertexObservables(
                         dcv.dimuonEta = resonanceResult.eta;
                         dcv.dimuonPhi = resonanceResult.phi;
                         dcv.dimuonPt = resonanceResult.pt;
-                        dcv.resonanceFlag = static_cast<int>(resonanceResult.resonanceFlag); 
+                        dcv.resonanceFlag = static_cast<int>(resonanceResult.resonanceFlag);
+                        rrt->DiMuonMass_Jpsi_ = resonanceResult.mass;
+                        rrt->DiMuonEta_Jpsi_ = resonanceResult.eta;
+                        rrt->DiMuonPhi_Jpsi_ = resonanceResult.phi;
+                        rrt->DiMuonPt_Jpsi_ = resonanceResult.pt;
                         }
                         reco::TransientTrack muonTT1 = reco::TransientTrack(muTrack1, &bField);
                         reco::TransientTrack muonTT2 = reco::TransientTrack(muTrack2, &bField);
@@ -174,19 +178,19 @@ AlgebraicSymMatrix55 C2 = mu2TS.perigeeError().covarianceMatrix();
 					bool fitSuccess = BCandFitter.TetraObjectVertexFitConvertedPhoton(ttrk_muons, nominalMuonMass, tttrk_electrons_pair, nominalElectronMass);
 					if (!fitSuccess) continue;
 					rrt->VertexfitBsMass_mmrecogg_ = BCandFitter.getBhadronMass();
-          RefCountedKinematicParticle bs = BCandFitter.getBhardon();
-	  		  RefCountedKinematicVertex bVertex = BCandFitter.getVertex();
-	  		  AlgebraicVector7 b_par = bs->currentState().kinematicParameters().vector();
-                GlobalVector Bsvec(b_par[3], b_par[4], b_par[5]);
+                    RefCountedKinematicParticle bs = BCandFitter.getBhardon();
+	  	        	RefCountedKinematicVertex bVertex = BCandFitter.getVertex();
+	  		        AlgebraicVector7 b_par = bs->currentState().kinematicParameters().vector();
+                    GlobalVector Bsvec(b_par[3], b_par[4], b_par[5]);
 
-          GlobalError gigibs=bVertex->error();
-          double vtxprob_Bs = TMath::Prob(bVertex->chiSquared(),(int)bVertex->degreesOfFreedom());
-          if (vtxprob_Bs < 1e-5) continue;
-          rrt->BsVtxProb_mmconvgg_ = vtxprob_Bs;
+                    GlobalError gigibs=bVertex->error();
+                    double vtxprob_Bs = TMath::Prob(bVertex->chiSquared(),(int)bVertex->degreesOfFreedom());
+                    if (vtxprob_Bs < 1e-5) continue;
+                    rrt->BsVtxProb_mmconvgg_ = vtxprob_Bs;
 
                 //std::cout<<"Vertex position after the fit  "<< Bsvec.x() << "\t"<< Bsvec.y() << "\t"<< Bsvec.z() << "\n";
                 reco::Vertex PVvtxHightestPt = PVs[bsAndVtxInfo.VtxIndex];
-		            std::cout<<" Tetra Object : Primary vertex HightestPt"<<PVvtxHightestPt.x()<< "\t"<<PVvtxHightestPt.y()<< "\t"<<PVvtxHightestPt.z() <<"\n";
+		        //std::cout<<" Tetra Object : Primary vertex HightestPt"<<PVvtxHightestPt.x()<< "\t"<<PVvtxHightestPt.y()<< "\t"<<PVvtxHightestPt.z() <<"\n";
                 MassLimits m_lim;
                 rrt->BsCt3D_mmconvgg_ = m_lim.BsPDGMass*( (bVertex->position().x()-PVvtxHightestPt.x())*Bsvec.x()+
                 (bVertex->position().y()-PVvtxHightestPt.y())*Bsvec.y()+
@@ -211,6 +215,9 @@ for (size_t i = 0; i < photons.size(); ++i) {
     if (photon1.superCluster()->energy() < 1.0) continue;
     if (photon1.isEB() && photon1.superCluster()->eta() < -2.5) continue;
     if (photon1.isEE() && photon1.superCluster()->eta() > 2.5) continue;
+    std::cout << "Processing photon pair with photon1 pt: " << photon1.pt() << "\n" 
+    << ", eta: " << photon1.eta() <<"\n"
+    << ", phi: " << photon1.phi() << "\n";
 
     for (size_t j = i + 1; j < photons.size(); ++j) {
         const reco::Photon& photon2 = photons[j];
@@ -218,6 +225,9 @@ for (size_t i = 0; i < photons.size(); ++i) {
         if (photon2.superCluster()->energy() < 1.0) continue;
         if (photon2.isEB() && photon2.superCluster()->eta() < -2.5) continue;
         if (photon2.isEE() && photon2.superCluster()->eta() > 2.5) continue;
+        std::cout << "Processing photon pair with photon2 pt: " << photon2.pt() << "\n"
+        << ", eta: " << photon2.eta() << "\n"
+        << ", phi: " << photon2.phi() << "\n";
 
         dcv.vertexFitFlag_mmrecogg = 4;  // flag for 2-photon case
 
@@ -228,16 +238,18 @@ for (size_t i = 0; i < photons.size(); ++i) {
         muonTrack2.SetPtEtaPhiE(mu2.pt(), mu2.eta(), mu2.phi(), mu2.energy());
 
         BCand = photonvec1 + photonvec2 + muonTrack1 + muonTrack2;
-
+        std::cout << "Bs candidate mass: " << BCand.M() << "\n";
         MassLimits m_lim;
         if (BCand.M() < m_lim.BsMassCutLower || BCand.M() > m_lim.BsMassCutUpper) continue;
-
+        std::cout << "Bs candidate mass after cuts: " << BCand.M() << "\n";
         // ΔR between each photon and the dimuon system
         TLorentzVector dimuon = muonTrack1 + muonTrack2;
         rrt->DeltaRPhoton1DiMuon_mmrecogg_ = deltaR(dimuon.Eta(), dimuon.Phi(), photon1.eta(), photon1.phi());
         rrt->DeltaRPhoton2DiMuon_mmrecogg_ = deltaR(dimuon.Eta(), dimuon.Phi(), photon2.eta(), photon2.phi());
         rrt->DeltaRPhoton1Photon2_mmrecogg_ = deltaR(photon1.eta(), photon1.phi(), photon2.eta(), photon2.phi());
-
+        std::cout << "ΔR between photon1 and dimuon: " << rrt->DeltaRPhoton1DiMuon_mmrecogg_ << "\n";
+        std::cout << "ΔR between photon2 and dimuon: " << rrt->DeltaRPhoton2DiMuon_mmrecogg_ << "\n";
+        std::cout << "ΔR between photon1 and photon2: " << rrt->DeltaRPhoton1Photon2_mmrecogg_ << "\n";
         std::vector<reco::TransientTrack> ttrk_photons;
         TMatrixD* covPtr;
         //std::vector<std::unique_ptr<TMatrixD>> covPtrs;
@@ -279,7 +291,7 @@ for (size_t i = 0; i < photons.size(); ++i) {
         KinematicConstrainedFit BCandFitter;
         bool fitSuccess = BCandFitter.TetraObjectVertexFitRecoPhoton(ttrk_muons, ttrk_photons, resonanceResult, {photon1, photon2}, covPtrs, PVlowestDCA, bField, transientTrackBuilder);
         if (!fitSuccess) continue;
-
+        std::cout << " the the Bhdrom mass after the fit  " << BCandFitter.getBhadronMass() << "       fit success: " << fitSuccess << "\n";
         rrt->VertexfitBsMass_mmrecogg_ = BCandFitter.getBhadronMass();
         rrt->FourvectorBsMass_mmrecogg_ = BCand.M();
         rrt->FourvectorBsPt_mmrecogg_   = BCand.Pt();

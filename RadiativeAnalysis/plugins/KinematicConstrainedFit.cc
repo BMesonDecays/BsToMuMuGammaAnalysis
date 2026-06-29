@@ -176,8 +176,8 @@ bool KinematicConstrainedFit::TrippleObjectVertexFitConvertedPhoton(
     }
     photonVertexFitTree->movePointerToTheTop();
     RefCountedKinematicParticle fittedPhoton = photonVertexFitTree->currentParticle();
-    std::cout << "Muon0 p converted photon case = " << muonTT[0].track().p() << "\n";
-    std::cout << "Muon1 p converted photon case = " << muonTT[1].track().p() << "\n";
+    //std::cout << "Muon0 p converted photon case = " << muonTT[0].track().p() << "\n";
+    //std::cout << "Muon1 p converted photon case = " << muonTT[1].track().p() << "\n";
     // Combine with muons
     std::vector<RefCountedKinematicParticle> allParticlesGlobal = {
         pFactory.particle(muonTT[0], muonMass, chi, ndf, muonSigma),
