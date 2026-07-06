@@ -240,6 +240,8 @@ double FourvectorGammaPt_mmrecog_;
 double FourvectorGammaEta_mmrecog_;
 double FourvectorGammaPhi_mmrecog_;
 
+double GammaMVAScore_mmrecog_;
+
 double VertexfitPVxRefitCosTheta_mmrecog_;
 double VertexfitPVyRefitCosTheta_mmrecog_;
 double VertexfitPVzRefitCosTheta_mmrecog_;
@@ -410,9 +412,15 @@ double VertexfitBsSVx_mmrecogg_;
 double VertexfitBsSVy_mmrecogg_;
 double VertexfitBsSVz_mmrecogg_;
 
-double FourvectorGammaPt_mmrecogg_;
-double FourvectorGammaEta_mmrecogg_;
-double FourvectorGammaPhi_mmrecogg_;
+double FourvectorGamma1Pt_mmrecogg_;
+double FourvectorGamma1Eta_mmrecogg_;
+double FourvectorGamma1Phi_mmrecogg_;
+double Gamma1MVAScore_mmrecogg_;
+
+double FourvectorGamma2Pt_mmrecogg_;
+double FourvectorGamma2Eta_mmrecogg_;
+double FourvectorGamma2Phi_mmrecogg_;
+double Gamma2MVAScore_mmrecogg_;
 
 double VertexfitPVxRefitCosTheta_mmrecogg_;
 double VertexfitPVyRefitCosTheta_mmrecogg_;

@@ -2,6 +2,7 @@
 #define BsToMuMuGammaAnalysis_RadiativeAnalysis_PhotonSelector_h
 
 #include <vector>
+#include <utility>
 #include "DataFormats/MuonReco/interface/Muon.h"
 #include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
 #include "DataFormats/EgammaCandidates/interface/Photon.h"
@@ -14,14 +15,14 @@ public:
     ~PhotonSelector();
 
     /// Select the photon from a vector of photons or conversions, using the given muon pair
-    std::vector<reco::Photon> selectPhoton(
+    std::pair<std::vector<reco::Photon>, std::vector<double>> selectPhoton(
         const std::vector<reco::Photon>& photons,
         const std::vector<reco::Muon>& muons,
         const TransientTrackBuilder& transientTrackBuilder,
         std::vector<float> photonMVAIDs,
         double photonMVAcut);
     
-    std::vector<reco::Photon> selectPhotons(
+    std::pair<std::vector<reco::Photon>, std::vector<double>> selectPhotons(
         const std::vector<reco::Photon>& photons,
         const std::vector<reco::Muon>& muons,
         const TransientTrackBuilder& transientTrackBuilder,

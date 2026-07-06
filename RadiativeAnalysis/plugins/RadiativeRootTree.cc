@@ -191,6 +191,8 @@ bmmgTree_->Branch("FourvectorGammaPt_mmrecog", &FourvectorGammaPt_mmrecog_, "Fou
 bmmgTree_->Branch("FourvectorGammaEta_mmrecog", &FourvectorGammaEta_mmrecog_, "FourvectorGammaEta_mmrecog/D");
 bmmgTree_->Branch("FourvectorGammaPhi_mmrecog", &FourvectorGammaPhi_mmrecog_, "FourvectorGammaPhi_mmrecog/D");
 
+bmmgTree_->Branch("GammaMVAScore_mmrecog", &GammaMVAScore_mmrecog_, "GammaMVAScore_mmrecog/D");
+
 bmmgTree_->Branch("VertexfitPVxRefitCosTheta_mmrecog", &VertexfitPVxRefitCosTheta_mmrecog_, "VertexfitPVxRefitCosTheta_mmrecog/D");
 bmmgTree_->Branch("VertexfitPVyRefitCosTheta_mmrecog", &VertexfitPVyRefitCosTheta_mmrecog_, "VertexfitPVyRefitCosTheta_mmrecog/D");
 bmmgTree_->Branch("VertexfitPVzRefitCosTheta_mmrecog", &VertexfitPVzRefitCosTheta_mmrecog_, "VertexfitPVzRefitCosTheta_mmrecog/D");
@@ -291,9 +293,15 @@ bmmgTree_->Branch("VertexfitBsSVx_mmrecogg", &VertexfitBsSVx_mmrecogg_, "Vertexf
 bmmgTree_->Branch("VertexfitBsSVy_mmrecogg", &VertexfitBsSVy_mmrecogg_, "VertexfitBsSVy_mmrecogg/D");
 bmmgTree_->Branch("VertexfitBsSVz_mmrecogg", &VertexfitBsSVz_mmrecogg_, "VertexfitBsSVz_mmrecogg/D");
 
-bmmgTree_->Branch("FourvectorGammaPt_mmrecogg", &FourvectorGammaPt_mmrecogg_, "FourvectorGammaPt_mmrecogg/D");
-bmmgTree_->Branch("FourvectorGammaEta_mmrecogg", &FourvectorGammaEta_mmrecogg_, "FourvectorGammaEta_mmrecogg/D");
-bmmgTree_->Branch("FourvectorGammaPhi_mmrecogg", &FourvectorGammaPhi_mmrecogg_, "FourvectorGammaPhi_mmrecogg/D");
+bmmgTree_->Branch("FourvectorGamma1Pt_mmrecogg", &FourvectorGamma1Pt_mmrecogg_, "FourvectorGamma1Pt_mmrecogg/D");
+bmmgTree_->Branch("FourvectorGamma1Eta_mmrecogg", &FourvectorGamma1Eta_mmrecogg_, "FourvectorGamma1Eta_mmrecogg/D");
+bmmgTree_->Branch("FourvectorGamma1Phi_mmrecogg", &FourvectorGamma1Phi_mmrecogg_, "FourvectorGamma1Phi_mmrecogg/D");
+bmmgTree_->Branch("Gamma1MVAScore_mmrecogg", &Gamma1MVAScore_mmrecogg_, "Gamma1MVAScore_mmrecogg/D");
+
+bmmgTree_->Branch("FourvectorGamma2Pt_mmrecogg", &FourvectorGamma2Pt_mmrecogg_, "FourvectorGamma2Pt_mmrecogg/D");
+bmmgTree_->Branch("FourvectorGamma2Eta_mmrecogg", &FourvectorGamma2Eta_mmrecogg_, "FourvectorGamma2Eta_mmrecogg/D");
+bmmgTree_->Branch("FourvectorGamma2Phi_mmrecogg", &FourvectorGamma2Phi_mmrecogg_, "FourvectorGamma2Phi_mmrecogg/D");
+bmmgTree_->Branch("Gamma2MVAScore_mmrecogg", &Gamma2MVAScore_mmrecogg_, "Gamma2MVAScore_mmrecogg/D");
 
 bmmgTree_->Branch("VertexfitPVxRefitCosTheta_mmrecogg", &VertexfitPVxRefitCosTheta_mmrecogg_, "VertexfitPVxRefitCosTheta_mmrecogg/D");
 bmmgTree_->Branch("VertexfitPVyRefitCosTheta_mmrecogg", &VertexfitPVyRefitCosTheta_mmrecogg_, "VertexfitPVyRefitCosTheta_mmrecogg/D");
@@ -861,6 +869,8 @@ FourvectorGammaPt_mmrecog_  = -9999999;
 FourvectorGammaEta_mmrecog_ = -9999999;
 FourvectorGammaPhi_mmrecog_ = -9999999;
 
+GammaMVAScore_mmrecog_ = -9999999;
+
 VertexfitPVxRefitCosTheta_mmrecog_ = -9999999;
 VertexfitPVyRefitCosTheta_mmrecog_ = -9999999;
 VertexfitPVzRefitCosTheta_mmrecog_ = -9999999;
@@ -959,9 +969,15 @@ VertexfitBsSVx_mmrecogg_ = -9999999;
 VertexfitBsSVy_mmrecogg_ = -9999999;
 VertexfitBsSVz_mmrecogg_ = -9999999;
 
-FourvectorGammaPt_mmrecogg_  = -9999999;
-FourvectorGammaEta_mmrecogg_ = -9999999;
-FourvectorGammaPhi_mmrecogg_ = -9999999;
+FourvectorGamma1Pt_mmrecogg_  = -9999999;
+FourvectorGamma1Eta_mmrecogg_ = -9999999;
+FourvectorGamma1Phi_mmrecogg_ = -9999999;
+Gamma1MVAScore_mmrecogg_ = -9999999;
+
+FourvectorGamma2Pt_mmrecogg_  = -9999999;
+FourvectorGamma2Eta_mmrecogg_ = -9999999;
+FourvectorGamma2Phi_mmrecogg_ = -9999999;
+Gamma2MVAScore_mmrecogg_ = -9999999;
 
 VertexfitPVxRefitCosTheta_mmrecogg_ = -9999999;
 VertexfitPVyRefitCosTheta_mmrecogg_ = -9999999;
@@ -1575,6 +1591,8 @@ bmmgTree_->SetBranchAddress("FourvectorGammaPt_mmrecog", &FourvectorGammaPt_mmre
 bmmgTree_->SetBranchAddress("FourvectorGammaEta_mmrecog", &FourvectorGammaEta_mmrecog_);
 bmmgTree_->SetBranchAddress("FourvectorGammaPhi_mmrecog", &FourvectorGammaPhi_mmrecog_);
 
+bmmgTree_->SetBranchAddress("GammaMVAScore_mmrecog", &GammaMVAScore_mmrecog_);
+
 bmmgTree_->SetBranchAddress("VertexfitPVxRefitCosTheta_mmrecog", &VertexfitPVxRefitCosTheta_mmrecog_);
 bmmgTree_->SetBranchAddress("VertexfitPVyRefitCosTheta_mmrecog", &VertexfitPVyRefitCosTheta_mmrecog_);
 bmmgTree_->SetBranchAddress("VertexfitPVzRefitCosTheta_mmrecog", &VertexfitPVzRefitCosTheta_mmrecog_);
@@ -1671,9 +1689,15 @@ bmmgTree_->SetBranchAddress("VertexfitBsSVx_mmrecogg", &VertexfitBsSVx_mmrecogg_
 bmmgTree_->SetBranchAddress("VertexfitBsSVy_mmrecogg", &VertexfitBsSVy_mmrecogg_);
 bmmgTree_->SetBranchAddress("VertexfitBsSVz_mmrecogg", &VertexfitBsSVz_mmrecogg_);
 
-bmmgTree_->SetBranchAddress("FourvectorGammaPt_mmrecogg", &FourvectorGammaPt_mmrecogg_);
-bmmgTree_->SetBranchAddress("FourvectorGammaEta_mmrecogg", &FourvectorGammaEta_mmrecogg_);
-bmmgTree_->SetBranchAddress("FourvectorGammaPhi_mmrecogg", &FourvectorGammaPhi_mmrecogg_);
+bmmgTree_->SetBranchAddress("FourvectorGamma1Pt_mmrecogg", &FourvectorGamma1Pt_mmrecogg_);
+bmmgTree_->SetBranchAddress("FourvectorGamma1Eta_mmrecogg", &FourvectorGamma1Eta_mmrecogg_);
+bmmgTree_->SetBranchAddress("FourvectorGamma1Phi_mmrecogg", &FourvectorGamma1Phi_mmrecogg_);
+bmmgTree_->SetBranchAddress("Gamma1MVAScore_mmrecogg", &Gamma1MVAScore_mmrecogg_);
+
+bmmgTree_->SetBranchAddress("FourvectorGamma2Pt_mmrecogg", &FourvectorGamma2Pt_mmrecogg_);
+bmmgTree_->SetBranchAddress("FourvectorGamma2Eta_mmrecogg", &FourvectorGamma2Eta_mmrecogg_);
+bmmgTree_->SetBranchAddress("FourvectorGamma2Phi_mmrecogg", &FourvectorGamma2Phi_mmrecogg_);
+bmmgTree_->SetBranchAddress("Gamma2MVAScore_mmrecogg", &Gamma2MVAScore_mmrecogg_);
 
 bmmgTree_->SetBranchAddress("VertexfitPVxRefitCosTheta_mmrecogg", &VertexfitPVxRefitCosTheta_mmrecogg_);
 bmmgTree_->SetBranchAddress("VertexfitPVyRefitCosTheta_mmrecogg", &VertexfitPVyRefitCosTheta_mmrecogg_);

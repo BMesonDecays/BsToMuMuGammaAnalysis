@@ -173,7 +173,7 @@ AlgebraicSymMatrix55 C2 = mu2TS.perigeeError().covarianceMatrix();
 					KinematicConstrainedFit BCandFitter;
 					bool fitSuccess = BCandFitter.TetraObjectVertexFitConvertedPhoton(ttrk_muons, nominalMuonMass, tttrk_electrons_pair, nominalElectronMass);
 					if (!fitSuccess) continue;
-					rrt->VertexfitBsMass_mmrecogg_ = BCandFitter.getBhadronMass();
+					rrt->VertexfitBsMass_mmconvgg_ = BCandFitter.getBhadronMass();
           RefCountedKinematicParticle bs = BCandFitter.getBhardon();
 	  		  RefCountedKinematicVertex bVertex = BCandFitter.getVertex();
 	  		  AlgebraicVector7 b_par = bs->currentState().kinematicParameters().vector();
@@ -218,6 +218,14 @@ for (size_t i = 0; i < photons.size(); ++i) {
         if (photon2.superCluster()->energy() < 1.0) continue;
         if (photon2.isEB() && photon2.superCluster()->eta() < -2.5) continue;
         if (photon2.isEE() && photon2.superCluster()->eta() > 2.5) continue;
+
+        rrt->FourvectorGamma1Pt_mmrecogg_ = photon1.pt();
+        rrt->FourvectorGamma1Eta_mmrecogg_ = photon1.eta();
+        rrt->FourvectorGamma1Phi_mmrecogg_ = photon1.phi();
+
+        rrt->FourvectorGamma2Pt_mmrecogg_ = photon2.pt();
+        rrt->FourvectorGamma2Eta_mmrecogg_ = photon2.eta();
+        rrt->FourvectorGamma2Phi_mmrecogg_ = photon2.phi();
 
         dcv.vertexFitFlag_mmrecogg = 4;  // flag for 2-photon case
 

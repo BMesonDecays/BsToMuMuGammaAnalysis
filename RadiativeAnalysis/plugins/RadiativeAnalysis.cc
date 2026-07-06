@@ -588,14 +588,23 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 		// select 2 muons with the highest vertex probability and opposite charge
 		vector<reco::Muon>* selectedMuons = new vector<reco::Muon>();
 		MuonSelector muonSelector;
-		*selectedMuons = muonSelector.selectMuonPair(*muons, trackBuilder, *vertexBeamSpot, muonMVAIDs, muMVACut_);
+		std::pair<std::vector<reco::Muon>, std::vector<float>> selMuonsAndMVA = muonSelector.selectMuonPair(*muons, trackBuilder, *vertexBeamSpot, muonMVAIDs, muMVACut_);
+		*selectedMuons = selMuonsAndMVA.first;
+		std::vector<float> selectedMuonMVA = selMuonsAndMVA.second;
+		
+		bmmgRootTree_->mu1MVAScore_ = selectedMuonMVA.empty() ? -99.0 : selectedMuonMVA[0];
+		bmmgRootTree_->mu2MVAScore_ = selectedMuonMVA.size() < 2 ? -99.0 : selectedMuonMVA[1];
 
 		PhotonSelector photonSelector;
 		vector<pat::CompositeCandidate>* selectedConvPhoton = new vector<pat::CompositeCandidate>();
 		*selectedConvPhoton = photonSelector.selectConvertedPhoton(*convPhotons, *selectedMuons, trackBuilder);
 
 		vector<reco::Photon>* selectedPhoton = new vector<reco::Photon>();
-		*selectedPhoton = photonSelector.selectPhoton(*photons, *selectedMuons, trackBuilder, photonMVAIDs, photonMVACut_);
+		std::pair<std::vector<reco::Photon>, std::vector<double>> selPhotonAndMVA = photonSelector.selectPhoton(*photons, *selectedMuons, trackBuilder, photonMVAIDs, photonMVACut_);
+		*selectedPhoton = selPhotonAndMVA.first;
+		std::vector<double> selectedPhotonMVA = selPhotonAndMVA.second;
+
+		bmmgRootTree_->GammaMVAScore_mmrecog_ = selectedPhotonMVA.empty() ? -99.0 : selectedPhotonMVA[0];
 
 		std::cout << "Selected Muons: " << selectedMuons->size() << ", Selected Photons: " << selectedPhoton->size() << std::endl;
 	   
@@ -620,9 +629,14 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
 		vector<pat::CompositeCandidate>* selectedConvPhotons = new vector<pat::CompositeCandidate>();
 		*selectedConvPhotons = photonSelector.selectConvertedPhotons(*convPhotons, *selectedMuons, trackBuilder);
+
 		vector<reco::Photon>* selectedPhotons = new vector<reco::Photon>();
-		*selectedPhotons = photonSelector.selectPhotons(*photons, *selectedMuons, trackBuilder, photonMVAIDs, photonMVACut_);
-		
+		std::pair<std::vector<reco::Photon>, std::vector<double>> selPhotonsAndMVA = photonSelector.selectPhotons(*photons, *selectedMuons, trackBuilder, photonMVAIDs, photonMVACut_);
+		*selectedPhotons = selPhotonsAndMVA.first;
+		std::vector<double> selectedPhotonsMVA = selPhotonsAndMVA.second;
+		bmmgRootTree_->Gamma1MVAScore_mmrecogg_ = selectedPhotonsMVA.size() < 2 ? -9999999 : selectedPhotonsMVA[0];
+		bmmgRootTree_->Gamma2MVAScore_mmrecogg_ = selectedPhotonsMVA.size() < 2 ? -9999999 : selectedPhotonsMVA[1];
+
 		if(selectedMuons->size()>=2 && (selectedConvPhotons->size() >=2 || selectedPhotons->size() >=2)){
 			TetraObjectVertex tetradcObservables;
 			decayVariables = tetradcObservables.TetraObjectVertexObservables(
@@ -647,16 +661,6 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 		// 	bmmgRootTree_->vertexTypeFlag_ = 3;
 		// }
 
-		// if(selectedMuons->size()==2){
-		// 	vector<float> muonMVAIDs = muonMVAIDProducer_->produce(*selectedMuons);
-		// 	bmmgRootTree_->mu1MVAScore_ = muonMVAIDs[0];
-		// 	bmmgRootTree_->mu2MVAScore_ = muonMVAIDs[1];
-		// }
-		// if(photons->size()>=1){
-		// 	edm::Ref<std::vector<reco::Photon>> phoRef(photons, 0);
-		// 	bool isTight = (*phoTightIDMap)[phoRef];
-		// 	bmmgRootTree_->photonTightID_[0] = isTight;
-		// }
 		
         
 		
@@ -834,23 +838,6 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 				bmmgRootTree_->Bscoplanarity_recommg_ = coplanarity;
 				bmmgRootTree_->isFourBody_ = 0;
 
-				// Fill ID decision for tight photon ID
-				 if (phoTightIDMap.isValid()) {
-				edm::Ref<std::vector<reco::Photon>> phoRef(photons, iPhoton);
-				 	bool isTight = (*phoTightIDMap)[phoRef];
-				 	std::cout << "Photon " << iPhoton << " tight ID: " << isTight << "\n";
-				 	bmmgRootTree_->photonTightID_[iPhoton] = isTight;
-				 }
-				 if (mvaValuesMap.isValid()) {
-				 	const edm::Ptr<reco::Photon> phoPtr(photons, iPhoton);
-				 	double mvaScore = -99.;
-				 	if (mvaValuesMap->contains(phoPtr.id())) {
-				 		mvaScore = (*mvaValuesMap)[phoPtr];
-				 	} else if (mvaValuesMap->idSize() == 1 && phoPtr.id() == edm::ProductID() && phoPtr.key() < mvaValuesMap->size()) {
-				 		mvaScore = mvaValuesMap->begin()[phoPtr.key()];
-				 	}
-				 	bmmgRootTree_->photonMVAScore_[iPhoton] = mvaScore;
-				 }
 				
 			}//Photon loop for three body through photon kinematics are saved irrespective of their multiplicity 
 			if (photonVar.size() - excludedPhotons.size() >= 2) {

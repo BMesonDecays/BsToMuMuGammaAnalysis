@@ -25,7 +25,7 @@ PhotonSelector::PhotonSelector()
 
 PhotonSelector::~PhotonSelector() {}
 
-std::vector<reco::Photon> PhotonSelector::selectPhoton(
+std::pair<std::vector<reco::Photon>, std::vector<double>> PhotonSelector::selectPhoton(
     const std::vector<reco::Photon>& photons,
     const std::vector<reco::Muon>& muons,
     const TransientTrackBuilder& transientTrackBuilder,
@@ -33,9 +33,10 @@ std::vector<reco::Photon> PhotonSelector::selectPhoton(
     double photonMVAcut) {
     
     std::vector<reco::Photon> selectedPhotons;
+    std::vector<double> MVAScores;
 
     if(photons.size() == 0 || muons.size() < 2 || photonMVAIDs.size() != photons.size()) {
-        return selectedPhotons; // Return empty if no photons or less than 2 muons
+        return std::make_pair(selectedPhotons, MVAScores); // Return empty if no photons or less than 2 muons
     }
 
     // reject photons with id score less than -0.07
@@ -43,11 +44,12 @@ std::vector<reco::Photon> PhotonSelector::selectPhoton(
     for(long unsigned int i = 0; i < photons.size(); ++i) {
         if(photonMVAIDs.at(i) >= photonMVAcut) {
             passingPhotons.push_back(photons[i]);
+            MVAScores.push_back(photonMVAIDs.at(i));
         }
     }
 
     if (passingPhotons.empty()) {
-        return selectedPhotons;
+        return std::make_pair(passingPhotons, MVAScores);
     }
 
     
@@ -66,11 +68,14 @@ std::vector<reco::Photon> PhotonSelector::selectPhoton(
        [&dimuonPhotonDeltaRs](size_t i1, size_t i2) { return dimuonPhotonDeltaRs[i1] < dimuonPhotonDeltaRs[i2]; });
     
     selectedPhotons.push_back(passingPhotons[photonIndicesSortedByDeltaR[0]]);
+    double selectedPhotonMVA = photonMVAIDs[photonIndicesSortedByDeltaR[0]];
+    MVAScores.clear();
+    MVAScores.push_back(selectedPhotonMVA);
 
-    return selectedPhotons;
+    return std::make_pair(selectedPhotons, MVAScores);
 }
 
-std::vector<reco::Photon> PhotonSelector::selectPhotons(
+std::pair<std::vector<reco::Photon>, std::vector<double>> PhotonSelector::selectPhotons(
     const std::vector<reco::Photon>& photons,
     const std::vector<reco::Muon>& muons,
     const TransientTrackBuilder& transientTrackBuilder,
@@ -78,9 +83,9 @@ std::vector<reco::Photon> PhotonSelector::selectPhotons(
     double photonMVAcut) {
     
     std::vector<reco::Photon> selectedPhotons;
-
+    std::vector<double> MVAScores;
     if(photons.size() < 2 || muons.size() < 2 || photonMVAIDs.size() != photons.size()) {
-        return selectedPhotons; // Return empty if less than 2 photons or less than 2 muons
+        return std::make_pair(selectedPhotons, MVAScores); // Return empty if less than 2 photons or less than 2 muons
     }
     
     // reject photons with id score less than -0.07
@@ -88,11 +93,12 @@ std::vector<reco::Photon> PhotonSelector::selectPhotons(
     for(long unsigned int i = 0; i < photons.size(); ++i) {
         if(photonMVAIDs.at(i) >= photonMVAcut) {
             passingPhotons.push_back(photons[i]);
+            MVAScores.push_back(photonMVAIDs.at(i));
         }
     }
 
     if (passingPhotons.size() < 2) {
-        return selectedPhotons;
+        return std::make_pair(selectedPhotons, MVAScores);
     }
 
     reco::Candidate::LorentzVector muonPairP4 = muons[0].p4() + muons[1].p4();
@@ -100,6 +106,8 @@ std::vector<reco::Photon> PhotonSelector::selectPhotons(
     // select a photon pair with the smallest deltaR to the dimuon system, and if it passes the selection criteria, add it to the selectedPhotons vector
     reco::Photon selectedPho1;
     reco::Photon selectedPho2;
+    double selectedPho1MVA = -9999999;
+    double selectedPho2MVA = -9999999;
     double minDeltaR = std::numeric_limits<double>::max();
 
     if(passingPhotons.size() > 1)
@@ -117,14 +125,20 @@ std::vector<reco::Photon> PhotonSelector::selectPhotons(
                     minDeltaR = dR;
                     selectedPho1 = pho1;
                     selectedPho2 = pho2;
+                    selectedPho1MVA = photonMVAIDs[i];
+                    selectedPho2MVA = photonMVAIDs[j];
                 }
             }
         }
         selectedPhotons.push_back(selectedPho1);
         selectedPhotons.push_back(selectedPho2);
+        MVAScores.clear();
+        MVAScores.push_back(selectedPho1MVA);
+        MVAScores.push_back(selectedPho2MVA);
     }
 
-    return selectedPhotons;
+
+    return std::make_pair(selectedPhotons, MVAScores);
 }
 
 std::vector<pat::CompositeCandidate> PhotonSelector::selectConvertedPhoton(
