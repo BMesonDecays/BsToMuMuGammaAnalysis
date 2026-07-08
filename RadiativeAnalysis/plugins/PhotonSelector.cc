@@ -75,6 +75,7 @@ std::pair<std::vector<reco::Photon>, std::vector<double>> PhotonSelector::select
     return std::make_pair(selectedPhotons, MVAScores);
 }
 
+
 std::pair<std::vector<reco::Photon>, std::vector<double>> PhotonSelector::selectPhotons(
     const std::vector<reco::Photon>& photons,
     const std::vector<reco::Muon>& muons,
@@ -140,6 +141,7 @@ std::pair<std::vector<reco::Photon>, std::vector<double>> PhotonSelector::select
 
     return std::make_pair(selectedPhotons, MVAScores);
 }
+
 
 std::vector<pat::CompositeCandidate> PhotonSelector::selectConvertedPhoton(
     const std::vector<pat::CompositeCandidate>& conversions,

@@ -99,6 +99,7 @@ class KinematicConstrainedFit{
 			const MagneticField& field,
 			const TransientTrackBuilder& theB);
 
+
 		double getBhadronProb() {return vtxprob_Bhadron;}
 		double getBhadronMass() {return mass_Bhadron;}
 		RefCountedKinematicParticle getBhardon()       {return bhadron;}

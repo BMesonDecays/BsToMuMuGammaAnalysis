@@ -29,6 +29,14 @@ public:
 	int PUTrueinteraction_;
 	unsigned int eventNumber_;
 	int lumiSection_;
+	int nEvents_;
+	double GenXsec_;
+	double GenXsecErr_;
+    double FilterEff_;
+	double FilterEffErr_;
+	double LumiEquivalent_;
+	double LumiEquivalentErr_;
+	
 	int isPV_;
 	int NVerticesbeforecut_;
 	int NVerticesaftercut_;

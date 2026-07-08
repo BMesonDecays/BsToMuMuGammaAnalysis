@@ -41,6 +41,9 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_mc_FULL','')
 #process.GlobalTag = GlobalTag(process.GlobalTag, '124X_mcRun3_2022_realistic_v12','')
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
+
+process.MessageLogger.cerr.threshold = "ERROR"
+process.MessageLogger.cerr.FwkReport.limit = 0
 #process.load("Geometry.CaloEventSetup.CaloGeometry_cfi")
 #process.load("Configuration.Geometry.GeometryECALHCAL_cff")
 #process.load("Geometry.CaloEventSetup.CaloTopology_cfi")
@@ -131,8 +134,32 @@ cmsRun makeTree_BsMuMuGamma_MC_AOD.py nEvents=30000 outputFile=myBMMGPhiGammaTre
 
 process.source = cms.Source('PoolSource', 
         fileNames =cms.untracked.vstring(
-        "root://cms-xrd-global.cern.ch//store/mc/Run3Summer22DRPremix/BsTo2MuG_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/AODSIM/124X_mcRun3_2022_realistic_v12-v2/100000/24ac371a-2c39-4db3-b046-c91b49c12819.root",
-        "root://cms-xrd-global.cern.ch//store/mc/Run3Summer22DRPremix/BsTo2MuG_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/AODSIM/124X_mcRun3_2022_realistic_v12-v2/100000/1576f693-e6cc-486f-88b5-55426e1151b9.root") 
+        #"root://cms-xrd-global.cern.ch//store/mc/Run3Summer22DRPremix/BsTo2MuG_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/AODSIM/124X_mcRun3_2022_realistic_v12-v2/100000/24ac371a-2c39-4db3-b046-c91b49c12819.root",
+        #"root://cms-xrd-global.cern.ch//store/mc/Run3Summer22DRPremix/BsTo2MuG_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/AODSIM/124X_mcRun3_2022_realistic_v12-v2/100000/1576f693-e6cc-486f-88b5-55426e1151b9.root",
+        #"root://cms-xrd-global.cern.ch//store/mc/Run3Summer22DRPremix/BdTo2MuG_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/AODSIM/124X_mcRun3_2022_realistic_v12-v2/2530000/148fd28d-1461-49e2-9ed0-f7fa54195349.root",
+        "root://cms-xrd-global.cern.ch//store/mc/Run3Summer22EEDRPremix/BsToJPsiPi0-JPsiTo2Mu-Pi0To2G_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/AODSIM/124X_mcRun3_2022_realistic_postEE_v1-v2/2820000/009a2309-67d1-4b13-b1d4-71c88e40ef6e.root",
+ "root://cms-xrd-global.cern.ch//store/mc/Run3Summer22EEDRPremix/BsToJPsiPi0-JPsiTo2Mu-Pi0To2G_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/AODSIM/124X_mcRun3_2022_realistic_postEE_v1-v2/2820000/028994f4-0c1c-4ed5-bf99-6baf7957d416.root",
+ "root://cms-xrd-global.cern.ch//store/mc/Run3Summer22EEDRPremix/BsToJPsiPi0-JPsiTo2Mu-Pi0To2G_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/AODSIM/124X_mcRun3_2022_realistic_postEE_v1-v2/2820000/02d07398-79ce-4959-8b17-1765ad70e748.root",
+ "root://cms-xrd-global.cern.ch//store/mc/Run3Summer22EEDRPremix/BsToJPsiPi0-JPsiTo2Mu-Pi0To2G_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/AODSIM/124X_mcRun3_2022_realistic_postEE_v1-v2/2820000/0357fc0a-c353-4bce-a72f-3e7b2ebef0d4.root",
+ "root://cms-xrd-global.cern.ch//store/mc/Run3Summer22EEDRPremix/BsToJPsiPi0-JPsiTo2Mu-Pi0To2G_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/AODSIM/124X_mcRun3_2022_realistic_postEE_v1-v2/2820000/0600cfa9-109c-46af-aeb4-ee02b234e56e.root",
+ "root://cms-xrd-global.cern.ch//store/mc/Run3Summer22EEDRPremix/BsToJPsiPi0-JPsiTo2Mu-Pi0To2G_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/AODSIM/124X_mcRun3_2022_realistic_postEE_v1-v2/2820000/076e3ac9-62a0-4f05-be3b-8006d2812561.root",
+ "root://cms-xrd-global.cern.ch//store/mc/Run3Summer22EEDRPremix/BsToJPsiPi0-JPsiTo2Mu-Pi0To2G_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/AODSIM/124X_mcRun3_2022_realistic_postEE_v1-v2/2820000/07cef736-ab14-4d12-b3b5-f2528f8ef10f.root",
+ "root://cms-xrd-global.cern.ch//store/mc/Run3Summer22EEDRPremix/BsToJPsiPi0-JPsiTo2Mu-Pi0To2G_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/AODSIM/124X_mcRun3_2022_realistic_postEE_v1-v2/2820000/07e0648d-1a8e-4f0b-a128-01cbd02a6c64.root",
+ "root://cms-xrd-global.cern.ch//store/mc/Run3Summer22EEDRPremix/BsToJPsiPi0-JPsiTo2Mu-Pi0To2G_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/AODSIM/124X_mcRun3_2022_realistic_postEE_v1-v2/2820000/08591617-b8af-4754-b91e-203fb6f58c3c.root",
+ "root://cms-xrd-global.cern.ch//store/mc/Run3Summer22EEDRPremix/BsToJPsiPi0-JPsiTo2Mu-Pi0To2G_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/AODSIM/124X_mcRun3_2022_realistic_postEE_v1-v2/2820000/08673ef9-fa3b-4dd6-90cf-309919b1bcc2.root",
+ "root://cms-xrd-global.cern.ch//store/mc/Run3Summer22EEDRPremix/BsToJPsiPi0-JPsiTo2Mu-Pi0To2G_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/AODSIM/124X_mcRun3_2022_realistic_postEE_v1-v2/2820000/08f7ab16-72ff-411f-acc7-f82f999f5f3f.root",
+ "root://cms-xrd-global.cern.ch//store/mc/Run3Summer22EEDRPremix/BsToJPsiPi0-JPsiTo2Mu-Pi0To2G_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/AODSIM/124X_mcRun3_2022_realistic_postEE_v1-v2/2820000/0c211843-0000-4bd0-8e69-57c8a84aa410.root",
+ "root://cms-xrd-global.cern.ch//store/mc/Run3Summer22EEDRPremix/BsToJPsiPi0-JPsiTo2Mu-Pi0To2G_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/AODSIM/124X_mcRun3_2022_realistic_postEE_v1-v2/2820000/0c6fd264-ff1d-48b6-b970-423c8cbdc918.root",
+ "root://cms-xrd-global.cern.ch//store/mc/Run3Summer22EEDRPremix/BsToJPsiPi0-JPsiTo2Mu-Pi0To2G_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/AODSIM/124X_mcRun3_2022_realistic_postEE_v1-v2/2820000/0e37057d-c372-479f-9977-e6b13bad06cd.root",
+ "root://cms-xrd-global.cern.ch//store/mc/Run3Summer22EEDRPremix/BsToJPsiPi0-JPsiTo2Mu-Pi0To2G_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/AODSIM/124X_mcRun3_2022_realistic_postEE_v1-v2/2820000/0f10823b-7010-47f1-94e1-f64a3f48a700.root",
+ "root://cms-xrd-global.cern.ch//store/mc/Run3Summer22EEDRPremix/BsToJPsiPi0-JPsiTo2Mu-Pi0To2G_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/AODSIM/124X_mcRun3_2022_realistic_postEE_v1-v2/2820000/13178ec3-ff80-46bf-9fb7-e550b37c8d15.root",
+ "root://cms-xrd-global.cern.ch//store/mc/Run3Summer22EEDRPremix/BsToJPsiPi0-JPsiTo2Mu-Pi0To2G_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/AODSIM/124X_mcRun3_2022_realistic_postEE_v1-v2/2820000/13a0d45e-b3b1-4d06-a730-a556bb19b4c2.root",
+ "root://cms-xrd-global.cern.ch//store/mc/Run3Summer22EEDRPremix/BsToJPsiPi0-JPsiTo2Mu-Pi0To2G_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/AODSIM/124X_mcRun3_2022_realistic_postEE_v1-v2/2820000/15eb401f-1957-4a8d-88b2-f5a307077bd5.root",
+ "root://cms-xrd-global.cern.ch//store/mc/Run3Summer22EEDRPremix/BsToJPsiPi0-JPsiTo2Mu-Pi0To2G_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/AODSIM/124X_mcRun3_2022_realistic_postEE_v1-v2/2820000/1622a58d-b012-45e2-a8ac-5241c94cf5c0.root",
+ "root://cms-xrd-global.cern.ch//store/mc/Run3Summer22EEDRPremix/BsToJPsiPi0-JPsiTo2Mu-Pi0To2G_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/AODSIM/124X_mcRun3_2022_realistic_postEE_v1-v2/2820000/162ac757-2f89-4919-9b44-967f274c4acd.root",
+ "root://cms-xrd-global.cern.ch//store/mc/Run3Summer22EEDRPremix/BsToJPsiPi0-JPsiTo2Mu-Pi0To2G_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/AODSIM/124X_mcRun3_2022_realistic_postEE_v1-v2/2820000/16c4c756-5915-4032-8193-14891e306584.root"
+        
+        ) 
         )
 
 
@@ -295,10 +322,7 @@ process.bmmgVertexAnalysis = cms.EDAnalyzer("RadiativeAnalysis",
                                           PsiPDGMass                    = cms.double(3.6860),
                                           outputFile                    = cms.untracked.string(options.outputFile),
                                           muMVACut = cms.double(0.83),
-                                          photonMVACut = cms.double(-0.07)
-                                          
-
-)
+                                          photonMVACut = cms.double(-0.07))
 
 xgboost_models = [
     ('Run2022-20231030-1731-Event0', 'run3muonmva'),

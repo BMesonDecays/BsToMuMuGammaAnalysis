@@ -36,7 +36,8 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig):
 	nominalEtaPrimeMass(0.957780),
 	nominalKaonMass(0.493677)
 {
-	generatorInfoTok                   = consumes<GenRunInfoProduct, edm::InRun>(edm::InputTag("generator"));
+	generatorInfoTok                  = consumes<GenRunInfoProduct, edm::InRun>(edm::InputTag("generator"));
+	genFilterTok                      = consumes<GenFilterInfo, edm::InLumi>(edm::InputTag("genFilterEfficiencyProducer"));
 	isMCstudy_                        = iConfig.getParameter<bool>("isMCstudy");
 	isMINIAOD_                        = iConfig.getParameter<bool>("isMINIAOD");
 	genParticlesLabel                 = iConfig.getParameter<edm::InputTag>("genParticlesLabel");
@@ -157,18 +158,8 @@ void RadiativeAnalysis::beginJob() {
   muonMVAIDProducer_ = new MuonMVAID(theConfig_);
 }
 
-void RadiativeAnalysis::endJob() {
-  bmmgRootTree_->writeFile();
-  delete bmmgRootTree_;
 
-  delete muonMVAIDProducer_;
-  cout << "Total number of Events          : " << event_counter_ << endl;
-  cout << "Total number of Tagged muons    : " << muoncounter_   << endl;
-  cout << "Total number of Tagged electrons: " << elecounter_    << endl;
-  cout << "Total number of Tagged jets     : " << jetcounter_    << endl;
-  cout << "Max amount of Tag muons         : " << tagmucounter_ <<  endl;
-  cout << "Max number of photon            : " << photoncounter_ << endl;
-}
+
 void RadiativeAnalysis::beginRun(const edm::Run& iRun, const edm::EventSetup& iSetup)
 {
     bool changed = true;
@@ -186,43 +177,42 @@ void RadiativeAnalysis::beginRun(const edm::Run& iRun, const edm::EventSetup& iS
        
 }
 //------------Do not know when to use this function------------------
-void RadiativeAnalysis::endRun(const edm::Run& iRun,const edm::EventSetup& iSetup)
+void RadiativeAnalysis::endRun(const edm::Run& iRun, const edm::EventSetup& iSetup)
 {
 
-	std::cout << ">>> before getByLabel" << std::endl;
 
    edm::Handle<GenRunInfoProduct> genRunInfo;
    iRun.getByToken(generatorInfoTok, genRunInfo);
 
-    std::cout << ">>> after getByLabel" << std::endl;
 
     if (!genRunInfo.isValid()) {
       edm::LogWarning("GenRunInfo") << "GenRunInfoProduct not found!";
       return;
     }
 
-     double genXsec_   = genRunInfo->internalXSec().value();
-     double filterEff_ = genRunInfo->filterEfficiency();
+      genXsec_   = genRunInfo->internalXSec().value();
+	  genXsecErr_ = genRunInfo->internalXSec().error();
 
-    // IMPORTANT: GenRunInfoProduct does NOT store event counts.
-    // This must be provided from event loop or counters elsewhere.
-    double nEvents_ = 0.0;  // placeholder; must be filled externally
-
-    double lumiEquivalent_ = -1.0;
-
-	// Equivalent luminosity
-	if (genXsec_ > 0 && filterEff_ > 0 && nEvents_ > 0)
-	lumiEquivalent_ = nEvents_ / (genXsec_ * filterEff_);
-	else
-	lumiEquivalent_ = -1.0;
-
-	std::cout << "GenXsec: " << genXsec_
-			<< " FilterEff: " << filterEff_
-			<< " nEvents: " << nEvents_
-			<< " LumiEquivalent: " << lumiEquivalent_
-			<< std::endl;
 
 }
+void RadiativeAnalysis::beginLuminosityBlock(const edm::LuminosityBlock& iLumi,const edm::EventSetup& iSetup)
+{
+    // nothing needed here for now
+}
+void RadiativeAnalysis::endLuminosityBlock(const edm::LuminosityBlock& iLumi, const edm::EventSetup& iSetup)
+{
+    edm::Handle<GenFilterInfo> genFilter;
+    iLumi.getByToken(genFilterTok, genFilter);
+
+    if (!genFilter.isValid()) {
+        std::cout << "GenFilterInfo not found" << std::endl;
+        return;
+    }
+
+    filterEff_ = genFilter->filterEfficiency(-1);
+    filterEffErr_ = genFilter->filterEfficiencyError(-1);
+}
+    
 //------------- get filters for a given HLT path (helper function) -------------
 std::vector<std::string>RadiativeAnalysis::getFiltersForPath(const std::string& pathName) const
 {
@@ -606,7 +596,7 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
 		bmmgRootTree_->GammaMVAScore_mmrecog_ = selectedPhotonMVA.empty() ? -99.0 : selectedPhotonMVA[0];
 
-		std::cout << "Selected Muons: " << selectedMuons->size() << ", Selected Photons: " << selectedPhoton->size() << std::endl;
+		//std::cout << "Selected Muons: " << selectedMuons->size() << ", Selected Photons: " << selectedPhoton->size() << std::endl;
 	   
 		DecayChainVariables decayVariables;
 		if(selectedMuons->size()>=2 && (selectedConvPhoton->size() >=1 || selectedPhoton->size() >=1)){
@@ -838,6 +828,23 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 				bmmgRootTree_->Bscoplanarity_recommg_ = coplanarity;
 				bmmgRootTree_->isFourBody_ = 0;
 
+				// Fill ID decision for tight photon ID
+				 if (phoTightIDMap.isValid()) {
+				edm::Ref<std::vector<reco::Photon>> phoRef(photons, iPhoton);
+				 	bool isTight = (*phoTightIDMap)[phoRef];
+				 	//std::cout << "Photon " << iPhoton << " tight ID: " << isTight << "\n";
+				 	bmmgRootTree_->photonTightID_[iPhoton] = isTight;
+				 }
+				 if (mvaValuesMap.isValid()) {
+				 	const edm::Ptr<reco::Photon> phoPtr(photons, iPhoton);
+				 	double mvaScore = -99.;
+				 	if (mvaValuesMap->contains(phoPtr.id())) {
+				 		mvaScore = (*mvaValuesMap)[phoPtr];
+				 	} else if (mvaValuesMap->idSize() == 1 && phoPtr.id() == edm::ProductID() && phoPtr.key() < mvaValuesMap->size()) {
+				 		mvaScore = mvaValuesMap->begin()[phoPtr.key()];
+				 	}
+				 	bmmgRootTree_->photonMVAScore_[iPhoton] = mvaScore;
+				 }
 				
 			}//Photon loop for three body through photon kinematics are saved irrespective of their multiplicity 
 			if (photonVar.size() - excludedPhotons.size() >= 2) {
@@ -982,7 +989,7 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 					 bmmgRootTree_->GenB_eta_     = G.Bp4.Eta();
 					 bmmgRootTree_->GenB_phi_     = G.Bp4.Phi();
 					 bmmgRootTree_->GenB_mass_    = G.Bp4.M();
-					 std::cout<<" Gen B Mass : "<< G.Bp4.M() << "Gen B Pt : "<< G.Bp4.Pt() << "\n";
+					 //std::cout<<" Gen B Mass : "<< G.Bp4.M() << "Gen B Pt : "<< G.Bp4.Pt() << "\n";
 
 					 bmmgRootTree_->GenBLxy_      = G.BLxy;
 					 bmmgRootTree_->GenBct2D_       = G.Bct2D;
@@ -1077,7 +1084,7 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
         bmmgRootTree_->Photon_genMotherPdgId_[i]  = photonMatch.genMotherPdgId;
         bmmgRootTree_->Photon_genGMotherPdgId_[i] = photonMatch.genGMotherPdgId;
         bmmgRootTree_->Photon_genDeltaR_[i]       = photonMatch.deltaR;
-		std::cout<<" Photon "<< i <<" deltaR : "<< photonMatch.deltaR << "\n";
+		//std::cout<<" Photon "<< i <<" deltaR : "<< photonMatch.deltaR << "\n";
         bmmgRootTree_->Photon_genDeltaPt_[i]      = photonMatch.deltaPt;
     }
     
@@ -1130,6 +1137,57 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
 	bmmgRootTree_->fill();
 }
+////////////////////////////////////////////////////////////
+////////////////End Job///////////////////////////////////
+void RadiativeAnalysis::endJob() {
+  
+  cout << "Total number of Events          : " << event_counter_ << endl;
+  cout << "Total number of Tagged muons    : " << muoncounter_   << endl;
+  cout << "Total number of Tagged electrons: " << elecounter_    << endl;
+  cout << "Total number of Tagged jets     : " << jetcounter_    << endl;
+  cout << "Max amount of Tag muons         : " << tagmucounter_ <<  endl;
+  cout << "Max number of photon            : " << photoncounter_ << endl;
+
+
+    int nEvents = event_counter_;
+
+
+	if (genXsec_ > 0 && filterEff_ > 0 && nEvents > 0) {
+
+    lumiEquivalent_ = nEvents / (genXsec_ * filterEff_);
+
+    double relSigma = (genXsec_ > 0) ? (genXsecErr_ / genXsec_) : 0.0;
+    double relEff   = (filterEff_ > 0) ? (filterEffErr_ / filterEff_) : 0.0;
+
+    double relErr = std::sqrt(relSigma*relSigma + relEff*relEff);
+
+    lumiEquivalentErr_ = lumiEquivalent_ * relErr;
+}
+
+    
+
+    bmmgRootTree_->GenXsec_        = genXsec_;
+    bmmgRootTree_->GenXsecErr_     = genXsecErr_;
+    bmmgRootTree_->FilterEff_      = filterEff_;
+    bmmgRootTree_->FilterEffErr_   = filterEffErr_;
+    bmmgRootTree_->nEvents_        = nEvents;
+    bmmgRootTree_->LumiEquivalent_ = lumiEquivalent_;
+    bmmgRootTree_->LumiEquivalentErr_ = lumiEquivalentErr_;
+
+    std::cout<< " =========================Lumi Calculation============================\n";
+	std::cout << "Total number of Events          : " << nEvents << "\n";
+	std::cout << "FilterEff = " << filterEff_ << " +/- " << filterEffErr_ <<"\n";
+	std::cout << "GenXsec = " << genXsec_ << " +/- " << genXsecErr_ <<"\n";
+	std::cout << "LumiEquivalent = " << lumiEquivalent_ << " +/- " << lumiEquivalentErr_ <<"\n";
+
+bmmgRootTree_->fill();    
+
+  bmmgRootTree_->writeFile();
+  delete bmmgRootTree_;
+  delete muonMVAIDProducer_;
+	      
+}
+
 //////////////////////////////////////////////////////////////
 ////////// Helper Functions///////////////////////////////////
 //////////////////////////////////////////////////////////////
