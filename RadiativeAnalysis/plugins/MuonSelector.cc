@@ -10,16 +10,18 @@ MuonSelector::MuonSelector()
 
 MuonSelector::~MuonSelector() {}
 
-std::vector<reco::Muon> MuonSelector::selectMuonPair(
+std::pair<std::vector<reco::Muon>, std::vector<float>> MuonSelector::selectMuonPair(
     const std::vector<reco::Muon>& muons,
     const TransientTrackBuilder& transientTrackBuilder,
     const reco::BeamSpot& beamSpot,
-    std::vector<float> mvaScores) {
+    std::vector<float> mvaScores,
+    double mvaCut) {
     
     
     // Form pairs from selected muons
     float bestVertexProb = -1.0;
     std::vector<reco::Muon> bestPair;
+     std::vector<float> bestPairScores;
     for (size_t i = 0; i < muons.size(); ++i) {
         for (size_t j = i + 1; j < muons.size(); ++j) {
             const reco::Muon& mu1 = muons[i];
@@ -27,9 +29,9 @@ std::vector<reco::Muon> MuonSelector::selectMuonPair(
 
             // Skip muons that do not pass selection criteria
             if (!passMuonSelection(mu1, mu2)) continue;
-            double mvaScore1 = mvaScores.at(i);
-            double mvaScore2 = mvaScores.at(j);
-            if (mvaScore1 < 0.83 || mvaScore2 < 0.83) continue;
+            float mvaScore1 = mvaScores.at(i);
+            float mvaScore2 = mvaScores.at(j);
+            if (mvaScore1 < mvaCut || mvaScore2 < mvaCut) continue;
             
             // Create transient tracks
             auto tt1 = transientTrackBuilder.build(mu1.muonBestTrack());
@@ -56,12 +58,13 @@ std::vector<reco::Muon> MuonSelector::selectMuonPair(
                 if (prob > bestVertexProb) {
                     bestVertexProb = prob;
                     bestPair = {mu1, mu2};
+                    bestPairScores = {mvaScore1, mvaScore2};
                 }
             }
         }
     }
     
-    return bestPair;
+    return std::make_pair(bestPair, bestPairScores);
 }
 
 bool MuonSelector::passMuonSelection(const reco::Muon& mu1, const reco::Muon& mu2) const {

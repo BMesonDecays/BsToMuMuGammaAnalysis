@@ -6,7 +6,7 @@
 #include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
 #include "DataFormats/EgammaCandidates/interface/Photon.h"
 #include "DataFormats/PatCandidates/interface/CompositeCandidate.h"
-
+#include <utility> // for std::pair
 
 class PhotonSelector {
 public:
@@ -14,14 +14,14 @@ public:
     ~PhotonSelector();
 
     /// Select the photon from a vector of photons or conversions, using the given muon pair
-    std::vector<reco::Photon> selectPhoton(
+    std::pair<std::vector<reco::Photon>, std::vector<double>> selectPhoton(
         const std::vector<reco::Photon>& photons,
         const std::vector<reco::Muon>& muons,
         const TransientTrackBuilder& transientTrackBuilder,
         std::vector<float> photonMVAIDs,
         double photonMVAcut);
     
-    std::vector<reco::Photon> selectPhotons(
+   std::pair<std::vector<reco::Photon>, std::vector<double>> selectPhotons(
         const std::vector<reco::Photon>& photons,
         const std::vector<reco::Muon>& muons,
         const TransientTrackBuilder& transientTrackBuilder,

@@ -578,16 +578,26 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 		// select 2 muons with the highest vertex probability and opposite charge
 		vector<reco::Muon>* selectedMuons = new vector<reco::Muon>();
 		MuonSelector muonSelector;
-		*selectedMuons = muonSelector.selectMuonPair(*muons, trackBuilder, *vertexBeamSpot, muonMVAIDs);
+		std::pair<std::vector<reco::Muon>, std::vector<float>> selMuonsAndMVA = muonSelector.selectMuonPair(*muons, trackBuilder, *vertexBeamSpot, muonMVAIDs, muMVACut_);
+		*selectedMuons = selMuonsAndMVA.first;
+		std::vector<float> selectedMuonMVA = selMuonsAndMVA.second;
+		
+		bmmgRootTree_->mu1MVAScore_ = selectedMuonMVA.empty() ? -99.0 : selectedMuonMVA[0];
+		bmmgRootTree_->mu2MVAScore_ = selectedMuonMVA.size() < 2 ? -99.0 : selectedMuonMVA[1];
+
 
 		PhotonSelector photonSelector;
 		vector<pat::CompositeCandidate>* selectedConvPhoton = new vector<pat::CompositeCandidate>();
 		*selectedConvPhoton = photonSelector.selectConvertedPhoton(*convPhotons, *selectedMuons, trackBuilder);
 
 		vector<reco::Photon>* selectedPhoton = new vector<reco::Photon>();
-		*selectedPhoton = photonSelector.selectPhoton(*photons, *selectedMuons, trackBuilder, photonMVAIDs, photonMVACut_);
+		std::pair<std::vector<reco::Photon>, std::vector<double>> selPhotonAndMVA = photonSelector.selectPhoton(*photons, *selectedMuons, trackBuilder, photonMVAIDs, photonMVACut_);
+		*selectedPhoton = selPhotonAndMVA.first;
+		std::vector<double> selectedPhotonMVA = selPhotonAndMVA.second;
 
-		//std::cout << "Selected Muons: " << selectedMuons->size() << ", Selected Photons: " << selectedPhoton->size() << std::endl;
+		bmmgRootTree_->GammaMVAScore_mmrecog_ = selectedPhotonMVA.empty() ? -99.0 : selectedPhotonMVA[0];
+
+		std::cout << "Selected Muons: " << selectedMuons->size() << ", Selected Photons: " << selectedPhoton->size() << std::endl;
 	   
 		DecayChainVariables decayVariables;
 		if(selectedMuons->size()>=2 && (selectedConvPhoton->size() >=1 || selectedPhoton->size() >=1)){
@@ -612,8 +622,11 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 		vector<pat::CompositeCandidate>* selectedConvPhotons = new vector<pat::CompositeCandidate>();
 		*selectedConvPhotons = photonSelector.selectConvertedPhotons(*convPhotons, *selectedMuons, trackBuilder);
 		vector<reco::Photon>* selectedPhotons = new vector<reco::Photon>();
-		*selectedPhotons = photonSelector.selectPhotons(*photons, *selectedMuons, trackBuilder, photonMVAIDs, photonMVACut_);
-		
+		std::pair<std::vector<reco::Photon>, std::vector<double>> selPhotonsAndMVA = photonSelector.selectPhotons(*photons, *selectedMuons, trackBuilder, photonMVAIDs, photonMVACut_);
+		*selectedPhotons = selPhotonsAndMVA.first;
+		std::vector<double> selectedPhotonsMVA = selPhotonsAndMVA.second;
+		bmmgRootTree_->Gamma1MVAScore_mmrecogg_ = selectedPhotonsMVA.size() < 2 ? -9999999 : selectedPhotonsMVA[0];
+		bmmgRootTree_->Gamma2MVAScore_mmrecogg_ = selectedPhotonsMVA.size() < 2 ? -9999999 : selectedPhotonsMVA[1];
 		if(selectedMuons->size()>=2 && (selectedConvPhotons->size() >=2 || selectedPhotons->size() >=2)){
 			TetraObjectVertex tetradcObservables;
 			decayVariables = tetradcObservables.TetraObjectVertexObservables(

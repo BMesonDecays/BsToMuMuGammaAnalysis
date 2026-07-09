@@ -605,11 +605,9 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
             //std::cout<<" The vertex fit flag is set to 2 for the reco photons : "<<dcv.vertexFitFlag_mmrecog<<"\n";
             reco::Photon photon = photons[i];
 
-            // photon energy correction
-            double photonEnergy = photon.energy();
-            double correctedEnergy = (photonEnergy - 0.599366) / 1.02408;
-            double scalingFactor = correctedEnergy / photonEnergy;
-            photon.setP4(photon.p4() * scalingFactor);
+             rrt->FourvectorGammaPt_mmrecog_  = photon.pt();
+            rrt->FourvectorGammaEta_mmrecog_ = photon.eta();
+            rrt->FourvectorGammaPhi_mmrecog_ = photon.phi();
 
 
             if (photon.superCluster().isNull()) continue;

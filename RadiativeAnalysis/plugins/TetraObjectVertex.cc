@@ -248,6 +248,13 @@ for (size_t i = 0; i < photons.size(); ++i) {
         if (photon2.superCluster()->energy() < 1.0) continue;
         if (photon2.isEB() && photon2.superCluster()->eta() < -2.5) continue;
         if (photon2.isEE() && photon2.superCluster()->eta() > 2.5) continue;
+        rrt->FourvectorGamma1Pt_mmrecogg_ = photon1.pt();
+        rrt->FourvectorGamma1Eta_mmrecogg_ = photon1.eta();
+        rrt->FourvectorGamma1Phi_mmrecogg_ = photon1.phi();
+
+        rrt->FourvectorGamma2Pt_mmrecogg_ = photon2.pt();
+        rrt->FourvectorGamma2Eta_mmrecogg_ = photon2.eta();
+        rrt->FourvectorGamma2Phi_mmrecogg_ = photon2.phi();
         //std::cout << "Processing photon pair with photon2 pt: " << photon2.pt() << "\n"
         //<< ", eta: " << photon2.eta() << "\n"
         //<< ", phi: " << photon2.phi() << "\n";

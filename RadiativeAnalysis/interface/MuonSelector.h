@@ -4,7 +4,7 @@
 #include <vector>
 #include "DataFormats/MuonReco/interface/Muon.h"
 #include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
-
+#include <utility> // for std::pair
 
 class MuonSelector {
 public:
@@ -12,11 +12,12 @@ public:
     ~MuonSelector();
 
     /// Select the muon pair from a vector of reco::Muon objects
-    std::vector<reco::Muon> selectMuonPair(
+    std::pair<std::vector<reco::Muon>, std::vector<float>> selectMuonPair(
         const std::vector<reco::Muon>& muons,
         const TransientTrackBuilder& transientTrackBuilder,
         const reco::BeamSpot& beamSpot,
-        std::vector<float> mvaScores);
+        std::vector<float> mvaScores,
+        double mvaCut);
 
 private:
     /// Check if a muon passes selection criteria
