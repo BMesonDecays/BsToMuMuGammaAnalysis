@@ -4,18 +4,18 @@ import sys
 import os
 import numpy as np
 
-analysisTag = "JpsiGMidApril_24_looserPointingAng"
+analysisTag = "JpsiGApril_23_24_July"
 tupleName = "tOut"
 
 # Prepare a directory for the output histograms
 logBool = 0
-dirPath = 'tupleProjections/'+analysisTag+'/cut4temp'
+dirPath = 'tupleProjections/'+analysisTag+'/cut0stats'
 if logBool  :
     dirPath += 'log'
 os.mkdir(dirPath)
 
 # Get the tuple
-tupleFile = r.TFile("./outputData/23BCD_JpsiGStartApril_cut2.root","READ")
+tupleFile = r.TFile("./outputData/23_24_JpsiGApril.root","READ")
 ntuple = tupleFile.Get(tupleName)
 
 # Make a list with branch names
@@ -25,7 +25,9 @@ for branch in ntuple.GetListOfBranches():
 
 # Define the cuts
 cutList = []
+#cutList.append(r.TCut("lXY_fittedDimuon_bSpotCut","lXY_fittedDimuon_bSpot > 10.0"))
 
+'''
 cutList.append(r.TCut("muonIdCut","muon1Id > 0.7 && muon2Id > 0.7"))
 cutList.append(r.TCut("fittedDimuonVertexProbCut","fittedDimuonVertexProb > 0.2"))
 cutList.append(r.TCut("maxMuonsVertexCompCut","maxMuonsVertexComp < 0.1"))
@@ -35,10 +37,9 @@ cutList.append(r.TCut("dR_photonFittedDimuonCut","dR_photonFittedDimuon < 0.5 &&
 
 cutList.append(r.TCut("cosAnDimuonBSpot2DCut","cosAnDimuonBSpot2D > 0.985"))
 cutList.append(r.TCut("cosAngleBsBSpot2DCut","cosAngleBsBSpot2D > 0.9998"))
-'''
+
 cutList.append(r.TCut("cosAngleBsPV3DCut","cosAngleBsPV3D > 0.9999"))
 cutList.append(r.TCut("tightMuonCut","tight1 == 1.0 && tight2 == 1.0"))
-cutList.append(r.TCut("lXY_fittedDimuon_bSpotCut","lXY_fittedDimuon_bSpot > 0.5"))
 '''
 totalCut = r.TCut()
 for cut in cutList:
@@ -50,39 +51,32 @@ with open(dirPath+'/cuts.txt','w') as of:
 
 # Define the binnings
 binInfo = {
-    branchNames[0] : (100,0.0,1.0),
-    branchNames[1] : (100,2.9,3.3),
-    branchNames[2] : (100,0.,0.5),
-    branchNames[3] : (100,0.,3.),
-    branchNames[4] : (100,0.,150.),
-    branchNames[5] : (100,0.,0.6),
-    branchNames[6] : (100,-3.0,3.0),
-    branchNames[7] : (100,0.,140.),
-    branchNames[8] : (100,0.9,1.01),
-    branchNames[9] : (1000,3.5,7.5),         #Bs mass
-    branchNames[10] : (1000,3.5,7.5),        #Bs mod mass
-    branchNames[11] : (100,0.9997,1.0),    #Bs to beam spot
-    branchNames[12] : (100,0.9997,1.0),
-    branchNames[13] : (100,0.,5.),
-    branchNames[14] : (100,0.,5.),
-    branchNames[15] : (100,0.9997,1.0),      #Bs to PV
-    branchNames[16] : (100,0.9997,1.0),
-    branchNames[17] : (100,0.,15.),
-    branchNames[18] : (100,0.,15.),
-    branchNames[19] : (100,0.,1.),
+    branchNames[0] : (100,3.5,7.5),         #Bs mass
+    branchNames[1] : (100,3.5,7.5),        #Bs mod mass  
+    branchNames[2] : (100,-1.,1.),
+    branchNames[3] : (100,-1.,1.),
+    branchNames[4] : (100,-1.,1.),
+    branchNames[5] : (100,-1.,1.),
+    branchNames[6] : (100,-1.,1.),
+    branchNames[7] : (100,-1.,1.),
+    branchNames[8] : (100,-0.6,0.6),
+    branchNames[9] : (100,0.,0.8),
+    branchNames[10] : (100,-3.,3.),
+    branchNames[11] : (100,2.9,3.3),
+    branchNames[12] : (100,0.,1.),
+    branchNames[13] : (100,0.,150.),
+    branchNames[14] : (100,0.,250.),
+    branchNames[15] : (100,0.,250.),
+    branchNames[16] : (100,0.,100.),
+    branchNames[17] : (100,0.0,300.),
+    branchNames[18] : (100,0.,180.0), 
+    branchNames[19] : (100,0.,180.0), 
     branchNames[20] : (100,0.,1.),
-    branchNames[21] : (2,0.,1.+1.E-8),
-    branchNames[22] : (2,0.,1.+1.E-8),
-    branchNames[23] : (100,-0.6,0.6),
-    branchNames[24] : (100,0.98,1.),
-    branchNames[25] : (100,0.98,1.),   #dimuon
-    # triggerRes
-    # branchNames[27] : (100,-3.0,3.0),
-    # branchNames[28] : (100,0.0,80.0),
-    # branchNames[29] : (100,0.0,50.0),
-    # branchNames[30] : (100,0.0,50.0),
-    # branchNames[31] : (100,0.0,120.0),
-    # branchNames[32] : (100,0.0,120.0)
+    branchNames[21] : (100,0.,2.),
+    branchNames[22] : (100,0.,1.),
+    branchNames[23] : (100,0.,1.),
+    branchNames[24] : (2,0.,1.+1.E-8),
+    branchNames[25] : (2,0.,1.+1.E-8)
 }
 
 # For "Mod" histos, removes entries without modScale
@@ -109,12 +103,12 @@ for histo in histoList:
     canvas = r.TCanvas("c"+str(histo.GetTitle()))
     canvas.SetLogy(logBool)
     canvas.cd()
-    histo.SetStats(0)
+    histo.SetStats(1)
     histo.SetLabelSize(0.03)
     histo.Draw()
     canvas.Print(dirPath+'/'+str(histo.GetName())+".pdf")
 
-
+'''
 # save selected histograms
 outFile = r.TFile(analysisTag+"cut4.root",'UPDATE')
 histoList[9].Write("23")
@@ -122,7 +116,7 @@ histoList[9].Write("23")
 totalCut.Write()
 outFile.Close()
 
-'''
+
 # Copy the ntuple limited by the cuts
 outputFile = r.TFile("./outputData/23BCD_"+analysisTag+"_cut2.root","RECREATE")
 totalCut.Write()

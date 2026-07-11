@@ -3,14 +3,14 @@ import ROOT as r
 import sys
 
 # Get the tuple
-tupleFile = r.TFile("./outputData/getDeltaR.root","READ")
+tupleFile = r.TFile("./outputData/24allBtoI_JpsiGMidApril.root","READ")
 ntuple = tupleFile.Get("tOut")
 ntuple.Print()
 
 # Create a histogram
-branchName = "dR_photonFittedDimuon"
-histo = r.TH1D("h"+branchName,branchName, 100,0.,0.6)
-ntuple.Project("h"+branchName, branchName)
+branchName = "fittedDimuonVertexProb"
+histo = r.TH1D("h"+branchName,branchName, 100,0.,1.0)
+ntuple.Project("h"+branchName, branchName,"fittedDimuonVertexProb > 0.1")
 histo.SetDirectory(0)
 
 # branchName = "dRMuon2"
@@ -23,7 +23,7 @@ tupleFile.Close()
 # Histo options
 histo.SetTitle("#DeltaR (dimuon,photon);#DeltaR;Counts")
 #r.gStyle.SetTitleSize(0.1,"t")
-histo.SetStats(0)
+histo.SetStats(1)
 histo.GetXaxis().SetLabelSize(0.04)
 histo.GetXaxis().SetTitleSize(0.05)
 histo.GetXaxis().SetTitleOffset(0.8)
