@@ -9,7 +9,7 @@ tupleName = "tOut"
 
 # Prepare a directory for the output histograms
 logBool = 0
-dirPath = 'tupleProjections/'+analysisTag+'/cut0_hlt'
+dirPath = 'tupleProjections/'+analysisTag+'/cut1'
 if logBool  :
     dirPath += 'log'
 os.mkdir(dirPath)
@@ -26,12 +26,13 @@ for branch in ntuple.GetListOfBranches():
 # Define the cuts
 cutList = []
 
+cutList.append(r.TCut("lXY_fittedDimuon_bSpot_sigCut","lXY_fittedDimuon_bSpot_sig > 5.0"))
+
 '''
 cutList.append(r.TCut("muonIdCut","muon1Id > 0.7 && muon2Id > 0.7"))
 cutList.append(r.TCut("fittedDimuonVertexProbCut","fittedDimuonVertexProb > 0.1"))
 cutList.append(r.TCut("maxMuonsVertexCompCut","maxMuonsVertexComp < 0.1"))
 cutList.append(r.TCut("fittedDimuonMassCut","TMath::Abs(fittedDimuonMass - 3.097) < 0.06"))
-cutList.append(r.TCut("lXY_fittedDimuon_bSpot_sigCut","lXY_fittedDimuon_bSpot_sig > 5.0"))
 
 cutList.append(r.TCut("dR_photonFittedDimuonCut","dR_photonFittedDimuon < 0.5 && dR_photonFittedDimuon > 0.05"))
 cutList.append(r.TCut("cosAnDimuonBSpot2DCut","cosAnDimuonBSpot2D > 0.985"))
@@ -44,7 +45,7 @@ cutList.append(r.TCut("cosAngleBsBSpot2DCut","cosAngleBsBSpot2D > 0.99"))
 cutList.append(r.TCut("tightMuonCut","tight1 == 1.0 && tight2 == 1.0"))
 '''
 # trigger cuts
-cutList.append(r.TCut("triggerAnyCut","triggerRes > 0.0"))
+#cutList.append(r.TCut("triggerAnyCut","triggerRes > 0.0"))
 
 totalCut = r.TCut()
 for cut in cutList:
