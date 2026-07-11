@@ -4,12 +4,12 @@ import sys
 import os
 import numpy as np
 
-analysisTag = "JpsiGMidApril_MC_looserPointingAng"
+analysisTag = "JpsiGMidApril_MC_July"
 tupleName = "tOut"
 
 # Prepare a directory for the output histograms
 logBool = 0
-dirPath = 'tupleProjections/'+analysisTag+'/cut3stats'
+dirPath = 'tupleProjections/'+analysisTag+'/cut0_hlt'
 if logBool  :
     dirPath += 'log'
 os.mkdir(dirPath)
@@ -26,6 +26,7 @@ for branch in ntuple.GetListOfBranches():
 # Define the cuts
 cutList = []
 
+'''
 cutList.append(r.TCut("muonIdCut","muon1Id > 0.7 && muon2Id > 0.7"))
 cutList.append(r.TCut("fittedDimuonVertexProbCut","fittedDimuonVertexProb > 0.1"))
 cutList.append(r.TCut("maxMuonsVertexCompCut","maxMuonsVertexComp < 0.1"))
@@ -35,7 +36,7 @@ cutList.append(r.TCut("lXY_fittedDimuon_bSpot_sigCut","lXY_fittedDimuon_bSpot_si
 cutList.append(r.TCut("dR_photonFittedDimuonCut","dR_photonFittedDimuon < 0.5 && dR_photonFittedDimuon > 0.05"))
 cutList.append(r.TCut("cosAnDimuonBSpot2DCut","cosAnDimuonBSpot2D > 0.985"))
 cutList.append(r.TCut("cosAngleBsBSpot2DCut","cosAngleBsBSpot2D > 0.9998"))
-'''
+
 cutList.append(r.TCut("cosAngleBsPV3DCut","cosAngleBsPV3D > 0.9999"))
 
 cutList.append(r.TCut("lXY_fittedDimuon_bSpotCut","lXY_fittedDimuon_bSpot > 0.5"))
@@ -57,15 +58,15 @@ with open(dirPath+'/cuts.txt','w') as of:
 binInfo = {
     branchNames[0] : (100,0.0,1.0),
     branchNames[1] : (100,2.9,3.3),
-    branchNames[2] : (100,0.,0.5),
+    branchNames[2] : (100,0.,1.0),
     branchNames[3] : (100,0.,3.),
     branchNames[4] : (100,0.,150.),
     branchNames[5] : (100,0.,0.6),
     branchNames[6] : (100,-3.0,3.0),
     branchNames[7] : (100,0.,140.),
     branchNames[8] : (100,0.9,1.01),
-    branchNames[9] : (1000,3.5,7.5),
-    branchNames[10] : (1000,3.5,7.5),
+    branchNames[9] : (100,3.5,7.5),
+    branchNames[10] : (100,3.5,7.5),
     branchNames[11] : (100,0.9998,1.0),    #Bs to beam spot
     branchNames[12] : (100,0.9998,1.0),
     branchNames[13] : (100,0.,5.),
@@ -79,7 +80,7 @@ binInfo = {
     branchNames[21] : (2,0.,1.+1.E-8),
     branchNames[22] : (2,0.,1.+1.E-8),
     branchNames[23] : (100,-0.6,0.6),
-    branchNames[24] : (100,0.98,1.),
+    branchNames[24] : (100,0.9,1.),
     branchNames[25] : (100,0.98,1.),   #dimuon
     branchNames[26] : (100,0.0,80.0),
     branchNames[27] : (100,0.0,50.0),
