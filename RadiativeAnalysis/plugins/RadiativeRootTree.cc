@@ -198,16 +198,10 @@ bmmgTree_->Branch("VertexfitBsSVy_mmrecog", &VertexfitBsSVy_mmrecog_, "Vertexfit
 bmmgTree_->Branch("VertexfitBsSVz_mmrecog", &VertexfitBsSVz_mmrecog_, "VertexfitBsSVz_mmrecog/D");
 
 bmmgTree_->Branch("GammaMVAScore_mmrecog", &GammaMVAScore_mmrecog_, "GammaMVAScore_mmrecog/D");
+bmmgTree_->Branch("FourvectorGammaPt_mmrecog", &FourvectorGammaPt_mmrecog_, "FourvectorGammaPt_mmrecog/D");
+bmmgTree_->Branch("FourvectorGammaEta_mmrecog", &FourvectorGammaEta_mmrecog_, "FourvectorGammaEta_mmrecog/D");
+bmmgTree_->Branch("FourvectorGammaPhi_mmrecog", &FourvectorGammaPhi_mmrecog_, "FourvectorGammaPhi_mmrecog/D");
 
-bmmgTree_->Branch("FourvectorGamma1Pt_mmrecogg", &FourvectorGamma1Pt_mmrecogg_, "FourvectorGamma1Pt_mmrecogg/D");
-bmmgTree_->Branch("FourvectorGamma1Eta_mmrecogg", &FourvectorGamma1Eta_mmrecogg_, "FourvectorGamma1Eta_mmrecogg/D");
-bmmgTree_->Branch("FourvectorGamma1Phi_mmrecogg", &FourvectorGamma1Phi_mmrecogg_, "FourvectorGamma1Phi_mmrecogg/D");
-bmmgTree_->Branch("Gamma1MVAScore_mmrecogg", &Gamma1MVAScore_mmrecogg_, "Gamma1MVAScore_mmrecogg/D");
-
-bmmgTree_->Branch("FourvectorGamma2Pt_mmrecogg", &FourvectorGamma2Pt_mmrecogg_, "FourvectorGamma2Pt_mmrecogg/D");
-bmmgTree_->Branch("FourvectorGamma2Eta_mmrecogg", &FourvectorGamma2Eta_mmrecogg_, "FourvectorGamma2Eta_mmrecogg/D");
-bmmgTree_->Branch("FourvectorGamma2Phi_mmrecogg", &FourvectorGamma2Phi_mmrecogg_, "FourvectorGamma2Phi_mmrecogg/D");
-bmmgTree_->Branch("Gamma2MVAScore_mmrecogg", &Gamma2MVAScore_mmrecogg_, "Gamma2MVAScore_mmrecogg/D");
 
 bmmgTree_->Branch("VertexfitPVxRefitCosTheta_mmrecog", &VertexfitPVxRefitCosTheta_mmrecog_, "VertexfitPVxRefitCosTheta_mmrecog/D");
 bmmgTree_->Branch("VertexfitPVyRefitCosTheta_mmrecog", &VertexfitPVyRefitCosTheta_mmrecog_, "VertexfitPVyRefitCosTheta_mmrecog/D");
@@ -311,7 +305,6 @@ bmmgTree_->Branch("VertexfitBsSVy_mmrecogg", &VertexfitBsSVy_mmrecogg_, "Vertexf
 bmmgTree_->Branch("VertexfitBsSVz_mmrecogg", &VertexfitBsSVz_mmrecogg_, "VertexfitBsSVz_mmrecogg/D");
 
 
-bmmgTree_->Branch("GammaMVAScore_mmrecog", &GammaMVAScore_mmrecog_, "GammaMVAScore_mmrecog/D");
 
 
 bmmgTree_->Branch("FourvectorGamma1Pt_mmrecogg", &FourvectorGamma1Pt_mmrecogg_, "FourvectorGamma1Pt_mmrecogg/D");
