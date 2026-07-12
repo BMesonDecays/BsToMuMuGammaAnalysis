@@ -9,9 +9,12 @@ tupleName = "tOut"
 
 # Prepare a directory for the output histograms
 logBool = 0
-dirPath = 'tupleProjections/'+analysisTag+'/cut0stats'
+statBool = 0
+dirPath = 'tupleProjections/'+analysisTag+'/cut2_mass'
 if logBool  :
     dirPath += 'log'
+if statBool  :
+    dirPath += 'stats'
 os.mkdir(dirPath)
 
 # Get the tuple
@@ -25,22 +28,23 @@ for branch in ntuple.GetListOfBranches():
 
 # Define the cuts
 cutList = []
-#cutList.append(r.TCut("lXY_fittedDimuon_bSpotCut","lXY_fittedDimuon_bSpot > 10.0"))
 
-'''
 cutList.append(r.TCut("muonIdCut","muon1Id > 0.7 && muon2Id > 0.7"))
-cutList.append(r.TCut("fittedDimuonVertexProbCut","fittedDimuonVertexProb > 0.2"))
-cutList.append(r.TCut("maxMuonsVertexCompCut","maxMuonsVertexComp < 0.1"))
+cutList.append(r.TCut("fittedDimuonVertexProbCut","fittedDimuonVertexProb > 0.1"))
 cutList.append(r.TCut("fittedDimuonMassCut","TMath::Abs(fittedDimuonMass - 3.097) < 0.06"))
 cutList.append(r.TCut("lXY_fittedDimuon_bSpot_sigCut","lXY_fittedDimuon_bSpot_sig > 5.0"))
 cutList.append(r.TCut("dR_photonFittedDimuonCut","dR_photonFittedDimuon < 0.5 && dR_photonFittedDimuon > 0.05"))
 
+'''
+cutList.append(r.TCut("maxMuonsVertexCompCut","maxMuonsVertexComp < 0.1"))
 cutList.append(r.TCut("cosAnDimuonBSpot2DCut","cosAnDimuonBSpot2D > 0.985"))
 cutList.append(r.TCut("cosAngleBsBSpot2DCut","cosAngleBsBSpot2D > 0.9998"))
 
 cutList.append(r.TCut("cosAngleBsPV3DCut","cosAngleBsPV3D > 0.9999"))
 cutList.append(r.TCut("tightMuonCut","tight1 == 1.0 && tight2 == 1.0"))
+cutList.append(r.TCut("lXY_fittedDimuon_bSpotCut","lXY_fittedDimuon_bSpot > 10.0"))
 '''
+
 totalCut = r.TCut()
 for cut in cutList:
     totalCut += cut
@@ -96,14 +100,13 @@ for bname in branchNames:
     histo.SetDirectory(0)
     histoList.append(histo)
 
-tupleFile.Close()
 
 # Draw histograms and save the images
 for histo in histoList:
     canvas = r.TCanvas("c"+str(histo.GetTitle()))
     canvas.SetLogy(logBool)
     canvas.cd()
-    histo.SetStats(1)
+    histo.SetStats(statBool)
     histo.SetLabelSize(0.03)
     histo.Draw()
     canvas.Print(dirPath+'/'+str(histo.GetName())+".pdf")
@@ -116,12 +119,11 @@ histoList[9].Write("23")
 totalCut.Write()
 outFile.Close()
 
-
+'''
 # Copy the ntuple limited by the cuts
-outputFile = r.TFile("./outputData/23BCD_"+analysisTag+"_cut2.root","RECREATE")
+outputFile = r.TFile("./outputData/23_24_JpsiGApril_cut2_mass.root","RECREATE")
 totalCut.Write()
 newNtuple = ntuple.CopyTree(str(totalCut))
 newNtuple.Write()
 outputFile.Close()
-
-'''
+tupleFile.Close()

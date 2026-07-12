@@ -3,14 +3,16 @@ import ROOT as r
 import sys
 
 # Get the tuple
-tupleFile = r.TFile("./outputData/24allBtoI_JpsiGMidApril.root","READ")
+tupleFile = r.TFile("./outputData/23_24_JpsiGApril_cut2_mass.root","READ")
 ntuple = tupleFile.Get("tOut")
 ntuple.Print()
 
+cut = "cosAnDimuonBSpot2D < 0.8"
+
 # Create a histogram
-branchName = "fittedDimuonVertexProb"
-histo = r.TH1D("h"+branchName,branchName, 100,0.,1.0)
-ntuple.Project("h"+branchName, branchName,"fittedDimuonVertexProb > 0.1")
+branchName = "fittedDimuonMass"
+histo = r.TH1D("h"+branchName,branchName, 100,2.9,3.3)
+ntuple.Project("h"+branchName, branchName,cut)
 histo.SetDirectory(0)
 
 # branchName = "dRMuon2"
@@ -21,12 +23,12 @@ histo.SetDirectory(0)
 tupleFile.Close()
 
 # Histo options
-histo.SetTitle("#DeltaR (dimuon,photon);#DeltaR;Counts")
+histo.SetTitle("cos "+cut[-5:]+";dimuon mass [GeV];Counts")
 #r.gStyle.SetTitleSize(0.1,"t")
-histo.SetStats(1)
+histo.SetStats(0)
 histo.GetXaxis().SetLabelSize(0.04)
-histo.GetXaxis().SetTitleSize(0.05)
-histo.GetXaxis().SetTitleOffset(0.8)
+histo.GetXaxis().SetTitleSize(0.04)
+histo.GetXaxis().SetTitleOffset(1.0)
 histo.GetYaxis().SetLabelSize(0.04)
 histo.GetYaxis().SetTitleSize(0.04)
 histo.GetYaxis().SetTitleOffset(0.95)
@@ -44,7 +46,7 @@ canvas = r.TCanvas("c"+str(histo.GetTitle()))
 #canvas.SetLogy(1)
 canvas.SetLeftMargin(0.08)
 canvas.SetRightMargin(0.02)
-canvas.SetTopMargin(0.1)
+canvas.SetTopMargin(0.07)
 canvas.cd()
 histo.Draw("hist")
 
@@ -55,5 +57,5 @@ l.SetTextSize(0.04)
 l.DrawLatex(0.5,200.,"lXY_muonsKalman_bSpot_significance > 3.0")
 '''
 
-canvas.Print("h"+branchName+"Temp"+".pdf")
+canvas.Print("h"+branchName+"Cos_"+cut[-1:]+".pdf")
 input('press enter to exit')
