@@ -7,12 +7,12 @@ tupleFile = r.TFile("./outputData/23_24_JpsiGApril_cut2_mass.root","READ")
 ntuple = tupleFile.Get("tOut")
 ntuple.Print()
 
-cut = "cosAnDimuonBSpot2D < -0.8"
+cut = "cosAnDimuonBSpot2D < 0.96"
 
 # Create a histogram
 branchName = "fittedDimuonMass"
 histo = r.TH1D("h"+branchName,branchName, 100,2.9,3.3)
-ntuple.Project("h"+branchName, branchName,cut)
+ntuple.Project("h"+branchName, branchName,"cosAnDimuonBSpot2D > 0.8 && "+cut)
 histo.SetDirectory(0)
 
 # branchName = "dRMuon2"
@@ -23,7 +23,7 @@ histo.SetDirectory(0)
 tupleFile.Close()
 
 # Histo options
-histo.SetTitle("cos < -0.8"+";dimuon mass [GeV];Counts")
+histo.SetTitle("0.8 < cos < 0.96"+";dimuon mass [GeV];Counts")
 #r.gStyle.SetTitleSize(0.1,"t")
 histo.SetStats(0)
 histo.GetXaxis().SetLabelSize(0.04)
@@ -57,5 +57,5 @@ l.SetTextSize(0.04)
 l.DrawLatex(0.5,200.,"lXY_muonsKalman_bSpot_significance > 3.0")
 '''
 
-canvas.Print("h"+branchName+"Cos_"+cut[-1:]+".pdf")
+canvas.Print("hCut3"+branchName+"Cos_"+cut[-2:]+".pdf")
 input('press enter to exit')
