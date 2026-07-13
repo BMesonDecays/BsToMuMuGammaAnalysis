@@ -8,8 +8,8 @@ analysisTag = "JpsiGMidApril_MC_July"
 tupleName = "tOut"
 
 # Prepare a directory for the output histograms
-logBool = 1
-dirPath = 'tupleProjections/'+analysisTag+'/cut0_range'
+logBool = 0
+dirPath = 'tupleProjections/'+analysisTag+'/cut0_hltrange2'
 if logBool  :
     dirPath += 'log'
 os.mkdir(dirPath)
@@ -61,7 +61,7 @@ binInfo = {
     branchNames[2] : (100,0.,1.0),
     branchNames[3] : (100,0.,3.),
     branchNames[4] : (100,0.,150.),
-    branchNames[5] : (100,0.,0.6),
+    branchNames[5] : (80,0.,0.5),
     branchNames[6] : (100,-3.0,3.0),
     branchNames[7] : (100,0.,140.),
     branchNames[8] : (100,0.9,1.01),
@@ -124,7 +124,7 @@ for histo in histoList:
     canvas = r.TCanvas("c"+str(histo.GetTitle()))
     canvas.SetLogy(logBool)
     canvas.cd()
-    histo.SetStats(1)
+    histo.SetStats(0)
     histo.SetLabelSize(0.03)
     histo.Draw()
     canvas.Print(dirPath+'/'+str(histo.GetName())+".pdf")

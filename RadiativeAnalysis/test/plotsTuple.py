@@ -7,7 +7,7 @@ tupleFile = r.TFile("./outputData/23_24_JpsiGApril_cut2_mass.root","READ")
 ntuple = tupleFile.Get("tOut")
 ntuple.Print()
 
-cut = "cosAnDimuonBSpot2D < 0.8"
+cut = "cosAnDimuonBSpot2D < -0.8"
 
 # Create a histogram
 branchName = "fittedDimuonMass"
@@ -23,7 +23,7 @@ histo.SetDirectory(0)
 tupleFile.Close()
 
 # Histo options
-histo.SetTitle("cos "+cut[-5:]+";dimuon mass [GeV];Counts")
+histo.SetTitle("cos < -0.8"+";dimuon mass [GeV];Counts")
 #r.gStyle.SetTitleSize(0.1,"t")
 histo.SetStats(0)
 histo.GetXaxis().SetLabelSize(0.04)
