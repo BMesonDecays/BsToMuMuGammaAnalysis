@@ -1,0 +1,1 @@
+(((((((muon1Id > 0.7 && muon2Id > 0.7)&&(fittedDimuonVertexProb > 0.1))&&(TMath::Abs(fittedDimuonMass - 3.097) < 0.06))&&(lXY_fittedDimuon_bSpot_sig > 5.0))&&(dR_photonFittedDimuon < 0.5 && dR_photonFittedDimuon > 0.05))&&(cosAnDimuonBSpot2D > 0.99))&&(cosAngleBsBSpot2D > 0.9999))&&(cosAngleBsPV3D < -0.8)
