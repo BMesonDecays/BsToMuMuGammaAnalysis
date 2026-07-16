@@ -194,6 +194,9 @@ DecayChainVariables ReferenceModeratorVertex::ReferenceModeratorVertexObservable
           if (trk1.numberOfValidHits() < 1)continue;
           double DeltaRKaon1Dimuon = deltaR(resonanceResult.eta, resonanceResult.phi, trk1.eta(), trk1.phi());
           if (DeltaRKaon1Dimuon > 2.2) continue;   
+          double DeltaRKaon1Muon1 = deltaR(mu1.eta(), mu1.phi(), trk1.eta(), trk1.phi());
+          double DeltaRKaon1Muon2 = deltaR(mu2.eta(), mu2.phi(), trk1.eta(), trk1.phi());
+          if (DeltaRKaon1Muon1 < 0.001 || DeltaRKaon1Muon2 < 0.001) continue; // Skip the kaon if it overlaps with either muon
           for(size_t j = i+1 ; j<tracks.size(); j++){
               const reco::Track& trk2 = tracks[j];
               if (!trk2.quality(reco::TrackBase::highPurity))continue;
@@ -204,6 +207,9 @@ DecayChainVariables ReferenceModeratorVertex::ReferenceModeratorVertexObservable
               //std::cout<< "DeltaRKaon2Dimuon : "<<DeltaRKaon2Dimuon<<"\n";
               //std::cout<<" pt, eta and phi of the track2 :"<<trk2.pt()<<"\t"<<trk2.eta()<<"\t"<<trk2.phi()<<"\n";
               if (DeltaRKaon2Dimuon > 2.2) continue;
+              double DeltaRKaon2Muon1 = deltaR(mu1.eta(), mu1.phi(), trk2.eta(), trk2.phi());
+              double DeltaRKaon2Muon2 = deltaR(mu2.eta(), mu2.phi(), trk2.eta(), trk2.phi());
+              if (DeltaRKaon2Muon1 < 0.001 || DeltaRKaon2Muon2 < 0.001) continue; // Skip the kaon if it overlaps with either muon
               //pat::CompositeCandidate phiCand;
               //phiCand.addDaughter(trk1);
               //phiCand.addDaughter(trk2);
