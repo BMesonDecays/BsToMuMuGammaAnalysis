@@ -644,12 +644,12 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 		        bmmgRootTree_->vertexTypeFlag_ = 2;
 		}
 
-		// if(selectedMuons->size()==2 && tracks->size()>=2){
-		// 	ReferenceModeratorVertex refmodvtxObservables;
-		// 	decayVariables = refmodvtxObservables.ReferenceModeratorVertexObservables(*selectedMuons, *tracks, bsandvtxVar, theBField, 
-		// 	nominalMuonMass, nominalKaonMass, bmmgRootTree_);
-		// 	bmmgRootTree_->vertexTypeFlag_ = 3;
-		// }
+		if(selectedMuons->size()==2 && tracks->size()>=2){
+			ReferenceModeratorVertex refmodvtxObservables;
+			decayVariables = refmodvtxObservables.ReferenceModeratorVertexObservables(*selectedMuons, *tracks, *recVtxs, bsandvtxVar, theBField, 
+			nominalMuonMass, nominalKaonMass, bmmgRootTree_);
+			bmmgRootTree_->vertexTypeFlag_ = 3;
+		}
 
 		
         
