@@ -77,17 +77,6 @@ class TrippleObjectVertex{
 		 	const TransientTrackBuilder& transientTrackBuilder,
 			RadiativeRootTree* rrt);
 
-	private:
-	double calculateCt2D(const reco::Vertex& PV, const RefCountedKinematicVertex& bVertex, const RefCountedKinematicParticle& bCand);
-	double calculateCt3D(const reco::Vertex& PV, const RefCountedKinematicVertex& bVertex, const RefCountedKinematicParticle& bCand);
-
-	double calculateCt2DError(const reco::Vertex& PV,
-							const RefCountedKinematicVertex& bVertex,
-							const RefCountedKinematicParticle& bCand);
-	double calculateCt3DError(const reco::Vertex& PV,
-							const RefCountedKinematicVertex& bVertex,
-							const RefCountedKinematicParticle& bCand);
-      
 };
 
 
