@@ -731,6 +731,13 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
 
                 rrt->OtherTrackMaxCompatibility_mmrecog_ = VariableDefinitions::maxCompatibility(mu1, mu2, PVlowestDCA, transientTrackBuilder);
 
+                VertexDistance3D dist3D;
+                rrt->VertexfitBsDist3D_mmrecog_ = dist3D.distance(PVlowestDCA, bVertex->vertexState()).value();
+                rrt->VertexfitBsDist3DErr_mmrecog_ = dist3D.distance(PVlowestDCA, bVertex->vertexState()).error();
+
+                VertexDistanceXY dist2D;
+                rrt->VertexfitBsDist2D_mmrecog_ = dist2D.distance(PVlowestDCA, bVertex->vertexState()).value();
+                rrt->VertexfitBsDist2DErr_mmrecog_ = dist2D.distance(PVlowestDCA, bVertex->vertexState()).error();
 
             }//end of reco photon loop 
     //         std::cout << " vertex fit flag :"<< dcv.vertexFitFlag_mmrecog << "\n";
