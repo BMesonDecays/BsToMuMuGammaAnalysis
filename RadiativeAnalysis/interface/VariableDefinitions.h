@@ -32,6 +32,12 @@ double calculateCt3DError(const reco::Vertex& PV,
                           const RefCountedKinematicVertex& bVertex,
                           const RefCountedKinematicParticle& bCand);
 
+double isolation(const reco::Candidate::LorentzVector& candidateP4,
+                 const reco::Muon& mu1,
+                 const reco::Muon& mu2,
+                 reco::Vertex PV,
+                 double = 0.7, double ptMin = 0.9);
+
 
 } // namespace VariableDefinitions
 

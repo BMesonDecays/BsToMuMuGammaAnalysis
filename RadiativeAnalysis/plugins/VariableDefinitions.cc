@@ -99,4 +99,27 @@ double calculateCt3DError(const reco::Vertex& PV,
     return std::sqrt(firstTerm2 + secondTerm2);
 }
 
+double isolation(const reco::Candidate::LorentzVector& candidateP4,
+                 const reco::Muon& mu1,
+                 const reco::Muon& mu2,
+                 reco::Vertex PV,
+                 double drMax, double ptMin)
+{
+    double sumPt = 0.0;
+    for (const auto& trk : PV.tracks()) {
+        double dR = reco::deltaR(candidateP4, *trk);
+        double mu1dR = reco::deltaR(mu1, *trk);
+        double mu2dR = reco::deltaR(mu2, *trk);
+        // exclude muon tracks
+        if (trk->charge() == 0) continue;
+        if (trk->pt() < ptMin) continue;
+        if (mu1dR < 0.01 || mu2dR < 0.01) continue;
+        if (dR > drMax) continue;
+        sumPt += trk->pt();
+        
+    }
+    return candidateP4.pt() / (candidateP4.pt() + sumPt);
+}
+
+
 } // namespace VariableDefinitions

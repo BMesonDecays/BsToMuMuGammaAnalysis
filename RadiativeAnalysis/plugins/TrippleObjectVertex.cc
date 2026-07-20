@@ -722,6 +722,13 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
                 //     GlobalPoint(PVvtxCosTheta.x(), PVvtxCosTheta.y(), PVvtxCosTheta.z()),
                 //     PVvtxCosTheta.covariance(), BsVecNonFitted, bVertex, "PV_costheta_old");
 
+                reco::Candidate::LorentzVector Bsp4(bs->currentState().globalMomentum().x(),
+                                        bs->currentState().globalMomentum().y(),
+                                        bs->currentState().globalMomentum().z(),
+                                        bs->currentState().kinematicParameters().energy());
+
+                rrt->VertexfitBsIsolation_mmrecog_ = VariableDefinitions::isolation(Bsp4, mu1, mu2, PVlowestDCA);
+
 
             }//end of reco photon loop 
     //         std::cout << " vertex fit flag :"<< dcv.vertexFitFlag_mmrecog << "\n";

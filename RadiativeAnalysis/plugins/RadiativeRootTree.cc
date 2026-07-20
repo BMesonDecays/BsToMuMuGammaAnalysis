@@ -224,6 +224,8 @@ bmmgTree_->Branch("VertexfitBsDist3DErr_mmrecog", &VertexfitBsDist3DErr_mmrecog_
 bmmgTree_->Branch("VertexfitBsDist2D_mmrecog", &VertexfitBsDist2D_mmrecog_, "VertexfitBsDist2D_mmrecog/D");
 bmmgTree_->Branch("VertexfitBsDist2DErr_mmrecog", &VertexfitBsDist2DErr_mmrecog_, "VertexfitBsDist2DErr_mmrecog/D");
 
+bmmgTree_->Branch("VertexfitBsIsolation_mmrecog", &VertexfitBsIsolation_mmrecog_, "VertexfitBsIsolation_mmrecog/D");
+
 bmmgTree_->Branch("BsVtxProb_mmrecog", &BsVtxProb_mmrecog_, "BsVtxProb_mmrecog/D");
 bmmgTree_->Branch("BsCt2D_mmrecog", &BsCt2D_mmrecog_, "BsCt2D_mmrecog/D");
 bmmgTree_->Branch("BsCt3D_mmrecog", &BsCt3D_mmrecog_, "BsCt3D_mmrecog/D");
@@ -914,6 +916,8 @@ VertexfitBsDist3D_mmrecog_     = -9999999;
 VertexfitBsDist3DErr_mmrecog_  = -9999999;
 VertexfitBsDist2D_mmrecog_     = -9999999;
 VertexfitBsDist2DErr_mmrecog_  = -9999999;
+
+VertexfitBsIsolation_mmrecog_ = -9999999;
 
 BsVtxProb_mmrecog_ = -9999999;
 BsCt2D_mmrecog_    = -9999999;
@@ -1646,6 +1650,8 @@ bmmgTree_->SetBranchAddress("VertexfitBsDist3D_mmrecog", &VertexfitBsDist3D_mmre
 bmmgTree_->SetBranchAddress("VertexfitBsDist3DErr_mmrecog", &VertexfitBsDist3DErr_mmrecog_);
 bmmgTree_->SetBranchAddress("VertexfitBsDist2D_mmrecog", &VertexfitBsDist2D_mmrecog_);
 bmmgTree_->SetBranchAddress("VertexfitBsDist2DErr_mmrecog", &VertexfitBsDist2DErr_mmrecog_);
+
+bmmgTree_->SetBranchAddress("VertexfitBsIsolation_mmrecog", &VertexfitBsIsolation_mmrecog_);
 
 bmmgTree_->SetBranchAddress("BsVtxProb_mmrecog", &BsVtxProb_mmrecog_);
 bmmgTree_->SetBranchAddress("BsCt2D_mmrecog", &BsCt2D_mmrecog_);
