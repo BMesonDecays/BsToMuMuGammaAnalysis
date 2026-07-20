@@ -225,6 +225,7 @@ bmmgTree_->Branch("VertexfitBsDist2D_mmrecog", &VertexfitBsDist2D_mmrecog_, "Ver
 bmmgTree_->Branch("VertexfitBsDist2DErr_mmrecog", &VertexfitBsDist2DErr_mmrecog_, "VertexfitBsDist2DErr_mmrecog/D");
 
 bmmgTree_->Branch("VertexfitBsIsolation_mmrecog", &VertexfitBsIsolation_mmrecog_, "VertexfitBsIsolation_mmrecog/D");
+bmmgTree_->Branch("OtherTrackMaxCompatibility_mmrecog", &OtherTrackMaxCompatibility_mmrecog_, "OtherTrackMaxCompatibility_mmrecog/D");
 
 bmmgTree_->Branch("BsVtxProb_mmrecog", &BsVtxProb_mmrecog_, "BsVtxProb_mmrecog/D");
 bmmgTree_->Branch("BsCt2D_mmrecog", &BsCt2D_mmrecog_, "BsCt2D_mmrecog/D");
@@ -918,6 +919,7 @@ VertexfitBsDist2D_mmrecog_     = -9999999;
 VertexfitBsDist2DErr_mmrecog_  = -9999999;
 
 VertexfitBsIsolation_mmrecog_ = -9999999;
+OtherTrackMaxCompatibility_mmrecog_ = -9999999;
 
 BsVtxProb_mmrecog_ = -9999999;
 BsCt2D_mmrecog_    = -9999999;
@@ -1652,6 +1654,7 @@ bmmgTree_->SetBranchAddress("VertexfitBsDist2D_mmrecog", &VertexfitBsDist2D_mmre
 bmmgTree_->SetBranchAddress("VertexfitBsDist2DErr_mmrecog", &VertexfitBsDist2DErr_mmrecog_);
 
 bmmgTree_->SetBranchAddress("VertexfitBsIsolation_mmrecog", &VertexfitBsIsolation_mmrecog_);
+bmmgTree_->SetBranchAddress("OtherTrackMaxCompatibility_mmrecog", &OtherTrackMaxCompatibility_mmrecog_);
 
 bmmgTree_->SetBranchAddress("BsVtxProb_mmrecog", &BsVtxProb_mmrecog_);
 bmmgTree_->SetBranchAddress("BsCt2D_mmrecog", &BsCt2D_mmrecog_);

@@ -38,6 +38,11 @@ double isolation(const reco::Candidate::LorentzVector& candidateP4,
                  reco::Vertex PV,
                  double = 0.7, double ptMin = 0.9);
 
+double maxCompatibility(const pat::Muon& mu1,
+                        const pat::Muon& mu2,
+                        reco::Vertex PV,
+                        const TransientTrackBuilder& transientTrackBuilder);
+
 
 } // namespace VariableDefinitions
 

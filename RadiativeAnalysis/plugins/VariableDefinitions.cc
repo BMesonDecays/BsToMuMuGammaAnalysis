@@ -121,5 +121,43 @@ double isolation(const reco::Candidate::LorentzVector& candidateP4,
     return candidateP4.pt() / (candidateP4.pt() + sumPt);
 }
 
+double maxCompatibility(const pat::Muon& mu1,
+                        const pat::Muon& mu2,
+                        reco::Vertex PV,
+                        const TransientTrackBuilder& transientTrackBuilder)
+{
+    double maxComp = 0.0;
+
+    KalmanVertexFitter fitter(true);
+
+    // Create transient tracks
+    auto tt1 = transientTrackBuilder.build(mu1.muonBestTrack());
+    auto tt2 = transientTrackBuilder.build(mu2.muonBestTrack());
+
+    for (const auto& trkRef : PV.tracks()) {
+        if (trkRef->charge() == 0) continue;
+        if (trkRef->pt() < 0.9) continue; // ptMin = 0.9 GeV
+        // reject if trkRef is too close to either muon
+        double mu1dR = reco::deltaR(mu1.p4(), *trkRef);
+        double mu2dR = reco::deltaR(mu2.p4(), *trkRef);
+        if (mu1dR < 1e-4 || mu2dR < 1e-4) continue;
+
+        auto ttTrk = transientTrackBuilder.build(*trkRef);
+        // Fit vertex with mu1, mu2, and pfc
+        std::vector<reco::TransientTrack> tracks = {tt1, tt2, ttTrk};
+        reco::Vertex vertex(TransientVertex(fitter.vertex(tracks)));
+        if (vertex.isValid()) {
+            double chi2 = vertex.chi2();
+            double ndf = vertex.ndof();
+            double prob = TMath::Prob(chi2, ndf);
+            if (prob > maxComp) {
+                maxComp = prob;
+            }
+        }
+
+    }
+    return maxComp;
+}
+
 
 } // namespace VariableDefinitions

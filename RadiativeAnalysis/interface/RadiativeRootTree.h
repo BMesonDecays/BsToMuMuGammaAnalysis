@@ -306,6 +306,7 @@ double VertexfitBsTime2D_mmrecog_;
 double VertexfitBsTime2DErr_mmrecog_;
 
 double VertexfitBsIsolation_mmrecog_;
+double OtherTrackMaxCompatibility_mmrecog_;
 
 double BsVtxProb_mmrecog_;
 double BsCt2D_mmrecog_;
