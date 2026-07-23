@@ -1,0 +1,1 @@
+fittedDimuonVertexProb > 0.1
