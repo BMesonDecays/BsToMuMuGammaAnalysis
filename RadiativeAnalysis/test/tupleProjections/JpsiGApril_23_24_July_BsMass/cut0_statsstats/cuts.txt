@@ -1,0 +1,1 @@
+TMath::Abs(candBsMass - 5.367) < 1.5

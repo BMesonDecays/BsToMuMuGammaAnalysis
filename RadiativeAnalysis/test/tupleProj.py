@@ -4,13 +4,13 @@ import sys
 import os
 import numpy as np
 
-analysisTag = "JpsiGApril_23_24_July"
+analysisTag = "JpsiGApril_23_24_July_BsMass"
 tupleName = "tOut"
 
 # Prepare a directory for the output histograms
 logBool = 0
-statBool = 0
-dirPath = 'tupleProjections/'+analysisTag+'/cut2_range'
+statBool = 1
+dirPath = 'tupleProjections/'+analysisTag+'/cut0_stats'
 if logBool  :
     dirPath += 'log'
 if statBool  :
@@ -29,12 +29,14 @@ for branch in ntuple.GetListOfBranches():
 # Define the cuts
 cutList = []
 
+cutList.append(r.TCut("candBsMassCut","TMath::Abs(candBsMass - 5.367) < 1.5"))
+'''
 cutList.append(r.TCut("muonIdCut","muon1Id > 0.7 && muon2Id > 0.7"))
 cutList.append(r.TCut("fittedDimuonVertexProbCut","fittedDimuonVertexProb > 0.1"))
 cutList.append(r.TCut("fittedDimuonMassCut","TMath::Abs(fittedDimuonMass - 3.097) < 0.06"))
 cutList.append(r.TCut("lXY_fittedDimuon_bSpot_sigCut","lXY_fittedDimuon_bSpot_sig > 5.0"))
 cutList.append(r.TCut("dR_photonFittedDimuonCut","dR_photonFittedDimuon < 0.5 && dR_photonFittedDimuon > 0.05"))
-'''
+
 cutList.append(r.TCut("cosAnDimuonBSpot2DCut","cosAnDimuonBSpot2D > 0.99"))
 cutList.append(r.TCut("cosAngleBsBSpot2DCut","cosAngleBsBSpot2D > 0.9999"))
 cutList.append(r.TCut("cosAngleBsPV3DCut","cosAngleBsPV3D > 0.9999"))
@@ -67,7 +69,7 @@ binInfo = {
     branchNames[8] : (100,-0.6,0.6),
     branchNames[9] : (100,0.,0.8),
     branchNames[10] : (100,-3.,3.),
-    branchNames[11] : (100,2.9,3.3),
+    branchNames[11] : (400,2.9,3.3),
     branchNames[12] : (100,0.,1.),
     branchNames[13] : (100,0.,150.),
     branchNames[14] : (100,0.,250.),
@@ -113,15 +115,17 @@ for histo in histoList:
     histo.Draw()
     canvas.Print(dirPath+'/'+str(histo.GetName())+".pdf")
 
-'''
+
 # save selected histograms
-outFile = r.TFile(analysisTag+"cut0_vtx1.root",'RECREATE')
+outFile = r.TFile(analysisTag+"cut.root",'RECREATE')
 histoList[11].Write()
+histoList[22].Write()
+histoList[23].Write()
 totalCut.Write()
 outFile.Close()
 tupleFile.Close()
 
-
+'''
 # Copy the ntuple limited by the cuts
 outputFile = r.TFile("./outputData/23_24_JpsiGApril_cut2_mass.root","RECREATE")
 totalCut.Write()

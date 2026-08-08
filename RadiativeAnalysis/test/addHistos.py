@@ -9,7 +9,7 @@ import numpy as np
 # rebinN = 10
 
 # Open files and get histograms
-f1 = r.TFile.Open("muonIds.root")
+f1 = r.TFile.Open("JpsiGApril_23_24_July_BsMasscut0.root")
 #f2 = r.TFile.Open("JpsiGMidApril_24"+cutTitle+".root")
 
 h1 = f1.Get("hmuon1Id")
@@ -21,6 +21,9 @@ h2.Sumw2()
 
 # Add h2 to h1
 h1.Add(h2)
+r.gStyle.SetOptStat("emr")
+r.gStyle.SetStatFontSize(0.04)
+h1.UseCurrentStyle()
 h1.SetFillColorAlpha(18, 0.4)
 
 # Rebin the histogram
@@ -28,11 +31,23 @@ h1.SetFillColorAlpha(18, 0.4)
 
 # Draw and keep the canvas alive
 c = r.TCanvas()
-h1.SetStats(0)
+# h1.SetStats(0)
 h1.SetTitle("Muon Id score")
 h1.Draw("hist")
+c.Update()
 
-c.Print("muonIdsMCCut0Hlt.pdf")
+stats = h1.GetListOfFunctions().FindObject("stats")
+
+stats.SetX1NDC(0.15)  # Left edge
+stats.SetY1NDC(0.72)  # Bottom edge
+stats.SetX2NDC(0.45)  # Right edge
+stats.SetY2NDC(0.85)  # Top edge
+
+c.Modified()
+c.Update()
+
+
+c.Print("muonIdsDATACut0BsMass.pdf")
 input('press enter to exit')
 
 
