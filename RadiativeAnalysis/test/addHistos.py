@@ -9,7 +9,7 @@ import numpy as np
 # rebinN = 10
 
 # Open files and get histograms
-f1 = r.TFile.Open("JpsiGApril_23_24_July_BsMasscut0.root")
+f1 = r.TFile.Open("muonIds.root")
 #f2 = r.TFile.Open("JpsiGMidApril_24"+cutTitle+".root")
 
 h1 = f1.Get("hmuon1Id")
@@ -21,7 +21,7 @@ h2.Sumw2()
 
 # Add h2 to h1
 h1.Add(h2)
-r.gStyle.SetOptStat("emr")
+r.gStyle.SetOptStat("mr")
 r.gStyle.SetStatFontSize(0.04)
 h1.UseCurrentStyle()
 h1.SetFillColorAlpha(18, 0.4)
@@ -38,16 +38,16 @@ c.Update()
 
 stats = h1.GetListOfFunctions().FindObject("stats")
 
-stats.SetX1NDC(0.15)  # Left edge
-stats.SetY1NDC(0.72)  # Bottom edge
-stats.SetX2NDC(0.45)  # Right edge
-stats.SetY2NDC(0.85)  # Top edge
+stats.SetX1NDC(0.18)  # Left edge
+stats.SetY1NDC(0.65)  # Bottom edge
+stats.SetX2NDC(0.4)  # Right edge
+stats.SetY2NDC(0.75)  # Top edge
 
 c.Modified()
 c.Update()
 
 
-c.Print("muonIdsDATACut0BsMass.pdf")
+c.Print("muonIdsMCcut0HltNew.pdf")
 input('press enter to exit')
 
 

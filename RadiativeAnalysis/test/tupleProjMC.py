@@ -9,7 +9,7 @@ tupleName = "tOut"
 
 # Prepare a directory for the output histograms
 logBool = 0
-dirPath = 'tupleProjections/'+analysisTag+'/cut0hlt_again'
+dirPath = 'tupleProjections/'+analysisTag+'/cut0hlt_againBin'
 if logBool  :
     dirPath += 'log'
 os.mkdir(dirPath)
@@ -55,7 +55,7 @@ with open(dirPath+'/cuts.txt','w') as of:
 # Define the binnings
 binInfo = {
     branchNames[0] : (100,0.0,1.0),
-    branchNames[1] : (100,2.9,3.3),
+    branchNames[1] : (500,2.9,3.3),
     branchNames[2] : (100,0.,1.0),
     branchNames[3] : (100,0.,3.),
     branchNames[4] : (100,0.,150.),
@@ -106,22 +106,23 @@ for bname in branchNames:
     histo.SetDirectory(0)
     histoList.append(histo)
 
-tupleFile.Close()
+# tupleFile.Close()
 
-'''
+
 # save selected histograms
-outFile = r.TFile(analysisTag+"cut10_bins.root",'RECREATE')
-histoList[9].Write()
+outFile = r.TFile(analysisTag+"cut0HltJpsi.root",'RECREATE')
+histoList[1].Write()
 totalCut.Write()
 outFile.Close()
-'''
+tupleFile.Close()
+
 
 # Draw histograms and save the images
 for histo in histoList:
     canvas = r.TCanvas("c"+str(histo.GetTitle()))
     canvas.SetLogy(logBool)
     canvas.cd()
-    # histo.SetStats(0)
+    histo.SetStats(0)
     histo.SetLabelSize(0.03)
     histo.Draw()
     

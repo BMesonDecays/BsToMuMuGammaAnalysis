@@ -7,24 +7,24 @@ histname = "hfittedDimuonMass"
 xmin = 2.95
 xmax = 3.24
 ##########################################
-histfilename = "JpsiGApril_23_24_July_BsMasscut0.root"
+histfilename = "JpsiGMidApril_MC_Julycut0HltJpsi.root"
 histfile = r.TFile.Open(histfilename,"READ")
 histo = histfile.Get(histname)
 histo.SetDirectory(0)
 histfile.Close()
 
-# histo.Rebin(4)
+histo.Rebin(4)
 
 # Fitting function
 # expression = "0.5*[0]*(exp((-(x-[1])**2)/(2*[2]**2))/([2]*TMath::Sqrt(2*TMath::Pi())) + exp((-(x-[1])**2)/(2*[3]**2))/([3]*TMath::Sqrt(2*TMath::Pi())))"
 #expression = "[0]*(exp((-(x-[1])**2)/(2*[2]**2))/([2]*TMath::Sqrt(2*TMath::Pi())) )"
 # expression = "[0]*([4]*exp((-(x-[1])**2)/(2*[2]**2))/([2]*TMath::Sqrt(2*TMath::Pi())) + (1-[4])*exp((-(x-[1])**2)/(2*[3]**2))/([3]*TMath::Sqrt(2*TMath::Pi())))"
-expression = "[0]*exp((-(x-[1])**2)/(2*[2]**2)) + [3]*exp(-[4]*x)"
+expression = "[0]*exp((-(x-[1])**2)/(2*[2]**2))"# + [3]*exp(-[4]*x)"
 # expression = "[0]*exp((-(x-[1])**2)/(2*[2]**2)) + [3]+[4]*x"
 
 
-fitFunc = r.TF1("fitFunc",expression,xmin,xmax,5)
-fitFunc.SetParameters(60.e3,3.097,0.02,2.e6,2.0)
+fitFunc = r.TF1("fitFunc",expression,xmin,xmax,3)
+fitFunc.SetParameters(80.,3.097,0.01)
 
 results = histo.Fit(fitFunc,"ERSLB")
 
