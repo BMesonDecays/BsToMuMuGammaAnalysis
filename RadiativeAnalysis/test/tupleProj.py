@@ -9,8 +9,8 @@ tupleName = "tOut"
 
 # Prepare a directory for the output histograms
 logBool = 0
-statBool = 1
-dirPath = 'tupleProjections/'+analysisTag+'/cut0_stats'
+statBool = 0
+dirPath = 'tupleProjections/'+analysisTag+'/cut2'
 if logBool  :
     dirPath += 'log'
 if statBool  :
@@ -18,7 +18,7 @@ if statBool  :
 os.mkdir(dirPath)
 
 # Get the tuple
-tupleFile = r.TFile("./outputData/23_24_JpsiGApril.root","READ")
+tupleFile = r.TFile("./outputData/23_24_JpsiGApril_cut2.root","READ")
 ntuple = tupleFile.Get(tupleName)
 
 # Make a list with branch names
@@ -30,13 +30,14 @@ for branch in ntuple.GetListOfBranches():
 cutList = []
 
 cutList.append(r.TCut("candBsMassCut","TMath::Abs(candBsMass - 5.367) < 1.5"))
-'''
+
 cutList.append(r.TCut("muonIdCut","muon1Id > 0.7 && muon2Id > 0.7"))
 cutList.append(r.TCut("fittedDimuonVertexProbCut","fittedDimuonVertexProb > 0.1"))
 cutList.append(r.TCut("fittedDimuonMassCut","TMath::Abs(fittedDimuonMass - 3.097) < 0.06"))
 cutList.append(r.TCut("lXY_fittedDimuon_bSpot_sigCut","lXY_fittedDimuon_bSpot_sig > 5.0"))
 cutList.append(r.TCut("dR_photonFittedDimuonCut","dR_photonFittedDimuon < 0.5 && dR_photonFittedDimuon > 0.05"))
 
+'''
 cutList.append(r.TCut("cosAnDimuonBSpot2DCut","cosAnDimuonBSpot2D > 0.99"))
 cutList.append(r.TCut("cosAngleBsBSpot2DCut","cosAngleBsBSpot2D > 0.9999"))
 cutList.append(r.TCut("cosAngleBsPV3DCut","cosAngleBsPV3D > 0.9999"))
@@ -60,7 +61,7 @@ with open(dirPath+'/cuts.txt','w') as of:
 binInfo = {
     branchNames[0] : (1000,3.5,7.5),         #Bs mass
     branchNames[1] : (100,3.5,7.5),        #Bs mod mass  
-    branchNames[2] : (100,0.97,1.),
+    branchNames[2] : (100,0.96,1.),
     branchNames[3] : (100,0.999,1.),
     branchNames[4] : (100,0.9999,1.),
     branchNames[5] : (100,-1.,1.),
@@ -103,7 +104,7 @@ for bname in branchNames:
     histo.SetDirectory(0)
     histoList.append(histo)
 
-# tupleFile.Close()
+tupleFile.Close()
 
 # Draw histograms and save the images
 for histo in histoList:
@@ -115,7 +116,7 @@ for histo in histoList:
     histo.Draw()
     canvas.Print(dirPath+'/'+str(histo.GetName())+".pdf")
 
-
+'''
 # save selected histograms
 outFile = r.TFile(analysisTag+"cut.root",'RECREATE')
 histoList[11].Write()
@@ -125,7 +126,7 @@ totalCut.Write()
 outFile.Close()
 tupleFile.Close()
 
-'''
+
 # Copy the ntuple limited by the cuts
 outputFile = r.TFile("./outputData/23_24_JpsiGApril_cut2_mass.root","RECREATE")
 totalCut.Write()
