@@ -9,7 +9,7 @@ tupleName = "tOut"
 
 # Prepare a directory for the output histograms
 logBool = 0
-dirPath = 'tupleProjections/'+analysisTag+'/cut9_noStats'
+dirPath = 'tupleProjections/'+analysisTag+'/cut67_box'
 if logBool  :
     dirPath += 'log'
 os.mkdir(dirPath)
@@ -34,8 +34,8 @@ cutList.append(r.TCut("dR_photonFittedDimuonCut","dR_photonFittedDimuon < 0.5 &&
 
 cutList.append(r.TCut("cosAnDimuonBSpot2DCut","cosAnDimuonBSpot2D > 0.99"))
 cutList.append(r.TCut("cosAngleBsBSpot2DCut","cosAngleBsBSpot2D > 0.9999"))
-cutList.append(r.TCut("cosAngleBsPV3DCut","cosAngleBsPV3D > 0.9999"))
-cutList.append(r.TCut("maxMuonsVertexCompCut","maxMuonsVertexComp < 0.2"))
+# cutList.append(r.TCut("cosAngleBsPV3DCut","cosAngleBsPV3D > 0.9999"))
+# cutList.append(r.TCut("maxMuonsVertexCompCut","maxMuonsVertexComp < 0.2"))
 
 '''
 cutList.append(r.TCut("lXY_fittedDimuon_bSpotCut","lXY_fittedDimuon_bSpot > 0.5"))
@@ -65,11 +65,11 @@ binInfo = {
     branchNames[8] : (100,0.9,1.01),
     branchNames[9] : (1000,3.5,7.5),
     branchNames[10] : (100,3.5,7.5),
-    branchNames[11] : (50,0.9995,1.0),    #Bs to beam spot
-    branchNames[12] : (50,0.9995,1.0),
+    branchNames[11] : (100,0.9995,1.0),    #Bs to beam spot
+    branchNames[12] : (100,0.9995,1.0),
     branchNames[13] : (100,0.,5.),
     branchNames[14] : (100,0.,5.),
-    branchNames[15] : (100,0.9999,1.0),      #Bs to PV
+    branchNames[15] : (100,0.9995,1.0),      #Bs to PV
     branchNames[16] : (100,0.9997,1.0),
     branchNames[17] : (100,0.,15.),
     branchNames[18] : (100,0.,15.),
@@ -92,7 +92,7 @@ binInfo = {
 totalCutMod = totalCut + r.TCut("modScaleCut","modScale > 0.0")
 
 # Create and fill the histograms
-# r.gStyle.SetOptStat("eu")
+r.gStyle.SetOptStat("eu")
 histoList = []
 for bname in branchNames:
     if bname == "triggerRes" : continue
@@ -122,11 +122,11 @@ for histo in histoList:
     canvas = r.TCanvas("c"+str(histo.GetTitle()))
     canvas.SetLogy(logBool)
     canvas.cd()
-    histo.SetStats(0)
+    # histo.SetStats(1)
     histo.SetLabelSize(0.03)
     histo.Draw()
     
-    '''
+    #'''
     canvas.Update()
     stats = histo.GetListOfFunctions().FindObject("stats")
     stats.SetX1NDC(0.15)  # Left edge
@@ -135,7 +135,7 @@ for histo in histoList:
     stats.SetY2NDC(0.75)  # Top edge
     canvas.Modified()
     canvas.Update()
-    '''
+    #'''
     
     canvas.Print(dirPath+'/'+str(histo.GetName())+".pdf")
 
