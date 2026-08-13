@@ -8,9 +8,9 @@ analysisTag = "JpsiGApril_23_24_July_BsMass"
 tupleName = "tOut"
 
 # Prepare a directory for the output histograms
-logBool = 0
-statBool = 0
-dirPath = 'tupleProjections/'+analysisTag+'/cut2'
+logBool = 1
+statBool = 1
+dirPath = 'tupleProjections/'+analysisTag+'/cut9'
 if logBool  :
     dirPath += 'log'
 if statBool  :
@@ -37,12 +37,11 @@ cutList.append(r.TCut("fittedDimuonMassCut","TMath::Abs(fittedDimuonMass - 3.097
 cutList.append(r.TCut("lXY_fittedDimuon_bSpot_sigCut","lXY_fittedDimuon_bSpot_sig > 5.0"))
 cutList.append(r.TCut("dR_photonFittedDimuonCut","dR_photonFittedDimuon < 0.5 && dR_photonFittedDimuon > 0.05"))
 
-'''
 cutList.append(r.TCut("cosAnDimuonBSpot2DCut","cosAnDimuonBSpot2D > 0.99"))
 cutList.append(r.TCut("cosAngleBsBSpot2DCut","cosAngleBsBSpot2D > 0.9999"))
 cutList.append(r.TCut("cosAngleBsPV3DCut","cosAngleBsPV3D > 0.9999"))
 cutList.append(r.TCut("maxMuonsVertexCompCut","maxMuonsVertexComp < 0.2"))
-'''
+
 
 '''
 cutList.append(r.TCut("tightMuonCut","tight1 == 1.0 && tight2 == 1.0"))
@@ -62,8 +61,8 @@ binInfo = {
     branchNames[0] : (1000,3.5,7.5),         #Bs mass
     branchNames[1] : (100,3.5,7.5),        #Bs mod mass  
     branchNames[2] : (100,0.96,1.),
-    branchNames[3] : (100,0.999,1.),
-    branchNames[4] : (100,0.9999,1.),
+    branchNames[3] : (100,0.9995,1.),
+    branchNames[4] : (100,0.9995,1.),
     branchNames[5] : (100,-1.,1.),
     branchNames[6] : (100,-1.,1.),
     branchNames[7] : (100,-1.,1.),

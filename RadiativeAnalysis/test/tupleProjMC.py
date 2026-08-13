@@ -9,7 +9,7 @@ tupleName = "tOut"
 
 # Prepare a directory for the output histograms
 logBool = 0
-dirPath = 'tupleProjections/'+analysisTag+'/cut2_noStats'
+dirPath = 'tupleProjections/'+analysisTag+'/cut9_noStats'
 if logBool  :
     dirPath += 'log'
 os.mkdir(dirPath)
@@ -32,10 +32,10 @@ cutList.append(r.TCut("fittedDimuonMassCut","TMath::Abs(fittedDimuonMass - 3.097
 cutList.append(r.TCut("lXY_fittedDimuon_bSpot_sigCut","lXY_fittedDimuon_bSpot_sig > 5.0"))
 cutList.append(r.TCut("dR_photonFittedDimuonCut","dR_photonFittedDimuon < 0.5 && dR_photonFittedDimuon > 0.05"))
 
-# cutList.append(r.TCut("cosAnDimuonBSpot2DCut","cosAnDimuonBSpot2D > 0.99"))
-# cutList.append(r.TCut("cosAngleBsBSpot2DCut","cosAngleBsBSpot2D > 0.9999"))
-# cutList.append(r.TCut("cosAngleBsPV3DCut","cosAngleBsPV3D > 0.9999"))
-# cutList.append(r.TCut("maxMuonsVertexCompCut","maxMuonsVertexComp < 0.2"))
+cutList.append(r.TCut("cosAnDimuonBSpot2DCut","cosAnDimuonBSpot2D > 0.99"))
+cutList.append(r.TCut("cosAngleBsBSpot2DCut","cosAngleBsBSpot2D > 0.9999"))
+cutList.append(r.TCut("cosAngleBsPV3DCut","cosAngleBsPV3D > 0.9999"))
+cutList.append(r.TCut("maxMuonsVertexCompCut","maxMuonsVertexComp < 0.2"))
 
 '''
 cutList.append(r.TCut("lXY_fittedDimuon_bSpotCut","lXY_fittedDimuon_bSpot > 0.5"))
@@ -65,8 +65,8 @@ binInfo = {
     branchNames[8] : (100,0.9,1.01),
     branchNames[9] : (1000,3.5,7.5),
     branchNames[10] : (100,3.5,7.5),
-    branchNames[11] : (80,0.999,1.0),    #Bs to beam spot
-    branchNames[12] : (100,0.9998,1.0),
+    branchNames[11] : (50,0.9995,1.0),    #Bs to beam spot
+    branchNames[12] : (50,0.9995,1.0),
     branchNames[13] : (100,0.,5.),
     branchNames[14] : (100,0.,5.),
     branchNames[15] : (100,0.9999,1.0),      #Bs to PV
@@ -92,7 +92,7 @@ binInfo = {
 totalCutMod = totalCut + r.TCut("modScaleCut","modScale > 0.0")
 
 # Create and fill the histograms
-r.gStyle.SetOptStat(0)
+# r.gStyle.SetOptStat("eu")
 histoList = []
 for bname in branchNames:
     if bname == "triggerRes" : continue
@@ -106,16 +106,16 @@ for bname in branchNames:
     histo.SetDirectory(0)
     histoList.append(histo)
 
-# tupleFile.Close()
+tupleFile.Close()
 
-
+'''
 # save selected histograms
 outFile = r.TFile(analysisTag+"cut0HltJpsi.root",'RECREATE')
 histoList[1].Write()
 totalCut.Write()
 outFile.Close()
 tupleFile.Close()
-
+'''
 
 # Draw histograms and save the images
 for histo in histoList:
@@ -129,10 +129,10 @@ for histo in histoList:
     '''
     canvas.Update()
     stats = histo.GetListOfFunctions().FindObject("stats")
-    stats.SetX1NDC(0.7)  # Left edge
-    stats.SetY1NDC(0.8)  # Bottom edge
-    stats.SetX2NDC(0.9)  # Right edge
-    stats.SetY2NDC(0.9)  # Top edge
+    stats.SetX1NDC(0.15)  # Left edge
+    stats.SetY1NDC(0.65)  # Bottom edge
+    stats.SetX2NDC(0.35)  # Right edge
+    stats.SetY2NDC(0.75)  # Top edge
     canvas.Modified()
     canvas.Update()
     '''
