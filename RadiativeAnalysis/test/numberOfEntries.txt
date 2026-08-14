@@ -1,0 +1,12 @@
+JpsiGApril_23_24_Julycut10.root
+Mean: 5.367 	 Sigma: 0.15
+Number of entries within the range [mean-sigma; mean+sigma]: 2542.0
+
+JpsiGApril_23_24_Julycut10.root
+Mean: 5.43914 	 Sigma: 0.15
+Number of entries within the range [mean-sigma; mean+sigma]: 1771.0 
+
+JpsiGMidApril_MC_Julycut10_bins.root
+Mean: 5.43914 	 Sigma: 0.15
+Number of entries within the range [mean-sigma; mean+sigma]: 185.0 
+

@@ -2,12 +2,11 @@
 import ROOT as r
 import sys
 
-# histname = "hcandBsMass"
-histname = "hfittedDimuonMass"
-xmin = 2.95
-xmax = 3.24
+histname = "hcandBsMass"
+xmin = 4.8
+xmax = 6.1
 ##########################################
-histfilename = "JpsiGMidApril_MC_Julycut0HltJpsi.root"
+histfilename = "JpsiGMidApril_MC_Julycut10_bins.root"
 histfile = r.TFile.Open(histfilename,"READ")
 histo = histfile.Get(histname)
 histo.SetDirectory(0)
@@ -24,7 +23,8 @@ expression = "[0]*exp((-(x-[1])**2)/(2*[2]**2))"# + [3]*exp(-[4]*x)"
 
 
 fitFunc = r.TF1("fitFunc",expression,xmin,xmax,3)
-fitFunc.SetParameters(80.,3.097,0.01)
+fitFunc.SetParameters(4.,3.097,0.01)
+fitFunc.FixParameter(1,5.43914)
 
 results = histo.Fit(fitFunc,"ERSLB")
 
@@ -32,7 +32,7 @@ results = histo.Fit(fitFunc,"ERSLB")
 #fitFunc.Write()
 #funcFile.Close()
 
-with open(histname+histfilename[:-5]+'_fitResults.txt','a') as of:
+with open(histname+histfilename[:-5]+'_fitResultsSingle.txt','a') as of:
     print(results, file=of)
 
     
@@ -40,7 +40,7 @@ canvas = r.TCanvas("canvas")
 canvas.cd()
 # canvas.SetLogy(True)
 
-# histo.SetAxisRange(4.5,6.4)
+histo.SetAxisRange(4.5,6.4)
 #histo.SetAxisRange(3.5, 6., "X")
 #histo.SetAxisRange(1500, 3.e3, "Y")
 #histo.SetTitle("Lifetime of B^{#pm};t;Counts")
