@@ -1,4 +1,5 @@
 // get details of the MC sample for the thesis
+// spectra of generated particles
 
 #include "FWCore/Framework/interface/one/EDAnalyzer.h"
 
@@ -149,7 +150,7 @@ McSampleDetails::~McSampleDetails()
 
 void McSampleDetails::beginJob()
 {
-  tOut = new TNtupleD("tOut","Output variables","Event:GenDecay:dRMuon1:dRMuon2:dRPhoton:twoReMaMuonsDR:reMuSize");
+  tOut = new TNtupleD("tOut","Spectra of generated particles","BPt:BEta:mu1Pt:mu1Eta:mu2Pt:mu2Eta:gPt:gEta");
 
   cout << "HERE McSampleDetails::beginJob()" << endl;
 }
@@ -196,6 +197,7 @@ void McSampleDetails::analyze(
   vector<const reco::Photon*> recoMatchedPhotons;
   vector<const reco::Candidate*> genMatchedPhotons;
 
+  const reco::Candidate* genBsPtr = &genPar.at(0); // generated Bs
   const reco::Candidate* genJpsiPtr = &genPar.at(0); // generated Jpsi
   const reco::Candidate* genGammaPtr = &genPar.at(0);  // generated photon
   
@@ -205,6 +207,7 @@ void McSampleDetails::analyze(
   {
     if (abs(genP.pdgId()) == 531) // B0s
     {
+      genBsPtr = &genP;
       vector<int> daughters;
       for(unsigned int i=0; i < genP.numberOfDaughters(); i++)
       {
@@ -232,11 +235,20 @@ void McSampleDetails::analyze(
     }
   }
 
+  if(genPhotons.size() == 1)  // found the decay
+  {
+    tOut->Fill(genBsPtr->pt(),genBsPtr->eta(),genMuons.at(0)->pt(),genMuons.at(0)->eta(),genMuons.at(1)->pt(),genMuons.at(1)->eta(),genPhotons.at(0)->pt(),genPhotons.at(0)->eta());
+  }
+
+
+
+  /*
   if(genPhotons.size() == 0)  //no 'SameDecay' found  
   {
     tOut->Fill(1.,0.,100.,100.,100.,100.);
     return;
   }
+
 
   bool recoMuonsSuff = (recoMuons.size() >= 2);
   bool recoPhotonsSuff = (recoPhotons.size() >= 1);
@@ -311,7 +323,7 @@ void McSampleDetails::analyze(
   int recoMuonsSize = recoMuons.size();
   tOut->Fill(1.,1.,deltaRs.at(0),deltaRs.at(1),deltaRs.at(2),dRtwoRecoMatchedMuons,(double)recoMuonsSize);
 
-
+  */
 
   ///////////////END OF THE GENPARTICLE SECTION/////////////////////////
 }
