@@ -1,5 +1,5 @@
 // get details of the MC sample for the thesis
-// spectra of generated particles
+// histos for pt and eta of reco muons and photons
 
 #include "FWCore/Framework/interface/one/EDAnalyzer.h"
 
@@ -121,8 +121,10 @@ private:
   std::vector<int> JpsiG = {443, 22};
   std::vector<int> MuMu = {13, -13};
 
-  TNtupleD* tOut;
-  
+  TH1D* hRecoMuonPt;
+  TH1D* hRecoMuonEta;
+  TH1D* hRecoPhotonPt;
+  TH1D* hRecoPhotonEta;
   
 };
 
@@ -150,7 +152,10 @@ McSampleDetails::~McSampleDetails()
 
 void McSampleDetails::beginJob()
 {
-  tOut = new TNtupleD("tOut","Spectra of generated particles","BPt:BEta:mu1Pt:mu1Eta:mu2Pt:mu2Eta:gPt:gEta");
+  hRecoMuonPt = new TH1D("hRecoMuonPt","hRecoMuonPt",10000,0.0,50.0);
+  hRecoMuonEta = new TH1D("hRecoMuonEta","hRecoMuonEta",10000,-10.0,10.0);
+  hRecoPhotonPt = new TH1D("hRecoPhotonPt","hRecoPhotonPt",10000,0.0,50.0);
+  hRecoPhotonEta = new TH1D("hRecoPhotonEta","hRecoPhotonEta",10000,-10.0,10.0);
 
   cout << "HERE McSampleDetails::beginJob()" << endl;
 }
@@ -161,11 +166,17 @@ void McSampleDetails::endJob()
   TFile myRootFile( theConfig.getParameter<std::string>("outHist").c_str(), "RECREATE");
 
   //write data
-  tOut->Write();
+  hRecoMuonPt->Write();
+  hRecoMuonEta->Write();
+  hRecoPhotonPt->Write();
+  hRecoPhotonEta->Write();
 
   myRootFile.Close();
 
-  delete tOut;
+  delete hRecoMuonPt;
+  delete hRecoMuonEta;
+  delete hRecoPhotonPt;
+  delete hRecoPhotonEta;
 
   cout << "HERE McSampleDetails::endJob()" << endl;
 }
@@ -197,7 +208,6 @@ void McSampleDetails::analyze(
   vector<const reco::Photon*> recoMatchedPhotons;
   vector<const reco::Candidate*> genMatchedPhotons;
 
-  const reco::Candidate* genBsPtr = &genPar.at(0); // generated Bs
   const reco::Candidate* genJpsiPtr = &genPar.at(0); // generated Jpsi
   const reco::Candidate* genGammaPtr = &genPar.at(0);  // generated photon
   
@@ -207,7 +217,6 @@ void McSampleDetails::analyze(
   {
     if (abs(genP.pdgId()) == 531) // B0s
     {
-      genBsPtr = &genP;
       vector<int> daughters;
       for(unsigned int i=0; i < genP.numberOfDaughters(); i++)
       {
@@ -235,95 +244,82 @@ void McSampleDetails::analyze(
     }
   }
 
-  if(genPhotons.size() == 1)  // found the decay
-  {
-    tOut->Fill(genBsPtr->pt(),genBsPtr->eta(),genMuons.at(0)->pt(),genMuons.at(0)->eta(),genMuons.at(1)->pt(),genMuons.at(1)->eta(),genPhotons.at(0)->pt(),genPhotons.at(0)->eta());
-  }
+  if(genPhotons.size() == 0) return;  //no 'SameDecay' found  
 
-
-
-  /*
-  if(genPhotons.size() == 0)  //no 'SameDecay' found  
-  {
-    tOut->Fill(1.,0.,100.,100.,100.,100.);
-    return;
-  }
-
-
-  bool recoMuonsSuff = (recoMuons.size() >= 2);
-  bool recoPhotonsSuff = (recoPhotons.size() >= 1);
   //if(recoMuons.size() < 2 || recoPhotons.size() < 1) return;  // insufficient number of reco muons and photons
-  if (!recoMuonsSuff && !recoPhotonsSuff)
-  {
-    tOut->Fill(1.,1.,100.,100.,100.,100.);
-    return;
-  }
-
-  /////MATCHING//////////
-  std::vector<double> deltaRs(3,100.0);
-
-  // reco muon matching
-  for (unsigned int i=0;i<genMuons.size();i++)
-  {
-    if (!recoMuonsSuff) continue;
-    const reco::Candidate* genMu = genMuons.at(i);
-
-    float minDR = 100.0;
-    const reco::Muon* bestMatchedMuon = &recoMuons.at(0); //initialization to suppress warning
-    bool matched = false;
-    for (const auto& recoMu : recoMuons)
+  
+  if(recoMuons.size() > 0){
+    // reco muon matching
+    for (const reco::Candidate* genMu : genMuons)
     {
-      float dR = reco::deltaR(recoMu, *genMu);
-      if (dR < minDR)
+      float minDR = 10;
+      const reco::Muon* bestMatchedMuon = &recoMuons.at(0); //initialization to suppress warning
+      bool matched = false;
+      for (const auto& recoMu : recoMuons)
       {
-        minDR = dR;
-        bestMatchedMuon = &recoMu;
-        matched = true;
+        float dR = reco::deltaR(recoMu, *genMu);
+        if (dR < minDR)
+        {
+          minDR = dR;
+          bestMatchedMuon = &recoMu;
+          matched = true;
+        }
+      }
+      if (matched && minDR < 0.01)  //cut on dR(reco,gen)
+      {
+        recoMatchedMuons.push_back(bestMatchedMuon);
+        genMatchedMuons.push_back(genMu);
       }
     }
-    if (matched)
-    {
-      deltaRs.at(i) = minDR;
-      recoMatchedMuons.push_back(bestMatchedMuon);
-      genMatchedMuons.push_back(genMu);
-    }
   }
 
-  // reco photon matching
-  for (const reco::Candidate* genPh : genPhotons)
-  {
-    if (!recoPhotonsSuff) continue;
-
-    float minDR = 100.0;
-    const reco::Photon* bestMatchedPhoton = &recoPhotons.at(0); //initialization to suppress warning
-    bool matched = false;
-    for (const auto& recoPh : recoPhotons)
+  if(recoPhotons.size() > 0){
+    // reco photon matching
+    for (const reco::Candidate* genPh : genPhotons)
     {
-      float dR = reco::deltaR(recoPh, *genPh);
-      if (dR < minDR)
+      float minDR = 10;
+      const reco::Photon* bestMatchedPhoton = &recoPhotons.at(0); //initialization to suppress warning
+      bool matched = false;
+      for (const auto& recoPh : recoPhotons)
       {
-        minDR = dR;
-        bestMatchedPhoton = &recoPh;
-        matched = true;
+        float dR = reco::deltaR(recoPh, *genPh);
+        if (dR < minDR)
+        {
+          minDR = dR;
+          bestMatchedPhoton = &recoPh;
+          matched = true;
+        }
+      }
+      if (matched && minDR < 0.03)  // cut on dR(reco,gen)
+      {
+        recoMatchedPhotons.push_back(bestMatchedPhoton);
+        genMatchedPhotons.push_back(genPh);
       }
     }
-    if (matched)
-    {
-      deltaRs.at(2) = minDR;
-      recoMatchedPhotons.push_back(bestMatchedPhoton);
-      genMatchedPhotons.push_back(genPh);
-    }
   }
 
-  double dRtwoRecoMatchedMuons = 100.0;
-  if(recoMatchedMuons.size() == 2){
-    dRtwoRecoMatchedMuons = reco::deltaR(*recoMatchedMuons.at(0), *recoMatchedMuons.at(1));
+  //// To histograms ///
+  if(recoMatchedMuons.size() > 0){
+    hRecoMuonPt->Fill(recoMatchedMuons.at(0)->pt());
+    hRecoMuonEta->Fill(recoMatchedMuons.at(0)->eta());
+    if(recoMatchedMuons.size() > 1){
+      if(recoMatchedMuons.at(0)->charge() * recoMatchedMuons.at(1)->charge() == -1){  // different muons
+        hRecoMuonPt->Fill(recoMatchedMuons.at(1)->pt());
+        hRecoMuonEta->Fill(recoMatchedMuons.at(1)->eta());
+      }
+    }    
   }
 
-  int recoMuonsSize = recoMuons.size();
-  tOut->Fill(1.,1.,deltaRs.at(0),deltaRs.at(1),deltaRs.at(2),dRtwoRecoMatchedMuons,(double)recoMuonsSize);
+  if(recoMatchedPhotons.size() > 0){
+    hRecoPhotonPt->Fill(recoMatchedPhotons.at(0)->pt());
+    hRecoPhotonEta->Fill(recoMatchedPhotons.at(0)->eta());
+  }
 
-  */
+
+
+  // if(recoMatchedMuons.size() != 2)  return;
+  // if(recoMatchedPhotons.size() != 1) return;
+
 
   ///////////////END OF THE GENPARTICLE SECTION/////////////////////////
 }
