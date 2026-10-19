@@ -53,7 +53,7 @@ scram project CMSSW_14_1_1
 cd CMSSW_14_1_1/src
 cmsenv
 git cms-init
-git remote add -f https://github.com/sslawins/cmssw.git
+git remote add -f sslawins https://github.com/sslawins/cmssw.git
 git checkout photonKinematicFit
 git cms-addpkg RecoVertex/KinematicFit
 git cms-addpkg RecoVertex/KinematicFitPrimitives
