@@ -63,25 +63,28 @@ public:
 	double dedxTrk_;
 	double errdedxTrk_;
 	int numdedxTrk_;
-	int triggerbit_HLT_DoubleMu4_LowMass_Displaced_;
-	int triggerbit_HLT_DoubleMu4_LowMass_;
+	int triggerbit_HLT_DoubleMu4_3_LowMass_;
 	int triggerbit_HLT_DoubleMu4_3_Bs_;
 	int triggerbit_HLT_DoubleMu4_3_Photon4_BsToMMG_;
+	int triggerbit_HLT_DoubleMu2_Jpsi_LowPt_;
+	int triggerbit_HLT_DoubleMu4_3_Jpsi_;
+	int triggerbit_HLT_DoubleMu4_LowMass_Displaced_;
+	int triggerbit_HLT_DoubleMu4_Jpsi_Displaced_;
+	int triggerbit_HLT_DoubleMu4_JpsiTrkTrk_Displaced_;
 	int triggerbit_HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG_;
-	int triggerbit_HLTDimuon4JpsiDisplaced_;
-	int triggerbit_HLTDimuon4JpsiNoVertexing_;
-	int triggerbit_HLTDimuon4JpsiTrkTrkDisplaced_;
-
-
-	 
-	std::vector<int> *trigMatch_DoubleMu4_3_Bs_; 
+	int triggerbit_HLT_DoubleMu4_Jpsi_NoVertexing_;
+	
 	std::vector<int> *trigMatch_DoubleMu4_3_LowMass_; 
-	std::vector<int> *trigMatch_DoubleMu4_LowMass_Displaced_; 
+	std::vector<int> *trigMatch_DoubleMu4_3_Bs_; 
 	std::vector<int> *trigMatch_DoubleMu4_3_Photon4_BsToMMG_;
-	std::vector<int> *trigMatch_DoubleMu4_3_Displaced_Photon4_BsToMMG_; 
-	std::vector<int> *trigMatch_DoubleMu4_JpsiTrkTrk_Displaced_; 
-	std::vector<int> *trigMatch_DoubleMu4_Jpsi_NoVertexing_;
+	std::vector<int> *trigMatch_DoubleMu2_Jpsi_LowPt_;
+	std::vector<int> *trigMatch_DoubleMu4_3_Jpsi_;
+	std::vector<int> *trigMatch_DoubleMu4_LowMass_Displaced_; 
 	std::vector<int> *trigMatch_DoubleMu4_Jpsi_Displaced_;
+	std::vector<int> *trigMatch_DoubleMu4_JpsiTrkTrk_Displaced_; 
+	std::vector<int> *trigMatch_DoubleMu4_3_Displaced_Photon4_BsToMMG_; 
+	std::vector<int> *trigMatch_DoubleMu4_Jpsi_NoVertexing_;
+
 
 	double mu1Pt_beffit_;
 	double mu1Pz_beffit_;

@@ -25,6 +25,8 @@ void RadiativeRootTree::createTree(const std::string filename)
 	trigMatch_DoubleMu4_JpsiTrkTrk_Displaced_ = new std::vector<int>(); 
 	trigMatch_DoubleMu4_Jpsi_NoVertexing_ = new std::vector<int>();
 	trigMatch_DoubleMu4_Jpsi_Displaced_ = new std::vector<int>();
+  trigMatch_DoubleMu2_Jpsi_LowPt_ = new std::vector<int>();
+  trigMatch_DoubleMu4_3_Jpsi_ = new std::vector<int>();
 
 
 
@@ -78,6 +80,8 @@ void RadiativeRootTree::createTree(const std::string filename)
   bmmgTree_->Branch("triggerbit_HLTDimuon4JpsiDisplaced", &triggerbit_HLTDimuon4JpsiDisplaced_,"triggerbit_HLTDimuon4JpsiDisplaced_/I");
   bmmgTree_->Branch("triggerbit_HLTDimuon4JpsiNoVertexing",&triggerbit_HLTDimuon4JpsiNoVertexing_,"triggerbit_HLTDimuon4JpsiNoVertexing_/I");
   bmmgTree_->Branch("triggerbit_HLTDimuon4JpsiTrkTrkDisplaced",&triggerbit_HLTDimuon4JpsiTrkTrkDisplaced_,"triggerbit_HLTDimuon4JpsiTrkTrkDisplaced_/I");
+  bmmgTree_->Branch("triggerbit_HLT_DoubleMu2_Jpsi_LowPt",&triggerbit_HLT_DoubleMu2_Jpsi_LowPt_,"triggerbit_HLT_DoubleMu2_Jpsi_LowPt_/I");
+  bmmgTree_->Branch("triggerbit_HLT_DoubleMu4_3_Jpsi",&triggerbit_HLT_DoubleMu4_3_Jpsi_,"triggerbit_HLT_DoubleMu4_3_Jpsi_/I");
   bmmgTree_->Branch("trigMatch_DoubleMu4_3_Bs", "vector<int>", trigMatch_DoubleMu4_3_Bs_); 
   bmmgTree_->Branch("trigMatch_DoubleMu4_3_LowMass", "vector<int>", trigMatch_DoubleMu4_3_LowMass_); 
   bmmgTree_->Branch("trigMatch_DoubleMu4_LowMass_Displaced", "vector<int>", trigMatch_DoubleMu4_LowMass_Displaced_); 
@@ -86,6 +90,8 @@ void RadiativeRootTree::createTree(const std::string filename)
   bmmgTree_->Branch("trigMatch_DoubleMu4_JpsiTrkTrk_Displaced", "vector<int>", trigMatch_DoubleMu4_JpsiTrkTrk_Displaced_);
   bmmgTree_->Branch("trigMatch_DoubleMu4_Jpsi_NoVertexing", "vector<int>", trigMatch_DoubleMu4_Jpsi_NoVertexing_);
   bmmgTree_->Branch("trigMatch_DoubleMu4_Jpsi_Displaced", "vector<int>", trigMatch_DoubleMu4_Jpsi_Displaced_);
+  bmmgTree_->Branch("trigMatch_DoubleMu2_Jpsi_LowPt", "vector<int>", trigMatch_DoubleMu2_Jpsi_LowPt_);
+  bmmgTree_->Branch("trigMatch_DoubleMu4_3_Jpsi", "vector<int>", trigMatch_DoubleMu4_3_Jpsi_);
   bmmgTree_->Branch("mu1Pt_beffit", &mu1Pt_beffit_,"mu1Pt_beffit/D");
   bmmgTree_->Branch("mu1Pz_beffit", &mu1Pz_beffit_,"mu1Pz_beffit/D");
   bmmgTree_->Branch("mu1Eta_beffit", &mu1Eta_beffit_,"mu1Eta_beffit/D");
@@ -756,6 +762,8 @@ void RadiativeRootTree::resetEntries()
 	triggerbit_HLTDimuon4JpsiDisplaced_                    = -9999999;
 	triggerbit_HLTDimuon4JpsiNoVertexing_                  = -9999999;
 	triggerbit_HLTDimuon4JpsiTrkTrkDisplaced_              = -9999999;
+  triggerbit_HLT_DoubleMu2_Jpsi_LowPt_                   = -9999999;
+  triggerbit_HLT_DoubleMu4_3_Jpsi_                       = -9999999;
   mu1Pt_beffit_ = -9999999;
 	mu1Pz_beffit_ = -9999999;
 	mu1Eta_beffit_ = -9999999;
@@ -1511,6 +1519,8 @@ void RadiativeRootTree::setBranchAddresses(){
   bmmgTree_->SetBranchAddress("triggerbit_HLTDimuon4JpsiDisplaced",&triggerbit_HLTDimuon4JpsiDisplaced_);
   bmmgTree_->SetBranchAddress("triggerbit_HLTDimuon4JpsiNoVertexing",&triggerbit_HLTDimuon4JpsiNoVertexing_);
   bmmgTree_->SetBranchAddress("triggerbit_HLTDimuon4JpsiTrkTrkDisplaced_",&triggerbit_HLTDimuon4JpsiTrkTrkDisplaced_);
+  bmmgTree_->SetBranchAddress("triggerbit_HLT_DoubleMu2_Jpsi_LowPt_",&triggerbit_HLT_DoubleMu2_Jpsi_LowPt_);
+  bmmgTree_->SetBranchAddress("triggerbit_HLT_DoubleMu4_3_Jpsi_",&triggerbit_HLT_DoubleMu4_3_Jpsi_);
   bmmgTree_->SetBranchAddress("mu1Pt_beffit", &mu1Pt_beffit_);
   bmmgTree_->SetBranchAddress("mu1Pz_beffit", &mu1Pz_beffit_);
   bmmgTree_->SetBranchAddress("mu1Eta_beffit", &mu1Eta_beffit_);
