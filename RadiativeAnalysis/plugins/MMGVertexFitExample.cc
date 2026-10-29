@@ -93,6 +93,7 @@ private:
   // histograms
 
   TH1D* hBsMass;
+  TH1D* hBsMassNoFit;
 
   int nConvPhotons = 0;
   std::vector<int> MuMuG = {22, 13, -13};
@@ -143,6 +144,7 @@ void MMGVertexFitExample::beginJob()
   //create a histogram
 
   hBsMass = new TH1D("hBsMass", "hBsMass", 100, 5, 6);
+  hBsMassNoFit = new TH1D("hBsMassNoFit", "hBsMassNoFit", 100, 5, 6);
 
   cout << "HERE MMGVertexFitExample::beginJob()" << endl;
 }
@@ -155,10 +157,12 @@ void MMGVertexFitExample::endJob()
   //write histogram data
 
   hBsMass->Write();
+  hBsMassNoFit->Write();
   
   myRootFile.Close();
 
   delete hBsMass;
+  delete hBsMassNoFit;
 
 
   cout << "HERE MMGVertexFitExample::endJob()" << endl;
@@ -187,6 +191,15 @@ void MMGVertexFitExample::analyze(
 
   for (double m : mass) {
     hBsMass->Fill(m);
+  }
+
+  if(recoMuons.size() == 2 && recoPhotons.size() == 1) {
+    TLorentzVector mu1, mu2, pho;
+    mu1.SetPxPyPzE(recoMuons[0].px(), recoMuons[0].py(), recoMuons[0].pz(), recoMuons[0].energy());
+    mu2.SetPxPyPzE(recoMuons[1].px(), recoMuons[1].py(), recoMuons[1].pz(), recoMuons[1].energy());
+    pho.SetPxPyPzE(recoPhotons[0].px(), recoPhotons[0].py(), recoPhotons[0].pz(), recoPhotons[0].energy());
+    TLorentzVector total = mu1 + mu2 + pho;
+    hBsMassNoFit->Fill(total.M());
   }
   cout <<"*** Analyze event: " << ev.id() <<" analysed event count:" << ++theEventCount << endl;
 }
