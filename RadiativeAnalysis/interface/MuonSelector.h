@@ -3,7 +3,10 @@
 
 #include <vector>
 #include <utility>
+#include <tuple>
 
+#include "DataFormats/Common/interface/View.h"
+#include "DataFormats/BeamSpot/interface/BeamSpot.h"
 #include "DataFormats/MuonReco/interface/Muon.h"
 #include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
 
@@ -21,9 +24,18 @@ public:
         std::vector<float> mvaScores,
         double mvaCut);
 
+    // Return all muon pairs passing the selection and common vertex criteria
+    // return a tuple with 3 vectors: firstMuonIndex, secondMuonIndex, commonVertexProbability
+    // MuonCollection can be e.g. std::vector<reco::Muon> or edm::View<reco::Muon>
+    template <typename MuonCollection>
+    std::tuple < std::vector<size_t>, std::vector<size_t>, std::vector<double> > selectMuonPairs(
+        const MuonCollection& muons,
+        const TransientTrackBuilder& transientTrackBuilder);
+
 private:
     /// Check if a muon passes selection criteria
-    bool passMuonSelection(const reco::Muon& mu1, const reco::Muon& mu2) const;
+    template <typename patOrReco>
+    bool passMuonSelection(const patOrReco& mu1, const patOrReco& mu2) const;
 };
 
 #endif

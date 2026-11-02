@@ -1,32 +1,37 @@
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/BeamSpotAndVertex.h"
-#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/KinematicConstrainedFit.h"
+
+#include <numeric>      // std::iota
 
 
-
-BeamSpotAndVertex::BeamSpotAndVertex(){}
+BeamSpotAndVertex::BeamSpotAndVertex(bool isMINIAOD) {isMINIAOD_ = isMINIAOD;}
 BeamSpotAndVertex::BSAndVtxVariables BeamSpotAndVertex::BSAndVtxObservables(const reco::BeamSpot& beamSpot,
-                        const std::vector<reco::Vertex>& vertex){
+                        const std::vector<reco::Vertex>& vertices){
     BSAndVtxVariables bsvtxv;
     
     for(size_t i=0; i<9;++i){bsvtxv.pv_covariance[i] = -9999;} 
-    const reco::Vertex &recVtxs_track = vertex.front();
+    const reco::Vertex &recVtxs_track = vertices.front();
     bsvtxv.pv_ntracks = recVtxs_track.nTracks();
-    bsvtxv.pv_multiplicity = vertex.size();
+    bsvtxv.pv_multiplicity = vertices.size();
     NSelectedVertices = 0;
 	size_t VtxIndex_maxPt = 0;
 	double maxSumPt = -1.0;
-    for (size_t iVtx = 0; iVtx < vertex.size(); ++iVtx) {
+    for (size_t iVtx = 0; iVtx < vertices.size(); ++iVtx) {
 		
-		const reco::Vertex& vtx = vertex[iVtx];
+		const reco::Vertex& vtx = vertices[iVtx];
 		double sumpT = 0.0;
-		for (const auto& track : vtx.tracks()) {
-			sumpT += track->pt();
-		}
-		if (sumpT > maxSumPt) {
-			maxSumPt = sumpT;
-			VtxIndex_maxPt = iVtx;
+
+		// may not work with MiniAOD ("vertices don't contain track references, but the association of candidates to vertices is provided in the packed candidates themself")
+		if (!isMINIAOD_) {
+			for (const auto& track : vtx.tracks()) {
+				sumpT += track->pt();
+			}
+			if (sumpT > maxSumPt) {
+				maxSumPt = sumpT;
+				VtxIndex_maxPt = iVtx;
+			}
 		}
 		bsvtxv.VtxIndex = VtxIndex_maxPt;
+		// PAWEL: Does it overwrite data with the next vertex? Only the last vertex covariance is saved?
 		int iteratorCov =0;
 		for(int i = 0; i < 3 ; ++i){
 			for(int j =0; j< 3; ++j){
@@ -43,26 +48,12 @@ BeamSpotAndVertex::BSAndVtxVariables BeamSpotAndVertex::BSAndVtxObservables(cons
 	        if(fabs(vtx.z()) >= 24.0)continue;
 	        if(vtx.position().Rho() >= 2)continue;
 	 	NSelectedVertices++;
-		/*for(reco::Vertex::trackRef_iterator trackRef = vtx.tracks_begin(); trackRef !=vtx.tracks_end(); ++trackRef){
-				 const reco::TrackBaseRef& vtx_trackRef = *trackRef;
-				 if (vtx_trackRef.isNonnull() && vtx_trackRef.isAvailable()) {
-					 const reco::Track& VtxTrack = *vtx_trackRef.castTo<reco::TrackRef>();
-					 PtSumVertex += std::abs(VtxTrack.pt());
-				 }
-				 else {
-					 std::cout << "Invalid track reference : "<<"\n";
-				 }
-			 }
-			 if (PtSumVertex >  MinPtVertex) {
-				 VtxIndex = iVtx;
-				 MinPtVertex = PtSumVertex;
-				 std::cout<<" min/max pt sum vertex : "<< MinPtVertex <<"\t"<< " & veretx index : " << VtxIndex<< "\n";
-			 }*/
     }
+
     bsvtxv.pv_cutmultiplicity = NSelectedVertices;
-    const reco::Vertex &RecVtx = vertex[bsvtxv.VtxIndex];
+    const reco::Vertex &RecVtx = vertices[bsvtxv.VtxIndex];
     if(bsvtxv.VtxIndex !=-99) {
-	        bsvtxv.ispv     = 1;
+	    bsvtxv.ispv     = 1;
 		bsvtxv.pv_x     = RecVtx.x();
 		bsvtxv.pv_y     = RecVtx.y();
 		bsvtxv.pv_z     = RecVtx.z();
@@ -82,32 +73,32 @@ BeamSpotAndVertex::BSAndVtxVariables BeamSpotAndVertex::BSAndVtxObservables(cons
 	}
 
 
-	    bsvtxv.bs_x = beamSpot.x0();
-	    bsvtxv.bs_y = beamSpot.y0();
-	    bsvtxv.bs_z = beamSpot.z0();
-	    //bsvtxv.bs_dx = beamSpot.x0Error();
-	    ////bsvtxv.bs_dy = beamSpot.y0Error();
-	    ////bsvtxv.bs_dz = beamSpot.z0Error();
-	    bsvtxv.bs_dxdz = beamSpot.dxdz();
-	    bsvtxv.bs_dydz = beamSpot.dydz();
-	    bsvtxv.bs_sigmaZ = beamSpot.sigmaZ();
-	    bsvtxv.bs_dsigmaZ = beamSpot.sigmaZ0Error();
-		bsvtxv.position = beamSpot.position();
-		bsvtxv.BeamSpot_cov2d = beamSpot.covariance(); // not sure if this is meant, this is 7 dimensional covariance
-		bsvtxv.BeamSpot_cov3d = beamSpot.covariance3D();
-    
+	bsvtxv.bs_x = beamSpot.x0();
+	bsvtxv.bs_y = beamSpot.y0();
+	bsvtxv.bs_z = beamSpot.z0();
+	//bsvtxv.bs_dx = beamSpot.x0Error();
+	////bsvtxv.bs_dy = beamSpot.y0Error();
+	////bsvtxv.bs_dz = beamSpot.z0Error();
+	bsvtxv.bs_dxdz = beamSpot.dxdz();
+	bsvtxv.bs_dydz = beamSpot.dydz();
+	bsvtxv.bs_sigmaZ = beamSpot.sigmaZ();
+	bsvtxv.bs_dsigmaZ = beamSpot.sigmaZ0Error();
+	bsvtxv.position = beamSpot.position();
+	bsvtxv.BeamSpot_cov2d = beamSpot.covariance(); // not sure if this is meant, this is 7 dimensional covariance
+	bsvtxv.BeamSpot_cov3d = beamSpot.covariance3D();
+
     
     return bsvtxv;
 }
 
-int BeamSpotAndVertex::ClosestZindex(const std::vector<reco::Vertex>& vertex,
+int BeamSpotAndVertex::ClosestZindex(const std::vector<reco::Vertex>& vertices,
 			RefCountedKinematicVertex bVertex)
 {
 	int PVClosestZIndex = -1;
 	double MinDistanceZ = std::numeric_limits<double>::max();
 	const double bsZ = bVertex->position().z();
-	for (std::size_t i = 0; i < vertex.size(); ++i) {
-		const auto& vtx = vertex[i];
+	for (std::size_t i = 0; i < vertices.size(); ++i) {
+		const auto& vtx = vertices[i];
 		if (!vtx.isValid()) continue;
 		const double dz = std::abs(bsZ - vtx.z());
 		if (dz < MinDistanceZ) {
@@ -118,14 +109,14 @@ int BeamSpotAndVertex::ClosestZindex(const std::vector<reco::Vertex>& vertex,
 	return PVClosestZIndex;
 }
 
-int BeamSpotAndVertex::CosThetaindex(const std::vector<reco::Vertex>& vertex,
+int BeamSpotAndVertex::CosThetaindex(const std::vector<reco::Vertex>& vertices,
 			RefCountedKinematicVertex bVertex,
 			GlobalVector Bsvec)
 {
 	int PVCosThetaIndex = -1;
 	double MinDistance  = std::numeric_limits<double>::max();
-	for (std::size_t i = 0; i < vertex.size(); ++i) {
-		const auto& vtx = vertex[i];
+	for (std::size_t i = 0; i < vertices.size(); ++i) {
+		const auto& vtx = vertices[i];
 		if (!vtx.isValid()) continue;
 
 		Double_t PVSVvecDotBsPvec=(bVertex->position().x()-vtx.x())*Bsvec.x()+(bVertex->position().y()-vtx.y())*Bsvec.y()+(bVertex->position().z()-vtx.z())*Bsvec.z();
@@ -141,25 +132,25 @@ int BeamSpotAndVertex::CosThetaindex(const std::vector<reco::Vertex>& vertex,
 	return PVCosThetaIndex;
 }
 
-int BeamSpotAndVertex::LowestDCAIndex(const std::vector<reco::Vertex>& vertex,
+int BeamSpotAndVertex::LowestDCAIndex(const std::vector<reco::Vertex>& vertices,
 			GlobalPoint bVertex,
 			GlobalVector Bsvec)
 {
-	if(vertex.empty()) return -1;
+	if(vertices.empty()) return -1;
 
 	math::XYZPoint SV(bVertex.x(), bVertex.y(), bVertex.z());
 	math::XYZVectorD p3sum(Bsvec.x(), Bsvec.y(), Bsvec.z());
 
 	// compute pca distances for every primary vertex
 	std::vector<float> pcaDist;
-	for (auto pv : vertex)
+	for (auto pv : vertices)
 	{
 		math::XYZPoint pca = BeamSpotAndVertex::pca(pv.position(), SV, p3sum);
 		pcaDist.push_back((pca - pv.position()).R());
 	}
 
 	// sort pv indeces by pca distance
-	std::vector<size_t> pvIndicesSortedByPCADist(vertex.size());
+	std::vector<size_t> pvIndicesSortedByPCADist(vertices.size());
 	iota(pvIndicesSortedByPCADist.begin(), pvIndicesSortedByPCADist.end(), 0);
 	sort(pvIndicesSortedByPCADist.begin(), pvIndicesSortedByPCADist.end(),
 		[&pcaDist](size_t i1, size_t i2) { return pcaDist[i1] < pcaDist[i2]; });

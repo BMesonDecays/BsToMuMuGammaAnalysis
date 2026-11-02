@@ -32,7 +32,8 @@ double ReferenceResonance::calculateMassFromComponents(const pat::CompositeCandi
 }
 ///////////////////////////////////////////////////
 ///////////////////////////////////////////////////
-ReferenceResonance::ResonanceDetails ReferenceResonance::findResonances(const reco::Muon& mu1, const reco::Muon& mu2, bool verbose) 
+template <typename patOrRecoMuon>
+ReferenceResonance::ResonanceDetails ReferenceResonance::findResonances(const patOrRecoMuon& mu1, const patOrRecoMuon& mu2, bool verbose) 
 {
     ResonanceDetails result;
     double dimuonMass = ReferenceResonance::calculateProperty(mu1, mu2, [](const auto& p4) { return p4.M(); });
@@ -54,6 +55,7 @@ ReferenceResonance::ResonanceDetails ReferenceResonance::findResonances(const re
             mu1.pt() > Constants::PtCut && mu2.pt() > Constants::PtCut) 
         {
             result.resonanceFlag = flag;  // Assign flag directly from enum
+            result.nominalMass = nominalMass;
             result.isValid = true;
             break;
         }
@@ -132,5 +134,9 @@ ReferenceResonance::ResonanceDetails ReferenceResonance::findResonances(const pa
 
     return result;
 }
+
+// Explicit instantiations (the template is defined in this .cc file, so used types must be listed here)
+template ReferenceResonance::ResonanceDetails ReferenceResonance::findResonances<reco::Muon>(
+    const reco::Muon&, const reco::Muon&, bool);
 
 

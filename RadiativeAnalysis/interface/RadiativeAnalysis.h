@@ -56,6 +56,7 @@
 #include "TLorentzVector.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/RadiativeRootTree.h"
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/OutputTree.h"
 #include "DataFormats/PatCandidates/interface/Photon.h"
 #include "FWCore/Framework/interface/ConsumesCollector.h"
 #include "DataFormats/PatCandidates/interface/TriggerObjectStandAlone.h"
@@ -125,7 +126,7 @@ private:
   bool isMCstudy_;
   bool isMINIAOD_;
   std::string outputFile_; // output file
-  RadiativeRootTree *bmmgRootTree_;
+  OutputTree *outputTree_;
   MuonMVAID* muonMVAIDProducer_;
 
   edm::ParameterSet theConfig_;
@@ -135,13 +136,13 @@ private:
   edm::InputTag genParticlesLabel;
   edm::EDGetTokenT<edm::View<reco::GenParticle>> genParticlesTok;
   edm::InputTag MuonTag;
-  edm::EDGetTokenT<std::vector<reco::Muon>> MuonTagTok;
+  edm::EDGetTokenT<edm::View<reco::Muon>> MuonTagTok;
   edm::InputTag JetTag;
   edm::EDGetTokenT<edm::View<pat::Jet>> JetTagTok;
   edm::InputTag PhotonTag;
-  edm::EDGetTokenT<std::vector<reco::Photon>> PhotonTagTok;
+  edm::EDGetTokenT<edm::View<reco::Photon>> PhotonTagTok;
   edm::InputTag PFCandTag;
-  edm::EDGetTokenT<std::vector<reco::PFCandidate>> PFCandTagTok;
+  edm::EDGetTokenT<edm::View<reco::Candidate>> PFCandTagTok;
   edm::InputTag OOTPhotonTag;
   edm::EDGetTokenT<edm::View<pat::Photon>> OOTPhotonTagTok;
   edm::InputTag ElectronTag;
@@ -196,16 +197,18 @@ private:
   std::string                                      hltProcess_;
   std::map<std::string, std::vector<bool>>         muTrigMatchMap_;// map: HLT path base name -> per-muon match bool vector (filled per event)
   std::vector<std::string> getFiltersForPath(const std::string& pathName) const;// Private helper: intrinsically extracts terminal filter labels for a path
+  
+  void processHLTBits(const edm::Event& iEvent);
 
   
 
   bool StoreDeDxInfo_;
   bool verbose_;
   bool TestVerbose_;
-  double genXsec_ ;
-  double genXsecErr_ ;
-  double  lumiEquivalent_;
-  double lumiEquivalentErr_;
+  double genXsec_ = -1.0;
+  double genXsecErr_ = 0.0;
+  double lumiEquivalent_ = -1.0;
+  double lumiEquivalentErr_ = 0.0;
   
   
   const double nominalJpsiMass;

@@ -67,7 +67,53 @@ std::pair<std::vector<reco::Muon>, std::vector<float>> MuonSelector::selectMuonP
     return std::make_pair(bestPair, bestPairScores);
 }
 
-bool MuonSelector::passMuonSelection(const reco::Muon& mu1, const reco::Muon& mu2) const {
+
+template <typename MuonCollection>
+std::tuple < std::vector<size_t>, std::vector<size_t>, std::vector<double> > MuonSelector::selectMuonPairs(
+        const MuonCollection& muons, const TransientTrackBuilder& transientTrackBuilder)
+{
+    std::vector<size_t> firstIdx, secondIdx;
+    std::vector<double> commonVtxProb;
+
+    for (size_t i = 0; i < muons.size(); ++i) {
+        for (size_t j = i + 1; j < muons.size(); ++j) {
+            const auto& mu1 = muons[i];
+            const auto& mu2 = muons[j];
+
+            // Skip muons that do not pass selection criteria
+            if (!passMuonSelection(mu1, mu2)) continue;
+            
+            // Create transient tracks
+            auto tt1 = transientTrackBuilder.build(mu1.muonBestTrack());
+            auto tt2 = transientTrackBuilder.build(mu2.muonBestTrack());
+            
+            std::vector<reco::TransientTrack> tts = {tt1, tt2};
+            
+            // Fit vertex
+            KalmanVertexFitter fitter;
+            TransientVertex vertex = fitter.vertex(tts);
+            
+            if (!vertex.isValid())   continue;
+            double chi2 = vertex.totalChiSquared();
+            double ndf = vertex.degreesOfFreedom();
+            double prob = TMath::Prob(chi2, ndf);
+
+            // Skip uncompatible muons
+            if (prob < 0.1) continue;
+
+            firstIdx.push_back(i);
+            secondIdx.push_back(j);
+            commonVtxProb.push_back(prob);
+
+        } // second muon
+    } // first muon
+
+    return {firstIdx, secondIdx, commonVtxProb};
+}
+
+
+template <typename patOrReco>
+bool MuonSelector::passMuonSelection(const patOrReco& mu1, const patOrReco& mu2) const {
     
     if(mu1.charge() * mu2.charge() >= 0) return false; // Require opposite charge
     if (mu1.innerTrack().isNull()) return false;
@@ -85,3 +131,7 @@ bool MuonSelector::passMuonSelection(const reco::Muon& mu1, const reco::Muon& mu
 
     return true;
 }
+
+// Explicit instantiations (the templates are defined in this .cc file, so used types must be listed here)
+template std::tuple < std::vector<size_t>, std::vector<size_t>, std::vector<double> > MuonSelector::selectMuonPairs<edm::View<reco::Muon>>(
+    const edm::View<reco::Muon>&, const TransientTrackBuilder&);

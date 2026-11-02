@@ -9,7 +9,7 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
     //removing the qualifier TrippleObjectVertex fron the defintion of DecayChainVariables since it is not anymore a member of such class
     const std::vector<reco::Muon>& muons,
     const std::vector<reco::Photon>& photons,
-     const std::vector<reco::Vertex>& PVs,
+    const std::vector<reco::Vertex>& PVs,
     const EcalClusterLazyTools& lazyTools,
     const pat::CompositeCandidateCollection& conversions,
     const BeamSpotAndVertex::BSAndVtxVariables& bsAndVtxInfo,
@@ -92,46 +92,46 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
             std::vector<reco::TransientTrack> ttrk_muons = {muonTT1, muonTT2};
             TransientVertex tv = kvf.vertex(ttrk_muons);
             
-             if (mu1.charge()==1) {
-             float mupPhi = atan(mu1.py()/mu1.px());
-             if ( mu1.px() < 0 && mu1.py() < 0 ) mupPhi -= TMath::Pi();
-             if ( mu1.px() < 0 && mu1.py() > 0 ) mupPhi += TMath::Pi();
-             float mumPhi = atan(mu2.py()/mu2.px());
-             if ( mu2.px() < 0 && mu2.py() < 0 ) mumPhi -= TMath::Pi();
-             if ( mu2.px() < 0 && mu2.py() > 0 ) mumPhi += TMath::Pi();
-             if ( (mupPhi - mumPhi)>0 ) dcv.isCowboy=1; } 
-             else {
-                   float mupPhi = atan(mu2.py()/mu2.px());
-                   if ( mu2.px() < 0 && mu2.py() < 0 ) mupPhi -= TMath::Pi();
-                   if ( mu2.px() < 0 && mu2.py() > 0 ) mupPhi += TMath::Pi();
-                   float mumPhi = atan(mu1.py()/mu1.px());
-                   if ( mu1.px() < 0 && mu1.py() < 0 ) mumPhi -= TMath::Pi();
-                   if ( mu1.px() < 0 && mu1.py() > 0 ) mumPhi += TMath::Pi();
-                   if ( (mupPhi - mumPhi)>0 ) dcv.isCowboy=1;
-                  }
-             
-	         reco::Vertex vertex = tv;
-             double  vtxProb_dimuon = TMath::Prob(vertex.chi2(),(int)vertex.ndof());
-             dcv.dimuonvtxprob = vtxProb_dimuon;
-             dcv.dimuonchi2 = vertex.chi2();             
-             math::XYZVector      pperp(mu1.px() + mu2.px(), mu1.py() + mu2.py(), 0.);
-             reco::Vertex::Point  vpoint=vertex.position();
-             GlobalPoint secondaryVertex (vpoint.x(), vpoint.y(), vpoint.z());
-             GlobalPoint displacementFromBeamspot( -1*((bsAndVtxInfo.bs_x -  secondaryVertex.x()) +  
-             (secondaryVertex.z() - bsAndVtxInfo.bs_z) * bsAndVtxInfo.bs_dxdz),-1*((bsAndVtxInfo.bs_y - secondaryVertex.y())+
-               (secondaryVertex.z() - bsAndVtxInfo.bs_z) * bsAndVtxInfo.bs_dydz), 0);
-               reco::Vertex::Point vperp(displacementFromBeamspot.x(),displacementFromBeamspot.y(),0.);
-               double CosAlpha = vperp.Dot(pperp)/(vperp.R()*pperp.R());
-               dcv.opening_angle = CosAlpha;
-               TrajectoryStateClosestToPoint mu1TS = muonTT1.impactPointTSCP();
-               TrajectoryStateClosestToPoint mu2TS = muonTT2.impactPointTSCP();
+            if (mu1.charge()==1) {
+            float mupPhi = atan(mu1.py()/mu1.px());
+            if ( mu1.px() < 0 && mu1.py() < 0 ) mupPhi -= TMath::Pi();
+            if ( mu1.px() < 0 && mu1.py() > 0 ) mupPhi += TMath::Pi();
+            float mumPhi = atan(mu2.py()/mu2.px());
+            if ( mu2.px() < 0 && mu2.py() < 0 ) mumPhi -= TMath::Pi();
+            if ( mu2.px() < 0 && mu2.py() > 0 ) mumPhi += TMath::Pi();
+            if ( (mupPhi - mumPhi)>0 ) dcv.isCowboy=1; } 
+            else {
+                float mupPhi = atan(mu2.py()/mu2.px());
+                if ( mu2.px() < 0 && mu2.py() < 0 ) mupPhi -= TMath::Pi();
+                if ( mu2.px() < 0 && mu2.py() > 0 ) mupPhi += TMath::Pi();
+                float mumPhi = atan(mu1.py()/mu1.px());
+                if ( mu1.px() < 0 && mu1.py() < 0 ) mumPhi -= TMath::Pi();
+                if ( mu1.px() < 0 && mu1.py() > 0 ) mumPhi += TMath::Pi();
+                if ( (mupPhi - mumPhi)>0 ) dcv.isCowboy=1;
+            }
+            
+            reco::Vertex vertex = tv;
+            double  vtxProb_dimuon = TMath::Prob(vertex.chi2(),(int)vertex.ndof());
+            dcv.dimuonvtxprob = vtxProb_dimuon;
+            dcv.dimuonchi2 = vertex.chi2();             
+            math::XYZVector      pperp(mu1.px() + mu2.px(), mu1.py() + mu2.py(), 0.);
+            reco::Vertex::Point  vpoint=vertex.position();
+            GlobalPoint secondaryVertex (vpoint.x(), vpoint.y(), vpoint.z());
+            GlobalPoint displacementFromBeamspot( -1*((bsAndVtxInfo.bs_x -  secondaryVertex.x()) +  
+                (secondaryVertex.z() - bsAndVtxInfo.bs_z) * bsAndVtxInfo.bs_dxdz),-1*((bsAndVtxInfo.bs_y - secondaryVertex.y())+
+                (secondaryVertex.z() - bsAndVtxInfo.bs_z) * bsAndVtxInfo.bs_dydz), 0);
+            reco::Vertex::Point vperp(displacementFromBeamspot.x(),displacementFromBeamspot.y(),0.);
+            double CosAlpha = vperp.Dot(pperp)/(vperp.R()*pperp.R());
+            dcv.opening_angle = CosAlpha;
+            TrajectoryStateClosestToPoint mu1TS = muonTT1.impactPointTSCP();
+            TrajectoryStateClosestToPoint mu2TS = muonTT2.impactPointTSCP();
 
-               if (mu1TS.isValid() && mu2TS.isValid()) {
+            if (mu1TS.isValid() && mu2TS.isValid()) {
 		       MuonClosestApproachCalculator dcaCalculator;
 		       double distanceOfClosestApproach = dcaCalculator.calculateDCA(mu1TS, mu2TS);
 		       if (distanceOfClosestApproach >= 0.0)dcv.mumudca = distanceOfClosestApproach;
-	       }
-           if (mu1TS.isValid() && mu2TS.isValid()) {
+	        }
+            if (mu1TS.isValid() && mu2TS.isValid()) {
             auto par1 = mu1TS.perigeeParameters();
             auto par2 = mu2TS.perigeeParameters();
             AlgebraicVector5 p1 = par1.vector();
@@ -277,7 +277,7 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
                 rrt->FourvectorBsPt_mmconvg_   = BCand.Pt();
                 rrt->FourvectorBsEta_mmconvg_  = BCand.Eta();
                 rrt->FourvectorBsPhi_mmconvg_  = BCand.Phi();
-                RefCountedKinematicParticle bs = BCandFitter.getBhardon();
+                RefCountedKinematicParticle bs = BCandFitter.getBhadron();
 	  		    RefCountedKinematicVertex bVertex = BCandFitter.getVertex();
 
                 GlobalError gigibs=bVertex->error();
@@ -672,7 +672,7 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
             rrt->FourvectorBsPt_mmrecog_   = BCand.Pt();
             rrt->FourvectorBsEta_mmrecog_  = BCand.Eta();
             rrt->FourvectorBsPhi_mmrecog_  = BCand.Phi();
-            RefCountedKinematicParticle bs = BCandFitter.getBhardon();
+            RefCountedKinematicParticle bs = BCandFitter.getBhadron();
             RefCountedKinematicVertex bVertex = BCandFitter.getVertex();
             AlgebraicVector7 b_par = bs->currentState().kinematicParameters().vector();
             GlobalVector Bsvec(b_par[3], b_par[4], b_par[5]);

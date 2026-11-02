@@ -34,6 +34,7 @@ class ReferenceResonance{
 	public:
     struct ResonanceDetails {
         double mass = -9999;
+        double nominalMass = -9999;
         double eta  = -9999;
         double phi  = -9999;
         double pt   = -9999;
@@ -75,8 +76,8 @@ class ReferenceResonance{
 
     
 
-
-    static ResonanceDetails findResonances(const reco::Muon& mu1, const reco::Muon& mu2, bool verbose = false);
+    template <typename patOrRecoMuon>
+    static ResonanceDetails findResonances(const patOrRecoMuon& mu1, const patOrRecoMuon& mu2, bool verbose = false);
     static ResonanceDetails findResonances(const reco::Photon& photon1, const reco::Photon& photon2, const std::string& resonanceType, bool verbose = false);
     static ResonanceDetails findResonances(const pat::CompositeCandidateCollection& conversions1,const pat::CompositeCandidateCollection& conversions2, const std::string& resonanceType, bool verbose = false);
  

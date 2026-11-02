@@ -248,7 +248,7 @@ DecayChainVariables ReferenceModeratorVertex::ReferenceModeratorVertexObservable
                 rrt->FourvectorBsPt_mmkk_   = BCand.Pt();
                 rrt->FourvectorBsEta_mmkk_  = BCand.Eta();
                 rrt->FourvectorBsPhi_mmkk_  = BCand.Phi();
-                RefCountedKinematicParticle bs = BCandFitter.getBhardon();
+                RefCountedKinematicParticle bs = BCandFitter.getBhadron();
 	  		    RefCountedKinematicVertex bVertex = BCandFitter.getVertex();
 	  		    AlgebraicVector7 b_par = bs->currentState().kinematicParameters().vector();
                 GlobalVector Bsvec(b_par[3], b_par[4], b_par[5]);

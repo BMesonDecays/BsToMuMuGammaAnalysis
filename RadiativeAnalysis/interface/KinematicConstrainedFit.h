@@ -62,6 +62,13 @@ class KinematicConstrainedFit{
 	public: 
 		KinematicConstrainedFit();
 		~KinematicConstrainedFit(){}
+
+		bool fitDimuon(
+			const std::vector<reco::TransientTrack>& muonTT,
+			const double muonMass,
+			const ReferenceResonance::ResonanceDetails& resonanceDetails
+		);
+
 		bool doFit(
 			std::vector<reco::TransientTrack> t_tracks, const double muonMass, 
 			const  double mass1, const double  mass2);
@@ -85,7 +92,7 @@ class KinematicConstrainedFit{
 			ReferenceResonance::ResonanceDetails resonanceDetails,
 			const std::vector<reco::Photon>& photons,
 			TMatrixD* photonCovMatrix,
-			reco::Vertex PV,
+			reco::Vertex& PV,
 			const MagneticField& field,
 			const TransientTrackBuilder& theB);
 			
@@ -102,10 +109,14 @@ class KinematicConstrainedFit{
 
 		double getBhadronProb() {return vtxprob_Bhadron;}
 		double getBhadronMass() {return mass_Bhadron;}
-		RefCountedKinematicParticle getBhardon()       {return bhadron;}
+		RefCountedKinematicParticle getBhadron()       {return bhadron;}
 		RefCountedKinematicVertex   getVertex()        {return bVertex;}
 		RefCountedKinematicTree     getBhadronTree()   {return myTree_B;}
 		RefCountedKinematicTree     getJpsiTree()      {return myTree_Jpsi;}
+
+		double getDimuonProb()						   {return vtxprob_dimuon;}
+		RefCountedKinematicParticle	getDimuon()		   {return dimuon;}
+		RefCountedKinematicVertex	getDimuonVtx()	   {return dimuonVtx;}
 
 	private:
 	
@@ -117,6 +128,9 @@ class KinematicConstrainedFit{
 		RefCountedKinematicTree             myTree_Jpsi;
 		RefCountedKinematicTree             renewed_BsConstrainedTree;
 
+		RefCountedKinematicParticle 		dimuon;
+		RefCountedKinematicVertex 			dimuonVtx;
+		double								vtxprob_dimuon;
 		
 		
         

@@ -27,7 +27,7 @@
 
 class BeamSpotAndVertex{
     public: 
-        BeamSpotAndVertex();
+        BeamSpotAndVertex(bool isMINIAOD);
         ~BeamSpotAndVertex(){}
 		struct BSAndVtxVariables {
 			// Beam Spot Variables
@@ -81,6 +81,8 @@ class BeamSpotAndVertex{
 
 	private:
 	static math::XYZPoint pca(math::XYZPoint pv, math::XYZPoint sv, math::XYZVectorD pMuMu);
+
+	bool isMINIAOD_;
       
 };
 

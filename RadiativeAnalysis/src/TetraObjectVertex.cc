@@ -21,13 +21,13 @@ DecayChainVariables TetraObjectVertex::TetraObjectVertexObservables(
                 DecayChainVariables dcv;
 
     for(size_t i=0; i < muons.size(); ++i){
-	    const pat::Muon & mu1 = muons[i];
+	    const reco::Muon & mu1 = muons[i];
                 if (mu1.innerTrack().isNull())continue;
                 reco::TrackRef muTrack1 = mu1.track();
                 if(!muTrack1) continue;
                 
                 for (size_t j=i+1; j < muons.size(); ++j){
-                        const pat::Muon & mu2 = muons[j];
+                        const reco::Muon & mu2 = muons[j];
                         if (mu2.innerTrack().isNull())continue;
                         if(mu1.charge()*mu2.charge() ==1 ) continue;
                         reco::TrackRef muTrack2 = mu2.track();
@@ -204,7 +204,7 @@ AlgebraicSymMatrix55 C2 = mu2TS.perigeeError().covarianceMatrix();
 					bool fitSuccess = BCandFitter.TetraObjectVertexFitConvertedPhoton(ttrk_muons, nominalMuonMass, tttrk_electrons_pair, nominalElectronMass);
 					if (!fitSuccess) continue;
 					rrt->VertexfitBsMass_mmconvgg_ = BCandFitter.getBhadronMass();
-                    RefCountedKinematicParticle bs = BCandFitter.getBhardon();
+                    RefCountedKinematicParticle bs = BCandFitter.getBhadron();
 	  	        	RefCountedKinematicVertex bVertex = BCandFitter.getVertex();
 	  		        AlgebraicVector7 b_par = bs->currentState().kinematicParameters().vector();
                     GlobalVector Bsvec(b_par[3], b_par[4], b_par[5]);
@@ -327,7 +327,7 @@ for (size_t i = 0; i < photons.size(); ++i) {
         rrt->FourvectorBsEta_mmrecogg_  = BCand.Eta();
         rrt->FourvectorBsPhi_mmrecogg_  = BCand.Phi();
 
-        RefCountedKinematicParticle bs = BCandFitter.getBhardon();
+        RefCountedKinematicParticle bs = BCandFitter.getBhadron();
         RefCountedKinematicVertex bVertex = BCandFitter.getVertex();
         AlgebraicVector7 b_par = bs->currentState().kinematicParameters().vector();
         GlobalVector Bsvec(b_par[3], b_par[4], b_par[5]);
