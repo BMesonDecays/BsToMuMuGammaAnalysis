@@ -11,6 +11,7 @@
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/ESHandle.h"
 
+#include "DataFormats/Common/interface/View.h"
 #include "DataFormats/MuonReco/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/PackedCandidate.h"
@@ -42,9 +43,13 @@ public:
   ~MuonMVAID() {};
 
   vector<float> produce(const std::vector<reco::Muon>& muons);
+  // use this one for pat::Muons (MINIAOD): copying them into reco::Muon drops the embedded tracks
+  vector<float> produce(const edm::View<reco::Muon>& muons);
 
 
 private:
+  template <typename MuonCollection>
+  vector<float> produceImpl(const MuonCollection& muons);
   // GenMatchInfo getGenMatchInfo( const pat::PackedCandidate& track1,
   // const pat::PackedCandidate& track2);
   void fillMatchInfo(pat::Muon& cand, const pat::Muon& muon);

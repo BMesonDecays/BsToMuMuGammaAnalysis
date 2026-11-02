@@ -321,9 +321,8 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
 	//--------PREPARE MVA ID SCORES----------------//
 	// muons mva id scores
-	// MuonMVAID::produce takes a std::vector<reco::Muon>, so copy the (reco or pat) muons from the View
-	const std::vector<reco::Muon> muonVector(muons->begin(), muons->end());
-	std::vector<float> muonMVAIDs = muonMVAIDProducer_->produce(muonVector);
+	// pass the View directly: copying pat::Muons into reco::Muon drops their embedded tracks (MINIAOD)
+	std::vector<float> muonMVAIDs = muonMVAIDProducer_->produce(*muons);
 	// photon mva id scores
 	std::vector<float> photonMVAIDs;
 	photonMVAIDs.reserve(photons->size());
@@ -366,7 +365,8 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 		size_t mu2Idx = secondMuonIndices[iPair];
 		const reco::Muon& mu1 = muons->at(mu1Idx);
 		const reco::Muon& mu2 = muons->at(mu2Idx);
-		auto muonPair = std::make_pair( mu1, mu2 );
+		// references, not copies, so that pat::Muon track accessors are kept
+		std::pair<const reco::Muon&, const reco::Muon&> muonPair( mu1, mu2 );
 
 		outputTree_->resetDecayEntries();
 

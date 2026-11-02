@@ -53,7 +53,8 @@ void MuonMVAID::fillSoftMva(pat::Muon& mu_cand){
 
 
 
-vector<float> MuonMVAID::produce(const std::vector<reco::Muon>& InputMuons) {
+template <typename MuonCollection>
+vector<float> MuonMVAID::produceImpl(const MuonCollection& InputMuons) {
 
     // Output collection
     auto muons = std::make_unique<std::vector<pat::Muon>>();
@@ -131,6 +132,14 @@ vector<float> MuonMVAID::produce(const std::vector<reco::Muon>& InputMuons) {
       output.push_back(mu.userFloat("run3muonmva"));
 
     return output;
+}
+
+vector<float> MuonMVAID::produce(const std::vector<reco::Muon>& InputMuons) {
+    return produceImpl(InputMuons);
+}
+
+vector<float> MuonMVAID::produce(const edm::View<reco::Muon>& InputMuons) {
+    return produceImpl(InputMuons);
 }
 
 const MatchPair&

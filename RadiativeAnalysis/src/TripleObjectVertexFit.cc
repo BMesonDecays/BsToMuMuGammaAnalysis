@@ -141,3 +141,7 @@ TripleObjectVertexFit::MmgFitResults TripleObjectVertexFit::fitMmgVertices(
 template TripleObjectVertexFit::MmgFitResults TripleObjectVertexFit::fitMmgVertices<reco::Muon, edm::View<reco::Photon>>(
     const std::pair<reco::Muon, reco::Muon>&, const edm::View<reco::Photon>&, const std::vector<reco::Vertex>&,
     const EcalClusterLazyTools&, const BeamSpotAndVertex::BSAndVtxVariables&, const MagneticField&, const TransientTrackBuilder&);
+// pair of references: keeps pat::Muon overrides (embedded tracks in MINIAOD) instead of slicing to reco::Muon
+template TripleObjectVertexFit::MmgFitResults TripleObjectVertexFit::fitMmgVertices<const reco::Muon&, edm::View<reco::Photon>>(
+    const std::pair<const reco::Muon&, const reco::Muon&>&, const edm::View<reco::Photon>&, const std::vector<reco::Vertex>&,
+    const EcalClusterLazyTools&, const BeamSpotAndVertex::BSAndVtxVariables&, const MagneticField&, const TransientTrackBuilder&);
