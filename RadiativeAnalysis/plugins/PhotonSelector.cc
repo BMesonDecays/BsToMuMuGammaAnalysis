@@ -15,6 +15,7 @@
 #include "DataFormats/Math/interface/deltaR.h"
 #include "TMath.h"
 
+#include <memory>
 #include <utility>
 #include <numeric>
 #include <vector>
@@ -68,7 +69,7 @@ std::pair<std::vector<reco::Photon>, std::vector<double>> PhotonSelector::select
        [&dimuonPhotonDeltaRs](size_t i1, size_t i2) { return dimuonPhotonDeltaRs[i1] < dimuonPhotonDeltaRs[i2]; });
     
     selectedPhotons.push_back(passingPhotons[photonIndicesSortedByDeltaR[0]]);
-    double selectedPhotonMVA = photonMVAIDs[photonIndicesSortedByDeltaR[0]];
+    double selectedPhotonMVA = MVAScores[photonIndicesSortedByDeltaR[0]];   // MVAScores is parallel to passingPhotons
     MVAScores.clear();
     MVAScores.push_back(selectedPhotonMVA);
 
@@ -126,8 +127,8 @@ std::pair<std::vector<reco::Photon>, std::vector<double>> PhotonSelector::select
                     minDeltaR = dR;
                     selectedPho1 = pho1;
                     selectedPho2 = pho2;
-                    selectedPho1MVA = photonMVAIDs[i];
-                    selectedPho2MVA = photonMVAIDs[j];
+                    selectedPho1MVA = MVAScores[i];   // MVAScores is parallel to passingPhotons
+                    selectedPho2MVA = MVAScores[j];
                 }
             }
         }
@@ -161,13 +162,11 @@ std::vector<pat::CompositeCandidate> PhotonSelector::selectConvertedPhoton(
     int convCount = 0;
     for (auto conv : conversions)
     {
-        convIndex.push_back(convCount);
-        convCount++;
+        const int thisConvIndex = convCount++;
 
         const ParticleMass zero_mass = 1e-4f; 
         float zero_sigma = 1e-4f;
         float eleSigma = 1e-4f;
-        float muonSigma = 1e-4f;
         float chi = 1e-4f;
         float ndf = 1e-4f;
         float eleMass = 0.00051099893;
@@ -192,19 +191,20 @@ std::vector<pat::CompositeCandidate> PhotonSelector::selectConvertedPhoton(
             photonVertexFitTree = vertexFitter2.fit(photonParticles);
         }
         if (!photonVertexFitTree || !photonVertexFitTree->isValid()) {
-            edm::LogInfo("TrippleObjectVertexFit") << "Photon vertex fit after optimization failed.";
+            edm::LogInfo("PhotonSelector") << "Photon vertex fit after optimization failed.";
             continue;
         }
-        KinematicConstraint *photonConstraint = new MassKinematicConstraint(zero_mass, zero_sigma);
+        auto photonConstraint = std::make_unique<MassKinematicConstraint>(zero_mass, zero_sigma);
         KinematicParticleFitter csFitterPhoton;
-        photonVertexFitTree = csFitterPhoton.fit(photonConstraint, photonVertexFitTree);
+        photonVertexFitTree = csFitterPhoton.fit(photonConstraint.get(), photonVertexFitTree);
         if (!photonVertexFitTree || !photonVertexFitTree->isValid()) {
-            edm::LogInfo("TrippleObjectVertexFit") << "Photon mass-constrained fit failed.";
+            edm::LogInfo("PhotonSelector") << "Photon mass-constrained fit failed.";
             continue;
         }
         photonVertexFitTree->movePointerToTheTop();
         RefCountedKinematicParticle fittedPhoton = photonVertexFitTree->currentParticle();
         convPhotons.push_back(fittedPhoton);
+        convIndex.push_back(thisConvIndex);   // parallel to convPhotons
     }
 
     if(convPhotons.size() == 0) {
@@ -246,13 +246,11 @@ std::vector<pat::CompositeCandidate> PhotonSelector::selectConvertedPhotons(
     int convCount = 0;
     for (auto conv : conversions)
     {
-        convIndex.push_back(convCount);
-        convCount++;
+        const int thisConvIndex = convCount++;
 
         const ParticleMass zero_mass = 1e-4f; 
         float zero_sigma = 1e-4f;
         float eleSigma = 1e-4f;
-        float muonSigma = 1e-4f;
         float chi = 1e-4f;
         float ndf = 1e-4f;
         float eleMass = 0.00051099893;
@@ -277,19 +275,20 @@ std::vector<pat::CompositeCandidate> PhotonSelector::selectConvertedPhotons(
             photonVertexFitTree = vertexFitter2.fit(photonParticles);
         }
         if (!photonVertexFitTree || !photonVertexFitTree->isValid()) {
-            edm::LogInfo("TrippleObjectVertexFit") << "Photon vertex fit after optimization failed.";
+            edm::LogInfo("PhotonSelector") << "Photon vertex fit after optimization failed.";
             continue;
         }
-        KinematicConstraint *photonConstraint = new MassKinematicConstraint(zero_mass, zero_sigma);
+        auto photonConstraint = std::make_unique<MassKinematicConstraint>(zero_mass, zero_sigma);
         KinematicParticleFitter csFitterPhoton;
-        photonVertexFitTree = csFitterPhoton.fit(photonConstraint, photonVertexFitTree);
+        photonVertexFitTree = csFitterPhoton.fit(photonConstraint.get(), photonVertexFitTree);
         if (!photonVertexFitTree || !photonVertexFitTree->isValid()) {
-            edm::LogInfo("TrippleObjectVertexFit") << "Photon mass-constrained fit failed.";
+            edm::LogInfo("PhotonSelector") << "Photon mass-constrained fit failed.";
             continue;
         }
         photonVertexFitTree->movePointerToTheTop();
         RefCountedKinematicParticle fittedPhoton = photonVertexFitTree->currentParticle();
         convPhotons.push_back(fittedPhoton);
+        convIndex.push_back(thisConvIndex);   // parallel to convPhotons
     }
 
     if(convPhotons.size() < 2) {

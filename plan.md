@@ -60,29 +60,29 @@ The current structure is described in `structure_old.md`; progress is logged in 
 Each item is a small change, and they are committed in small groups.
 
 **Out-of-bounds writes and crashes**
-- [ ] **P2.1** `photon*_[2]` arrays are written with the full photon index (`RadiativeAnalysis.cc:768-846`), and `pfCand*_[2]` with the full PF index (`:908-958`). Both corrupt memory. Use a separate counter and stop at 2; Phase 5 replaces them with vectors anyway.
-- [ ] **P2.2** `photonSCBrem` divides by `scEtaWidth`, which can be 0. `VariableDefinitions.cc:61,92` divide by `transmom` before the zero check.
-- [ ] **P2.3** Check `getByToken` handles for validity before use (muons, photons, tracks, conversions, PF candidates, SC, rechits, trigger results).
-- [ ] **P2.4** `BeamSpotAndVertex`:
+- [x] **P2.1** `photon*_[2]` arrays are written with the full photon index (`RadiativeAnalysis.cc:768-846`), and `pfCand*_[2]` with the full PF index (`:908-958`). Both corrupt memory. Use a separate counter and stop at 2; Phase 5 replaces them with vectors anyway.
+- [x] **P2.2** `photonSCBrem` divides by `scEtaWidth`, which can be 0. `VariableDefinitions.cc:61,92` divide by `transmom` before the zero check.
+- [~] **P2.3** (deferred to P4.1: an invalid handle already throws a clear `ProductNotFound` exception when dereferenced, so there is no crash; P4.1 adds explicit checks) Check `getByToken` handles for validity before use (muons, photons, tracks, conversions, PF candidates, SC, rechits, trigger results).
+- [x] **P2.4** `BeamSpotAndVertex`:
   - `vertex.front()` and `vertex[VtxIndex]` are used before the empty and `-99` checks.
   - `LowestDCAIndex`, `ClosestZindex` and `CosThetaindex` can return -1, and the callers index `PVs[-1]`. They should return `std::optional`.
   - `pv_covariance`, `pv_ndof` and `pv_rho` come from the last vertex in the loop, not the selected one.
   - `bs_dx`, `bs_dy` and `bs_dz` are never filled.
-- [ ] **P2.5** `GenChain.cc:53`: `mother()` is dereferenced without a null check.
+- [x] **P2.5** `GenChain.cc:53`: `mother()` is dereferenced without a null check.
 
 **Wrong values**
-- [ ] **P2.6** `pp2 = muTrack1->hitPattern()` should use muTrack2: `TrippleObjectVertex.cc:200`, `TetraObjectVertex.cc:156`, `ReferenceModeratorVertex.cc:169`.
-- [ ] **P2.7** Photon η cuts without `fabs` (`TrippleObjectVertex.cc:615,617`, TetraObjectVertex too). The `isEE()` veto at `TrippleObjectVertex.cc:661` comes after the fit inputs are built; move it before.
-- [ ] **P2.8** `PhotonSelector`:
+- [x] **P2.6** `pp2 = muTrack1->hitPattern()` should use muTrack2: `TrippleObjectVertex.cc:200`, `TetraObjectVertex.cc:156`, `ReferenceModeratorVertex.cc:169`.
+- [x] **P2.7** Photon η cuts without `fabs` (`TrippleObjectVertex.cc:615,617`, TetraObjectVertex too). The `isEE()` veto at `TrippleObjectVertex.cc:661` comes after the fit inputs are built; move it before.
+- [x] **P2.8** `PhotonSelector`:
   - The MVA score is taken as `photonMVAIDs[idx]` with `idx` indexing `passingPhotons` (`:71,129-130`).
   - `convIndex` and `convPhotons` get out of step after a failed conversion fit (`:164/223`, `:249/316`).
   - Fix both by carrying the original indices.
-- [ ] **P2.9** `TrippleObjectVertex` writes `_mmconvgg_` instead of `_mmconvg_` (`:466,526,544,556-557`). `TetraObjectVertex.cc:48-51` fills the J/ψ branches for every resonance flag.
-- [ ] **P2.10** Fields with the wrong source:
+- [x] **P2.9** `TrippleObjectVertex` writes `_mmconvgg_` instead of `_mmconvg_` (`:466,526,544,556-557`). `TetraObjectVertex.cc:48-51` fills the J/ψ branches for every resonance flag.
+- [x] **P2.10** Fields with the wrong source:
   - `BsVtxProb_mmrecog_` and `BsCt2DBS_mmrecog_` are taken from the dimuon Kalman vertex instead of the B vertex (`TrippleObjectVertex.cc:652-685`, and the same in `ReferenceModeratorVertex.cc:286`).
   - The PV position (closest-z) is combined with the error of the highest-pT PV (`TrippleObjectVertex.cc:448/457`).
   - `AlgebraicMatrix31` is indexed as `(0,i)` (`:447-455,506-514`).
-- [ ] **P2.11** Dimuon block:
+- [x] **P2.11** Dimuon block:
   - The `isPFMuon()` category overwrites the computed category.
   - `isCowboy` is never reset; use `atan2`.
   - `muon::overlap` is checked after the expensive computations; move it first.
@@ -102,17 +102,17 @@ Each item is a small change, and they are committed in small groups.
 - [ ] **P2.15** The track collection is read from the parameter `pfCandTag`; add its own `tracks` parameter.
 
 **MC and bookkeeping**
-- [ ] **P2.16** `if (!G.isValid) return;` (`RadiativeAnalysis.cc:982`) drops MC events from the ntuple. Fill the event with gen flags set to invalid.
-- [ ] **P2.17** `endJob` calls `fill()` a second time, creating a fake event row. Write the run-level info into a separate `RunInfo` tree. `filterEff_` and `genXsec_` must combine all lumis and runs (weighted), not keep the last one.
-- [ ] **P2.18** `GenChain`:
+- [x] **P2.16** `if (!G.isValid) return;` (`RadiativeAnalysis.cc:982`) drops MC events from the ntuple. Fill the event with gen flags set to invalid.
+- [x] **P2.17** `endJob` calls `fill()` a second time, creating a fake event row. Write the run-level info into a separate `RunInfo` tree. `filterEff_` and `genXsec_` must combine all lumis and runs (weighted), not keep the last one.
+- [x] **P2.18** `GenChain`:
   - Angular variables are computed before `sortPhotonsByPt()`.
   - The π0-gun fallback takes the first π0 in the event.
   - Bd 4-body modes are labelled `kBs_*`.
   - `matchTopology` requires a grandmother of 531, which is wrong for direct B→μμγ.
   - `processDaughters` has no `!muPlus_` guard.
   - `matchToGen` has no final-state/status requirement.
-- [ ] **P2.19** Topology matching uses `(*photons)[0..1]` instead of the selected photons (`RadiativeAnalysis.cc:1095-1100`).
-- [ ] **P2.20** `bool photonTightID_[2]` is booked as `"photonTightID[2]/I"` (`RadiativeRootTree.cc:519`), so ROOT reads 8 bytes from a 2-byte array: garbage, and the values change from run to run. Book it as `/O`, or store it as int. It was found by the P0.5 determinism check.
+- [x] **P2.19** Topology matching uses `(*photons)[0..1]` instead of the selected photons (`RadiativeAnalysis.cc:1095-1100`).
+- [x] **P2.20** `bool photonTightID_[2]` is booked as `"photonTightID[2]/I"` (`RadiativeRootTree.cc:519`), so ROOT reads 8 bytes from a 2-byte array: garbage, and the values change from run to run. Book it as `/O`, or store it as int. It was found by the P0.5 determinism check.
 
 ## Phase 3: Ownership, hygiene, conventions
 - [ ] **P3.1** Replace every `new` without `delete`:

@@ -8,6 +8,7 @@
 #include <string>
 #include <iostream>
 #include <algorithm>
+#include <numeric>
 
 #include "TLorentzVector.h"
 #include "TVector3.h"
@@ -20,14 +21,17 @@
 ParticleFlowCandidate::ParticleFlowCandidate(){}
 std::vector<ParticleFlowCandidate::PFCandidateVariables> ParticleFlowCandidate::PFCandObservables(const std::vector<reco::PFCandidate>& pfcandidate){
 	std::vector<PFCandidateVariables> pfcandVars;
-    std::vector<reco::PFCandidate> sortedPFCandidates = pfcandidate;
-	std::sort(sortedPFCandidates.begin(), sortedPFCandidates.end(), [](const reco::PFCandidate& a, const reco::PFCandidate& b) { return a.pt() > b.pt();});    
-    // Loop through the first two highest momentum photons (if available)
+    // the (up to) two highest-pt PF candidates of any type (sorting indices, not copying the collection)
+    const size_t maxPFCands = std::min(pfcandidate.size(), size_t(2));
+    std::vector<size_t> order(pfcandidate.size());
+    std::iota(order.begin(), order.end(), 0);
+    std::partial_sort(order.begin(), order.begin() + maxPFCands, order.end(),
+        [&pfcandidate](size_t a, size_t b) { return pfcandidate[a].pt() > pfcandidate[b].pt(); });
 
-    size_t maxPFPhotons = std::min(sortedPFCandidates.size(), size_t(2));  // Limit to 2 particle candidate photons
-    for (size_t i = 0; i < maxPFPhotons; ++i) {
-        const reco::PFCandidate& irecoPFCandidate = sortedPFCandidates[i];
+    for (size_t i = 0; i < maxPFCands; ++i) {
+        const reco::PFCandidate& irecoPFCandidate = pfcandidate[order[i]];
         PFCandidateVariables pfcandVar;
+        pfcandVar.index = order[i];
         pfcandVar.pt = irecoPFCandidate.pt();
         pfcandVar.eta = irecoPFCandidate.eta();
         pfcandVar.phi = irecoPFCandidate.phi();
@@ -71,7 +75,8 @@ std::vector<ParticleFlowCandidate::PFCandidateVariables> ParticleFlowCandidate::
             pfcandVar.refphotonscPhi = photonRef->superCluster()->phi();
             pfcandVar.refphotonscEtaWidth = photonRef->superCluster()->etaWidth();
             pfcandVar.refphotonscPhiWidth = photonRef->superCluster()->phiWidth();
-            pfcandVar.refphotonscBrem = photonRef->superCluster()->phiWidth() / photonRef->superCluster()->etaWidth();
+            if (photonRef->superCluster()->etaWidth() > 0)
+                pfcandVar.refphotonscBrem = photonRef->superCluster()->phiWidth() / photonRef->superCluster()->etaWidth();
             pfcandVar.refphotonr9 = photonRef->r9();
             pfcandVar.refphotonhadTowOverEm = photonRef->hadTowOverEm();
             pfcandVar.refphotonhcalOverEcal.clear();
@@ -82,25 +87,7 @@ std::vector<ParticleFlowCandidate::PFCandidateVariables> ParticleFlowCandidate::
             //pfcandVar.refphotonhcalOverEcalBc = iShowerShape.hcalOverEcalBc;
 
 
-            } else {
-                bool hasPhotonRef = photonRef.isNull();
-                //std::cout << "No valid photonRef for this PFCandidate.\n";
             }
-        //std::cout<<" ========================================================================="<<"\n";
-        if (!irecoPFCandidate.photonRef().isNull())
-           // std::cout << "Photon pt = " <<
-         irecoPFCandidate.photonRef()->pt();// << "\n";
-        if (!irecoPFCandidate.gsfElectronRef().isNull())
-           // std::cout << "GSF Electron eta = " << 
-         irecoPFCandidate.gsfElectronRef()->eta();// << "\n";
-        if (!irecoPFCandidate.conversionRef().isNull())
-           // std::cout << "Conversion z = " <<
-         irecoPFCandidate.conversionRef()->conversionVertex().z();// << "\n";
-        if (!irecoPFCandidate.superClusterRef().isNull())
-        //    std::cout << "SC energy = " << 
-        irecoPFCandidate.superClusterRef()->energy();// << "\n";
-
-        //std::cout << "---------------------------------------------check other refrences --------------------------\n";
         pfcandVars.push_back(pfcandVar);
     }       
     return pfcandVars;

@@ -27,6 +27,7 @@ class ParticleFlowCandidate{
         ParticleFlowCandidate();
         ~ParticleFlowCandidate(){}
 	struct PFCandidateVariables {
+		int index = -1;   // index of the candidate in the input collection
 		double pt = -9999.0, eta = -9999.0, phi = -9999.0, energy = -9999.0;
         double time = -9999.0, mass = -9999.0, charge = -9999.0;
         double ecalEnergy = -9999.0, rawEcalEnergy = -9999.0;
@@ -52,6 +53,7 @@ class ParticleFlowCandidate{
 
          
 	};
+	// variables of the (up to) two highest-pt PF candidates (any type), ordered by pt
 	std::vector<PFCandidateVariables> PFCandObservables(const std::vector<reco::PFCandidate>& pfcandidate);
       
 };

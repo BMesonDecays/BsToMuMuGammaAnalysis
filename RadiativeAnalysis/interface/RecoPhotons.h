@@ -22,6 +22,7 @@ class RecoPhotons{
         RecoPhotons();
         ~RecoPhotons(){}
 	struct PhotonVariables {
+		int index = -1;   // index of the photon in the input collection
 		double pt = -9999.0, eta = -9999.0, phi = -9999.0, energy = -9999.0, et = -9999.0;
 		double sigmaIEtaIEta = -9999.0, sigmaIEtaIPhi = -9999.0, sigmaIPhiIPhi = -9999.0, sigmaEtaEta = -9999.0;
 		double e1x5 = -9999.0, e2x5 = -9999.0, e3x3 = -9999.0, e5x5 = -9999.0;
@@ -35,6 +36,7 @@ class RecoPhotons{
 	};
 
 
+	// variables of the (up to) two highest-pt photons, ordered by pt
 	std::vector<PhotonVariables> PhotonObservables(const std::vector<reco::Photon>& photon);
 
       

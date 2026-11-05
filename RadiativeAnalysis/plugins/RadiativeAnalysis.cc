@@ -42,6 +42,7 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig):
 	isMINIAOD_                        = iConfig.getParameter<bool>("isMINIAOD");
 	genParticlesLabel                 = iConfig.getParameter<edm::InputTag>("genParticlesLabel");
 	genParticlesTok                   = consumes<edm::View<reco::GenParticle>>(genParticlesLabel);
+	genParticlesVecTok                = consumes<std::vector<reco::GenParticle>>(genParticlesLabel);
 	MuonTag                           = iConfig.getParameter<edm::InputTag>("MuonTag");
 	MuonTagTok                        = consumes<std::vector<reco::Muon>>(MuonTag);
 	JetTag                            = iConfig.getParameter<edm::InputTag>("JetTag");
@@ -192,12 +193,22 @@ void RadiativeAnalysis::endRun(const edm::Run& iRun, const edm::EventSetup& iSet
 
 
     if (!genRunInfo.isValid()) {
-      edm::LogWarning("GenRunInfo") << "GenRunInfoProduct not found!";
+      if (isMCstudy_) edm::LogWarning("GenRunInfo") << "GenRunInfoProduct not found!";
       return;
     }
 
-      genXsec_   = genRunInfo->internalXSec().value();
-	  genXsecErr_ = genRunInfo->internalXSec().error();
+      // combine the runs of the job: inverse-variance weighted mean of the internal cross sections
+      const auto& xs = genRunInfo->internalXSec();
+      if (xs.value() > 0 && xs.error() > 0) {
+          const double w = 1. / (xs.error() * xs.error());
+          xsecSumW_  += w;
+          xsecSumWX_ += w * xs.value();
+          genXsec_    = xsecSumWX_ / xsecSumW_;
+          genXsecErr_ = 1. / std::sqrt(xsecSumW_);
+      } else if (xsecSumW_ == 0) {   // no error available: keep the last value
+          genXsec_    = xs.value();
+          genXsecErr_ = xs.error();
+      }
 
 
 }
@@ -211,12 +222,15 @@ void RadiativeAnalysis::endLuminosityBlock(const edm::LuminosityBlock& iLumi, co
     iLumi.getByToken(genFilterTok, genFilter);
 
     if (!genFilter.isValid()) {
-        std::cout << "GenFilterInfo not found" << std::endl;
+        if (isMCstudy_) edm::LogWarning("GenFilterInfo") << "GenFilterInfo not found";
         return;
     }
 
-    filterEff_ = genFilter->filterEfficiency(-1);
-    filterEffErr_ = genFilter->filterEfficiencyError(-1);
+    // accumulate the filter counts over all luminosity blocks of the job
+    if (!genFilterInfo_) genFilterInfo_ = std::make_unique<GenFilterInfo>(*genFilter);
+    else genFilterInfo_->mergeProduct(*genFilter);
+    filterEff_ = genFilterInfo_->filterEfficiency(-1);
+    filterEffErr_ = genFilterInfo_->filterEfficiencyError(-1);
 }
     
 //------------- get filters for a given HLT path (helper function) -------------
@@ -763,7 +777,7 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 		if (!photonVar.empty()) {
 		for (size_t iPhoton = 0; iPhoton < photonVar.size(); ++iPhoton) {
 			//std::cout << "size of photon collection : " << photonVar.size() << "\n";
-			const auto& ipatPhoton = (*photons)[iPhoton];
+			const auto& ipatPhoton = (*photons)[photonVar[iPhoton].index];   // photonVar is pt-ordered
 			if (ipatPhoton.pt() > 50.0 || !ipatPhoton.isEB()) {
 				excludedPhotons.insert(iPhoton);
 			}
@@ -808,7 +822,7 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 				bmmgRootTree_->photonSCPhi_[iPhoton] = photonVar[iPhoton].scPhi;
 				bmmgRootTree_->photonSCEtaWidth_[iPhoton] = photonVar[iPhoton].scEtaWidth;
 				bmmgRootTree_->photonSCPhiWidth_[iPhoton] = photonVar[iPhoton].scPhiWidth;
-				bmmgRootTree_->photonSCBrem_[iPhoton] = photonVar[iPhoton].scPhiWidth / photonVar[iPhoton].scEtaWidth;
+				bmmgRootTree_->photonSCBrem_[iPhoton] = photonVar[iPhoton].scBrem;
 				photonleg1.SetPtEtaPhiE(photonVar[iPhoton].pt, photonVar[iPhoton].eta, photonVar[iPhoton].phi, photonVar[iPhoton].energy);
 				TLorentzVector bslegTrippleObject = muonleg1 + muonleg2 + photonleg1;
 				double M = bslegTrippleObject.M();
@@ -837,13 +851,13 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
 				// Fill ID decision for tight photon ID
 				 if (phoTightIDMap.isValid()) {
-				edm::Ref<std::vector<reco::Photon>> phoRef(photons, iPhoton);
+				edm::Ref<std::vector<reco::Photon>> phoRef(photons, photonVar[iPhoton].index);
 				 	bool isTight = (*phoTightIDMap)[phoRef];
 				 	//std::cout << "Photon " << iPhoton << " tight ID: " << isTight << "\n";
 				 	bmmgRootTree_->photonTightID_[iPhoton] = isTight;
 				 }
 				 if (mvaValuesMap.isValid()) {
-				 	const edm::Ptr<reco::Photon> phoPtr(photons, iPhoton);
+				 	const edm::Ptr<reco::Photon> phoPtr(photons, photonVar[iPhoton].index);
 				 	double mvaScore = -99.;
 				 	if (mvaValuesMap->contains(phoPtr.id())) {
 				 		mvaScore = (*mvaValuesMap)[phoPtr];
@@ -906,11 +920,6 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	std::vector<ParticleFlowCandidate::PFCandidateVariables> pfCandVars = pfCandVariables.PFCandObservables(*pfCandidates);
 	if (!pfCandVars.empty()) {
 		for (size_t iPFCand = 0; iPFCand < pfCandVars.size(); ++iPFCand) {
-			const auto& pfCand = (*pfCandidates)[iPFCand];
-			if (pfCand.pt() < 0.5) continue; // Skip low momentum candidates
-			
-			if (pfCandVars.empty()) continue;
-
 			if (pfCandVars[iPFCand].pt < 1.0) continue; // Skip low momentum candidates
 			bmmgRootTree_->pfCandPt_[iPFCand] = pfCandVars[iPFCand].pt;
 			bmmgRootTree_->pfCandEta_[iPFCand] = pfCandVars[iPFCand].eta;
@@ -980,15 +989,14 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 					 iEvent.getByToken(genParticlesTok, genParticles);
 					 //std::cout<<"genparticles:   "<<genParticles->size()<<"\n";
 
-					  std::vector<reco::GenParticle> genParticleVec;
-					  for (const auto& gp : *genParticles) {
-						genParticleVec.push_back(gp);
-					}
-					GenDecayChain gen(genParticleVec);
+					// the original product (not a copy), so that mother/daughter pointers
+					// and the particles in GenDecayChain refer to the same objects
+					edm::Handle<std::vector<reco::GenParticle>> genParticlesVec;
+					iEvent.getByToken(genParticlesVecTok, genParticlesVec);
+					GenDecayChain gen(*genParticlesVec);
 					const auto& G = gen.info();
-					 if (!G.isValid) {
-						 return;
-					 }
+					// events without a gen B are kept; the Gen* branches keep their default values
+					if (G.isValid) {
 
 					
 					 bmmgRootTree_->GenMotherID_ = G.motherPdgId;
@@ -1052,6 +1060,7 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 					 bmmgRootTree_->GenIs4Body_      = G.is4BodyDecay;
 					 bmmgRootTree_->GenIsHardProcess_ = G.isHardProcess;
 					 bmmgRootTree_->GenIsSignal_ = gen.isSignalLike();
+					}   // G.isValid
 
 					 if (selectedMuons->size() >= 2) {
         const reco::Muon& mu1 = (*selectedMuons)[0];
@@ -1096,15 +1105,12 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
     }
     
     // Topology matching
-    if (selectedMuons->size() >= 2 && photons->size() >= 1) {
+    if (selectedMuons->size() >= 2 && selectedPhoton->size() >= 1) {
         const reco::Muon& mu1 = (*selectedMuons)[0];
         const reco::Muon& mu2 = (*selectedMuons)[1];
         
-        // Build photon pointer vector
-        std::vector<const reco::Photon*> photonPtrs;
-        for (size_t i = 0; i < photons->size() && i < 2; ++i) {
-            photonPtrs.push_back(&((*photons)[i]));
-        }
+        // the selected photon (mu mu gamma topology)
+        std::vector<const reco::Photon*> photonPtrs{&selectedPhoton->front()};
         
       
         auto topoMatch = gen.matchTopology(mu1, mu2, photonPtrs);
@@ -1187,7 +1193,7 @@ void RadiativeAnalysis::endJob() {
 	std::cout << "GenXsec = " << genXsec_ << " +/- " << genXsecErr_ <<"\n";
 	std::cout << "LumiEquivalent = " << lumiEquivalent_ << " +/- " << lumiEquivalentErr_ <<"\n";
 
-bmmgRootTree_->fill();    
+bmmgRootTree_->fillRunInfo();
 
   bmmgRootTree_->writeFile();
   delete bmmgRootTree_;

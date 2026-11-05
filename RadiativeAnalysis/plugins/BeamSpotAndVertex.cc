@@ -1,5 +1,5 @@
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/BeamSpotAndVertex.h"
-#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/KinematicConstrainedFit.h"
+#include <limits>
 
 
 
@@ -9,14 +9,14 @@ BeamSpotAndVertex::BSAndVtxVariables BeamSpotAndVertex::BSAndVtxObservables(cons
     BSAndVtxVariables bsvtxv;
     
     for(size_t i=0; i<9;++i){bsvtxv.pv_covariance[i] = -9999;} 
-    const reco::Vertex &recVtxs_track = vertex.front();
-    bsvtxv.pv_ntracks = recVtxs_track.nTracks();
     bsvtxv.pv_multiplicity = vertex.size();
     NSelectedVertices = 0;
-	size_t VtxIndex_maxPt = 0;
+
+    // event-level primary vertex: the one with the highest scalar sum of track pt
+    // (all pv_* variables below are taken from this same vertex)
+	int VtxIndex_maxPt = -99;
 	double maxSumPt = -1.0;
     for (size_t iVtx = 0; iVtx < vertex.size(); ++iVtx) {
-		
 		const reco::Vertex& vtx = vertex[iVtx];
 		double sumpT = 0.0;
 		for (const auto& track : vtx.tracks()) {
@@ -26,50 +26,32 @@ BeamSpotAndVertex::BSAndVtxVariables BeamSpotAndVertex::BSAndVtxObservables(cons
 			maxSumPt = sumpT;
 			VtxIndex_maxPt = iVtx;
 		}
-		bsvtxv.VtxIndex = VtxIndex_maxPt;
-		int iteratorCov =0;
-		for(int i = 0; i < 3 ; ++i){
-			for(int j =0; j< 3; ++j){
-				bsvtxv.pv_covariance[iteratorCov] = vtx.covariance(i, j);
-				iteratorCov++;
-			}
-		}
-		//std::cout << " size of the vertex : " << bsvtxv.VtxIndex << "\n";
-		bsvtxv.pv_ndof = vtx.ndof();
-		bsvtxv.pv_rho = vtx.position().Rho();
+		// count good vertices
 		if(!vtx.isValid())continue;
-	        if(vtx.isFake())continue;
-	        if(vtx.ndof() < 4)continue;
-	        if(fabs(vtx.z()) >= 24.0)continue;
-	        if(vtx.position().Rho() >= 2)continue;
+	    if(vtx.isFake())continue;
+	    if(vtx.ndof() < 4)continue;
+	    if(fabs(vtx.z()) >= 24.0)continue;
+	    if(vtx.position().Rho() >= 2)continue;
 	 	NSelectedVertices++;
-		/*for(reco::Vertex::trackRef_iterator trackRef = vtx.tracks_begin(); trackRef !=vtx.tracks_end(); ++trackRef){
-				 const reco::TrackBaseRef& vtx_trackRef = *trackRef;
-				 if (vtx_trackRef.isNonnull() && vtx_trackRef.isAvailable()) {
-					 const reco::Track& VtxTrack = *vtx_trackRef.castTo<reco::TrackRef>();
-					 PtSumVertex += std::abs(VtxTrack.pt());
-				 }
-				 else {
-					 std::cout << "Invalid track reference : "<<"\n";
-				 }
-			 }
-			 if (PtSumVertex >  MinPtVertex) {
-				 VtxIndex = iVtx;
-				 MinPtVertex = PtSumVertex;
-				 std::cout<<" min/max pt sum vertex : "<< MinPtVertex <<"\t"<< " & veretx index : " << VtxIndex<< "\n";
-			 }*/
     }
+    bsvtxv.VtxIndex = VtxIndex_maxPt;
     bsvtxv.pv_cutmultiplicity = NSelectedVertices;
-    const reco::Vertex &RecVtx = vertex[bsvtxv.VtxIndex];
-    if(bsvtxv.VtxIndex !=-99) {
-	        bsvtxv.ispv     = 1;
+    if(bsvtxv.VtxIndex >= 0) {
+		const reco::Vertex &RecVtx = vertex[bsvtxv.VtxIndex];
+	    bsvtxv.ispv     = 1;
 		bsvtxv.pv_x     = RecVtx.x();
 		bsvtxv.pv_y     = RecVtx.y();
 		bsvtxv.pv_z     = RecVtx.z();
 		bsvtxv.pv_errx  = RecVtx.xError();
 		bsvtxv.pv_erry  = RecVtx.yError();
 		bsvtxv.pv_errz  = RecVtx.zError();
-
+		bsvtxv.pv_ntracks = RecVtx.nTracks();
+		bsvtxv.pv_ndof  = RecVtx.ndof();
+		bsvtxv.pv_rho   = RecVtx.position().Rho();
+		int iteratorCov = 0;
+		for(int i = 0; i < 3 ; ++i)
+			for(int j = 0; j < 3; ++j)
+				bsvtxv.pv_covariance[iteratorCov++] = RecVtx.covariance(i, j);
 	}
 	else {
 		bsvtxv.isbs     = 1;
@@ -85,9 +67,9 @@ BeamSpotAndVertex::BSAndVtxVariables BeamSpotAndVertex::BSAndVtxObservables(cons
 	    bsvtxv.bs_x = beamSpot.x0();
 	    bsvtxv.bs_y = beamSpot.y0();
 	    bsvtxv.bs_z = beamSpot.z0();
-	    //bsvtxv.bs_dx = beamSpot.x0Error();
-	    ////bsvtxv.bs_dy = beamSpot.y0Error();
-	    ////bsvtxv.bs_dz = beamSpot.z0Error();
+	    bsvtxv.bs_dx = beamSpot.x0Error();
+	    bsvtxv.bs_dy = beamSpot.y0Error();
+	    bsvtxv.bs_dz = beamSpot.z0Error();
 	    bsvtxv.bs_dxdz = beamSpot.dxdz();
 	    bsvtxv.bs_dydz = beamSpot.dydz();
 	    bsvtxv.bs_sigmaZ = beamSpot.sigmaZ();
@@ -150,21 +132,16 @@ int BeamSpotAndVertex::LowestDCAIndex(const std::vector<reco::Vertex>& vertex,
 	math::XYZPoint SV(bVertex.x(), bVertex.y(), bVertex.z());
 	math::XYZVectorD p3sum(Bsvec.x(), Bsvec.y(), Bsvec.z());
 
-	// compute pca distances for every primary vertex
-	std::vector<float> pcaDist;
-	for (auto pv : vertex)
+	// primary vertex closest to the line through the secondary vertex along the B momentum
+	int best = -1;
+	double bestDist = std::numeric_limits<double>::max();
+	for (size_t i = 0; i < vertex.size(); ++i)
 	{
-		math::XYZPoint pca = BeamSpotAndVertex::pca(pv.position(), SV, p3sum);
-		pcaDist.push_back((pca - pv.position()).R());
+		const math::XYZPoint pcaPoint = BeamSpotAndVertex::pca(vertex[i].position(), SV, p3sum);
+		const double dist = (pcaPoint - vertex[i].position()).R();
+		if (dist < bestDist) { bestDist = dist; best = static_cast<int>(i); }
 	}
-
-	// sort pv indeces by pca distance
-	std::vector<size_t> pvIndicesSortedByPCADist(vertex.size());
-	iota(pvIndicesSortedByPCADist.begin(), pvIndicesSortedByPCADist.end(), 0);
-	sort(pvIndicesSortedByPCADist.begin(), pvIndicesSortedByPCADist.end(),
-		[&pcaDist](size_t i1, size_t i2) { return pcaDist[i1] < pcaDist[i2]; });
-	
-	return pvIndicesSortedByPCADist[0];
+	return best;
 }
 
 math::XYZPoint BeamSpotAndVertex::pca(math::XYZPoint pv, math::XYZPoint sv, math::XYZVectorD pMuMu){

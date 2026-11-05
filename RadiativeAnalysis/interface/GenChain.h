@@ -46,7 +46,10 @@ enum DecayMode {
     kBs_Jpsi_Etap      = 8,
     kBs_Jpsi_Pi0       = 9,
     kBd_MuMu_Gamma     = 10,
-    kPi0_Gun           = 11
+    kPi0_Gun           = 11,
+    kBd_Jpsi_Pi0       = 12,
+    kBd_Jpsi_Eta       = 13,
+    kBd_Jpsi_Etap      = 14
 };
 
 namespace PhotonOrigin {

@@ -136,6 +136,7 @@ private:
 
   edm::InputTag genParticlesLabel;
   edm::EDGetTokenT<edm::View<reco::GenParticle>> genParticlesTok;
+  edm::EDGetTokenT<std::vector<reco::GenParticle>> genParticlesVecTok;
   edm::InputTag MuonTag;
   edm::EDGetTokenT<std::vector<reco::Muon>> MuonTagTok;
   edm::InputTag JetTag;
@@ -204,10 +205,12 @@ private:
   bool StoreDeDxInfo_;
   bool verbose_;
   bool TestVerbose_;
-  double genXsec_ ;
-  double genXsecErr_ ;
-  double  lumiEquivalent_;
-  double lumiEquivalentErr_;
+  double genXsec_ = -1.;
+  double genXsecErr_ = -1.;
+  double lumiEquivalent_ = -1.;
+  double lumiEquivalentErr_ = -1.;
+  double xsecSumW_ = 0., xsecSumWX_ = 0.;          // cross section combination over the runs of the job
+  std::unique_ptr<GenFilterInfo> genFilterInfo_;    // merged over the lumi blocks of the job
   
   
   const double nominalJpsiMass;

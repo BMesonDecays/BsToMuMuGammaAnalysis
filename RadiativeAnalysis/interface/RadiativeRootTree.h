@@ -21,6 +21,7 @@ public:
 	void getVtx(const double aa, const double bb, const double cc, const double dd, const double ee, const double ff, const double gg, const double hh, const double ii);
 	void getDeDx(const double f1, const double f2, const int f3);
 	void fill();
+	void fillRunInfo();   // one entry in the RunInfo tree (cross section, filter efficiency, ...)
 	void setBranchAddresses();
 
 public:
@@ -885,6 +886,7 @@ double DiMuonPt_NoBound_;
 	double PVcovariance_[9];
 	TFile* bmmgFile_;
 	TTree* bmmgTree_;
+	TTree* runInfoTree_ = nullptr;
 };
 
 #endif

@@ -29,9 +29,9 @@ void GenDecayChain::analyze() {
     extractKinematics();
     computeLifetimeVariables();
     classifyDecayMode();
+    sortPhotonsByPt();          // before the angular variables, which use the leading photon(s)
     computeAngularVariables();
     fillDileptonVariables();
-    sortPhotonsByPt();  
     info_.isValid = true;
     info_.isHardProcess = isFromHardProcess(BMeson_);
 }
@@ -50,7 +50,7 @@ void GenDecayChain::findBMeson() {
             if (nMuons == 2) {
                 // now find the oldest ancestor B meson in the chain (handle oscillations)
                 const reco::GenParticle* current = &p;
-                while (abs(current->mother()->pdgId()) == absId)
+                while (current->mother() && abs(current->mother()->pdgId()) == absId)
                 {
                     const reco::GenParticle* mother = dynamic_cast<const reco::GenParticle*>(current->mother());
                     if (!mother) break;
@@ -61,6 +61,12 @@ void GenDecayChain::findBMeson() {
                 return;
             }
         }
+    }
+    // pi0 gun samples: no b hadron in the event, take the first pi0.
+    // In events with b hadrons (e.g. a B without two muons) no fallback is done.
+    for (const auto& p : genParticles_) {
+        const int absId = abs(p.pdgId());
+        if ((absId / 100) % 10 == 5 || (absId / 1000) % 10 == 5) return;   // b meson or b baryon
     }
     for (const auto& p : genParticles_) {
         int absId = abs(p.pdgId());
@@ -92,9 +98,9 @@ void GenDecayChain::processDaughters(const reco::GenParticle* mother) {
        
         // Muons
         if (absDauId == 13) {
-            if (dauId == -13) {  // mu+
+            if (dauId == -13 && !muPlus_) {  // mu+
                 muPlus_ = dau;
-            } else if (dauId == 13) {  // mu-
+            } else if (dauId == 13 && !muMinus_) {  // mu-
                 muMinus_ = dau;
             }
         }
@@ -293,7 +299,8 @@ void GenDecayChain::classifyDecayMode() {
     
     // Three-body decays: B → μμγ
    
-    if (nMu == 2 && nGam == 1 && !info_.hasJpsi && !info_.hasNeutralMeson) {
+    // nGam >= 1 / >= 2: extra photons are FSR (PHOTOS adds them to the B or resonance daughters)
+    if (nMu == 2 && nGam >= 1 && !info_.hasJpsi && !info_.hasNeutralMeson) {
         info_.is3BodyDecay = true;
        
         if (absBId == 531) {
@@ -321,7 +328,7 @@ void GenDecayChain::classifyDecayMode() {
     
     // J/psi radiative: B → J/ψ(→μμ) + γ
  
-    if (nMu == 2 && nGam == 1 && info_.hasJpsi && !info_.hasNeutralMeson) {
+    if (nMu == 2 && nGam >= 1 && info_.hasJpsi && !info_.hasNeutralMeson) {
         info_.is3BodyDecay = true;
        
         if (absBId == 531) {
@@ -337,16 +344,17 @@ void GenDecayChain::classifyDecayMode() {
     // ========================================================================
     // Four-body decays: B → J/ψ(→μμ) + X(→γγ)
     // ========================================================================
-    if (nMu == 2 && nGam == 2 && info_.hasJpsi && info_.hasNeutralMeson) {
+    if (nMu == 2 && nGam >= 2 && info_.hasJpsi && info_.hasNeutralMeson) {
         info_.is4BodyDecay = true;
        
-        int neutralId = abs(info_.neutralMesonId);
+        const int neutralId = abs(info_.neutralMesonId);
+        const bool isBs = (absBId == 531), isBd = (absBId == 511);
         if (neutralId == 111) {
-            info_.decayMode = kBs_Jpsi_Pi0;
+            info_.decayMode = isBs ? kBs_Jpsi_Pi0 : (isBd ? kBd_Jpsi_Pi0 : kUnknown);
         } else if (neutralId == 221) {
-            info_.decayMode = kBs_Jpsi_Eta;
+            info_.decayMode = isBs ? kBs_Jpsi_Eta : (isBd ? kBd_Jpsi_Eta : kUnknown);
         } else if (neutralId == 331) {
-            info_.decayMode = kBs_Jpsi_Etap;
+            info_.decayMode = isBs ? kBs_Jpsi_Etap : (isBd ? kBd_Jpsi_Etap : kUnknown);
         } else {
             info_.decayMode = kUnknown;
         }
@@ -552,6 +560,7 @@ GenDecayChain::TruthMatchInfo GenDecayChain::matchToGen(
         if (expectedPdgId != 0 && abs(genPart.pdgId()) != abs(expectedPdgId)) {
             continue;
         }
+        if (genPart.status() != 1) continue;   // final-state particles only (no intermediate copies)
        
         double dR = deltaR(genPart.eta(), genPart.phi(),
                           recoTrack.eta(), recoTrack.phi());
@@ -616,11 +625,16 @@ GenDecayChain::TopologyMatch GenDecayChain::matchTopology(
     TopologyMatch topoMatch;
    
     // Match muons (no need to pass genParticles!)
-    topoMatch.mu1Info = matchToGen(recoMu1, 13, 0, 531, 0.05, 0.5);
-    topoMatch.mu2Info = matchToGen(recoMu2, 13, 0, 531, 0.05, 0.5);
+    // a reco object is matched if its gen match descends from the signal B of this event
+    // (works for direct B -> mu mu gamma and for cascades via J/psi, eta, ...)
+    auto fromSignalB = [this](const TruthMatchInfo& m) {
+        return m.isMatched && m.genIndex >= 0 && isAncestor(BMeson_, &genParticles_[m.genIndex]);
+    };
+    topoMatch.mu1Info = matchToGen(recoMu1, 13, 0, 0, 0.05, 0.5);
+    topoMatch.mu2Info = matchToGen(recoMu2, 13, 0, 0, 0.05, 0.5);
    
-    topoMatch.mu1Matched = topoMatch.mu1Info.isMatched;
-    topoMatch.mu2Matched = topoMatch.mu2Info.isMatched;
+    topoMatch.mu1Matched = fromSignalB(topoMatch.mu1Info);
+    topoMatch.mu2Matched = fromSignalB(topoMatch.mu2Info);
    
     // Match photons
     for (size_t i = 0; i < recoPhotons.size(); ++i) {
@@ -629,8 +643,8 @@ GenDecayChain::TopologyMatch GenDecayChain::matchTopology(
         TruthMatchInfo photonInfo = matchToGen(*recoPhotons[i], 22, 0, 0, 0.1, 0.5);
         topoMatch.photonInfo.push_back(photonInfo);
        
-        if (i == 0 && photonInfo.isMatched) topoMatch.photon1Matched = true;
-        if (i == 1 && photonInfo.isMatched) topoMatch.photon2Matched = true;
+        if (i == 0 && fromSignalB(photonInfo)) topoMatch.photon1Matched = true;
+        if (i == 1 && fromSignalB(photonInfo)) topoMatch.photon2Matched = true;
     }
    
     bool dimuonMatched = topoMatch.mu1Matched && topoMatch.mu2Matched;
@@ -641,13 +655,11 @@ GenDecayChain::TopologyMatch GenDecayChain::matchTopology(
     topoMatch.isMatched = dimuonMatched && photonsMatched;
    
     if (topoMatch.isMatched && info_.isValid) {
-        if (info_.decayMode == kBs_MuMu_Gamma && recoPhotons.size() == 1) {
+        if ((info_.decayMode == kBs_MuMu_Gamma || info_.decayMode == kBd_MuMu_Gamma ||
+             info_.decayMode == kBs_Jpsi_Gamma || info_.decayMode == kBd_Jpsi_Gamma) && recoPhotons.size() == 1) {
             topoMatch.decayModeMatched = true;
         }
-        else if ((info_.decayMode == kBs_Jpsi_Pi0 ||
-                  info_.decayMode == kBs_Jpsi_Eta ||
-                  info_.decayMode == kBs_Jpsi_Etap) &&
-                 recoPhotons.size() == 2) {
+        else if (info_.is4BodyDecay && recoPhotons.size() == 2) {
             topoMatch.decayModeMatched = true;
         }
     }

@@ -54,7 +54,7 @@ class BeamSpotAndVertex{
 			double pv_ndof = -9999.0;
 			double pv_rho = -9999.0;
 			double pv_covariance[9];
-			int pv_cutmultiplicity = -9999.0;
+			int pv_cutmultiplicity = -9999;
 			bool isValidPV = false;
 			bool ispv = false;
 			bool isbs = false;
@@ -73,11 +73,12 @@ class BeamSpotAndVertex{
 			RefCountedKinematicVertex bVertex,
 			GlobalVector Bsvec);
 	
+	// index of the PV closest to the line through bVertex along Bsvec; -1 if there is no PV
 	static int LowestDCAIndex(const std::vector<reco::Vertex>& vertex,
 			GlobalPoint bVertex,
 			GlobalVector Bsvec);
 			
-	int    NSelectedVertices;
+	int    NSelectedVertices = 0;
 
 	private:
 	static math::XYZPoint pca(math::XYZPoint pv, math::XYZPoint sv, math::XYZVectorD pMuMu);

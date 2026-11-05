@@ -4,6 +4,73 @@ Entries are newest first. Each entry gives: the plan item(s) (see `plan.md`), wh
 
 ---
 
+## 2026-11-05: Phase 2, batch 1 of bug fixes (P2.1, 2.2, 2.4–2.11, 2.16–2.20)
+All of these change the content of the ntuple on purpose. New reference: `test/reference/reference_P2a_2000.root`.
+
+**Corrections to the plan's diagnosis (found while fixing):**
+- **P2.1:** the `photon*_[2]` and `pfCand*_[2]` arrays do **not** overflow, because `RecoPhotons`/`ParticleFlowCandidate` return at most 2 objects. The real bug was an **index mismatch**: the helpers sort by pt, but the analyzer took the EB/pt exclusion, tight ID, MVA (photons) and the pt<0.5 check (PF) from `(*collection)[i]` of the *unsorted* collection, i.e. from a different object.
+- **New bug:** 17 `bool` branches (`Mu1/Mu2/DiMuon_isMatched`, `Photon_isMatched`, `Topology_*`, `IsSignalMatched`, `IsMuonsFromJpsi`, `PFECAL_RecHit_Is*`, …) were reset to `-9999999`, which converts to **true**. Events without matching therefore looked "matched". In the P1 reference this gave `Mu1_isMatched` 0.986 and `Topology_isMatched` 0.866.
+- **New bug:** the analyzer copied `View<GenParticle>` into a local vector before building `GenDecayChain`. `mother()`/`daughter()` point into the original product, so pointer comparisons (ancestry) could never work. `GenDecayChain` now gets the original `std::vector<reco::GenParticle>` product (new token `genParticlesVecTok`).
+
+**Changes:**
+- **P2.1:**
+  - `RecoPhotons`/`ParticleFlowCandidate` return the original `index` and use `partial_sort` on indices instead of copying and sorting whole collections (the PF collection has thousands of entries).
+  - The analyzer uses `photonVar[i].index` for the exclusion, tight ID and MVA. The wrong-object PF pt check is removed.
+  - Dead code in `ParticleFlowCandidate` removed.
+- **P2.2:** `scBrem` and `refphotonscBrem` are guarded against a zero eta width (the analyzer now uses `photonVar.scBrem`). In `VariableDefinitions::calculateCt2DError/3DError` the zero check now comes before the division.
+- **P2.4 (`BeamSpotAndVertex`):**
+  - All `pv_*` (ntracks, covariance, ndof, ρ, position) come from the same selected vertex (highest scalar Σpt; unchanged choice). Before, ntracks came from `front()` and covariance/ndof/ρ from the last vertex in the loop.
+  - `bs_dx/dy/dz` are filled (x0/y0/z0 errors).
+  - `LowestDCAIndex` returns −1 only for an empty PV collection, uses a min search instead of a sort, and every caller checks the result.
+  - `NSelectedVertices` and `pv_cutmultiplicity` are initialised.
+- **P2.5 + P2.18 (`GenChain`):**
+  - Null check on `mother()`.
+  - Photons are sorted by pt **before** the angular variables are computed.
+  - The π0-gun fallback is used only if the event has no b hadron.
+  - Decay classification accepts extra FSR photons (`nGam >= 1` / `>= 2`). **Decision for open question 3:** extra photons are treated as FSR.
+  - Bd 4-body modes get their own codes: `kBd_Jpsi_Pi0/Eta/Etap` = 12/13/14, appended so the existing codes are unchanged.
+  - `processDaughters` has the `!muPlus_` guard.
+  - `matchToGen` uses final-state particles only (status 1).
+  - `matchTopology` requires the matched gen μ/γ to **descend from the signal B** (`isAncestor`) instead of a hardcoded grandmother 531. It works for direct and cascade decays and for Bd. `decayModeMatched` covers the Bd and J/ψγ modes.
+- **P2.6:** mu2 pixel hits come from `muTrack2` (all three builders).
+- **P2.7:** the photon acceptance is `|η_SC| < 2.5` (it was `isEB && η < −2.5`, which never cut anything). **Decision:** the endcap veto in the μμγ path is removed, because it was a workaround for the old fit and MMGVertexFit is validated for EE (P1.6). Result: 19 more fitted candidates in 2000 events (49 → 68). The 49 existing ones are unchanged.
+- **P2.8 (`PhotonSelector`):** the MVA score is taken from the list parallel to the passing photons. The conversion index is recorded only for successful fits. The `MassKinematicConstraint` leak is fixed with `unique_ptr`. The log category is renamed.
+- **P2.9:** Tripple now writes `VertexfitBs{CtErrMPV,CtMPVRefit,CtErr3DRefit,Lxy,LxyErr}_mmconvg_` instead of `_mmconvgg_`. Tetra fills the J/ψ branches only for J/ψ.
+- **P2.10:**
+  - `BsVtxProb_mmrecog` is the probability of the fitted μμγ vertex; the dimuon vertex probability is kept only as the quality cut.
+  - `BsCt2DBS_mmrecog` uses the fitted B vertex.
+  - The `AlgebraicMatrix31` objects are indexed `(i,0)`.
+  - The MPV error uses the same PV as the position (closest-z).
+  - `abs` → `std::abs`.
+  - For μμKK, `BsVtxProb_mmkk` was already overwritten by the fit probability, and `BsCt2DBS_mmkk` uses the 4-track Kalman vertex, which is a real B vertex, so they are kept.
+- **P2.11:**
+  - Cowboy = Δφ(μ⁺, μ⁻) > 0, wrapped to (−π, π], and set for every pair.
+  - `isPFMuon` no longer overwrites the tracker/global category.
+  - `muon::overlap` is checked first.
+- **P2.16:** MC events without a gen B are kept; the `Gen*` branches keep their defaults.
+- **P2.17:**
+  - The run-level variables are in a new **`RunInfo`** tree (1 entry) instead of a fake extra event row.
+  - The filter efficiency is merged over all lumi blocks (`GenFilterInfo::mergeProduct`); for 2000 events it is now 0.001663 instead of the last lumi's 0.001631.
+  - The cross section is an inverse-variance weighted mean over runs (`GenRunInfoProduct` has no merge).
+  - Missing gen products give a warning only in MC.
+  - `genXsec_` and `lumiEquivalent_` are initialised.
+- **P2.19:** topology matching uses the selected photon.
+- **P2.20:** `photonTightID` is booked as `/O`.
+- **P2.3:** deferred to P4.1 (see plan.md).
+
+**Validation** (`reference_P1_fit_2000.root` → this version, 2000 events): 417 of 555 branches are identical. Every difference matches one of the fixes above:
+- **Gen matching** (bool defaults, ancestry):
+  - `Mu1_isMatched` 0.986 → 0.316 per event (631 of the 659 events with a muon pair).
+  - `Topology_isMatched` is **41%** among events with a selected photon: 91% of the muon legs match, but only about 51% of the selected photons come from the B.
+  - `IsMuonsFromJpsi` is 0 on this μμγ sample, as it should be.
+- **PV branches:** `PVndof` mean 3.7 → 137, now the real PV.
+- **Photon and PF branches** (index fix): 67 events differ for photons; the PF branches are now filled for 1598 events.
+- **Fit:** `_mmrecog` fit branches gain the 19 EE candidates.
+- **Gen classification:** 3 events changed decay mode (FSR).
+- **Build:** OK.
+
+---
+
 ## 2026-11-05: Phase 1, validation on the large filtered sample (P1.6)
 - **New tool:** `test/validateMMGFit.py`. Mass and ct3D residuals and pulls against gen from the ntuple (optionally `--matched`, i.e. `Topology_isMatched`). Mean, RMS and core Gaussian width of every `MMGVertexFitExample` histogram. PNG plots.
 - **Input:** the first 20 files of the filtered sample (`testSample=2 testMaxFiles=20`), **36,281 events**. Code as of P1.5: gedPhotons, MMGVertexFit, EB photons only in the analyzer.

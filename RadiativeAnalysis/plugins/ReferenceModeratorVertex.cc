@@ -1,3 +1,4 @@
+#include "DataFormats/Math/interface/deltaPhi.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/ReferenceModeratorVertex.h"
 #include <memory>
 #include <cstddef>
@@ -68,6 +69,7 @@ DecayChainVariables ReferenceModeratorVertex::ReferenceModeratorVertexObservable
             dcv.mu2softid = mu2.passed(reco::Muon::SoftCutBasedId);
             if (!mu1.isGlobalMuon() && !mu1.isTrackerMuon()) continue;
             if (!mu2.isGlobalMuon() && !mu2.isTrackerMuon()) continue;
+            if ( muon::overlap(mu1,mu2,1,1,true) ) continue; // skip the pair if the two muons share segments
             
 
            ReferenceResonance::ResonanceDetails resonanceResult = ReferenceResonance::findResonances(mu1, mu2, verbose);
@@ -85,23 +87,11 @@ DecayChainVariables ReferenceModeratorVertex::ReferenceModeratorVertexObservable
             std::vector<reco::TransientTrack> ttrk_muons = {muonTT1, muonTT2};
             TransientVertex tv = kvf.vertex(ttrk_muons);
             
-             if (mu1.charge()==1) {
-             float mupPhi = atan(mu1.py()/mu1.px());
-             if ( mu1.px() < 0 && mu1.py() < 0 ) mupPhi -= TMath::Pi();
-             if ( mu1.px() < 0 && mu1.py() > 0 ) mupPhi += TMath::Pi();
-             float mumPhi = atan(mu2.py()/mu2.px());
-             if ( mu2.px() < 0 && mu2.py() < 0 ) mumPhi -= TMath::Pi();
-             if ( mu2.px() < 0 && mu2.py() > 0 ) mumPhi += TMath::Pi();
-             if ( (mupPhi - mumPhi)>0 ) dcv.isCowboy=1; } 
-             else {
-                   float mupPhi = atan(mu2.py()/mu2.px());
-                   if ( mu2.px() < 0 && mu2.py() < 0 ) mupPhi -= TMath::Pi();
-                   if ( mu2.px() < 0 && mu2.py() > 0 ) mupPhi += TMath::Pi();
-                   float mumPhi = atan(mu1.py()/mu1.px());
-                   if ( mu1.px() < 0 && mu1.py() < 0 ) mumPhi -= TMath::Pi();
-                   if ( mu1.px() < 0 && mu1.py() > 0 ) mumPhi += TMath::Pi();
-                   if ( (mupPhi - mumPhi)>0 ) dcv.isCowboy=1;
-                  }
+             {   // cowboy: phi(mu+) - phi(mu-) > 0, with the difference wrapped to (-pi, pi]
+                 const reco::Muon& muPlus  = (mu1.charge() > 0) ? mu1 : mu2;
+                 const reco::Muon& muMinus = (mu1.charge() > 0) ? mu2 : mu1;
+                 dcv.isCowboy = (reco::deltaPhi(muPlus.phi(), muMinus.phi()) > 0) ? 1 : 0;
+             }
              
 	         reco::Vertex vertex = tv;
              double  vtxProb_dimuon = TMath::Prob(vertex.chi2(),(int)vertex.ndof());
@@ -126,7 +116,6 @@ DecayChainVariables ReferenceModeratorVertex::ReferenceModeratorVertexObservable
 	       dcv.max_Dr1 = fabs( (- (mu1.vx()-bsAndVtxInfo.bs_x) * mu1.py() + (mu1.vy()-bsAndVtxInfo.bs_y) * mu1.px() ) / mu1.pt() );
 	       dcv.max_Dr2 = fabs( (- (mu2.vx()-bsAndVtxInfo.bs_x) * mu2.py() + (mu2.vy()-bsAndVtxInfo.bs_y) * mu2.px() ) / mu2.pt() );
 	       //std::cout<<"maxDR1: "<<dcv.max_Dr1<<"\t maxDR2 : "<<dcv.max_Dr2<<"\n";
-	       if ( muon::overlap(mu1,mu2,1,1,true) ) continue; /// Skip the mu-mu combination if the two muons overlap
 	       reco::Vertex::Error verr = vertex.error();
 	       GlobalError err(verr.At(0,0), verr.At(1,0), verr.At(1,1), verr.At(2,0), verr.At(2,1), verr.At(2,2) );
 	       dcv.dimuonlxy = displacementFromBeamspot.perp();
@@ -149,12 +138,10 @@ DecayChainVariables ReferenceModeratorVertex::ReferenceModeratorVertexObservable
         else if (!mu1.isTrackerMuon() && mu1.isGlobalMuon())  dcv.diMuon_mu1Cat = 2;
         else if (mu1.isTrackerMuon() && mu1.isGlobalMuon())   dcv.diMuon_mu1Cat = 3;
         else if (!mu1.isTrackerMuon() && !mu1.isGlobalMuon()) dcv.diMuon_mu1Cat = 4;
-        if (mu1.isPFMuon())       dcv.diMuon_mu1Cat = 1;
         if (mu2.isTrackerMuon() && !mu2.isGlobalMuon())       dcv.diMuon_mu2Cat = 1;
         else if (!mu2.isTrackerMuon() && mu2.isGlobalMuon())  dcv.diMuon_mu2Cat = 2;
         else if (mu2.isTrackerMuon() && mu2.isGlobalMuon())   dcv.diMuon_mu2Cat = 3;
         else if (!mu2.isTrackerMuon() && !mu2.isGlobalMuon()) dcv.diMuon_mu2Cat = 4;
-        if (mu2.isPFMuon())       dcv.diMuon_mu2Cat = 1;
         
         int pixhits1 = 0;
         const reco::HitPattern& pp1 = muTrack1.get()->hitPattern();
@@ -166,7 +153,7 @@ DecayChainVariables ReferenceModeratorVertex::ReferenceModeratorVertexObservable
             }
       dcv.diMuon_mu1PixelHits   = pixhits1;
       int pixhits2 = 0;
-      const reco::HitPattern& pp2 = muTrack1.get()->hitPattern();
+      const reco::HitPattern& pp2 = muTrack2.get()->hitPattern();
       for (int iter=0; iter<pp2.numberOfAllHits(reco::HitPattern::TRACK_HITS); iter++) {
 			uint32_t hit = pp2.getHitPattern(reco::HitPattern::TRACK_HITS,iter);
 			if (pp2.validHitFilter(hit) && pp2.pixelBarrelHitFilter(hit)) pixhits2++;
@@ -273,6 +260,7 @@ DecayChainVariables ReferenceModeratorVertex::ReferenceModeratorVertexObservable
                 GlobalPoint SVKalman(vertexbskalman.position().x(), vertexbskalman.position().y(), vertexbskalman.position().z());
                 GlobalVector Bsp3sum = GlobalVector(BCand.Px(), BCand.Py(), BCand.Pz());
                 int lowestDCAIndex = BeamSpotAndVertex::LowestDCAIndex(PVs, SVKalman, Bsp3sum);
+                if (lowestDCAIndex < 0) continue;
                 reco::Vertex PVlowestDCA = PVs[lowestDCAIndex];
                 
                 rrt->BsCt3D_mmkk_ = VariableDefinitions::calculateCt3D(PVlowestDCA, bVertex, bs);

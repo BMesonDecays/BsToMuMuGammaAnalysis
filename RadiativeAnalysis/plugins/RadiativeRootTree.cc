@@ -15,6 +15,16 @@ void RadiativeRootTree::createTree(const std::string filename)
   // create tree structure
   bmmgTree_ = new TTree("BMMGTree","BMMGTree",bufsize);
 
+  // run-level information, one entry per job (filled in endJob)
+  runInfoTree_ = new TTree("RunInfo","RunInfo");
+  runInfoTree_->Branch("GenXsec",&GenXsec_,"GenXsec/D");
+  runInfoTree_->Branch("GenXsecErr",&GenXsecErr_,"GenXsecErr/D");
+  runInfoTree_->Branch("FilterEff",&FilterEff_,"FilterEff/D");
+  runInfoTree_->Branch("FilterEffErr",&FilterEffErr_,"FilterEffErr/D");
+  runInfoTree_->Branch("nEvents",&nEvents_,"nEvents/I");
+  runInfoTree_->Branch("LumiEquivalent",&LumiEquivalent_,"LumiEquivalent/D");
+  runInfoTree_->Branch("LumiEquivalentErr",&LumiEquivalentErr_,"LumiEquivalentErr/D");
+
 
 
   trigMatch_DoubleMu4_3_Bs_ = new std::vector<int>(); 
@@ -31,13 +41,6 @@ void RadiativeRootTree::createTree(const std::string filename)
   bmmgTree_->Branch("runNumber",&runNumber_ ,"runNumber/I");
   bmmgTree_->Branch("eventNumber",&eventNumber_,"eventNumber/i");
   bmmgTree_->Branch("lumiSection",&lumiSection_,"lumiSection/I");
-  bmmgTree_->Branch("GenXsec",&GenXsec_,"GenXsec/D");
-  bmmgTree_->Branch("GenXsecErr",&GenXsecErr_,"GenXsecErr/D");
-  bmmgTree_->Branch("FilterEff",&FilterEff_,"FilterEff/D");
-  bmmgTree_->Branch("FilterEffErr",&FilterEffErr_,"FilterEffErr/D");
-  bmmgTree_->Branch("nEvents",&nEvents_,"nEvents/I");
-  bmmgTree_->Branch("LumiEquivalent",&LumiEquivalent_,"LumiEquivalent/D");
-  bmmgTree_->Branch("LumiEquivalentErr",&LumiEquivalentErr_,"LumiEquivalentErr/D");
 
  
 	
@@ -516,7 +519,7 @@ bmmgTree_->Branch("DiMuonPt_NoBound", &DiMuonPt_NoBound_, "DiMuonPt_NoBound/D");
   bmmgTree_->Branch("photonSCR9",&photonSCR9_,"photonSCR9[2]/D");
   bmmgTree_->Branch("photonSCHadTowOverEm",&photonSCHadTowOverEm_,"photonSCHadTowOverEm[2]/D");
   bmmgTree_->Branch("photonMVAScore",&photonMVAScore_,"photonMVAScore[2]/D");
-  bmmgTree_->Branch("photonTightID",&photonTightID_,"photonTightID[2]/I");
+  bmmgTree_->Branch("photonTightID",&photonTightID_,"photonTightID[2]/O");
 
 
   bmmgTree_->Branch("pfCandMultiplicity",&pfCandMultiplicity_,"pfCandMultiplicity/I");
@@ -1168,9 +1171,9 @@ DiMuonPt_NoBound_   = -9999999;
   PFECAL_RecHit_PVDistance_ = -9999999;
   PFECAL_RecHit_TOF_ = -9999999;
   PFECAL_RecHit_CorrectedTime_ = -9999999;
-  PFECAL_RecHit_IsWeird_ = -9999999;
-  PFECAL_RecHit_IsProblematic_ = -9999999;
-  PFECAL_RecHit_PoorReco_ = -9999999;
+  PFECAL_RecHit_IsWeird_ = false;
+  PFECAL_RecHit_IsProblematic_ = false;
+  PFECAL_RecHit_PoorReco_ = false;
   PFECAL_RecHit_EB_ieta_ = -9999999;
   PFECAL_RecHit_EB_iphi_ = -9999999;
   PFECAL_RecHit_EE_ix_ = -9999999;
@@ -1221,7 +1224,7 @@ DiMuonPt_NoBound_   = -9999999;
 	photonSCR9_[j]             = -9999999;
 	photonSCHadTowOverEm_[j]   = -9999999;
   photonMVAScore_[j]           = -9999999;
-  photonTightID_[j]            = -9999999;
+  photonTightID_[j]            = false;   // bool: -9999999 would mean true
   }
 
   //Resetting the particle flow candidates
@@ -1364,7 +1367,7 @@ DiMuonPt_NoBound_   = -9999999;
 	GenHasJpsi_ = false;
 	GenJpsi_mass_ = -9999999;
 	GenJpsi_pt_ = -9999999;
-	GenHasNeutralMeson_ = -9999999;
+	GenHasNeutralMeson_ = false;
 	GenNeutralMesonId_ = -9999999;
 	GenDecayMode_ = -9999999;
 	GenIs3Body_ = false;
@@ -1373,21 +1376,21 @@ DiMuonPt_NoBound_   = -9999999;
 	GenIsSignal_ = false;
 
 	//Truth matched 
-	Mu1_isMatched_ = -9999999;
+	Mu1_isMatched_ = false;
 	Mu1_genPdgId_ = -9999999;
 	Mu1_genMotherPdgId_ = -9999999;
 	Mu1_genGMotherPdgId_ = -9999999;
 	Mu1_genDeltaR_ = -9999999;
 	Mu1_genDeltaPt_ = -9999999;
-	Mu2_isMatched_ = -9999999;
+	Mu2_isMatched_ = false;
 	Mu2_genPdgId_ = -9999999;
 	Mu2_genMotherPdgId_ = -9999999;
 	Mu2_genGMotherPdgId_ = -9999999;
 	Mu2_genDeltaR_ = -9999999;
 	Mu2_genDeltaPt_ = -9999999;
-	DiMuon_isMatched_ = -9999999;
+	DiMuon_isMatched_ = false;
   for (size_t i=0; i<4;++i){
-    Photon_isMatched_[i] = -9999999;
+    Photon_isMatched_[i] = false;
     Photon_genPdgId_[i] = -9999999;
     Photon_genMotherPdgId_[i] = -9999999;
     Photon_genGMotherPdgId_[i] = -9999999;
@@ -1397,15 +1400,15 @@ DiMuonPt_NoBound_   = -9999999;
 
   }
 	NMatchedPhotons_= -9999999;
-  Topology_isMatched_ = -9999999;
-	Topology_mu1Matched_ = -9999999;
-	Topology_mu2Matched_ = -9999999;
-	Topology_photon1Matched_ = -9999999;
-	Topology_photon2Matched_ = -9999999;
-	Topology_decayModeMatched_ = -9999999;
-	IsSignalMatched_ = -9999999;
-	IsMuonsFromJpsi_ = -9999999;
-	IsMuonsDirectFromBs_ = -9999999;
+  Topology_isMatched_ = false;
+	Topology_mu1Matched_ = false;
+	Topology_mu2Matched_ = false;
+	Topology_photon1Matched_ = false;
+	Topology_photon2Matched_ = false;
+	Topology_decayModeMatched_ = false;
+	IsSignalMatched_ = false;
+	IsMuonsFromJpsi_ = false;
+	IsMuonsDirectFromBs_ = false;
 }
 
 void RadiativeRootTree::getDeDx(const double f1, const double f2, const int f3)
@@ -1442,6 +1445,11 @@ void RadiativeRootTree::fill()
 {
   bmmgTree_->Fill();
 }
+
+void RadiativeRootTree::fillRunInfo()
+{
+  runInfoTree_->Fill();
+}
 void RadiativeRootTree::readTree(const std::string filename)
 {
   bmmgFile_ = new TFile (filename.c_str(), "READ" );
@@ -1463,13 +1471,6 @@ void RadiativeRootTree::setBranchAddresses(){
   bmmgTree_->SetBranchAddress("runNumber", &runNumber_);
   bmmgTree_->SetBranchAddress("eventNumber", &eventNumber_);
   bmmgTree_->SetBranchAddress("lumiSection", &lumiSection_ );
-  bmmgTree_->SetBranchAddress("GenXsec", &GenXsec_);
-  bmmgTree_->SetBranchAddress("GenXsecErr", &GenXsecErr_);
-  bmmgTree_->SetBranchAddress("FilterEff", &FilterEff_);
-  bmmgTree_->SetBranchAddress("FilterEffErr", &FilterEffErr_);
-  bmmgTree_->SetBranchAddress("nEvents", &nEvents_);
-  bmmgTree_->SetBranchAddress("LumiEquivalent", &LumiEquivalent_);
-  bmmgTree_->SetBranchAddress("LumiEquivalentErr", &LumiEquivalentErr_);
 
 
   

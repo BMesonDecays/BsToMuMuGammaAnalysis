@@ -1,3 +1,4 @@
+#include "DataFormats/Math/interface/deltaPhi.h"
 //Author : Muhammad Alibordi, University of Warsaw
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/TrippleObjectVertex.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/BaselineMatching.h"
@@ -39,6 +40,7 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
             dcv.mu2softid = mu2.passed(reco::Muon::SoftCutBasedId);
             if (!mu1.isGlobalMuon() && !mu1.isTrackerMuon()) continue;
             if (!mu2.isGlobalMuon() && !mu2.isTrackerMuon()) continue;
+            if ( muon::overlap(mu1,mu2,1,1,true) ) continue; // skip the pair if the two muons share segments
             
 
            ReferenceResonance::ResonanceDetails resonanceResult = ReferenceResonance::findResonances(mu1, mu2, verbose);
@@ -93,23 +95,11 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
             std::vector<reco::TransientTrack> ttrk_muons = {muonTT1, muonTT2};
             TransientVertex tv = kvf.vertex(ttrk_muons);
             
-             if (mu1.charge()==1) {
-             float mupPhi = atan(mu1.py()/mu1.px());
-             if ( mu1.px() < 0 && mu1.py() < 0 ) mupPhi -= TMath::Pi();
-             if ( mu1.px() < 0 && mu1.py() > 0 ) mupPhi += TMath::Pi();
-             float mumPhi = atan(mu2.py()/mu2.px());
-             if ( mu2.px() < 0 && mu2.py() < 0 ) mumPhi -= TMath::Pi();
-             if ( mu2.px() < 0 && mu2.py() > 0 ) mumPhi += TMath::Pi();
-             if ( (mupPhi - mumPhi)>0 ) dcv.isCowboy=1; } 
-             else {
-                   float mupPhi = atan(mu2.py()/mu2.px());
-                   if ( mu2.px() < 0 && mu2.py() < 0 ) mupPhi -= TMath::Pi();
-                   if ( mu2.px() < 0 && mu2.py() > 0 ) mupPhi += TMath::Pi();
-                   float mumPhi = atan(mu1.py()/mu1.px());
-                   if ( mu1.px() < 0 && mu1.py() < 0 ) mumPhi -= TMath::Pi();
-                   if ( mu1.px() < 0 && mu1.py() > 0 ) mumPhi += TMath::Pi();
-                   if ( (mupPhi - mumPhi)>0 ) dcv.isCowboy=1;
-                  }
+             {   // cowboy: phi(mu+) - phi(mu-) > 0, with the difference wrapped to (-pi, pi]
+                 const reco::Muon& muPlus  = (mu1.charge() > 0) ? mu1 : mu2;
+                 const reco::Muon& muMinus = (mu1.charge() > 0) ? mu2 : mu1;
+                 dcv.isCowboy = (reco::deltaPhi(muPlus.phi(), muMinus.phi()) > 0) ? 1 : 0;
+             }
              
 	         reco::Vertex vertex = tv;
              double  vtxProb_dimuon = TMath::Prob(vertex.chi2(),(int)vertex.ndof());
@@ -153,7 +143,6 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
 	       dcv.max_Dr1 = fabs( (- (mu1.vx()-bsAndVtxInfo.bs_x) * mu1.py() + (mu1.vy()-bsAndVtxInfo.bs_y) * mu1.px() ) / mu1.pt() );
 	       dcv.max_Dr2 = fabs( (- (mu2.vx()-bsAndVtxInfo.bs_x) * mu2.py() + (mu2.vy()-bsAndVtxInfo.bs_y) * mu2.px() ) / mu2.pt() );
 	       //std::cout<<"maxDR1: "<<dcv.max_Dr1<<"\t maxDR2 : "<<dcv.max_Dr2<<"\n";
-	       if ( muon::overlap(mu1,mu2,1,1,true) ) continue; /// Skip the mu-mu combination if the two muons overlap
 	       reco::Vertex::Error verr = vertex.error();
 	       GlobalError err(verr.At(0,0), verr.At(1,0), verr.At(1,1), verr.At(2,0), verr.At(2,1), verr.At(2,2) );
 	       dcv.dimuonlxy = displacementFromBeamspot.perp();
@@ -181,12 +170,10 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
         else if (!mu1.isTrackerMuon() && mu1.isGlobalMuon())  dcv.diMuon_mu1Cat = 2;
         else if (mu1.isTrackerMuon() && mu1.isGlobalMuon())   dcv.diMuon_mu1Cat = 3;
         else if (!mu1.isTrackerMuon() && !mu1.isGlobalMuon()) dcv.diMuon_mu1Cat = 4;
-        if (mu1.isPFMuon())       dcv.diMuon_mu1Cat = 1;
         if (mu2.isTrackerMuon() && !mu2.isGlobalMuon())       dcv.diMuon_mu2Cat = 1;
         else if (!mu2.isTrackerMuon() && mu2.isGlobalMuon())  dcv.diMuon_mu2Cat = 2;
         else if (mu2.isTrackerMuon() && mu2.isGlobalMuon())   dcv.diMuon_mu2Cat = 3;
         else if (!mu2.isTrackerMuon() && !mu2.isGlobalMuon()) dcv.diMuon_mu2Cat = 4;
-        if (mu2.isPFMuon())       dcv.diMuon_mu2Cat = 1;
         
         int pixhits1 = 0;
         const reco::HitPattern& pp1 = muTrack1.get()->hitPattern();
@@ -198,7 +185,7 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
             }
       dcv.diMuon_mu1PixelHits   = pixhits1;
       int pixhits2 = 0;
-      const reco::HitPattern& pp2 = muTrack1.get()->hitPattern();
+      const reco::HitPattern& pp2 = muTrack2.get()->hitPattern();
       for (int iter=0; iter<pp2.numberOfAllHits(reco::HitPattern::TRACK_HITS); iter++) {
 			uint32_t hit = pp2.getHitPattern(reco::HitPattern::TRACK_HITS,iter);
 			if (pp2.validHitFilter(hit) && pp2.pixelBarrelHitFilter(hit)) pixhits2++;
@@ -266,6 +253,7 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
                 GlobalPoint SVKalman(vertex.position().x(), vertex.position().y(), vertex.position().z());
                 GlobalVector Bsp3sum = GlobalVector(BCand.Px(), BCand.Py(), BCand.Pz());
                 int lowestDCAIndex = BeamSpotAndVertex::LowestDCAIndex(PVs, SVKalman, Bsp3sum);
+                if (lowestDCAIndex < 0) continue;
                 reco::Vertex PVlowestDCA = PVs[lowestDCAIndex];
                 
                 KinematicConstrainedFit BCandFitter;
@@ -447,15 +435,15 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
 
                     AlgebraicMatrix31 PV;
                     PV(0,0) = PVvtxClosestZ.x();
-                    PV(0,1) = PVvtxClosestZ.y();
-                    PV(0,2) = PVvtxClosestZ.z(); // not sure if this is what was meant
+                    PV(1,0) = PVvtxClosestZ.y();
+                    PV(2,0) = PVvtxClosestZ.z(); // not sure if this is what was meant
                     
                     AlgebraicMatrix31 BV;
                     BV(0,0) = bVertex->position().x();
-                    BV(0,1) = bVertex->position().y();
-                    BV(0,2) = bVertex->position().z();
+                    BV(1,0) = bVertex->position().y();
+                    BV(2,0) = bVertex->position().z();
                     AlgebraicMatrix31 lxyz = BV-PV;
-                    AlgebraicMatrix33 PVError(PVvtxHightestPt.error());
+                    AlgebraicMatrix33 PVError(PVvtxClosestZ.error());   // same PV as the position above
                     AlgebraicMatrix33 lxyzError = PVError + BVError;
                     lxyzError.Invert();
 
@@ -464,7 +452,7 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
                     double num(b(0,0));
                     double deno(a(0,0));
                     rrt->VertexfitBsCtMPVRefit_mmconvg_ = (num*bs->currentState().mass())/(deno);
-                    rrt->VertexfitBsCtErrMPV_mmconvgg_ = m_lim.BsPDGMass/sqrt(deno);
+                    rrt->VertexfitBsCtErrMPV_mmconvg_ = m_lim.BsPDGMass/sqrt(deno);
 
 
 
@@ -482,7 +470,7 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
                     sqrt((bVertex->position().x() - PVvtxHightestPt.x())*(bVertex->position().x() - PVvtxHightestPt.x())+
                     (bVertex->position().y() - PVvtxHightestPt.y())*(bVertex->position().y() - PVvtxHightestPt.y())+
                     (bVertex->position().z() - PVvtxHightestPt.z())*(bVertex->position().z() - PVvtxHightestPt.z())));
-                    rrt->VertexfitBsCtErr3D_mmconvg_ = m_lim.BsPDGMass*(error3D*abs(scale1))/sqrt(Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y()+Bsvec.z()*Bsvec.z());
+                    rrt->VertexfitBsCtErr3D_mmconvg_ = m_lim.BsPDGMass*(error3D*std::abs(scale1))/sqrt(Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y()+Bsvec.z()*Bsvec.z());
 
                     rrt->VertexfitBsCt3DRefit_mmconvg_ = m_lim.BsPDGMass*((bVertex->position().x()-PVvtxHightestPt.x())*Bsvec.x()+
                     +(bVertex->position().y()-PVvtxHightestPt.y())*Bsvec.y()+
@@ -506,13 +494,13 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
 
                     AlgebraicMatrix31 PV2;
                     PV2(0,0) = PVvtxHightestPt.x();
-                    PV2(0,1) = PVvtxHightestPt.y();
-                    PV2(0,2) = PVvtxHightestPt.z();
+                    PV2(1,0) = PVvtxHightestPt.y();
+                    PV2(2,0) = PVvtxHightestPt.z();
                     
                     AlgebraicMatrix31 BV2;
                     BV2(0,0) = bVertex->position().x();
-                    BV2(0,1) = bVertex->position().y();
-                    BV2(0,2) = bVertex->position().z();
+                    BV2(1,0) = bVertex->position().y();
+                    BV2(2,0) = bVertex->position().z();
                     
                     AlgebraicMatrix31 lxyz2 = BV2 - PV2;
                     AlgebraicMatrix33 PVError2(PVvtxHightestPt.error());
@@ -524,7 +512,7 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
                     AlgebraicMatrix11 b2 = pBT2 * lxyzError2 * lxyz2;
                     double num2(b2(0,0));
                     double deno2(a2(0,0));
-                    rrt->VertexfitBsCtMPVRefit_mmconvgg_ = (num2 * bs->currentState().mass()) / (deno2);
+                    rrt->VertexfitBsCtMPVRefit_mmconvg_ = (num2 * bs->currentState().mass()) / (deno2);
 
 
 
@@ -542,7 +530,7 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
                              sqrt((bVertex->position().x() - PVvtxHightestPt.x())*(bVertex->position().x() - PVvtxHightestPt.x())+
                              (bVertex->position().y() - PVvtxHightestPt.y())*(bVertex->position().y() - PVvtxHightestPt.y())+
                              (bVertex->position().z() - PVvtxHightestPt.z())*(bVertex->position().z() - PVvtxHightestPt.z())));
-                    rrt->VertexfitBsCtErr3DRefit_mmconvgg_ = m_lim.BsPDGMass*(error3D2*abs(scale12))/sqrt(Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y()+Bsvec.z()*Bsvec.z());
+                    rrt->VertexfitBsCtErr3DRefit_mmconvg_ = m_lim.BsPDGMass*(error3D2*std::abs(scale12))/sqrt(Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y()+Bsvec.z()*Bsvec.z());
                     //Error on catu 2D
                     VertexDistanceXY dist22;
                     Measurement1D measurement22 = dist22.distance(VertexState(SVpos2,SVerr2),VertexState(PVpos2,PVerr2));
@@ -552,10 +540,10 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
                     // (bVertex->position().y() - reFitVertex.y())*Bsvec.y())/(sqrt(Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y())*
                     // sqrt((bVertex->position().x() - reFitVertex.x())*(bVertex->position().x() - reFitVertex.x())+
                     // (bVertex->position().y() - reFitVertex.y())*(bVertex->position().y() - reFitVertex.y())));
-                    // dcv.vertexfitBsCtErr2Drefit_mmconvg= mlim.BsPDGMass*(error2D2*abs(scale22))/sqrt(Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y());
+                    // dcv.vertexfitBsCtErr2Drefit_mmconvg= mlim.BsPDGMass*(error2D2*std::abs(scale22))/sqrt(Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y());
                     if(Bsvec.perp()!=0) {
-                        rrt->VertexfitBsLxy_mmconvgg_ = dist22.distance(VertexState(SVpos2,SVerr2),VertexState(PVpos2,PVerr2)).value();
-                        rrt->VertexfitBsLxyErr_mmconvgg_ = error2D2;
+                        rrt->VertexfitBsLxy_mmconvg_ = dist22.distance(VertexState(SVpos2,SVerr2),VertexState(PVpos2,PVerr2)).value();
+                        rrt->VertexfitBsLxyErr_mmconvg_ = error2D2;
                     }
 
 
@@ -617,9 +605,7 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
 
             if (photon.superCluster().isNull()) continue;
             if (photon.superCluster()->energy() < 1.0) continue; // Minimum energy cut for photons
-            if (photon.isEB() && photon.superCluster()->eta() < -2.5) continue; // Exclude barrel photons with eta < -2.5
-            //this barrel cut supposed to be exact - upper line , lower line 
-            if (photon.isEE() && photon.superCluster()->eta() > 2.5) continue; // Exclude endcap photons with eta > 2.5
+            if (std::abs(photon.superCluster()->eta()) > 2.5) continue; // ECAL acceptance
             TLorentzVector BCand, photonvec, muonTrack1, muonTrack2;
             photonvec.SetPtEtaPhiE(photon.pt(), photon.eta(), photon.phi(), photon.energy());
             muonTrack1.SetPtEtaPhiE(mu1.pt(), mu1.eta(), mu1.phi(), mu1.energy());
@@ -641,14 +627,13 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
             if (!kvfbsvertex.isValid()) continue;
             reco::Vertex vertexbskalman = kvfbsvertex;
             GlobalError gigibs=kvfbsvertex.positionError();
-            double vtxprob_Bs = TMath::Prob(vertexbskalman.chi2(),(int)vertexbskalman.ndof());
-            if (vtxprob_Bs < 1e-5) continue;
-            rrt->BsVtxProb_mmrecog_ = vtxprob_Bs;
-            if (photon.isEE()) continue; // barrel photons only for now (the old fit did not converge for endcap photons; to be revisited with MMGVertexFit, plan P2.7)
+            double vtxprob_mumu = TMath::Prob(vertexbskalman.chi2(),(int)vertexbskalman.ndof());
+            if (vtxprob_mumu < 1e-5) continue;   // dimuon vertex quality
             
             GlobalPoint SVKalman(vertexbskalman.position().x(), vertexbskalman.position().y(), vertexbskalman.position().z());
             GlobalVector Bsp3sum = GlobalVector(BCand.Px(), BCand.Py(), BCand.Pz());
             int lowestDCAIndex = BeamSpotAndVertex::LowestDCAIndex(PVs, SVKalman, Bsp3sum);
+            if (lowestDCAIndex < 0) continue;
             reco::Vertex PVlowestDCA = PVs[lowestDCAIndex];
 
             // mu mu gamma kinematic fit (photon measured by its ECAL cluster) with the pointing
@@ -659,6 +644,7 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
             if (!fitResult) continue;
             RefCountedKinematicParticle bs = fitResult->particle;
             RefCountedKinematicVertex bVertex = fitResult->vertex;
+            rrt->BsVtxProb_mmrecog_ = TMath::Prob(bVertex->chiSquared(), bVertex->degreesOfFreedom());   // fitted mu mu gamma vertex
             rrt->VertexfitBsMass_mmrecog_ = bs->currentState().mass();
             rrt->FourvectorBsMass_mmrecog_ = BCand.M();
             rrt->FourvectorBsPt_mmrecog_   = BCand.Pt();
@@ -672,8 +658,8 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
 
             rrt->BsCt3D_mmrecog_ = VariableDefinitions::calculateCt3D(PVlowestDCA, bVertex, bs);
 
-            rrt->BsCt2DBS_mmrecog_ = m_lim.BsPDGMass*( (kvfbsvertex.position().x()-bsAndVtxInfo.bs_x)*Bsvec.x()+
-            (kvfbsvertex.position().y()-bsAndVtxInfo.bs_y)*Bsvec.y())/
+            rrt->BsCt2DBS_mmrecog_ = m_lim.BsPDGMass*( (bVertex->position().x()-bsAndVtxInfo.bs_x)*Bsvec.x()+
+            (bVertex->position().y()-bsAndVtxInfo.bs_y)*Bsvec.y())/
             (Bsvec.x()*Bsvec.x()+Bsvec.y()*Bsvec.y());
 
 
