@@ -4,6 +4,30 @@ Entries are newest first. Each entry gives: the plan item(s) (see `plan.md`), wh
 
 ---
 
+## 2026-11-05: Phase 1, port MMGVertexFit (P1.1)
+- **Port:** `git checkout sslawins_miniaod --` `interface/MMGVertexFit.h`, `plugins/MMGVertexFit.cc`, `plugins/MMGVertexFitExample.cc`, `test/MMGVertexFitExample.py`. The old dev1 prototype is replaced. Nothing else used the old API.
+- **Example config:**
+  - Uses VarParsing: `dataFormat` (AOD/MINIAOD), `maxEvents`, `outputFile`, `inputFiles`.
+  - Without `inputFiles` it takes the AOD or MINIAOD test file from `test_files.txt` (`testSample`, `testMaxFiles`).
+  - The hardcoded `ls` of an EOS directory is removed.
+- **Build:** OK against `../RecoVertex` (`photonKinematicFit_v2`). The new warnings are 3 unused variables plus a maybe-uninitialized `bestMatchedMuon`, all in `MMGVertexFitExample.cc`.
+- **Validation:** `cmsRun MMGVertexFitExample.py maxEvents=2000` on `BsTo2MuG_aod.root` (gedPhotons, gen PV, gen-matched μμγ) took 32 s:
+
+  | quantity | N | mean | RMS |
+  |---|---|---|---|
+  | fitted B mass | 290 | 5.381 | 0.150 |
+  | B mass without fit | 332 | 5.391 | 0.158 |
+  | mass residual / pull | 290 | −0.004 / 0.02 | 0.140 / 1.43 |
+  | vertex pull x / y / z | 290 | 0.15 / 0.09 / −0.04 | 1.39 / 1.43 / 1.41 |
+  | cluster pull φ / θ | 378 | −0.11 / −0.03 | 1.88 / 1.43 |
+  | photon energy pull | 382 | 0.17 | 1.32 |
+  | χ²/ndf; vertex prob | 290 | 1.75; 0.36 | — |
+
+  Pull RMS values are above 1 because of non-Gaussian tails; the error scales were tuned on the core widths. For comparison, the current analyzer fills a fitted μμγ mass in only 30 of the same 2000 events.
+- **Decision (user):** use **gedPhotons** in the analyzer, because the error scales were tuned on them. This is applied in P1.3.
+
+---
+
 ## 2026-11-05: Phase 0, reference ntuple and regression tool (P0.5)
 - **Input handling:**
   - New `RadiativeAnalysis/python/testFiles.py` parses `test/test_files.txt` (a header line ending in `:`, then paths or globs). `testFiles(i)` returns the `file:` list of sample `i`, or of a sample matched by a description substring.

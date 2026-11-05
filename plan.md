@@ -19,7 +19,7 @@ The current structure is described in `structure_old.md`; progress is logged in 
 | Muon displacement cut (100 µm from the BS) | **Removed** |
 
 ## Open questions (to be decided by the user when the relevant step comes)
-1. Photon collection: `photons` (used now, and the VID runs on it) or `gedPhotons`? The MMGVertexFit error scales were tuned on gedPhotons. If we stay on `photons`, the scales must be re-tuned.
+1. ~~Photon collection~~ **Decided: gedPhotons** (2026-11-05).
 2. The photon exclusion `pt > 50 GeV || !isEB` in the analyzer: keep, make configurable, or drop?
 3. Gen decay-mode classification with FSR photons (`nGam == 1` today).
 4. Trigger-object matching: ΔR < 0.1, and whether a muon must match *all* terminal filters of a path (which includes photon and vertex filters).
@@ -42,7 +42,7 @@ The current structure is described in `structure_old.md`; progress is logged in 
   - Write a small comparison script (`test/compareNtuples.py`, PyROOT) that compares the branches common to two ntuples.
 
 ## Phase 1: Port the new kinematic fit (`MMGVertexFit` from `sslawins_miniaod`)
-- [ ] **P1.1** `git checkout sslawins_miniaod -- RadiativeAnalysis/interface/MMGVertexFit.h RadiativeAnalysis/plugins/MMGVertexFit.cc RadiativeAnalysis/plugins/MMGVertexFitExample.cc RadiativeAnalysis/test/MMGVertexFitExample.py`. Build against `../RecoVertex` (`photonKinematicFit_v2`) and run the example on the AOD test file.
+- [x] **P1.1** `git checkout sslawins_miniaod -- RadiativeAnalysis/interface/MMGVertexFit.h RadiativeAnalysis/plugins/MMGVertexFit.cc RadiativeAnalysis/plugins/MMGVertexFitExample.cc RadiativeAnalysis/test/MMGVertexFitExample.py`. Build against `../RecoVertex` (`photonKinematicFit_v2`) and run the example on the AOD test file.
 - [ ] **P1.2** Extend the API for use in the analyzer, keeping the existing `fit()` as a wrapper so the example keeps working:
   - Add `std::optional<Result> fitCandidate(const RefCountedKinematicParticle& mu1, const RefCountedKinematicParticle& mu2, const reco::Photon& photon, const EcalClusterLazyTools&, const GlobalPoint& pv)`, or an equivalent.
   - Add a helper that builds the muon kinematic particles once per event.

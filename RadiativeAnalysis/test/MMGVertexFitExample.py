@@ -5,6 +5,15 @@ import FWCore.ParameterSet.Config as cms
 import os
 import sys
 import subprocess
+from FWCore.ParameterSet.VarParsing import VarParsing
+
+options = VarParsing('analysis')
+options.register('dataFormat', 'AOD', VarParsing.multiplicity.singleton, VarParsing.varType.string, "'AOD' or 'MINIAOD'")
+options.register('testSample', -1, VarParsing.multiplicity.singleton, VarParsing.varType.int, 'index in test/test_files.txt (-1: AOD/MINIAOD test file)')
+options.register('testMaxFiles', -1, VarParsing.multiplicity.singleton, VarParsing.varType.int, 'max number of files from the test sample')
+options.setDefault('maxEvents', 20000)
+options.setDefault('outputFile', 'histosMMGVertexFitExample.root')
+options.parseArguments()
 
 
 # process = cms.Process("MojaAnaliza")
@@ -20,35 +29,43 @@ process.options = cms.untracked.PSet(wantSummary = cms.untracked.bool(False))
 # process.MessageLogger.cerr.threshold = "DEBUG"
 # process.MessageLogger.debugModules = ["*"]
 
-dataDir = '/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToMuMuGamma_MCTunesRun3ECM13p6TeV/BsToMuMuGamma_CMSSW_12_4_11_patch3_14_12_2024/241214_121515/0000/'
-# dataDir = '/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_Pi0ToGammaGamma_Pi0PythiaGun/Pi0ToGammaGamma_CMSSW_12_4_11_patch3_12_12_2024/241212_131944/0000/'
-# dataDir = '/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BdToMuMuGamma_MCTunesRun3ECM13p6TeV/BdToMuMuGamma_CMSSW_12_4_11_patch3_06_12_2024/241221_163854/0000/'
-# dataDir = '/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BdToKStarGamma_MCTunesRun3ECM13p6TeV/BdToKStarGamma_CMSSW_12_4_11_patch3_23_12_2024/241223_125459/0000/'
-# dataDir = '/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToPhiGamma_MCTunesRun3ECM13p6TeV/BsToPhiGamma_CMSSW_12_4_11_patch3_06_12_2024/241206_105826/0000/'
-# dataDir = '/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToKStarGamma_MCTunesRun3ECM13p6TeV/BsToKStarGamma_CMSSW_12_4_11_patch3_02_01_2024/250110_222730/0000/'
-# dataDir = '/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BdToKStarGamma_MCTunesRun3ECM13p6TeV/BdToKStarGamma_CMSSW_12_4_11_patch3_23_12_2024/250113_144624/0000/'
+# input data format: 'AOD' or 'MINIAOD'
+dataFormat = options.dataFormat
 
-# dataDir = '/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BdToMuMuGamma_MCTunesRun3ECM13p6TeV/BdToMuMuGamma_CMSSW_12_4_11_patch3_15_01_2024/250115_124459/0000/'
+# collection names for each data format
+collections = {
+    'AOD': dict(
+        genParticles    = 'genParticles',
+        muons           = 'muons',
+        photons         = 'gedPhotons',
+        ebRecHits       = 'reducedEcalRecHitsEB',
+        eeRecHits       = 'reducedEcalRecHitsEE',
+        beamSpot        = 'offlineBeamSpot',
+        primaryVertices = 'offlinePrimaryVertices',
+    ),
+    'MINIAOD': dict(
+        genParticles    = 'prunedGenParticles',
+        muons           = 'slimmedMuons',
+        photons         = 'slimmedPhotons',
+        ebRecHits       = 'reducedEgamma:reducedEBRecHits',
+        eeRecHits       = 'reducedEgamma:reducedEERecHits',
+        beamSpot        = 'offlineBeamSpot',
+        primaryVertices = 'offlineSlimmedPrimaryVertices',
+    ),
+}[dataFormat]
 
-lsCommand = 'ls -1 ' + dataDir + '| grep root'
-#print('Command: ', lsCommand)
-
-dir = subprocess.Popen(lsCommand, stdout=subprocess.PIPE, shell=True, text=True)
-lsOutput = dir.communicate()[0]
-
-files = []
-for f in lsOutput.split():
-    #print(dataDir + f)
-    files.append('file:' + dataDir + f)  # Full path to the files with 'file:' prefix
-
+# input: explicit inputFiles=..., otherwise sample testSample from test/test_files.txt
+# (default: the AOD or MINIAOD test file, depending on dataFormat)
+from BsToMuMuGammaAnalysis.RadiativeAnalysis.testFiles import testFiles
+if options.inputFiles:
+    files = options.inputFiles
+else:
+    sample = options.testSample if options.testSample >= 0 else (0 if dataFormat == 'AOD' else 1)
+    files = testFiles(sample, maxFiles=options.testMaxFiles)
 print('Number of files: ', len(files))
-
-# input files (up to 255 files accepted)
-
-# process.source = cms.Source('PoolSource', fileNames =cms.untracked.vstring("file:") )
-process.source = cms.Source('PoolSource', fileNames =cms.untracked.vstring(files) )
+process.source = cms.Source('PoolSource', fileNames = cms.untracked.vstring(files))
 process.source.skipEvents = cms.untracked.uint32(0)
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10000))
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.maxEvents))
 
 process.load("TrackingTools/TransientTrack/TransientTrackBuilder_cfi")
 
@@ -64,7 +81,28 @@ process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_mc_FULL','')
 
 
 process.analiza= cms.EDAnalyzer("MMGVertexFitExample",
-  outHist = cms.string('histosMMGVertexFitExample.root'),
+  outHist = cms.string(options.outputFile),
+  # input collections, see dataFormat above
+  genParticles    = cms.InputTag(collections['genParticles']),
+  muons           = cms.InputTag(collections['muons']),
+  photons         = cms.InputTag(collections['photons']),
+  ebRecHits       = cms.InputTag(collections['ebRecHits']),
+  eeRecHits       = cms.InputTag(collections['eeRecHits']),
+  beamSpot        = cms.InputTag(collections['beamSpot']),
+  primaryVertices = cms.InputTag(collections['primaryVertices']),
+  # scale factors for the cluster position uncertainties (sigma) along e_phi and e_theta,
+  # perpendicular to the photon, for barrel and endcap photons,
+  # tuned so that the core width of the cluster pulls is 1 (gedPhotons)
+  clusterCovScalePhiEB = cms.untracked.double(0.16),
+  clusterCovScaleThetaEB = cms.untracked.double(0.165),
+  clusterCovScalePhiEE = cms.untracked.double(0.20),
+  clusterCovScaleThetaEE = cms.untracked.double(0.24),
+  # scale factors for the photon energy uncertainty, for barrel and endcap photons,
+  # from the core width of the photon energy pull in bins of E_gen (roughly flat, gedPhotons)
+  energyErrorScaleEB = cms.untracked.double(1.2),
+  energyErrorScaleEE = cms.untracked.double(1.3),
+  # ECAL region of the matched photons used in the fit: 'EB', 'EE' or 'both'
+  photonRegion = cms.untracked.string('both'),
 )
 
 # process.out = cms.OutputModule("PoolOutputModule", fileName = cms.untracked.string("test2.root"))
