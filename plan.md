@@ -194,7 +194,7 @@ Rules for the components:
   - Add `MuMuConvGammaBuilder`; reuse `DimuonBuilder` and `CandidateObservables`.
 - [x] **P7.2** Bs→J/ψη(γγ), μμγγ: extend `MMGVertexFit` to N photons, with an optional J/ψ mass constraint on the dimuon and an optional η mass window.
 - [x] **P7.3** Bs→J/ψφ (μμKK) normalisation channel with the same builder pattern.
-- [ ] **P7.4** Remove `KinematicConstrainedFit`, `TrippleObjectVertex`, `TetraObjectVertex`, `ReferenceModeratorVertex`, `ReferenceResonance` (reduced to a resonance flag in `DimuonBuilder`) and `DecayChainVariables`.
+- [x] **P7.4** Remove `KinematicConstrainedFit`, `TrippleObjectVertex`, `TetraObjectVertex`, `ReferenceModeratorVertex`, `ReferenceResonance` (reduced to a resonance flag in `DimuonBuilder`) and `DecayChainVariables`.
 
 ## Phase 8: MINIAOD support
 - [ ] **P8.1** Read `edm::View<reco::Muon>` and `edm::View<reco::Photon>` and pass pointers on (MMGVertexFit already supports `pat::` objects). Skip photons where `hasClusterHits()` is false.

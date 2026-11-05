@@ -24,9 +24,11 @@ namespace bmmg {
       sm.muon = &mu;
       sm.mva = score;
       sm.track = ttBuilder.build(mu.innerTrack());
-      sm.kinParticle = MMGVertexFit::muonParticle(mu, &ttBuilder);
       selected.push_back(std::move(sm));
     }
+    // the kinematic particles point to the TransientTracks: built only once the vector is final
+    // (returning the vector moves its buffer, the elements keep their addresses)
+    for (auto& sm : selected) sm.kinParticle = MMGVertexFit::muonParticle(sm.track);
     return selected;
   }
 
@@ -70,16 +72,19 @@ namespace bmmg {
       const bool firstPositive = trks[0]->charge() > 0;
       sc.track1 = ttBuilder.build(*trks[firstPositive ? 0 : 1]);
       sc.track2 = ttBuilder.build(*trks[firstPositive ? 1 : 0]);
+      selected.push_back(std::move(sc));
+    }
+    // e+ e- refit once the vector is final: the particles point to the TransientTracks
+    for (auto& sc : selected) {
       sc.photon = MMGVertexFit::conversionParticle(sc.track1, sc.track2);
       if (sc.photon) {
         const KinematicState& s = (*sc.photon)->currentState();
         const GlobalVector p = s.globalMomentum();
         sc.p4.SetXYZT(p.x(), p.y(), p.z(), p.mag());
       } else {
-        const auto& p = conv.pairMomentum();
+        const auto& p = sc.conversion->pairMomentum();
         sc.p4.SetXYZT(p.x(), p.y(), p.z(), std::sqrt(p.mag2()));
       }
-      selected.push_back(std::move(sc));
     }
     return selected;
   }

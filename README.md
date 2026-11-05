@@ -41,10 +41,9 @@ Grid submission uses one config for MC and data, `RadiativeAnalysis/crab/crabCon
 ## Layout
 | path | content |
 |---|---|
-| `RadiativeAnalysis/plugins/RadiativeAnalysis.cc` | the ntuplizer (EDAnalyzer), which orchestrates the library components |
-| `RadiativeAnalysis/interface`, `src` | library (namespace `bmmg`): `MMGVertexFit` (μμγ kinematic fit), object selection, `DimuonBuilder`, `MuMuGammaBuilder`, `CandidateObservables`, `TriggerMatcher`, `GenChain` (gen truth), `BranchSet`/`NtupleWriter` |
+| `RadiativeAnalysis/plugins/RadiativeAnalysis.cc` | the ntuplizer (EDAnalyzer), which orchestrates the library components. Channels: μμγ (ECAL photon), μμγ (conversion), μμγγ, μμKK (normalisation) |
+| `RadiativeAnalysis/interface`, `src` | library (namespace `bmmg`): `MMGVertexFit` (μμγ kinematic fit), object selection, `DimuonBuilder`, `CandidateBuilders`, `CandidateObservables`, `TriggerMatcher`, `GenChain` (gen truth), `BranchSet`/`NtupleWriter` |
 | `RadiativeAnalysis/plugins/MMGVertexFitExample.cc`, `test/MMGVertexFitExample.py` | standalone validation of the photon kinematic fit (pulls, resolution) |
-| `RadiativeAnalysis/plugins/RadiativeAnalysisLegacy.cc`, `test/makeTreeLegacy_BsMuMuGamma_MC_AOD.py` | the previous ntuplizer (old flat tree, includes the conversion, μμγγ and μμKK channels). It is kept until those channels are ported, then removed |
 | `RadiativeAnalysis/test` | configs, `test_files.txt`, unit tests, `compareNtuples.py` (regression check), `validateMMGFit.py` (fit validation) |
 | `RadiativeAnalysis/devel` | not compiled: custom low-energy photon producer (work in progress), old debugging analyzers |
 | `run3mvaid` | Run-3 soft-muon MVA (XGBoost) |
@@ -53,7 +52,7 @@ Grid submission uses one config for MC and data, `RadiativeAnalysis/crab/crabCon
 - [NTUPLE.md](NTUPLE.md): branches of the ntuple.
 - [plan.md](plan.md): development plan and its status.
 - [report.md](report.md): log of the changes, validations and decisions.
-- [structure_old.md](structure_old.md): description of the code before the restructuring.
+- [structure_old.md](structure_old.md): description of the code before the restructuring. The old ntuplizer (`RadiativeAnalysisLegacy`) was removed in plan step P7.4; it is still in the git history (commit `bde3123`).
 
 ## MC production
 Private AOD MC production is done in a separate repository: https://github.com/mumuhamm/PrivateMCProduction, branch `devel_GPExtrapolationPhaseI`. `RadiativeAnalysis/test/fragmentRequest.sh` downloads generator fragments.

@@ -4,6 +4,33 @@ Entries are newest first. Each entry gives: the plan item(s) (see `plan.md`), wh
 
 ---
 
+## 2026-11-05: P7.4 legacy removed; TransientTrack lifetime fix; non-determinism investigation (in progress)
+- **P7.4:** removed `RadiativeAnalysisLegacy` and every class only it used:
+  - `RadiativeRootTree`, `Tripple/Tetra/ReferenceModeratorVertex`, `KinematicConstrainedFit`, `ReferenceResonance`, `DecayChainVariables`, `BeamSpotAndVertex`;
+  - `MuonSelector`, `PhotonSelector`, `RecoPhotons`, `ParticleFlowCandidate`, `SCRecHitAccumulator`, `BaselineMatching`, `VariableDefinitions`, `MuonClosestApproachCalculator`, `GlobalIncludes.h`;
+  - the legacy config.
+
+  The last commit with the legacy code is `bde3123`. The plugin library is now `BsToMuMuGammaAnalysisRadiativeAnalysisPlugins`: only `RadiativeAnalysis` and `MMGVertexFitExample`, with a pruned BuildFile. A clean build has no warnings.
+- **`MMGVertexFitExample`:** the null check on the matched photon is added (a compiler warning, not a reachable bug), and the unused variables are removed.
+- **Bug found: dangling `TransientTrack` pointers in the kinematic particles.**
+  - `KinematicParticleFactoryFromTransientTrack::particle()` keeps a raw pointer to the `TransientTrack` it is given.
+  - `MMGVertexFit::muonParticle()` (already in the original `sslawins_miniaod` version) and `photonParticle()` used local `TransientTrack`s, so every particle pointed to a destroyed object.
+  - `selectConversions` moved the conversion tracks after building the particle.
+  - **Fix:**
+    - `muonParticle(const TransientTrack&)` now takes a track owned by the caller (`SelectedMuon::track`).
+    - Particles are built only after the object vectors are final.
+    - Photon `TransientTrack`s are owned by `PhotonParticle`/`Result` (`fitPhotonTracks`).
+    - The lifetime rule is documented in `MMGVertexFit.h`.
+- **Driver config:** new options `channels=mmg,mmcg,mmgg,mmkk` and `trackCompatibility=0/1`.
+- **Non-determinism, still open:**
+  - Two identical runs of the same binary (2000 MC events) still differ in a few candidates: 1 `mmg`, about 13 `mmcg`, about 8 `mmkk` (`mmkk` alone, without the track-compatibility fits: 8 of 145 candidates).
+  - **Only badly converged fits are affected** (χ² from hundreds to 10⁴, e.g. a μμKK mass of 6.88 vs 2.95 GeV for χ² ≈ 1.4·10⁴). Well-converged candidates are identical.
+  - A single affected event processed on its own is reproducible (3 identical runs), so the result depends on the job history: uninitialised memory or state carried between events.
+  - A valgrind memcheck run is in progress (next entry).
+  - **Practical impact:** small, because these candidates fail any reasonable vtxProb cut. They also explain the event-330 conversion variable of the legacy module (P1.3b, P3).
+
+---
+
 ## 2026-11-05: Phase 7, the other channels in the new module (P7.1–P7.3)
 - **`MMGVertexFit` generalised:**
   - `fitParticles(particles, pv)`: vertex fit followed by the pointing constraint, for any set of daughters.

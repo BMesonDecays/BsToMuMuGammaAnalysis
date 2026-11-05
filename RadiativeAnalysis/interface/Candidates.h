@@ -26,7 +26,7 @@ namespace bmmg {
     int index = -1;                     // index in the muon collection
     const reco::Muon* muon = nullptr;
     float mva = -99.f;                  // Run-3 soft-muon MVA
-    reco::TransientTrack track;         // inner track
+    reco::TransientTrack track;         // inner track (kinParticle points to it: do not copy the muon and use the copy's particle)
     std::optional<RefCountedKinematicParticle> kinParticle;   // for the kinematic fit
   };
 

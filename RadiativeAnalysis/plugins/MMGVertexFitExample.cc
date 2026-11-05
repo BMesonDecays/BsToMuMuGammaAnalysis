@@ -232,10 +232,6 @@ void MMGVertexFitExample::analyze(
   const std::vector<reco::GenParticle> & genPar = ev.get(theGenParticleToken);
   const edm::View<reco::Muon> & recoMuons = ev.get(theMuonToken);
   const edm::View<reco::Photon> & recoPhotons = ev.get(thePhotonToken);
-  auto const& field = es.getData(m_fieldToken);
-
-  const reco::BeamSpot & beamSpot = ev.get(theBeamSpotToken);
-  const std::vector<reco::Vertex> & primaryVertices = ev.get(theVertexToken);
 
   const TransientTrackBuilder* TTBuilder = &es.getData(theTransientTrackBuilderToken);
 
@@ -295,7 +291,7 @@ void MMGVertexFitExample::analyze(
   for (const reco::Candidate* genMu : genMuons)
   {
     float minDR = 10;
-    const reco::Muon* bestMatchedMuon;
+    const reco::Muon* bestMatchedMuon = nullptr;
     bool matched = false;
     for (const auto& recoMu : recoMuons)
     {
@@ -321,7 +317,7 @@ void MMGVertexFitExample::analyze(
   for (const reco::Candidate* genPh : genPhotons)
   {
     float minDR = 10;
-    const reco::Photon* bestMatchedPhoton;
+    const reco::Photon* bestMatchedPhoton = nullptr;
     bool matched = false;
     for (const auto& recoPh : recoPhotons)
     {
@@ -335,6 +331,7 @@ void MMGVertexFitExample::analyze(
     }
     // if (matched) hGammaDeltaR->Fill(minDR);
     if (!matched) continue;
+    if (!bestMatchedPhoton) continue;   // no reco photon in the event
     const bool inRegion = photonRegion == "both" || (photonRegion == "EB" && bestMatchedPhoton->isEB()) ||
                           (photonRegion == "EE" && bestMatchedPhoton->isEE());
     if (minDR < 0.03 && inRegion && MMGVertexFit::hasClusterHits(*bestMatchedPhoton))

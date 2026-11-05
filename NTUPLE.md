@@ -154,7 +154,7 @@ From `GenDecayChain`, using the B (B_s or B_d) with two muons among its descenda
 - `lumiEquivalent`, `lumiEquivalentErr`: nEvents / (xsec · filterEff) [pb⁻¹].
 - Data: −1, except `nEvents`.
 
-## Differences from the legacy ntuple (`RadiativeAnalysisLegacy`, tree `BMMGTree`)
+## Differences from the legacy ntuple (`RadiativeAnalysisLegacy`, tree `BMMGTree`, removed in P7.4)
 - **Candidates:**
   - All candidates are stored. The legacy ntuple kept one "best" muon pair, chosen by vertex probability after an MVA > 0.83 cut and a 100 µm displacement cut, plus one photon closest in ΔR (MVA > −0.07).
   - The pre-fit window is 4–7 GeV instead of 4.5–6.0.

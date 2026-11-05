@@ -1,71 +1,33 @@
-<library name="BsToMuMuGammaAnalysisRadiativeAnalysisAuto" file="*.cc">
-  <!-- framework -->
-  <use name="FWCore/Framework"/>
-  <use name="FWCore/ParameterSet"/>
-  <use name="FWCore/PluginManager"/>
-  <use name="FWCore/Common"/>
-  <use name="FWCore/MessageLogger"/>
-  <use name="FWCore/Utilities"/>
-  <!-- data formats -->
+<!-- EDM modules: RadiativeAnalysis (ntuplizer), MMGVertexFitExample (fit validation) -->
+<library name="BsToMuMuGammaAnalysisRadiativeAnalysisPlugins" file="*.cc">
+  <use name="BsToMuMuGammaAnalysis/RadiativeAnalysis"/>
+  <use name="BsToMuMuGammaAnalysis/run3mvaid"/>
+  <use name="CommonTools/UtilAlgos"/>
   <use name="DataFormats/BeamSpot"/>
-  <use name="DataFormats/BTauReco"/>
   <use name="DataFormats/Candidate"/>
   <use name="DataFormats/Common"/>
-  <use name="DataFormats/EcalDetId"/>
   <use name="DataFormats/EcalRecHit"/>
   <use name="DataFormats/EgammaCandidates"/>
-  <use name="DataFormats/EgammaReco"/>
-  <use name="DataFormats/GeometryVector"/>
   <use name="DataFormats/HepMCCandidate"/>
   <use name="DataFormats/HLTReco"/>
-  <use name="DataFormats/JetReco"/>
-  <use name="DataFormats/L1Trigger"/>
-  <use name="DataFormats/Math"/>
   <use name="DataFormats/MuonReco"/>
   <use name="DataFormats/PatCandidates"/>
-  <use name="DataFormats/ParticleFlowCandidate"/>
-  <use name="DataFormats/RecoCandidate"/>
   <use name="DataFormats/TrackReco"/>
   <use name="DataFormats/VertexReco"/>
-  <use name="SimDataFormats/GeneratorProducts"/>
-  <use name="SimDataFormats/PileupSummaryInfo"/>
-  <use name="SimDataFormats/TrackingAnalysis"/>
-  <use name="SimDataFormats/Vertex"/>
-  <!-- geometry, magnetic field -->
-  <use name="Geometry/CaloGeometry"/>
-  <use name="Geometry/CaloTopology"/>
-  <use name="Geometry/Records"/>
-  <use name="Geometry/TrackerGeometryBuilder"/>
+  <use name="FWCore/Common"/>
+  <use name="FWCore/Framework"/>
+  <use name="FWCore/MessageLogger"/>
+  <use name="FWCore/ParameterSet"/>
+  <use name="FWCore/ServiceRegistry"/>
+  <use name="FWCore/Utilities"/>
   <use name="MagneticField/Engine"/>
   <use name="MagneticField/Records"/>
-  <!-- tracking and vertexing (RecoVertex/KinematicFit* are the locally modified packages) -->
-  <use name="TrackingTools/IPTools"/>
-  <use name="TrackingTools/PatternTools"/>
-  <use name="TrackingTools/Records"/>
-  <use name="TrackingTools/TrajectoryState"/>
-  <use name="TrackingTools/TransientTrack"/>
-  <use name="RecoVertex/AdaptiveVertexFit"/>
-  <use name="RecoVertex/KalmanVertexFit"/>
-  <use name="RecoVertex/KinematicFit"/>
-  <use name="RecoVertex/KinematicFitPrimitives"/>
-  <use name="RecoVertex/PrimaryVertexProducer"/>
-  <use name="RecoVertex/VertexPrimitives"/>
-  <use name="RecoVertex/VertexTools"/>
-  <!-- ECAL (RecoEcal/EgammaCoreTools is locally modified) -->
   <use name="RecoEcal/EgammaCoreTools"/>
-  <!-- misc -->
-  <use name="CommonTools/CandUtils"/>
-  <use name="CommonTools/UtilAlgos"/>
-  <use name="CommonTools/Statistics"/>
-  <use name="HLTrigger/HLTcore"/>
-  <use name="MuonAnalysis/MuonAssociators"/>
-  <use name="PhysicsTools/CandUtils"/>
-  <use name="RecoTracker/DeDx"/>
-  <use name="SimTracker/TrackAssociation"/>
-  <use name="BsToMuMuGammaAnalysis/run3mvaid"/>
-  <use name="BsToMuMuGammaAnalysis/RadiativeAnalysis"/>
-  <use name="clhep"/>
-  <use name="boost"/>
+  <use name="RecoVertex/KinematicFitPrimitives"/>
+  <use name="SimDataFormats/GeneratorProducts"/>
+  <use name="SimDataFormats/PileupSummaryInfo"/>
+  <use name="TrackingTools/Records"/>
+  <use name="TrackingTools/TransientTrack"/>
   <use name="root"/>
   <flags EDM_PLUGIN="1"/>
 </library>

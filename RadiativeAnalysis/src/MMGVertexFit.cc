@@ -63,18 +63,9 @@ double MMGVertexFit::photonEnergyError(const reco::Photon& photon) const
         return scale.energy * photon.getCorrectedEnergyError(energyType(photon));
     }
 
-std::optional<RefCountedKinematicParticle> MMGVertexFit::muonParticle(const reco::Muon& muon,
-    const TransientTrackBuilder* TTBuilder)
+RefCountedKinematicParticle MMGVertexFit::muonParticle(const reco::TransientTrack& muonTrack)
     {
-        const reco::TrackRef muTrack = muon.track();
-        if (!muTrack) return std::nullopt;
-        const reco::TransientTrack muonTT = TTBuilder->build(muTrack);
-
-        const ParticleMass muon_mass(bmmg::pdg::muonMass);
-        float muon_sigma = 1E-6;
-
-        KinematicParticleFactoryFromTransientTrack pFactory;
-        return pFactory.particle(muonTT, muon_mass, float(0), float(0), muon_sigma);
+        return trackParticle(muonTrack, bmmg::pdg::muonMass);
     }
 
 RefCountedKinematicParticle MMGVertexFit::trackParticle(const reco::TransientTrack& track, double mass)
@@ -124,12 +115,14 @@ std::optional<MMGVertexFit::PhotonParticle> MMGVertexFit::photonParticle(const r
         FreeTrajectoryState fts(expansionPoint, p3, TrackCharge(0), TTBuilder->field());
         AlgebraicSymMatrix66 cov{ROOT::Math::SMatrixIdentity()};
         fts.setCartesianError(CartesianTrajectoryError(cov));
-        const reco::TransientTrack phoTT = TTBuilder->build(fts);
+        // owned by the result: the kinematic particle keeps a pointer to it
+        auto phoTT = std::make_shared<const reco::TransientTrack>(TTBuilder->build(fts));
 
         KinematicParticleFactoryFromTransientTrack pFactory;
         float chi = 0.f, ndf = 0.f, sigma = 1E-6;
         PhotonParticle result;
-        result.particle = pFactory.particle(phoTT, ParticleMass(0.), chi, ndf, sigma, fitPhoton.get(), covariance.get());
+        result.particle = pFactory.particle(*phoTT, ParticleMass(0.), chi, ndf, sigma, fitPhoton.get(), covariance.get());
+        result.track = std::move(phoTT);
         result.photon = std::move(fitPhoton);
         result.covariance = std::move(covariance);
         return result;
@@ -215,6 +208,7 @@ std::optional<MMGVertexFit::Result> MMGVertexFit::fitCandidate(const RefCountedK
         {
             result->fitPhotons.push_back(std::move(pp.photon));
             result->fitPhotonCovariances.push_back(std::move(pp.covariance));
+            result->fitPhotonTracks.push_back(std::move(pp.track));
         }
         return result;
     }
@@ -230,11 +224,16 @@ std::vector<MMGVertexFit::Result> MMGVertexFit::fit(const std::vector<const reco
 
         const GlobalPoint pv(primaryVertices[0].position().x(), primaryVertices[0].position().y(), primaryVertices[0].position().z());
 
-        // kinematic particles of the muons, built once
+        // kinematic particles of the muons, built once; the TransientTracks must outlive the particles
+        std::vector<reco::TransientTrack> muonTracks;
+        muonTracks.reserve(muons.size());   // no reallocation: the particles point to the elements
         std::vector<std::optional<RefCountedKinematicParticle>> muonKinematicParticles;
-        muonKinematicParticles.reserve(muons.size());
         for (const reco::Muon* recoMu : muons)
-            muonKinematicParticles.push_back(muonParticle(*recoMu, TTBuilder));
+        {
+            if (recoMu->track().isNull()) { muonKinematicParticles.push_back(std::nullopt); continue; }
+            muonTracks.push_back(TTBuilder->build(recoMu->track()));
+            muonKinematicParticles.push_back(muonParticle(muonTracks.back()));
+        }
 
         for (unsigned int i = 0; i < muons.size(); i++)
         {

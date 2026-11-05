@@ -20,8 +20,14 @@
 //
 // Typical use in an analyzer, one fit per candidate:
 //   MMGVertexFit fitter(ebScale, eeScale);
-//   auto mu1 = fitter.muonParticle(muon1, ttBuilder);           // once per muon and event
-//   auto mu2 = fitter.muonParticle(muon2, ttBuilder);
+//   reco::TransientTrack tt1 = ttBuilder->build(muon1.innerTrack()), tt2 = ...;   // must outlive the particles!
+//   auto mu1 = MMGVertexFit::muonParticle(tt1);                  // once per muon and event
+//   auto mu2 = MMGVertexFit::muonParticle(tt2);
+//
+// LIFETIME: KinematicParticleFactoryFromTransientTrack keeps a raw pointer to the TransientTrack it
+// is given, so every TransientTrack passed to muonParticle / trackParticle / conversionParticle must
+// stay alive (and must not be moved) as long as the particles and fit results are used. Photon
+// tracks are owned by PhotonParticle / Result.
 //   auto result = fitter.fitCandidate(*mu1, *mu2, photon, lazyTools, ttBuilder, pv);
 //   if (result) { result->particle, result->vertex, result->daughters ... }
 class MMGVertexFit
@@ -45,6 +51,7 @@ class MMGVertexFit
             // covariances; they are owned here so that they live as long as the result.
             std::vector<std::shared_ptr<const reco::Photon>> fitPhotons;
             std::vector<std::shared_ptr<const TMatrixD>> fitPhotonCovariances;
+            std::vector<std::shared_ptr<const reco::TransientTrack>> fitPhotonTracks;
         };
 
         // scale factors for the photon measurement uncertainties (sigma, not variance):
@@ -74,8 +81,7 @@ class MMGVertexFit
 
         // kinematic particle of a muon (from its inner track); empty if the muon has no inner track.
         // Build it once per muon and event and reuse it for all candidates.
-        static std::optional<RefCountedKinematicParticle> muonParticle(const reco::Muon& muon,
-            const TransientTrackBuilder* TTBuilder);
+        static RefCountedKinematicParticle muonParticle(const reco::TransientTrack& muonTrack);
 
         // kinematic particle of a charged track with the given mass hypothesis (e.g. a kaon)
         static RefCountedKinematicParticle trackParticle(const reco::TransientTrack& track, double mass);
@@ -92,6 +98,7 @@ class MMGVertexFit
             RefCountedKinematicParticle particle;
             std::shared_ptr<const reco::Photon> photon;
             std::shared_ptr<const TMatrixD> covariance;
+            std::shared_ptr<const reco::TransientTrack> track;   // the particle points to it
         };
         std::optional<PhotonParticle> photonParticle(const reco::Photon& photon, const EcalClusterLazyTools& lazyTools,
             const TransientTrackBuilder* TTBuilder, const GlobalPoint& expansionPoint) const;

@@ -31,6 +31,10 @@ options.register('lumiMask', '', VarParsing.multiplicity.singleton, VarParsing.v
                  'JSON file with the certified luminosity sections')
 options.register('photonID', 1, VarParsing.multiplicity.singleton, VarParsing.varType.int,
                  'run the photon ID (VID); needs fixedGridRhoFastjetAll, missing in some private samples')
+options.register('channels', 'mmg,mmcg,mmgg,mmkk', VarParsing.multiplicity.singleton, VarParsing.varType.string,
+                 'comma-separated list of the channels to build: mmg, mmcg, mmgg, mmkk')
+options.register('trackCompatibility', 1, VarParsing.multiplicity.singleton, VarParsing.varType.int,
+                 'compute the max track compatibility of the dimuon (slow-ish)')
 options.register('verbose', 0, VarParsing.multiplicity.singleton, VarParsing.varType.int,
                  'print the trigger filters used for the muon matching')
 options.setDefault('outputFile', 'bmmg_ntuple.root')
@@ -83,9 +87,15 @@ process.egmPhotonIDs.physicsObjectSrc = cms.InputTag('gedPhotons')
 
 # ---------------------------------------------------------------- ntuplizer
 from BsToMuMuGammaAnalysis.RadiativeAnalysis.radiativeAnalysis_cfi import radiativeAnalysis
+channels = options.channels.split(',')
 process.bmmg = radiativeAnalysis.clone(
     isMC=isMC,
     verbose=bool(options.verbose),
+    doMuMuGamma='mmg' in channels,
+    doMuMuConvGamma='mmcg' in channels,
+    doMuMuGammaGamma='mmgg' in channels,
+    doMuMuKK='mmkk' in channels,
+    computeTrackCompatibility=bool(options.trackCompatibility),
 )
 process.TFileService = cms.Service('TFileService', fileName=cms.string(options.outputFile))
 
