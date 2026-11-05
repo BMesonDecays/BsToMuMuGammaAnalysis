@@ -434,83 +434,12 @@ void BMMGCustomPhotonProducer::endStream() {
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
 void BMMGCustomPhotonProducer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
+  // Work in progress: the parameters are those of the standard PhotonProducer; configure the module by
+  // cloning RecoEgamma/EgammaPhotonProducers/python/photons_cfi.py (see test/customPhotons_cfg.py).
+  // No validation until the parameter set of this module is final.
   edm::ParameterSetDescription desc;
-  // Input collections and basic settings
-  desc.add<edm::InputTag>("photonCoreProducer", edm::InputTag("islandPhotonCore"));
-  desc.add<bool>("regressionWeightsFromDB", true);
-  desc.add<std::string>("energyRegressionWeightsFileLocation", std::string(""));
-  desc.add<std::string>("energyRegressionWeightsDBLocation", std::string(""));
-  desc.add<std::string>("superClusterEnergyCorrFunction", std::string("EcalClusterEnergyCorrection"));
-  desc.add<std::string>("superClusterEnergyErrorFunction", std::string("EcalClusterEnergyUncertainty"));
-  desc.add<std::string>("superClusterCrackEnergyCorrFunction", std::string("EcalClusterCrackCorrection"));
-  desc.add<std::string>("photonEcalEnergyCorrFunction", std::string("EcalClusterEnergyCorrectionObjectSpecific"));
-  desc.add<std::string>("candidateP4type", std::string("fromEcalEnergy"));
-
-  
-  // Vertex
-  desc.add<bool>("usePrimaryVertex", true);
-  desc.add<edm::InputTag>("primaryVertexProducer", edm::InputTag("offlinePrimaryVerticesWithBS"));
-
-  // Position calc parameters
-  edm::ParameterSetDescription posCalcP; 
-  posCalcP.add<double>("T0_barl", 7.4);
-  posCalcP.add<double>("T0_endc", 6.3);
-  posCalcP.add<double>("T0_endcPresh", 3.6);
-  posCalcP.add<bool>("LogWeighted", true);
-  posCalcP.add<double>("W0", 4.2);
-  posCalcP.add<double>("X0", 0.89);
-  desc.add<edm::ParameterSetDescription>("posCalcParameters", posCalcP);
-
-  // Ecal and Hcal inputs
-  desc.add<edm::InputTag>("barrelEcalHits", edm::InputTag("ecalRecHit","EcalRecHitsEB"));
-  desc.add<edm::InputTag>("endcapEcalHits", edm::InputTag("ecalRecHit","EcalRecHitsEE"));
- // desc.add<edm::InputTag>("hbheRecHits", egammaHBHERecHit.hbheRecHits);
- // desc.add<EgammaHcalIsolation::arrayHB>("recHitEThresholdHB", egammaHBHERecHit.recHitEThresholdHB);
-  //desc.add<EgammaHcalIsolation::arrayHE>("recHitEThresholdHE", egammaHBHERecHit.recHitEThresholdHE);
-  //desc.add<bool>("usePFThresholdsFromDB", egammaHBHERecHit.usePFThresholdsFromDB);
-  //desc.add<int>("maxHcalRecHitSeverity", egammaHBHERecHit.maxHcalRecHitSeverity);
-  desc.add<bool>("hcalRun2EffDepth", false);
-
-  // Halo and MIP tagging
-  desc.add<bool>("runMIPTagger", true);
-  desc.add<bool>("runMVABasedHaloTagger", false);
-
-  // Preselection and isolation
-  desc.add<double>("highEt", 100.0);
-  desc.add<double>("minR9Barrel", 10.0);
-  desc.add<double>("minR9Endcap", 10.0);
-
-  // SC preselection values
-  desc.add<double>("minSCEtBarrel", 5.0);
-  desc.add<double>("minSCEtEndcap", 15.0);
-  desc.add<double>("maxHoverEBarrel", 0.99);
-  desc.add<double>("maxHoverEEndcap", 0.50);
-  desc.add<double>("ecalRecHitSumEtOffsetBarrel", 1e9);
-  desc.add<double>("ecalRecHitSumEtSlopeBarrel", 0.0);
-  desc.add<double>("ecalRecHitSumEtOffsetEndcap", 1e9);
-  desc.add<double>("ecalRecHitSumEtSlopeEndcap", 0.0);
-  desc.add<double>("hcalRecHitSumEtOffsetBarrel", 1e9);
-  desc.add<double>("hcalRecHitSumEtSlopeBarrel", 0.0);
-  desc.add<double>("hcalRecHitSumEtOffsetEndcap", 1e9);
-  desc.add<double>("hcalRecHitSumEtSlopeEndcap", 0.0);
-  desc.add<double>("nTrackSolidConeBarrel", 1e9);
-  desc.add<double>("nTrackHollowConeBarrel", 1e9);
-  desc.add<double>("nTrackSolidConeEndcap", 1e9);
-  desc.add<double>("nTrackHollowConeEndcap", 1e9);
-  desc.add<double>("trackPtSumSolidConeBarrel", 1e9);
-  desc.add<double>("trackPtSumHollowConeBarrel", 1e9);
-  desc.add<double>("trackPtSumSolidConeEndcap", 1e9);
-  desc.add<double>("trackPtSumHollowConeEndcap", 1e9);
-  desc.add<double>("sigmaIetaIetaCutBarrel", 1e9);
-  desc.add<double>("sigmaIetaIetaCutEndcap", 1e9);
-
-  // RecHit exclusions
-  desc.add<std::vector<std::string>>("RecHitFlagToBeExcludedEB", std::vector<std::string>());
-  desc.add<std::vector<std::string>>("RecHitSeverityToBeExcludedEB", std::vector<std::string>());
-  desc.add<std::vector<std::string>>("RecHitFlagToBeExcludedEE", std::vector<std::string>());
-  desc.add<std::vector<std::string>>("RecHitSeverityToBeExcludedEE", std::vector<std::string>());
-
-  descriptions.add("BMMGCustomPhotonProducer", desc);
+  desc.setUnknown();
+  descriptions.addDefault(desc);
 }
 
 //define this as a plug-in

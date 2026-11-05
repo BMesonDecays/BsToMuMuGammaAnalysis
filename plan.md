@@ -203,10 +203,10 @@ Rules for the components:
 - [x] **P8.4** Validate on the MINIAOD file from `test_files.txt` against the AOD output of the same events.
 
 ## Phase 9: Custom low-energy photon (low priority)
-- [ ] **P9.1** Revive `BMMGCustomPhotonProducer` from `devel/`:
+- [x] **P9.1** (compiles and runs; see report.md for what remains) Revive `BMMGCustomPhotonProducer` from `devel/`:
   - `PhotonCollection_` is never set.
   - `hits` and `preselCutValues` are not reset per SC.
   - The full rechit collections are copied every event.
   - `fillDescriptions` is incomplete.
   - `minSCEt` of 5/15 GeV contradicts the low-energy goal.
-- [ ] **P9.2** Fix `customPhotonConfig_cfi.py`: collections that don't exist in AOD, and the EE severity copied from EB. Hook the producer into the driver config as an option.
+- [~] **P9.2** (new `test/customPhotons_cfg.py` replaces the broken cfi; the low-energy photon cores are still to be done) Fix `customPhotonConfig_cfi.py`: collections that don't exist in AOD, and the EE severity copied from EB. Hook the producer into the driver config as an option.

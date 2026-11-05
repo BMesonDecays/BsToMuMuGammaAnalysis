@@ -1,4 +1,4 @@
-<!-- EDM modules: RadiativeAnalysis (ntuplizer), MMGVertexFitExample (fit validation) -->
+<!-- EDM modules: RadiativeAnalysis (ntuplizer), MMGVertexFitExample (fit validation), BMMGCustomPhotonProducer (work in progress) -->
 <library name="BsToMuMuGammaAnalysisRadiativeAnalysisPlugins" file="*.cc">
   <use name="BsToMuMuGammaAnalysis/RadiativeAnalysis"/>
   <use name="BsToMuMuGammaAnalysis/run3mvaid"/>
@@ -28,6 +28,18 @@
   <use name="SimDataFormats/PileupSummaryInfo"/>
   <use name="TrackingTools/Records"/>
   <use name="TrackingTools/TransientTrack"/>
+  <!-- BMMGCustomPhotonProducer -->
+  <use name="RecoEgamma/EgammaPhotonAlgos"/>
+  <use name="RecoEgamma/PhotonIdentification"/>
+  <use name="RecoEgamma/EgammaElectronAlgos"/>
+  <use name="RecoEgamma/EgammaTools"/>
+  <use name="DataFormats/CaloTowers"/>
+  <use name="Geometry/CaloTopology"/>
+  <use name="Geometry/CaloGeometry"/>
+  <use name="CalibCalorimetry/HcalAlgos"/>
+  <use name="CondFormats/EcalObjects"/>
+  <use name="CondFormats/DataRecord"/>
+  <use name="RecoLocalCalo/EcalRecAlgos"/>
   <use name="root"/>
   <flags EDM_PLUGIN="1"/>
 </library>

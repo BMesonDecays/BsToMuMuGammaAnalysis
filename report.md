@@ -4,6 +4,29 @@ Entries are newest first. Each entry gives: the plan item(s) (see `plan.md`), wh
 
 ---
 
+## 2026-11-06: Phase 9, the custom photon producer compiles and runs (P9.1, P9.2 partial)
+- **CMSSW_14_1_1 API fixes in `BMMGCustomPhotonProducer`:**
+  - `PhotonIsolationCalculator` and `PhotonMIPHaloTagger` are default-constructed and configured with `setup(...)` in the constructor body; the tagger member is no longer `const`.
+  - `mipCalculate` → `MIPcalculate(&photon, evt, es, mipVar)`.
+- **Bugs fixed:**
+  - `hits` and `preselCutValues` are reset for each supercluster.
+  - The EB/EE rechit collections are no longer copied every event (pointers to the products).
+  - `PhotonCollection_` was not actually a bug: an empty `std::string` means the default instance label.
+- **`fillDescriptions`:** set to `setUnknown()` (no validation) while the module is in development. Its parameters are those of the standard `PhotonProducer`.
+- **Configuration:**
+  - New `test/customPhotons_cfg.py`: the standard `photons_cfi` retyped to `BMMGCustomPhotonProducer`. A recursive RECO→AOD mapping of the inputs is applied to every nested PSet (rechits, HBHE).
+  - Inputs: `photonCore`, an SC Eₜ threshold option (`minSCEt`, default 1 GeV), and the ntuplizer run on the custom photons.
+  - The old `customPhotonConfig*.py` were removed (they used parameter and collection names that don't exist).
+  - The module is compiled again (plugin library, with the RecoEgamma dependencies in the BuildFile).
+- **Result** (300 MC events, compared with gedPhotons):
+  - The producer runs and reproduces standard photons: 0.41 photons/event, 0.233 signal photons/event (the same as gedPhotons), 56 gen-matched μμγ candidates (the same).
+  - **The lowest photon pt is still 9.3 GeV with `minSCEt=1`**, because the input `photonCore` is built from superclusters with a ~10 GeV threshold.
+- **Remaining for the low-energy photon (research):**
+  - Build photon cores from lower-threshold superclusters, e.g. `particleFlowSuperClusterECAL` (available in AOD), with a photon-core producer.
+  - Then study purity and energy scale at low Eₜ, and the MMGVertexFit error scales for those photons.
+
+---
+
 ## 2026-11-05: Phase 8, MINIAOD support (P8.1–P8.4); non-determinism conclusion
 **Non-determinism, conclusion of the investigation (from the previous entry):**
 - valgrind memcheck on 600 events (μμKK only), which contain the affected entries 456 and 520, finds **no uninitialised or invalid memory access** in RecoVertex, the vertex fitters or the `bmmg` library. The only reports are ROOT's known `TStorage::UpdateIsOnHeap` false positive.
