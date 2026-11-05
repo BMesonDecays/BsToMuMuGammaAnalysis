@@ -300,6 +300,15 @@ process.bmmgVertexAnalysis = cms.EDAnalyzer("RadiativeAnalysis",
                                           EtaPrimePDGMass               = cms.double(0.9577),
                                           PsiPDGMass                    = cms.double(3.6860),
                                           outputFile                    = cms.untracked.string(options.outputFile),
+                                          # mu mu gamma kinematic fit (MMGVertexFit): scale factors for the photon cluster
+                                          # position uncertainty (sigma) along e_phi and e_theta and for the photon energy
+                                          # uncertainty, for barrel (EB) and endcap (EE); tuned on gedPhotons (see MMGVertexFitExample.py)
+                                          clusterCovScalePhiEB          = cms.double(0.16),
+                                          clusterCovScaleThetaEB        = cms.double(0.165),
+                                          energyErrorScaleEB            = cms.double(1.2),
+                                          clusterCovScalePhiEE          = cms.double(0.20),
+                                          clusterCovScaleThetaEE        = cms.double(0.24),
+                                          energyErrorScaleEE            = cms.double(1.3),
                                           muMVACut = cms.double(0.83),
                                           photonMVACut = cms.double(-0.07))
 

@@ -1,6 +1,7 @@
 #ifndef BsToMuMuGammaAnalysis_RadiativeAnalysis_TrippleObjectVertex_h
 #define BsToMuMuGammaAnalysis_RadiativeAnalysis_TrippleObjectVertex_h
 
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/MMGVertexFit.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/BeamSpotAndVertex.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/ReferenceResonance.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/KinematicConstrainedFit.h"
@@ -75,6 +76,7 @@ class TrippleObjectVertex{
 			const double nominalMuonMass,
 			const double nominalElectronMass, 
 		 	const TransientTrackBuilder& transientTrackBuilder,
+			const MMGVertexFit& mmgVertexFit,
 			RadiativeRootTree* rrt);
 
 };

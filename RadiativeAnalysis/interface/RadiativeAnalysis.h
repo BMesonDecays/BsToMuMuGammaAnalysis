@@ -62,6 +62,7 @@
 #include "DataFormats/PatCandidates/interface/PackedTriggerPrescales.h"
 #include <TLorentzVector.h>
 #include "BsToMuMuGammaAnalysis/run3mvaid/interface/MuonMVAID.h"
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/MMGVertexFit.h"
 #include "FWCore/Common/interface/TriggerNames.h"
 #include "DataFormats/HLTReco/interface/TriggerEvent.h"
 #include "DataFormats/HLTReco/interface/TriggerObject.h"
@@ -127,6 +128,7 @@ private:
   std::string outputFile_; // output file
   RadiativeRootTree *bmmgRootTree_;
   MuonMVAID* muonMVAIDProducer_;
+  MMGVertexFit mmgVertexFit_;   // mu mu gamma kinematic fit, photon error scales from the config
 
   edm::ParameterSet theConfig_;
   edm::EDGetTokenT<GenRunInfoProduct> generatorInfoTok;

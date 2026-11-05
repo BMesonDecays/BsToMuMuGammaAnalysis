@@ -48,11 +48,11 @@ The current structure is described in `structure_old.md`; progress is logged in 
   - Add a helper that builds the muon kinematic particles once per event.
   - Add the indices (mu1, mu2, photon) to `Result`.
   - Pass the PV explicitly instead of `primaryVertices[0]`.
-- [ ] **P1.3** Replace `KinematicConstrainedFit::TrippleObjectVertexFitRecoPhoton` in the reco-photon path of `TrippleObjectVertex` with `MMGVertexFit`.
+- [x] **P1.3** Replace `KinematicConstrainedFit::TrippleObjectVertexFitRecoPhoton` in the reco-photon path of `TrippleObjectVertex` with `MMGVertexFit`.
   - This also removes the leaked `new TMatrixD` (`TrippleObjectVertex.cc:634`), the 1e6 placeholder covariance, and the problem that the old constrained refit dropped the photon cluster model.
   - The fitted B and vertex then feed the existing ct, isolation and compatibility code.
   - The PV used in the pointing constraint is the lowest-DCA PV. The fit has to be done before the B direction is known, so take the PV with the lowest DCA to the pre-fit μμγ direction from the dimuon vertex, and record that choice in `report.md`.
-- [ ] **P1.4** Add the ErrorScale factors as parameters of `RadiativeAnalysis`: `clusterCovScalePhiEB/EE`, `clusterCovScaleThetaEB/EE`, `energyErrorScaleEB/EE`, with defaults from `MMGVertexFitExample.py`.
+- [x] **P1.4** Add the ErrorScale factors as parameters of `RadiativeAnalysis`: `clusterCovScalePhiEB/EE`, `clusterCovScaleThetaEB/EE`, `energyErrorScaleEB/EE`, with defaults from `MMGVertexFitExample.py`.
 - [ ] **P1.5** Mark `KinematicConstrainedFit` as deprecated. It stays only for conversions, μμγγ and μμKK until Phase 7. Delete the old `MMGVertexFit` code paths and `doFit`.
 - [ ] **P1.6** Validate on the large filtered sample: mass resolution, vertex pulls and ct, compared with the reference ntuple and with `MMGVertexFitExample`. Put the plots and numbers in `report.md`.
 

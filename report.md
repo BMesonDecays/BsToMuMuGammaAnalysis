@@ -4,6 +4,38 @@ Entries are newest first. Each entry gives: the plan item(s) (see `plan.md`), wh
 
 ---
 
+## 2026-11-05: Phase 1, MMGVertexFit in the analyzer (P1.3b + P1.4)
+- **P1.4:**
+  - `RadiativeAnalysis` owns an `MMGVertexFit mmgVertexFit_`, configured by the new parameters `clusterCovScalePhiEB/EE`, `clusterCovScaleThetaEB/EE`, `energyErrorScaleEB/EE`.
+  - In `makeTree_BsMuMuGamma_MC_AOD.py` they are set to the gedPhotons values from `MMGVertexFitExample.py`: EB 0.16 / 0.165 / 1.2, EE 0.20 / 0.24 / 1.3.
+- **P1.3b:**
+  - In the reco-photon path of `TrippleObjectVertex`, `KinematicConstrainedFit::TrippleObjectVertexFitRecoPhoton` is replaced by `MMGVertexFit::fitCandidate`.
+  - Muon kinematic particles are built once per muon pair. The pointing constraint uses the lowest-DCA PV, chosen as before from the dimuon Kalman vertex and the pre-fit μμγ momentum.
+  - `TrippleObjectVertexObservables` takes `const MMGVertexFit&`.
+  - Removed: the leaked `new TMatrixD` per photon, and the photon `FreeTrajectoryState` with its 1e6 placeholder covariance.
+  - Everything after the fit (ct, ct errors, isolation, compatibility, PV–SV distances) is unchanged and uses the new fitted B and vertex.
+- **Behaviour differences on purpose:**
+  1. The old fit dropped the photon cluster model in its final constrained refit; the new one keeps it.
+  2. The old fit added a J/ψ/φ/K* mass constraint on the dimuon when it was flagged as a resonance; MMGVertexFit has no mass constraint. This doesn't matter for non-resonant Bs→μμγ, but it is needed later for J/ψγ / J/ψη (Phase 7).
+  3. The endcap veto (`photon.isEE() continue`) is kept for now, so the change is only the fit. The new fit is validated for EE in the example, so the veto can probably go (P2.7).
+- **Build:** OK. No new warnings.
+- **Validation** against `reference_P1_ged_2000.root` (2000 events):
+  - 550 of 561 branches are identical. The 10 `_mmrecog` fit-derived branches differ in exactly the 49 events with a fit: mass, ct2D/3D, ct errors, Dist2D/3D and their errors, isolation.
+  - The same 49 events have a fitted candidate before and after.
+  - 1 unexpected difference: `VertexfitBsCtErr3D_mmconvg` in event 330, 0.00211144 → 0.00211146 (relative 1e-5). The conversion fit doesn't use the changed code, so this is a numerical side effect, maybe from state in the fit framework or the uninitialised `KinematicConstrainedFit` members (P2.13). To be checked when the conversion path is reworked.
+- **Physics comparison** on the 49 candidates, against the gen B mass and gen ct3D:
+
+  | | mass − gen: mean | RMS | median abs |
+  |---|---|---|---|
+  | pre-fit 4-vector | −0.081 | 0.206 | 0.071 |
+  | old fit | −0.040 | 0.217 | 0.110 |
+  | **new fit** | −0.066 | **0.162** | **0.071** |
+
+  ct3D − gen: old fit mean +0.0039, RMS 0.0109; new fit mean +0.0036, RMS 0.0108 (gen mean 0.048). The **ct3D pull RMS is 5.3 (old) and 4.4 (new)**: `VariableDefinitions::calculateCt3DError` clearly underestimates the error (mean 0.0016 against a spread of 0.011). This goes to P1.6 and P4.7.
+- **New reference for later steps:** `test/reference/reference_P1_fit_2000.root` (this version).
+
+---
+
 ## 2026-11-05: Phase 1, switch to gedPhotons (P1.3a)
 - **Config:** in `makeTree_BsMuMuGamma_MC_AOD.py`, `PhotonTag`, `photonMVAValueMapProducer.src` and `egmPhotonIDs.physicsObjectSrc` now use `gedPhotons` instead of `photons` (user decision: the MMGVertexFit error scales are tuned on gedPhotons).
 - **New reference:** `test/reference/reference_P1_ged_2000.root` (same 2000 events). **Later Phase 1 steps compare against this one.**

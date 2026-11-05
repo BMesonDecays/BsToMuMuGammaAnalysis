@@ -17,6 +17,7 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
     const double nominalMuonMass,
     const double nominalElectronMass,
     const TransientTrackBuilder& transientTrackBuilder,
+    const MMGVertexFit& mmgVertexFit,
     RadiativeRootTree* rrt) {
         
         bool verbose = true;
@@ -601,6 +602,10 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
 //////////////////// Reco photon loop starts here - Alibordi//////
 //////////////////////////////////////////////////////////////////
 
+            // muon kinematic particles for the mu mu gamma fit, built once per muon pair
+            const auto mu1Particle = MMGVertexFit::muonParticle(mu1, &transientTrackBuilder);
+            const auto mu2Particle = MMGVertexFit::muonParticle(mu2, &transientTrackBuilder);
+
             for (size_t i = 0; i < photons.size(); ++i) {
             dcv.vertexFitFlag_mmrecog = 2;
             //std::cout<<" The vertex fit flag is set to 2 for the reco photons : "<<dcv.vertexFitFlag_mmrecog<<"\n";
@@ -624,24 +629,6 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
             if (BCand.M() < m_lim.BsMassCutLower || BCand.M() > m_lim.BsMassCutUpper) continue;
             //std::cout<<"mass B Reco Photon Case : "<<BCand.M()<<"\n";
             //std::vector<reco::TransientTrack> ttrk_photons = {reco::TransientTrack(photon.superCluster()->seed().trackRef(), &bField)};
-            GlobalPoint vertexPostion(bsAndVtxInfo.pv_x, bsAndVtxInfo.pv_y, bsAndVtxInfo.pv_z);
-            GlobalVector vertexDirection(photon.px(), photon.py(), photon.pz());
-            TrackCharge photon_charge = 0; 
-            FreeTrajectoryState photonFTS = FreeTrajectoryState(vertexPostion, vertexDirection, photon_charge, &bField);
-            //std::cout<<"Photon FTS: "<<photonFTS.position().x()<<"\t"<<photonFTS.position().y()<<"\t"<<photonFTS.position().z()<<"\n";
-            
-            TMatrixD cov(lazyTools.covariancesXYZ(*photon.superCluster()));
-            TMatrixD* covPtr(new TMatrixD(cov));
-            AlgebraicSymMatrix66 photonCov{ROOT::Math::SMatrixIdentity()};
-            AlgebraicVector6 diagonal(1e6, 1e6, 1e6, 1e6, 1e6, 1e6);
-            photonCov.SetDiagonal(diagonal);
-            CartesianTrajectoryError photonErr(photonCov);
-            photonFTS.setCartesianError(photonErr);
-
-            reco::TransientTrack  transientrackforPhotn = transientTrackBuilder.build(photonFTS);
-            std::vector<reco::TransientTrack>  photonTT = {transientrackforPhotn};
-            if (!photonTT[0].isValid()) continue;
-
             std::vector<reco::TransientTrack> t_tracks_RecPhoton;
 
             reco::TransientTrack muonTT1(muTrack1, &bField);
@@ -657,23 +644,26 @@ DecayChainVariables TrippleObjectVertex::TrippleObjectVertexObservables(
             double vtxprob_Bs = TMath::Prob(vertexbskalman.chi2(),(int)vertexbskalman.ndof());
             if (vtxprob_Bs < 1e-5) continue;
             rrt->BsVtxProb_mmrecog_ = vtxprob_Bs;
-            KinematicConstrainedFit BCandFitter;
-            if (photon.isEE()) continue; // For now, only consider barrel photons for the reco photon case, as the vertex fit doesn't converge for endcap photons. This needs to be investigated further.
+            if (photon.isEE()) continue; // barrel photons only for now (the old fit did not converge for endcap photons; to be revisited with MMGVertexFit, plan P2.7)
             
             GlobalPoint SVKalman(vertexbskalman.position().x(), vertexbskalman.position().y(), vertexbskalman.position().z());
             GlobalVector Bsp3sum = GlobalVector(BCand.Px(), BCand.Py(), BCand.Pz());
             int lowestDCAIndex = BeamSpotAndVertex::LowestDCAIndex(PVs, SVKalman, Bsp3sum);
             reco::Vertex PVlowestDCA = PVs[lowestDCAIndex];
 
-            bool fitSuccess = BCandFitter.TrippleObjectVertexFitRecoPhoton(t_tracks_RecPhoton, photonTT, resonanceResult, std::vector<reco::Photon>({photon}), covPtr, PVlowestDCA, bField, transientTrackBuilder);
-            if (!fitSuccess) continue;
-            rrt->VertexfitBsMass_mmrecog_ = BCandFitter.getBhadronMass();
+            // mu mu gamma kinematic fit (photon measured by its ECAL cluster) with the pointing
+            // constraint to the lowest-DCA primary vertex
+            if (!mu1Particle || !mu2Particle) continue;
+            const GlobalPoint pvLowestDCA(PVlowestDCA.position().x(), PVlowestDCA.position().y(), PVlowestDCA.position().z());
+            const auto fitResult = mmgVertexFit.fitCandidate(*mu1Particle, *mu2Particle, photon, lazyTools, &transientTrackBuilder, pvLowestDCA);
+            if (!fitResult) continue;
+            RefCountedKinematicParticle bs = fitResult->particle;
+            RefCountedKinematicVertex bVertex = fitResult->vertex;
+            rrt->VertexfitBsMass_mmrecog_ = bs->currentState().mass();
             rrt->FourvectorBsMass_mmrecog_ = BCand.M();
             rrt->FourvectorBsPt_mmrecog_   = BCand.Pt();
             rrt->FourvectorBsEta_mmrecog_  = BCand.Eta();
             rrt->FourvectorBsPhi_mmrecog_  = BCand.Phi();
-            RefCountedKinematicParticle bs = BCandFitter.getBhardon();
-            RefCountedKinematicVertex bVertex = BCandFitter.getVertex();
             AlgebraicVector7 b_par = bs->currentState().kinematicParameters().vector();
             GlobalVector Bsvec(b_par[3], b_par[4], b_par[5]);
 

@@ -136,6 +136,12 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig):
 	hltProcess_                       = iConfig.getUntrackedParameter<std::string>("HLTprocess","HLT");
 	hltConfigInitialized_             = false;
 
+	// scale factors (on sigma) for the photon cluster position (along e_phi, e_theta) and energy
+	// uncertainties in the mu mu gamma fit, separately for barrel and endcap; tuned on gedPhotons
+	mmgVertexFit_ = MMGVertexFit(
+		{iConfig.getParameter<double>("clusterCovScalePhiEB"), iConfig.getParameter<double>("clusterCovScaleThetaEB"), iConfig.getParameter<double>("energyErrorScaleEB")},
+		{iConfig.getParameter<double>("clusterCovScalePhiEE"), iConfig.getParameter<double>("clusterCovScaleThetaEE"), iConfig.getParameter<double>("energyErrorScaleEE")});
+
 	muMVACut_                         = iConfig.getParameter<double>("muMVACut");
 	photonMVACut_                     = iConfig.getParameter<double>("photonMVACut");
 
@@ -612,6 +618,7 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 				nominalMuonMass, 
 				nominalElectronMass, 
 				trackBuilder,
+				mmgVertexFit_,
 				bmmgRootTree_);
 		        bmmgRootTree_->vertexTypeFlag_ = 1;
 
