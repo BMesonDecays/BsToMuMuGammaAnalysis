@@ -3,27 +3,46 @@
 
 #include "DataFormats/MuonReco/interface/Muon.h"
 #include "DataFormats/EgammaCandidates/interface/Photon.h"
+#include "DataFormats/VertexReco/interface/Vertex.h"
+#include "DataFormats/GeometryVector/interface/GlobalPoint.h"
 #include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
-#include "DataFormats/EcalRecHit/interface/EcalRecHitCollections.h"
-#include "FWCore/Framework/interface/ConsumesCollector.h"
-#include "MagneticField/Engine/interface/MagneticField.h"
-#include "FWCore/Framework/interface/Event.h"
-#include "FWCore/Framework/interface/EventSetup.h"
 #include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
-#include "TMatrixD.h"
 #include "RecoVertex/KinematicFitPrimitives/interface/RefCountedKinematicParticle.h"
 #include "RecoVertex/KinematicFitPrimitives/interface/RefCountedKinematicVertex.h"
+#include "TMatrixD.h"
 
+#include <memory>
+#include <optional>
 #include <vector>
 
+// Kinematic fit of B -> mu mu gamma with the photon measured by its ECAL cluster
+// (needs the modified RecoVertex/KinematicFitPrimitives and RecoEcal/EgammaCoreTools).
+//
+// Typical use in an analyzer, one fit per candidate:
+//   MMGVertexFit fitter(ebScale, eeScale);
+//   auto mu1 = fitter.muonParticle(muon1, ttBuilder);           // once per muon and event
+//   auto mu2 = fitter.muonParticle(muon2, ttBuilder);
+//   auto result = fitter.fitCandidate(*mu1, *mu2, photon, lazyTools, ttBuilder, pv);
+//   if (result) { result->particle, result->vertex, result->daughters ... }
 class MMGVertexFit
 {
     public:
         // fitted B candidate (after the pointing constraint) and its decay vertex
         struct Result
         {
-            RefCountedKinematicParticle particle;
-            RefCountedKinematicVertex vertex;
+            RefCountedKinematicParticle particle;               // B candidate after the pointing constraint
+            RefCountedKinematicVertex vertex;                   // B decay vertex
+            std::vector<RefCountedKinematicParticle> daughters; // fitted mu1, mu2, photon (in this order)
+
+            // indices of the inputs in the vectors passed to fit(); -1 when fitCandidate() is called directly
+            int mu1Index = -1;
+            int mu2Index = -1;
+            int photonIndex = -1;
+
+            // The fitted photon particle keeps raw pointers to this photon copy and covariance;
+            // they are owned here so that they live as long as the result.
+            std::shared_ptr<const reco::Photon> fitPhoton;
+            std::shared_ptr<const TMatrixD> fitPhotonCovariance;
         };
 
         // scale factors for the photon measurement uncertainties (sigma, not variance):
@@ -39,7 +58,6 @@ class MMGVertexFit
         // ebScale, eeScale: scale factors for barrel and endcap photons
         MMGVertexFit(ErrorScale ebScale = {1., 1., 1.}, ErrorScale eeScale = {1., 1., 1.})
             : ebScale_(ebScale), eeScale_(eeScale) {}
-        ~MMGVertexFit(){}
 
         // cluster position covariance used in the fit: V' = S V S with
         // S = s_phi e_phi e_phi^T + s_theta e_theta e_theta^T + u u^T, u the photon direction
@@ -52,13 +70,28 @@ class MMGVertexFit
         // photon energy uncertainty used in the fit
         double photonEnergyError(const reco::Photon& photon) const;
 
-        // one Result per mu mu gamma combination that was fitted successfully;
-        // muons and photons are passed by pointer, so pat::Muon and pat::Photon (MiniAOD) work as well
+        // kinematic particle of a muon (from its inner track); empty if the muon has no inner track.
+        // Build it once per muon and event and reuse it for all candidates.
+        static std::optional<RefCountedKinematicParticle> muonParticle(const reco::Muon& muon,
+            const TransientTrackBuilder* TTBuilder);
+
+        // fit one mu mu gamma candidate; pv is the primary vertex used in the pointing constraint.
+        // Returns nothing if the photon has no cluster hits or if the fit fails or diverges.
+        std::optional<Result> fitCandidate(const RefCountedKinematicParticle& mu1,
+            const RefCountedKinematicParticle& mu2,
+            const reco::Photon& photon,
+            const EcalClusterLazyTools& lazyTools,
+            const TransientTrackBuilder* TTBuilder,
+            const GlobalPoint& pv) const;
+
+        // one Result per mu mu gamma combination that was fitted successfully, all with the
+        // pointing constraint to primaryVertices[0]; the Result indices refer to muons and photons.
+        // Muons and photons are passed by pointer, so pat::Muon and pat::Photon (MiniAOD) work as well.
         std::vector<Result> fit(const std::vector<const reco::Muon*>& muons,
             const std::vector<const reco::Photon*>& photons,
             const EcalClusterLazyTools& lazyTools,
             const std::vector<reco::Vertex>& primaryVertices,
-            const TransientTrackBuilder* TTBuilder);
+            const TransientTrackBuilder* TTBuilder) const;
 
     private:
         ErrorScale ebScale_;

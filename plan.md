@@ -43,7 +43,7 @@ The current structure is described in `structure_old.md`; progress is logged in 
 
 ## Phase 1: Port the new kinematic fit (`MMGVertexFit` from `sslawins_miniaod`)
 - [x] **P1.1** `git checkout sslawins_miniaod -- RadiativeAnalysis/interface/MMGVertexFit.h RadiativeAnalysis/plugins/MMGVertexFit.cc RadiativeAnalysis/plugins/MMGVertexFitExample.cc RadiativeAnalysis/test/MMGVertexFitExample.py`. Build against `../RecoVertex` (`photonKinematicFit_v2`) and run the example on the AOD test file.
-- [ ] **P1.2** Extend the API for use in the analyzer, keeping the existing `fit()` as a wrapper so the example keeps working:
+- [x] **P1.2** Extend the API for use in the analyzer, keeping the existing `fit()` as a wrapper so the example keeps working:
   - Add `std::optional<Result> fitCandidate(const RefCountedKinematicParticle& mu1, const RefCountedKinematicParticle& mu2, const reco::Photon& photon, const EcalClusterLazyTools&, const GlobalPoint& pv)`, or an equivalent.
   - Add a helper that builds the muon kinematic particles once per event.
   - Add the indices (mu1, mu2, photon) to `Result`.
