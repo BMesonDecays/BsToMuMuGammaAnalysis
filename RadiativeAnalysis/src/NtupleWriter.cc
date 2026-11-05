@@ -7,6 +7,8 @@
 #include "RecoVertex/KinematicFitPrimitives/interface/KinematicParticle.h"
 #include "RecoVertex/KinematicFitPrimitives/interface/KinematicVertex.h"
 #include "TMath.h"
+#include "TLorentzVector.h"
+#include "DataFormats/Candidate/interface/LeafCandidate.h"
 
 #include <cmath>
 #include <initializer_list>
@@ -27,13 +29,20 @@ namespace bmmg {
     }
   }  // namespace
 
-  NtupleWriter::NtupleWriter(TFileService& fs, const std::vector<std::string>& triggerPaths, bool isMC)
+  const NtupleWriter::Channel NtupleWriter::kMuMuGamma{"mmg_", {"pho"}, NtupleWriter::LegType::Photon};
+  const NtupleWriter::Channel NtupleWriter::kMuMuConvGamma{"mmcg_", {"conv"}, NtupleWriter::LegType::Conversion};
+  const NtupleWriter::Channel NtupleWriter::kMuMuGammaGamma{"mmgg_", {"pho1", "pho2"}, NtupleWriter::LegType::Photon};
+  const NtupleWriter::Channel NtupleWriter::kMuMuKK{"mmkk_", {"trk1", "trk2"}, NtupleWriter::LegType::Track};
+
+  NtupleWriter::NtupleWriter(TFileService& fs, const std::vector<std::string>& triggerPaths, bool isMC,
+                             const std::vector<Channel>& channels)
       : events_(fs.make<TTree>("Events", "B -> mu mu gamma ntuple")),
         runInfo_(fs.make<TTree>("RunInfo", "job-level information")),
         b_(events_),
         r_(runInfo_),
         triggerPaths_(triggerPaths),
-        isMC_(isMC) {
+        isMC_(isMC),
+        channels_(channels) {
     book();
   }
 
@@ -87,18 +96,29 @@ namespace bmmg {
     bookFloats(b_, "dimu_", {"mass", "pt", "eta", "phi", "deltaR", "vtxProb", "vtxChi2", "vtxNdof", "vtxX", "vtxY",
                              "vtxZ", "lxyBS", "lxyBSErr", "cosAlphaBS", "dca"});
 
-    // ---- mu mu gamma candidates ----
-    bookInts(b_, "mmg_", {"dimu", "mu1", "mu2", "pho", "pv", "fitOK"});
-    bookFloats(b_, "mmg_", {"prefitMass", "prefitPt", "prefitEta", "prefitPhi",
-                            "mass", "massErr", "pt", "eta", "phi",
-                            "vtxProb", "vtxChi2", "vtxNdof", "svX", "svY", "svZ", "svXErr", "svYErr", "svZErr",
-                            "pvX", "pvY", "pvZ",
-                            "l3d", "l3dErr", "lxy", "lxyErr", "cosAlpha3D", "cosAlpha2D",
-                            "ct3D", "ct3DErr", "ct2D", "ct2DErr",
-                            "mu1FitPt", "mu1FitEta", "mu1FitPhi", "mu2FitPt", "mu2FitEta", "mu2FitPhi",
-                            "phoFitPt", "phoFitEta", "phoFitPhi",
-                            "helicity", "coplanarity", "cosThetaL", "isolation", "maxTrackCompatibility"});
-    if (isMC_) bookInts(b_, "mmg_", {"genMatched"});
+    // ---- conversions (if the mu mu gamma(conv) channel is enabled) and kaon tracks (mu mu K K) ----
+    for (const auto& ch : channels_) {
+      if (ch.legType == LegType::Conversion) {
+        bookInts(b_, "conv_", {"index", "fitOK"});
+        bookFloats(b_, "conv_", {"pt", "eta", "phi", "vtxX", "vtxY", "vtxZ", "vtxRho", "vtxProb", "trkPlusPt",
+                                 "trkMinusPt"});
+        if (isMC_) {
+          bookInts(b_, "conv_", {"genPdgId", "genMotherPdgId", "genFromSignalB"});
+          bookFloats(b_, "conv_", {"genDR"});
+        }
+      }
+      if (ch.legType == LegType::Track) {
+        bookInts(b_, "trk_", {"index", "charge", "validHits", "pixLayers"});
+        bookFloats(b_, "trk_", {"pt", "eta", "phi", "dxyBS", "dzBS", "normChi2"});
+        if (isMC_) {
+          bookInts(b_, "trk_", {"genPdgId", "genMotherPdgId", "genFromSignalB"});
+          bookFloats(b_, "trk_", {"genDR"});
+        }
+      }
+    }
+
+    // ---- B candidates of each channel ----
+    for (const auto& ch : channels_) bookCandidates(ch);
 
     // ---- generator ----
     if (isMC_) {
@@ -125,6 +145,24 @@ namespace bmmg {
     r_.bookScalar<unsigned long long>("nEvents", 0);
   }
 
+  void NtupleWriter::bookCandidates(const Channel& ch) {
+    const std::string& p = ch.prefix;
+    bookInts(b_, p, {"dimu", "mu1", "mu2", "pv", "fitOK"});
+    for (const auto& leg : ch.legs) b_.bookVector<int>(p + leg);
+    bookFloats(b_, p, {"prefitMass", "prefitPt", "prefitEta", "prefitPhi",
+                       "mass", "massErr", "pt", "eta", "phi", "fitDimuonMass",
+                       "vtxProb", "vtxChi2", "vtxNdof", "svX", "svY", "svZ", "svXErr", "svYErr", "svZErr",
+                       "pvX", "pvY", "pvZ",
+                       "l3d", "l3dErr", "lxy", "lxyErr", "cosAlpha3D", "cosAlpha2D",
+                       "ct3D", "ct3DErr", "ct2D", "ct2DErr",
+                       "mu1FitPt", "mu1FitEta", "mu1FitPhi", "mu2FitPt", "mu2FitEta", "mu2FitPhi",
+                       "helicity", "coplanarity", "cosThetaL", "isolation", "maxTrackCompatibility"});
+    if (ch.legs.size() > 1) b_.bookVector<float>(p + "xMass");   // diphoton / KK mass (pre-fit)
+    for (const auto& leg : ch.legs)
+      for (const char* v : {"FitPt", "FitEta", "FitPhi"}) b_.bookVector<float>(p + leg + v);
+    if (isMC_) b_.bookVector<int>(p + "genMatched");
+  }
+
   // =====================================================================================
   // filling
   // =====================================================================================
@@ -132,6 +170,8 @@ namespace bmmg {
     b_.reset();
     muonFromB_.clear();
     photonFromB_.clear();
+    conversionFromB_.clear();
+    trackFromB_.clear();
     b_.scalar<unsigned int>("evt_run") = id.run();
     b_.scalar<unsigned int>("evt_lumi") = lumi;
     b_.scalar<unsigned long long>("evt_event") = id.event();
@@ -293,25 +333,101 @@ namespace bmmg {
     }
   }
 
-  void NtupleWriter::fillMuMuGamma(const std::vector<MMGCandidate>& candidates, const std::vector<reco::Vertex>& pvs) {
-    auto F = [this](const char* n) -> std::vector<float>& { return b_.vec<float>(std::string("mmg_") + n); };
-    for (const auto& c : candidates) {
-      b_.vec<int>("mmg_dimu").push_back(c.dimuon);
-      b_.vec<int>("mmg_mu1").push_back(c.mu1);
-      b_.vec<int>("mmg_mu2").push_back(c.mu2);
-      b_.vec<int>("mmg_pho").push_back(c.photon);
-      b_.vec<int>("mmg_pv").push_back(c.pv);
-      b_.vec<int>("mmg_fitOK").push_back(c.fit.has_value());
+  const std::vector<int>& NtupleWriter::legFromB(LegType type) const {
+    switch (type) {
+      case LegType::Photon:
+        return photonFromB_;
+      case LegType::Conversion:
+        return conversionFromB_;
+      default:
+        return trackFromB_;
+    }
+  }
+
+  void NtupleWriter::fillConversions(const std::vector<SelectedConversion>& conversions, const GenDecayChain* gen) {
+    for (const auto& sc : conversions) {
+      const reco::Conversion& conv = *sc.conversion;
+      const auto& v = conv.conversionVertex();
+      b_.vec<int>("conv_index").push_back(sc.index);
+      b_.vec<int>("conv_fitOK").push_back(sc.photon.has_value());
+      b_.vec<float>("conv_pt").push_back(sc.p4.pt());
+      b_.vec<float>("conv_eta").push_back(sc.p4.eta());
+      b_.vec<float>("conv_phi").push_back(sc.p4.phi());
+      b_.vec<float>("conv_vtxX").push_back(v.x());
+      b_.vec<float>("conv_vtxY").push_back(v.y());
+      b_.vec<float>("conv_vtxZ").push_back(v.z());
+      b_.vec<float>("conv_vtxRho").push_back(v.position().rho());
+      b_.vec<float>("conv_vtxProb").push_back(TMath::Prob(v.chi2(), static_cast<int>(v.ndof())));
+      b_.vec<float>("conv_trkPlusPt").push_back(sc.track1.track().pt());
+      b_.vec<float>("conv_trkMinusPt").push_back(sc.track2.track().pt());
       if (isMC_) {
-        const bool matched = c.mu1 < (int)muonFromB_.size() && c.mu2 < (int)muonFromB_.size() &&
-                             c.photon < (int)photonFromB_.size() && muonFromB_[c.mu1] && muonFromB_[c.mu2] &&
-                             photonFromB_[c.photon];
-        b_.vec<int>("mmg_genMatched").push_back(matched);
+        GenDecayChain::TruthMatchInfo m;
+        if (gen) m = gen->matchPhotonToGen(reco::LeafCandidate(0, sc.p4));
+        const bool fromB = gen && gen->fromSignalB(m);
+        conversionFromB_.push_back(fromB);
+        b_.vec<int>("conv_genPdgId").push_back(m.genPdgId);
+        b_.vec<int>("conv_genMotherPdgId").push_back(m.genMotherPdgId);
+        b_.vec<int>("conv_genFromSignalB").push_back(fromB);
+        b_.vec<float>("conv_genDR").push_back(m.isMatched ? m.deltaR : -1.f);
+      }
+    }
+  }
+
+  void NtupleWriter::fillTracks(const std::vector<SelectedTrack>& tracks, const reco::BeamSpot& bs,
+                                const GenDecayChain* gen) {
+    for (const auto& st : tracks) {
+      const reco::Track& trk = *st.track;
+      b_.vec<int>("trk_index").push_back(st.index);
+      b_.vec<int>("trk_charge").push_back(trk.charge());
+      b_.vec<int>("trk_validHits").push_back(trk.numberOfValidHits());
+      b_.vec<int>("trk_pixLayers").push_back(trk.hitPattern().pixelLayersWithMeasurement());
+      b_.vec<float>("trk_pt").push_back(trk.pt());
+      b_.vec<float>("trk_eta").push_back(trk.eta());
+      b_.vec<float>("trk_phi").push_back(trk.phi());
+      b_.vec<float>("trk_dxyBS").push_back(trk.dxy(bs.position()));
+      b_.vec<float>("trk_dzBS").push_back(trk.dz(bs.position()));
+      b_.vec<float>("trk_normChi2").push_back(trk.normalizedChi2());
+      if (isMC_) {
+        GenDecayChain::TruthMatchInfo m;
+        if (gen) {
+          const double mK = pdg::kaonMass;
+          const reco::Candidate::LorentzVector p4(trk.px(), trk.py(), trk.pz(), std::sqrt(trk.p() * trk.p() + mK * mK));
+          m = gen->matchToGen(reco::LeafCandidate(trk.charge(), p4), 321, 0, 0, 0.05, 0.5);
+        }
+        const bool fromB = gen && gen->fromSignalB(m);
+        trackFromB_.push_back(fromB);
+        b_.vec<int>("trk_genPdgId").push_back(m.genPdgId);
+        b_.vec<int>("trk_genMotherPdgId").push_back(m.genMotherPdgId);
+        b_.vec<int>("trk_genFromSignalB").push_back(fromB);
+        b_.vec<float>("trk_genDR").push_back(m.isMatched ? m.deltaR : -1.f);
+      }
+    }
+  }
+
+  void NtupleWriter::fillCandidates(const Channel& ch, const std::vector<BCandidate>& candidates,
+                                    const std::vector<reco::Vertex>& pvs) {
+    const std::string& p = ch.prefix;
+    auto F = [this, &p](const std::string& n) -> std::vector<float>& { return b_.vec<float>(p + n); };
+    auto I = [this, &p](const std::string& n) -> std::vector<int>& { return b_.vec<int>(p + n); };
+    const std::vector<int>& legsFromB = legFromB(ch.legType);
+    for (const auto& c : candidates) {
+      I("dimu").push_back(c.dimuon);
+      I("mu1").push_back(c.mu1);
+      I("mu2").push_back(c.mu2);
+      I("pv").push_back(c.pv);
+      I("fitOK").push_back(c.fit.has_value());
+      for (size_t k = 0; k < ch.legs.size(); ++k) I(ch.legs[k]).push_back(c.legs.at(k));
+      if (isMC_) {
+        auto fromB = [](const std::vector<int>& v, int i) { return i >= 0 && i < (int)v.size() && v[i]; };
+        bool matched = fromB(muonFromB_, c.mu1) && fromB(muonFromB_, c.mu2);
+        for (int leg : c.legs) matched = matched && fromB(legsFromB, leg);
+        I("genMatched").push_back(matched);
       }
       F("prefitMass").push_back(c.prefitP4.mass());
       F("prefitPt").push_back(c.prefitP4.pt());
       F("prefitEta").push_back(c.prefitP4.eta());
       F("prefitPhi").push_back(c.prefitP4.phi());
+      if (ch.legs.size() > 1) F("xMass").push_back(c.xP4.mass());
       const reco::Vertex& pv = pvs.at(c.pv);
       F("pvX").push_back(pv.x());
       F("pvY").push_back(pv.y());
@@ -333,14 +449,17 @@ namespace bmmg {
       F("ct2DErr").push_back(c.flight.ct2DErr);
       F("massErr").push_back(c.massErr);
 
+      // daughter names in the order of the fit: mu1, mu2, legs...
+      std::vector<std::string> daughterNames{"mu1", "mu2"};
+      daughterNames.insert(daughterNames.end(), ch.legs.begin(), ch.legs.end());
       if (c.fit) {
         const KinematicState& s = c.fit->particle->currentState();
         const RefCountedKinematicVertex& v = c.fit->vertex;
-        const GlobalVector p = s.globalMomentum();
+        const GlobalVector mom = s.globalMomentum();
         F("mass").push_back(s.mass());
-        F("pt").push_back(p.perp());
-        F("eta").push_back(p.eta());
-        F("phi").push_back(p.phi());
+        F("pt").push_back(mom.perp());
+        F("eta").push_back(mom.eta());
+        F("phi").push_back(mom.phi());
         F("vtxChi2").push_back(v->chiSquared());
         F("vtxNdof").push_back(v->degreesOfFreedom());
         F("vtxProb").push_back(TMath::Prob(v->chiSquared(), static_cast<int>(std::lround(v->degreesOfFreedom()))));
@@ -350,20 +469,22 @@ namespace bmmg {
         F("svXErr").push_back(std::sqrt(v->error().cxx()));
         F("svYErr").push_back(std::sqrt(v->error().cyy()));
         F("svZErr").push_back(std::sqrt(v->error().czz()));
-        const char* names[3][3] = {{"mu1FitPt", "mu1FitEta", "mu1FitPhi"},
-                                   {"mu2FitPt", "mu2FitEta", "mu2FitPhi"},
-                                   {"phoFitPt", "phoFitEta", "phoFitPhi"}};
-        for (int k = 0; k < 3; ++k) {
-          const GlobalVector dp = c.fit->daughters.at(k)->currentState().globalMomentum();
-          F(names[k][0]).push_back(dp.perp());
-          F(names[k][1]).push_back(dp.eta());
-          F(names[k][2]).push_back(dp.phi());
+        TLorentzVector dimu;
+        for (size_t k = 0; k < daughterNames.size(); ++k) {
+          const KinematicState& ds = c.fit->daughters.at(k)->currentState();
+          const GlobalVector dp = ds.globalMomentum();
+          if (k < 2) dimu += TLorentzVector(dp.x(), dp.y(), dp.z(), ds.kinematicParameters().energy());
+          F(daughterNames[k] + "FitPt").push_back(dp.perp());
+          F(daughterNames[k] + "FitEta").push_back(dp.eta());
+          F(daughterNames[k] + "FitPhi").push_back(dp.phi());
         }
+        F("fitDimuonMass").push_back(dimu.M());
       } else {
         for (const char* n : {"mass", "pt", "eta", "phi", "vtxChi2", "vtxNdof", "vtxProb", "svX", "svY", "svZ",
-                              "svXErr", "svYErr", "svZErr", "mu1FitPt", "mu1FitEta", "mu1FitPhi", "mu2FitPt",
-                              "mu2FitEta", "mu2FitPhi", "phoFitPt", "phoFitEta", "phoFitPhi"})
+                              "svXErr", "svYErr", "svZErr", "fitDimuonMass"})
           F(n).push_back(kNaN);
+        for (const auto& d : daughterNames)
+          for (const char* v : {"FitPt", "FitEta", "FitPhi"}) F(d + v).push_back(kNaN);
       }
     }
   }

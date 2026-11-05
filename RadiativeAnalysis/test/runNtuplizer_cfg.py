@@ -12,6 +12,8 @@
 #   isMC         1 / 0; default (-1): data if the test sample name starts with "data", MC otherwise
 #   globalTag    default auto:run3_mc_FULL (MC) / auto:run3_data_prompt (data)
 #   lumiMask     JSON file with the certified luminosity sections (data)
+#   photonID     1 (default): run the photon MVA / cut-based ID; 0: skip it (pho_mva = -99, pho_tightId = -1),
+#                e.g. for private samples without fixedGridRhoFastjetAll
 #   maxEvents, outputFile (standard VarParsing options)
 
 import FWCore.ParameterSet.Config as cms
@@ -27,6 +29,8 @@ options.register('isMC', -1, VarParsing.multiplicity.singleton, VarParsing.varTy
 options.register('globalTag', '', VarParsing.multiplicity.singleton, VarParsing.varType.string, 'global tag')
 options.register('lumiMask', '', VarParsing.multiplicity.singleton, VarParsing.varType.string,
                  'JSON file with the certified luminosity sections')
+options.register('photonID', 1, VarParsing.multiplicity.singleton, VarParsing.varType.int,
+                 'run the photon ID (VID); needs fixedGridRhoFastjetAll, missing in some private samples')
 options.register('verbose', 0, VarParsing.multiplicity.singleton, VarParsing.varType.int,
                  'print the trigger filters used for the muon matching')
 options.setDefault('outputFile', 'bmmg_ntuple.root')
@@ -85,4 +89,7 @@ process.bmmg = radiativeAnalysis.clone(
 )
 process.TFileService = cms.Service('TFileService', fileName=cms.string(options.outputFile))
 
-process.p = cms.Path(process.egmPhotonIDSequence * process.bmmg)
+if options.photonID:
+    process.p = cms.Path(process.egmPhotonIDSequence * process.bmmg)
+else:
+    process.p = cms.Path(process.bmmg)

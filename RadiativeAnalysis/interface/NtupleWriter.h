@@ -26,7 +26,17 @@ namespace bmmg {
 
   class NtupleWriter {
   public:
-    NtupleWriter(TFileService& fs, const std::vector<std::string>& triggerPaths, bool isMC);
+    // B candidate channels (branch prefix, names of the legs after the dimuon, type of the legs)
+    enum class LegType { Photon, Conversion, Track };
+    struct Channel {
+      std::string prefix;
+      std::vector<std::string> legs;
+      LegType legType;
+    };
+    static const Channel kMuMuGamma, kMuMuConvGamma, kMuMuGammaGamma, kMuMuKK;
+
+    NtupleWriter(TFileService& fs, const std::vector<std::string>& triggerPaths, bool isMC,
+                 const std::vector<Channel>& channels);
 
     void beginEvent(const edm::EventID& id, unsigned int lumi);
     void fillPileup(const std::vector<PileupSummaryInfo>& pu);
@@ -38,7 +48,10 @@ namespace bmmg {
     void fillPhotons(const std::vector<SelectedPhoton>& photons, EcalClusterLazyTools& lazyTools,
                      const MMGVertexFit& fitter, const GenDecayChain* gen);
     void fillDimuons(const std::vector<DimuonCandidate>& dimuons);
-    void fillMuMuGamma(const std::vector<MMGCandidate>& candidates, const std::vector<reco::Vertex>& pvs);
+    void fillConversions(const std::vector<SelectedConversion>& conversions, const GenDecayChain* gen);
+    void fillTracks(const std::vector<SelectedTrack>& tracks, const reco::BeamSpot& bs, const GenDecayChain* gen);
+    void fillCandidates(const Channel& channel, const std::vector<BCandidate>& candidates,
+                        const std::vector<reco::Vertex>& pvs);
     void fillGen(const GenDecayChain& gen);
     void fill();
 
@@ -50,6 +63,8 @@ namespace bmmg {
 
   private:
     void book();
+    void bookCandidates(const Channel& channel);
+    const std::vector<int>& legFromB(LegType type) const;
 
     TTree* events_;
     TTree* runInfo_;
@@ -58,7 +73,8 @@ namespace bmmg {
     std::vector<std::string> triggerPaths_;
     bool isMC_;
     // per event: gen match result of the selected muons / photons (used for the candidate truth flag)
-    std::vector<int> muonFromB_, photonFromB_;
+    std::vector<int> muonFromB_, photonFromB_, conversionFromB_, trackFromB_;
+    std::vector<Channel> channels_;
   };
 
 }  // namespace bmmg

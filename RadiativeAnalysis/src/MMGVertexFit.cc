@@ -1,4 +1,6 @@
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/MMGVertexFit.h"
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/Constants.h"
+#include "RecoVertex/KinematicFit/interface/MassKinematicConstraint.h"
 
 #include "RecoVertex/KinematicFitPrimitives/interface/KinematicParticle.h"
 #include "RecoVertex/KinematicFitPrimitives/interface/KinematicParticleFactoryFromTransientTrack.h"
@@ -68,21 +70,119 @@ std::optional<RefCountedKinematicParticle> MMGVertexFit::muonParticle(const reco
         if (!muTrack) return std::nullopt;
         const reco::TransientTrack muonTT = TTBuilder->build(muTrack);
 
-        const ParticleMass muon_mass(0.105658);
+        const ParticleMass muon_mass(bmmg::pdg::muonMass);
         float muon_sigma = 1E-6;
 
         KinematicParticleFactoryFromTransientTrack pFactory;
         return pFactory.particle(muonTT, muon_mass, float(0), float(0), muon_sigma);
     }
 
-// Sequential fit of B -> mu mu gamma:
-//  1. Kalman vertex fit of the two muons and the photon (KinematicParticleVertexFitter).
-//     The photon enters through its calorimeter cluster position and energy, so its
-//     momentum is pointed from the fitted vertex to the cluster.
+RefCountedKinematicParticle MMGVertexFit::trackParticle(const reco::TransientTrack& track, double mass)
+    {
+        KinematicParticleFactoryFromTransientTrack pFactory;
+        float chi = 0.f, ndf = 0.f, sigma = 1E-6;
+        return pFactory.particle(track, ParticleMass(mass), chi, ndf, sigma);
+    }
+
+std::optional<RefCountedKinematicParticle> MMGVertexFit::conversionParticle(const reco::TransientTrack& e1,
+    const reco::TransientTrack& e2)
+    {
+        const std::vector<RefCountedKinematicParticle> electrons{trackParticle(e1, bmmg::pdg::electronMass),
+                                                                 trackParticle(e2, bmmg::pdg::electronMass)};
+        try
+        {
+            KinematicParticleVertexFitter vertexFitter;
+            RefCountedKinematicTree tree = vertexFitter.fit(electrons);
+            if (!tree->isValid()) return std::nullopt;
+            MassKinematicConstraint zeroMass(ParticleMass(0.), float(1E-4));
+            KinematicParticleFitter constraintFitter;
+            tree = constraintFitter.fit(&zeroMass, tree);
+            if (!tree->isValid()) return std::nullopt;
+            tree->movePointerToTheTop();
+            return tree->currentParticle();
+        }
+        catch (const VertexException&)
+        {
+            return std::nullopt;
+        }
+    }
+
+std::optional<MMGVertexFit::PhotonParticle> MMGVertexFit::photonParticle(const reco::Photon& photon,
+    const EcalClusterLazyTools& lazyTools, const TransientTrackBuilder* TTBuilder, const GlobalPoint& expansionPoint) const
+    {
+        if (!hasClusterHits(photon)) return std::nullopt;
+
+        // copy of the photon with the rescaled energy uncertainty; the energy is unchanged.
+        // clone() keeps the full type, e.g. pat::Photon with its embedded supercluster.
+        std::shared_ptr<reco::Photon> fitPhoton(photon.clone());
+        const reco::Photon::P4type p4type = energyType(*fitPhoton);
+        fitPhoton->setCorrectedEnergy(p4type, fitPhoton->getCorrectedEnergy(p4type), photonEnergyError(photon), false);
+        auto covariance = std::make_shared<TMatrixD>(clusterCovariance(*fitPhoton, lazyTools));
+
+        // initial state: only used as the expansion point, the measurement is the cluster
+        const GlobalVector p3(fitPhoton->px(), fitPhoton->py(), fitPhoton->pz());
+        FreeTrajectoryState fts(expansionPoint, p3, TrackCharge(0), TTBuilder->field());
+        AlgebraicSymMatrix66 cov{ROOT::Math::SMatrixIdentity()};
+        fts.setCartesianError(CartesianTrajectoryError(cov));
+        const reco::TransientTrack phoTT = TTBuilder->build(fts);
+
+        KinematicParticleFactoryFromTransientTrack pFactory;
+        float chi = 0.f, ndf = 0.f, sigma = 1E-6;
+        PhotonParticle result;
+        result.particle = pFactory.particle(phoTT, ParticleMass(0.), chi, ndf, sigma, fitPhoton.get(), covariance.get());
+        result.photon = std::move(fitPhoton);
+        result.covariance = std::move(covariance);
+        return result;
+    }
+
+// Sequential fit of a B candidate:
+//  1. Kalman vertex fit of the daughters (KinematicParticleVertexFitter). A photon enters through
+//     its calorimeter cluster position and energy, so its momentum is pointed from the fitted
+//     vertex to the cluster.
 //  2. Pointing constraint on the top particle of the resulting tree (KinematicParticleFitter
 //     with PointingKinematicConstraint): the B momentum must point from the primary vertex
 //     to the B decay vertex. The constraint uses the full covariance of the B candidate,
 //     including the correlations between the daughters from step 1.
+std::optional<MMGVertexFit::Result> MMGVertexFit::fitParticles(const std::vector<RefCountedKinematicParticle>& particles,
+    const GlobalPoint& pv)
+    {
+        KinematicParticleVertexFitter vertexFitter;
+        KinematicParticleFitter constraintFitter;
+        PointingKinematicConstraint pointingConstraint(pv);
+
+        RefCountedKinematicTree tree;
+        try
+        {
+            tree = vertexFitter.fit(particles);
+            if (!tree->isValid()) return std::nullopt;
+            tree->movePointerToTheTop();
+            tree = constraintFitter.fit(&pointingConstraint, tree);
+            if (!tree->isValid()) return std::nullopt;
+        }
+        catch (const VertexException&)
+        {
+            return std::nullopt;
+        }
+
+        Result result;
+        // fitted daughters (the pointing constraint only changes the top particle); read after the
+        // constraint fit: reading them before changed the result of the constraint fit (see report.md P1.2)
+        result.daughters = tree->finalStateParticles();
+        tree->movePointerToTheTop();
+        result.particle = tree->currentParticle();
+        result.vertex = tree->currentDecayVertex();
+        if (!result.vertex->vertexIsValid()) return std::nullopt;
+
+        // the constraint fit can diverge and still return a valid tree: such fits (non-finite chi2,
+        // non-positive or absurd mass or momentum) are treated as failed
+        const double fitMass = result.particle->currentState().mass();
+        const double fitP = result.particle->currentState().globalMomentum().mag();
+        if (!std::isfinite(result.vertex->chiSquared()) || !std::isfinite(fitMass) || fitMass <= 0. || fitMass > 100. ||
+            !std::isfinite(fitP) || fitP > 1e4)
+            return std::nullopt;
+        return result;
+    }
+
 std::optional<MMGVertexFit::Result> MMGVertexFit::fitCandidate(const RefCountedKinematicParticle& mu1,
     const RefCountedKinematicParticle& mu2,
     const reco::Photon& photon,
@@ -90,74 +190,32 @@ std::optional<MMGVertexFit::Result> MMGVertexFit::fitCandidate(const RefCountedK
     const TransientTrackBuilder* TTBuilder,
     const GlobalPoint& pv) const
     {
-        if (!hasClusterHits(photon)) return std::nullopt;
+        return fitCandidate(mu1, mu2, std::vector<const reco::Photon*>{&photon}, lazyTools, TTBuilder, pv);
+    }
 
-        // copy of the photon with the rescaled energy uncertainty; the energy is unchanged.
-        // clone() keeps the full type, e.g. pat::Photon with its embedded supercluster.
-        // The kinematic particle keeps raw pointers to the copy and to its cluster covariance;
-        // both are owned by the Result, so they live as long as the fitted particles.
-        std::shared_ptr<reco::Photon> fitPhoton(photon.clone());
-        const reco::Photon::P4type p4type = energyType(*fitPhoton);
-        fitPhoton->setCorrectedEnergy(p4type, fitPhoton->getCorrectedEnergy(p4type), photonEnergyError(photon), false);
-        auto photonCovariance = std::make_shared<TMatrixD>(clusterCovariance(*fitPhoton, lazyTools));
-
-        const GlobalVector p3(fitPhoton->px(), fitPhoton->py(), fitPhoton->pz());
-        const TrackCharge ch = 0;
-        const ParticleMass photon_mass(0.);
-        float photon_sigma = 1E-6;
-
-        // initial state: only used as the expansion point, the measurement is the cluster
-        FreeTrajectoryState fts(pv, p3, ch, TTBuilder->field());
-        AlgebraicSymMatrix66 photonCov{ROOT::Math::SMatrixIdentity()};
-        fts.setCartesianError(CartesianTrajectoryError(photonCov));
-        const reco::TransientTrack phoTT = TTBuilder->build(fts);
-
-        KinematicParticleFactoryFromTransientTrack pFactory;
-        std::vector<RefCountedKinematicParticle> allParticles{
-            mu1, mu2,
-            pFactory.particle(phoTT, photon_mass, float(0), float(0), photon_sigma, fitPhoton.get(), photonCovariance.get())};
-
-        KinematicParticleVertexFitter vertexFitter;
-        KinematicParticleFitter constraintFitter;
-        PointingKinematicConstraint pointingConstraint(pv);
-
-        RefCountedKinematicTree vertexFitTree;
-        std::vector<RefCountedKinematicParticle> daughters;
-        try
+std::optional<MMGVertexFit::Result> MMGVertexFit::fitCandidate(const RefCountedKinematicParticle& mu1,
+    const RefCountedKinematicParticle& mu2,
+    const std::vector<const reco::Photon*>& photons,
+    const EcalClusterLazyTools& lazyTools,
+    const TransientTrackBuilder* TTBuilder,
+    const GlobalPoint& pv) const
+    {
+        std::vector<RefCountedKinematicParticle> particles{mu1, mu2};
+        std::vector<PhotonParticle> photonParticles;
+        for (const reco::Photon* pho : photons)
         {
-            // 1. vertex fit with the photon cluster
-            vertexFitTree = vertexFitter.fit(allParticles);
-            if (!vertexFitTree->isValid()) return std::nullopt;
-
-            // 2. pointing constraint on the B candidate
-            vertexFitTree->movePointerToTheTop();
-            vertexFitTree = constraintFitter.fit(&pointingConstraint, vertexFitTree);
-            if (!vertexFitTree->isValid()) return std::nullopt;
+            auto pp = photonParticle(*pho, lazyTools, TTBuilder, pv);
+            if (!pp) return std::nullopt;
+            particles.push_back(pp->particle);
+            photonParticles.push_back(std::move(*pp));
         }
-        catch (const VertexException&)
+        auto result = fitParticles(particles, pv);
+        if (!result) return std::nullopt;
+        for (auto& pp : photonParticles)
         {
-            return std::nullopt;
+            result->fitPhotons.push_back(std::move(pp.photon));
+            result->fitPhotonCovariances.push_back(std::move(pp.covariance));
         }
-
-        // fitted daughters (the pointing constraint only changes the top particle)
-        daughters = vertexFitTree->finalStateParticles();
-
-        // get the fitted particle and vertex
-        vertexFitTree->movePointerToTheTop();
-        RefCountedKinematicParticle fitParticle = vertexFitTree->currentParticle();
-        RefCountedKinematicVertex fitVertex = vertexFitTree->currentDecayVertex();
-        if (!fitVertex->vertexIsValid()) return std::nullopt;
-
-        // the constraint fit can diverge and still return a valid tree
-        const double fitMass = fitParticle->currentState().mass();
-        if (!std::isfinite(fitVertex->chiSquared()) || !std::isfinite(fitMass) || fitMass <= 0.) return std::nullopt;
-
-        Result result;
-        result.particle = fitParticle;
-        result.vertex = fitVertex;
-        result.daughters = std::move(daughters);
-        result.fitPhoton = std::move(fitPhoton);
-        result.fitPhotonCovariance = std::move(photonCovariance);
         return result;
     }
 

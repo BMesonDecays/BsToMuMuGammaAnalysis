@@ -7,6 +7,8 @@
 
 #include "DataFormats/MuonReco/interface/Muon.h"
 #include "DataFormats/EgammaCandidates/interface/Photon.h"
+#include "DataFormats/EgammaCandidates/interface/Conversion.h"
+#include "DataFormats/TrackReco/interface/Track.h"
 #include "DataFormats/Candidate/interface/Candidate.h"
 #include "DataFormats/GeometryVector/interface/GlobalPoint.h"
 #include "DataFormats/GeometryCommonDetAlgo/interface/GlobalError.h"
@@ -16,6 +18,7 @@
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/Constants.h"
 
 #include <optional>
+#include <vector>
 
 namespace bmmg {
 
@@ -55,16 +58,34 @@ namespace bmmg {
     float ct3D = -999.f, ct3DErr = -1.f, ct2D = -999.f, ct2DErr = -1.f;
   };
 
-  struct MMGCandidate {
-    int dimuon = -1, mu1 = -1, mu2 = -1, photon = -1;
+  struct SelectedConversion {
+    int index = -1;                     // index in the conversion collection
+    const reco::Conversion* conversion = nullptr;
+    reco::TransientTrack track1, track2; // positive, negative track
+    std::optional<RefCountedKinematicParticle> photon;   // e+ e- fit with zero-mass constraint
+    reco::Candidate::LorentzVector p4;  // from the fitted photon, else the pair momentum
+  };
+
+  struct SelectedTrack {
+    int index = -1;                     // index in the track collection
+    const reco::Track* track = nullptr;
+    reco::TransientTrack ttrack;
+  };
+
+  // B candidate: dimuon + other legs (photon / conversion / two photons / two kaon tracks)
+  struct BCandidate {
+    int dimuon = -1, mu1 = -1, mu2 = -1;
+    std::vector<int> legs;              // indices of the other legs in their collections
     int pv = -1;                        // index in the primary vertex collection (lowest DCA)
-    reco::Candidate::LorentzVector prefitP4;
-    std::optional<MMGVertexFit::Result> fit;   // empty if the fit failed
+    reco::Candidate::LorentzVector prefitP4;   // B from the reconstructed momenta
+    reco::Candidate::LorentzVector xP4;        // the non-dimuon system (gamma, gamma gamma, K K)
+    std::optional<MMGVertexFit::Result> fit;   // empty if the fit failed; daughters: mu1, mu2, legs...
     FlightInfo flight;                  // from the fitted vertex and momentum
     float massErr = -1.f;
     float helicity = -2.f, coplanarity = -1.f, cosThetaL = -2.f;
     float isolation = -1.f, maxTrackCompatibility = -1.f;
   };
+  using MMGCandidate = BCandidate;
 
 }  // namespace bmmg
 

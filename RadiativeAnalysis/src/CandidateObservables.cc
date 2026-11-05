@@ -128,13 +128,23 @@ namespace bmmg {
     return l.Vect().Unit().Dot(ll.Vect().Unit());
   }
 
+  namespace {
+    bool isExcluded(const reco::Track& trk, const std::vector<const reco::Track*>& exclude) {
+      for (const reco::Track* e : exclude)
+        if (reco::deltaR(*e, trk) < 0.01 && std::abs(e->pt() - trk.pt()) < 0.01 * trk.pt()) return true;
+      return false;
+    }
+  }  // namespace
+
   float candidateIsolation(const reco::Candidate::LorentzVector& candP4, const reco::Muon& mu1, const reco::Muon& mu2,
-                           const reco::Vertex& pv, double drMax, double ptMin) {
+                           const reco::Vertex& pv, const std::vector<const reco::Track*>& exclude, double drMax,
+                           double ptMin) {
     double sumPt = 0.;
     for (auto it = pv.tracks_begin(); it != pv.tracks_end(); ++it) {
       const reco::Track& trk = **it;
       if (trk.charge() == 0 || trk.pt() < ptMin) continue;
       if (reco::deltaR(mu1, trk) < 0.01 || reco::deltaR(mu2, trk) < 0.01) continue;   // muon tracks
+      if (isExcluded(trk, exclude)) continue;
       if (reco::deltaR(candP4, trk) > drMax) continue;
       sumPt += trk.pt();
     }
@@ -142,13 +152,15 @@ namespace bmmg {
   }
 
   float maxTrackCompatibility(const reco::TransientTrack& mu1, const reco::TransientTrack& mu2, const reco::Vertex& pv,
-                              const TransientTrackBuilder& ttBuilder, double ptMin) {
+                              const TransientTrackBuilder& ttBuilder, const std::vector<const reco::Track*>& exclude,
+                              double ptMin) {
     float maxProb = 0.f;
     KalmanVertexFitter fitter(true);
     for (auto it = pv.tracks_begin(); it != pv.tracks_end(); ++it) {
       const reco::Track& trk = **it;
       if (trk.charge() == 0 || trk.pt() < ptMin) continue;
       if (reco::deltaR(mu1.track(), trk) < 1e-4 || reco::deltaR(mu2.track(), trk) < 1e-4) continue;
+      if (isExcluded(trk, exclude)) continue;
       const std::vector<reco::TransientTrack> tracks{mu1, mu2, ttBuilder.build(trk)};
       const TransientVertex v = fitter.vertex(tracks);
       if (!v.isValid()) continue;

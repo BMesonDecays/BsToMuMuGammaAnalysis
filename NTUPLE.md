@@ -77,35 +77,64 @@ Every opposite-sign pair of selected muons that do not share muon segments.
 | `dimu_dca` | transverse distance of closest approach of the two tracks |
 | `dimu_isCowboy` | 1 if Δφ(μ⁺, μ⁻) > 0 |
 
-## μμγ candidates: `mmg_*` (vectors)
-Every dimuon with a valid vertex × every photon, with a pre-fit mass in [`mmgMinPrefitMass`, `mmgMaxPrefitMass`] = [4, 7] GeV.
+## Conversions: `conv_*` (vectors, if `doMuMuConvGamma`)
+From `allConversions`: two opposite-charge tracks, a valid vertex with probability > `conversionMinVertexProb` (1e-6), pair pt > `conversionMinPt` (0.5 GeV). The e⁺e⁻ pair is refitted with a zero-mass constraint.
+- `conv_index`: index in the collection.
+- `conv_fitOK`: 1 if the zero-mass refit succeeded.
+- `conv_pt`, `conv_eta`, `conv_phi`: from the refitted photon, or from the pair momentum if the refit failed.
+- `conv_vtxX/Y/Z`, `conv_vtxRho`, `conv_vtxProb`: the conversion vertex.
+- `conv_trkPlusPt`, `conv_trkMinusPt`: the two tracks.
+- `conv_genPdgId`, `conv_genMotherPdgId`, `conv_genDR`, `conv_genFromSignalB` (MC): gen photon match (ΔR < 0.1, \|Δpt/pt\| < 0.5).
 
-**PV choice:** `mmg_pv` is the vertex closest to the line through the dimuon vertex along the pre-fit μμγ momentum (lowest DCA).
+## Kaon tracks: `trk_*` (vectors, if `doMuMuKK`)
+Only the tracks used in at least one `mmkk_` candidate.
+- `trk_index`: index in `generalTracks`.
+- `trk_pt`, `trk_eta`, `trk_phi`, `trk_charge`.
+- `trk_dxyBS`, `trk_dzBS`, `trk_normChi2`, `trk_validHits`, `trk_pixLayers`.
+- `trk_genPdgId`, `trk_genMotherPdgId`, `trk_genDR`, `trk_genFromSignalB` (MC): gen kaon match (ΔR < 0.05, \|Δpt/pt\| < 0.5).
 
-**Kinematic fit:** `MMGVertexFit`, done in two steps:
-1. A vertex fit of μ⁺, μ⁻ and γ. The photon is measured by its ECAL cluster position and energy.
-2. A pointing constraint to `mmg_pv`.
+## B candidates: `mmg_*`, `mmcg_*`, `mmgg_*`, `mmkk_*` (vectors)
+Every dimuon with a valid vertex combined with the legs of the channel, if the pre-fit mass is in the window. Each channel can be switched off (`doMuMuGamma`, `doMuMuConvGamma`, `doMuMuGammaGamma`, `doMuMuKK`).
 
-| branch | description |
+| prefix | channel | legs (index branches) | pre-fit B window | fit daughters |
+|---|---|---|---|---|
+| `mmg_` | B → μμγ, ECAL photon | `pho` → `pho_*` | 4–7 GeV | μ⁺, μ⁻, γ (cluster) |
+| `mmcg_` | B → μμγ, converted photon | `conv` → `conv_*` | 4–7 GeV | μ⁺, μ⁻, γ (e⁺e⁻ refit) |
+| `mmgg_` | B → μμγγ (J/ψ η, J/ψ π⁰, …) | `pho1`, `pho2` → `pho_*` | 4–7 GeV; m(γγ) in 0.05–1.1 | μ⁺, μ⁻, γ, γ (clusters) |
+| `mmkk_` | B_s → J/ψ φ (normalisation) | `trk1` (K⁺), `trk2` (K⁻) → `trk_*` | 4.9–5.9 GeV; J/ψ dimuons only; m(KK) in 0.99–1.05 | μ⁺, μ⁻, K⁺, K⁻ |
+
+Kaon candidates are high-purity tracks with pt > 0.7 GeV, ΔR < 1.5 to the dimuon and \|Δz\| < 1 cm to the dimuon vertex.
+
+**PV choice:** `<p>pv` is the vertex closest to the line through the dimuon vertex along the pre-fit B momentum (lowest DCA).
+
+**Kinematic fit:** `MMGVertexFit::fitParticles`, done in two steps:
+1. A vertex fit of all daughters. ECAL photons are measured by their cluster position and energy.
+2. A pointing constraint to `<p>pv`.
+
+Fits that fail, or that diverge (non-finite χ², mass > 100 GeV, |p| > 10 TeV), give `<p>fitOK = 0` with −999 for every fit quantity.
+
+| branch (`<p>` = prefix) | description |
 |---|---|
-| `mmg_dimu`, `mmg_mu1`, `mmg_mu2`, `mmg_pho`, `mmg_pv` | indices: dimuon, μ⁺, μ⁻ (into `mu_*`), photon (into `pho_*`), PV (into the PV collection) |
-| `mmg_pvX/Y/Z` | position of the chosen PV |
-| `mmg_prefitMass`, `mmg_prefitPt`, `mmg_prefitEta`, `mmg_prefitPhi` | sum of the reconstructed momenta |
-| `mmg_fitOK` | 1 if the fit succeeded; if 0, all fit quantities are −999 |
-| `mmg_mass`, `mmg_massErr`, `mmg_pt`, `mmg_eta`, `mmg_phi` | fitted B |
-| `mmg_vtxProb`, `mmg_vtxChi2`, `mmg_vtxNdof` | of the fitted vertex (including the pointing constraint). **Diverging fits have `vtxProb` ≈ 0; cut on it (e.g. > 1e-3).** |
-| `mmg_svX/Y/Z`, `mmg_svXErr/YErr/ZErr` | fitted decay vertex |
-| `mmg_mu1Fit*`, `mmg_mu2Fit*`, `mmg_phoFit*` (Pt, Eta, Phi) | fitted daughters |
-| `mmg_l3d`, `mmg_l3dErr`, `mmg_lxy`, `mmg_lxyErr` | PV–SV distance in 3D and transverse, with errors (SV and PV covariances) |
-| `mmg_cosAlpha3D`, `mmg_cosAlpha2D` | cos of the angle between (SV − PV) and the fitted momentum |
-| `mmg_ct3D`, `mmg_ct2D` | ct = m (d·p)/\|p\|², and the transverse version m (d_T·p_T)/p_T², with d = SV − PV (signed) and m = m(B_s) PDG. For B_d multiply by m(B_d)/m(B_s). |
-| `mmg_ct3DErr`, `mmg_ct2DErr` | propagated from the full covariance of the fitted state (SV position, momentum and their correlations) and the PV covariance |
-| `mmg_helicity` | cos θ of the photon in the B rest frame w.r.t. the B direction (fitted momenta; pre-fit if the fit failed) |
-| `mmg_coplanarity` | angle between the (μ⁺, μ⁻) plane and the (γ, B) plane |
-| `mmg_cosThetaL` | cos θ of μ⁺ in the dimuon rest frame w.r.t. the dimuon direction |
-| `mmg_isolation` | pt(B) / (pt(B) + Σ pt of charged PV tracks with pt > 0.9 GeV within ΔR < 0.7, excluding the muons) |
-| `mmg_maxTrackCompatibility` | highest Kalman vertex probability of the two muons plus one other PV track (pt > 0.9) |
-| `mmg_genMatched` (MC) | μ⁺, μ⁻ and γ all match gen particles that descend from the signal B |
+| `<p>dimu`, `<p>mu1`, `<p>mu2`, `<p>pv`, leg branches | indices: dimuon, μ⁺, μ⁻ (into `mu_*`), PV (into the PV collection), legs (see the table) |
+| `<p>pvX/Y/Z` | position of the chosen PV |
+| `<p>prefitMass`, `<p>prefitPt`, `<p>prefitEta`, `<p>prefitPhi` | B from the reconstructed momenta |
+| `<p>xMass` (two-leg channels) | pre-fit mass of the non-dimuon system: m(γγ) or m(KK) |
+| `<p>fitOK` | the fit succeeded |
+| `<p>mass`, `<p>massErr`, `<p>pt`, `<p>eta`, `<p>phi` | fitted B |
+| `<p>fitDimuonMass` | dimuon mass from the fitted muons. For J/ψ channels use `<p>mass − <p>fitDimuonMass + 3.0969` (J/ψ-constrained mass approximation; there is no mass constraint in the fit) |
+| `<p>vtxProb`, `<p>vtxChi2`, `<p>vtxNdof` | of the fitted vertex (including the pointing constraint); a cut like `vtxProb > 1e-3` removes badly fitted candidates |
+| `<p>svX/Y/Z`, `<p>svXErr/YErr/ZErr` | fitted decay vertex |
+| `<p>mu1Fit*`, `<p>mu2Fit*`, `<p><leg>Fit*` (Pt, Eta, Phi) | fitted daughters |
+| `<p>l3d`, `<p>l3dErr`, `<p>lxy`, `<p>lxyErr` | PV–SV distance in 3D and transverse, with errors |
+| `<p>cosAlpha3D`, `<p>cosAlpha2D` | cos of the angle between (SV − PV) and the fitted momentum |
+| `<p>ct3D`, `<p>ct2D` | ct = m (d·p)/\|p\|², and transverse m (d_T·p_T)/p_T², with d = SV − PV (signed) and m = m(B_s) PDG. For B_d multiply by m(B_d)/m(B_s). |
+| `<p>ct3DErr`, `<p>ct2DErr` | propagated from the full covariance of the fitted state (SV position, momentum and correlations) and the PV covariance |
+| `<p>helicity` | cos θ of the non-dimuon system (γ, γγ, KK) in the B rest frame w.r.t. the B direction |
+| `<p>coplanarity` | angle between the (μ⁺, μ⁻) plane and the (X, B) plane |
+| `<p>cosThetaL` | cos θ of μ⁺ in the dimuon rest frame w.r.t. the dimuon direction |
+| `<p>isolation` | pt(B) / (pt(B) + Σ pt of charged PV tracks with pt > 0.9 GeV within ΔR < 0.7, excluding the tracks of the candidate) |
+| `<p>maxTrackCompatibility` | highest Kalman vertex probability of the two muons plus one other PV track (pt > 0.9, not a track of the candidate) |
+| `<p>genMatched` (MC) | the muons and all legs match gen particles that descend from the signal B |
 
 ## Generator: `gen_*` (MC)
 From `GenDecayChain`, using the B (B_s or B_d) with two muons among its descendants.
@@ -133,6 +162,8 @@ From `GenDecayChain`, using the B (B_s or B_d) with two muons among its descenda
 - **Branches:**
   - The suffix scheme (`_mmrecog_`, …) is replaced by prefixes and index links.
   - The leading-two photon and PF-candidate blocks and the supercluster/rechit dump are not stored; `pho_*` covers the selected photons.
-  - The conversion, μμγγ and μμKK channels are not in the new ntuple yet (plan.md Phase 7); use the legacy module for them.
+  - Channels: the legacy suffixes `_mmconvg_`, `_mmrecogg_` and `_mmkk_` are now `mmcg_`, `mmgg_` and `mmkk_`.
+  - μμKK uses only J/ψ dimuons.
+  - The conversion fit uses the e⁺e⁻ pair refitted with a zero-mass constraint as one photon particle. There is no J/ψ mass constraint (use `fitDimuonMass`).
 - **Event PV:** `pv_*` is the first vertex (highest Σpt²); the legacy ntuple used the highest scalar Σpt.
 - **ct:** the legacy `BsCt3D` was m·|SV−PV|/|p| (unsigned, not projected), with an error that ignored the momentum uncertainty. The pull 68% width on signal MC goes from about 1.7 to 1.27.

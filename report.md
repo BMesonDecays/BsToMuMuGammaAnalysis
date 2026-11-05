@@ -4,6 +4,53 @@ Entries are newest first. Each entry gives: the plan item(s) (see `plan.md`), wh
 
 ---
 
+## 2026-11-05: Phase 7, the other channels in the new module (P7.1–P7.3)
+- **`MMGVertexFit` generalised:**
+  - `fitParticles(particles, pv)`: vertex fit followed by the pointing constraint, for any set of daughters.
+  - `photonParticle()`: ECAL photon (cluster measurement).
+  - `conversionParticle(e⁺, e⁻)`: e⁺e⁻ vertex fit with a zero-mass constraint.
+  - `trackParticle(track, mass)`.
+  - `fitCandidate` for N photons.
+  - `Result` owns all photon copies and covariances (`fitPhotons`, `fitPhotonCovariances`).
+  - The muon mass comes from `Constants.h`.
+- **Divergence check (decision):** fits with mass > 100 GeV or |p| > 10 TeV now count as failed. On the filtered sample the ntuple contained masses up to ~10¹⁴ GeV with vtxProb ≈ 0.
+- **Candidates:**
+  - `MMGCandidate` became the generic `BCandidate` (dimuon + `legs` indices + `xP4`).
+  - `MuMuGammaBuilder` became `CandidateBuilders` with `buildMuMuGamma`, `buildMuMuConvGamma`, `buildMuMuGammaGamma` and `buildMuMuKK`. They share the PV choice, the fit and the observables (`Finisher`).
+  - Isolation and track compatibility exclude the candidate's own tracks (kaons, conversion tracks).
+  - The `(dimuon, PV)` track compatibility is cached when there are no extra tracks.
+- **Selection:**
+  - `selectConversions`, from `allConversions`: 2 opposite-charge tracks, a valid vertex with prob > 1e-6, pt > 0.5 GeV, plus the zero-mass refit. The legacy module used the onia producer on `allConversions`; reading the collection directly removes that producer from the config.
+  - `selectKaonTracks`: high-purity `generalTracks` with pt > 0.7 GeV that aren't muon inner tracks.
+- **Ntuple:** `NtupleWriter` books and fills each channel from a channel table (prefix, leg names, leg type):
+  - Channels: `mmg_`, `mmcg_`, `mmgg_`, `mmkk_`.
+  - New collections: `conv_*`, and `trk_*` (only the kaon tracks used).
+  - New candidate branches: `<p>fitDimuonMass` (J/ψ-constrained mass approximation: mass − fitDimuonMass + m_J/ψ) and `<p>xMass` (m(γγ), m(KK)).
+  - **Changed:** the `mmg_` daughter branches are now named after the leg (`mmg_phoFit*`, unchanged); `mmg_fitDimuonMass` is new.
+  - `NTUPLE.md` is updated.
+- **Config:** `doMuMuGamma`, `doMuMuConvGamma`, `doMuMuGammaGamma`, `doMuMuKK` (all on), plus windows and cuts (see `fillDescriptions`).
+  - **Decision:** μμKK uses only J/ψ dimuons (`kkJpsiOnly`), with m(KK) in 0.99–1.05 and a pre-fit B window of 4.9–5.9 GeV. The kaon tracks need ΔR < 1.5 to the dimuon and |Δz| < 1 cm to its vertex.
+  - **Decision:** μμγγ uses m(γγ) in 0.05–1.1 (π⁰, η, η′). There is no J/ψ mass constraint in the fits; use `fitDimuonMass`.
+  - New driver option **`photonID=0`** skips the photon VID, for samples without `fixedGridRhoFastjetAll`. The same option was added to the legacy config.
+- **Validation:**
+  - **MC B_s→μμγ** (2000 events; 409 branches; 39 s):
+
+    | channel | candidates | fitted | gen-matched | resolution (gen-matched, vtxProb > 1e-3) |
+    |---|---|---|---|---|
+    | `mmg` | 508 | 395 | 387 | fit 68% half-width **0.124 GeV** vs pre-fit 0.150 |
+    | `mmcg` | 1182 | 551 | 189 (2.2 conversions/event, 53% refit OK) | N=53: fit 0.128 vs pre-fit 0.126; the median shifts from −0.065 to −0.049 GeV (electron energy loss) |
+    | `mmgg`, `mmkk` | 1, 145 | — | 0 | as expected on this sample |
+
+  - **Filtered B_s→μμγ sample** (36,281 events; P4/P5 code, before the divergence check): **16,406** gen-matched fitted `mmg` candidates. The legacy ntuple had 728 in the same events (P1.6). With vtxProb > 1e-3 (13,104):
+    - mass core σ 73.5 MeV (pre-fit 84.0), RMS 0.196 (pre-fit 0.227);
+    - ct3D pull core 1.19, RMS 1.71.
+  - **Data** (whole 2022C test file, 5721 events): `mmg` 453 candidates (188 fitted), `mmcg` 3326 (1794), `mmgg` 2, `mmkk` 2608 (2577). The J/ψ-corrected μμKK mass shows no clear B_s peak with this statistics.
+  - **μμγγ on official B_s→J/ψπ⁰ MC** (Run3Summer22EE AODSIM over xrootd, 3000 events): the channel runs, but only **4 events have a gen-matched candidate**, because the π⁰ photons are mostly below the gedPhoton reconstruction threshold. A meaningful validation needs a J/ψη sample with full AOD content or the low-energy photon of Phase 9.
+  - The private J/ψη samples on `/eos/cms/.../privateMC_ForBsMMGAnalysis` lack `fixedGridRhoFastjetAll` and `reducedEcalRecHitsEE`, so neither the new nor the legacy module can run on them.
+- **Not validated:** the μμKK normalisation channel on a B_s→J/ψφ MC sample; there was none in the test list.
+
+---
+
 ## 2026-11-05: Phase 6, configuration, CRAB, README (P6.3–P6.5)
 - **P6.3:** removed the stale configs `makeTree_BsMuMuGamma_DATA_AOD.py`, `..._MC_AOD_Test.py` and `..._MC_MINIAOD.py`; none of them could run.
   - The new driver `test/runNtuplizer_cfg.py` covers MC and data. It was tested on the MC and data AOD test files (P4/P5 entry).

@@ -189,11 +189,11 @@ Rules for the components:
 - [x] **P6.5** Update `README.md`: setup with the RecoVertex/RecoEcal branch, how to run, the documentation files.
 
 ## Phase 7: Other channels on the new framework
-- [ ] **P7.1** Bs→μμγ with a converted photon (γ→e⁺e⁻):
+- [x] **P7.1** Bs→μμγ with a converted photon (γ→e⁺e⁻):
   - Extend `MMGVertexFit` with a photon built from a track pair, i.e. an e⁺e⁻ sub-fit with a mass/collinearity constraint.
   - Add `MuMuConvGammaBuilder`; reuse `DimuonBuilder` and `CandidateObservables`.
-- [ ] **P7.2** Bs→J/ψη(γγ), μμγγ: extend `MMGVertexFit` to N photons, with an optional J/ψ mass constraint on the dimuon and an optional η mass window.
-- [ ] **P7.3** Bs→J/ψφ (μμKK) normalisation channel with the same builder pattern.
+- [x] **P7.2** Bs→J/ψη(γγ), μμγγ: extend `MMGVertexFit` to N photons, with an optional J/ψ mass constraint on the dimuon and an optional η mass window.
+- [x] **P7.3** Bs→J/ψφ (μμKK) normalisation channel with the same builder pattern.
 - [ ] **P7.4** Remove `KinematicConstrainedFit`, `TrippleObjectVertex`, `TetraObjectVertex`, `ReferenceModeratorVertex`, `ReferenceResonance` (reduced to a resonance flag in `DimuonBuilder`) and `DecayChainVariables`.
 
 ## Phase 8: MINIAOD support

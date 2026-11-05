@@ -14,6 +14,7 @@ import glob
 options = VarParsing("analysis")
 options.register("nEvents", -1, VarParsing.multiplicity.singleton, VarParsing.varType.int, "Number of events to process")
 options.register("testSample", 0, VarParsing.multiplicity.singleton, VarParsing.varType.int, "Index of the sample in test/test_files.txt (used if inputFiles is empty)")
+options.register("photonID", 1, VarParsing.multiplicity.singleton, VarParsing.varType.int, "run the photon ID (needs fixedGridRhoFastjetAll)")
 options.register("testMaxFiles", -1, VarParsing.multiplicity.singleton, VarParsing.varType.int, "Max number of files taken from the test sample (-1 = all)")
 # options.register("outputFile", "default_output.root", VarParsing.multiplicity.singleton, VarParsing.varType.string, "Output file name")
 options.parseArguments()
@@ -372,7 +373,10 @@ process.primaryVertexFilter = cms.EDFilter("GoodVertexFilter",
 #process.espath = cms.Path(process.dumpES)
 
 #process.ntup = cms.Path(process.allPiTracks * process.allKTracks * process.kTracks * process.piTracks * process.bVertexAnalysis )
-process.ntup = cms.Path(process.egmPhotonIDSequence*process.oniaPhotonCandidates*process.bmmgVertexAnalysis*process.genXSecAnalyzer )
+if options.photonID:
+    process.ntup = cms.Path(process.egmPhotonIDSequence*process.oniaPhotonCandidates*process.bmmgVertexAnalysis*process.genXSecAnalyzer )
+else:
+    process.ntup = cms.Path(process.oniaPhotonCandidates*process.bmmgVertexAnalysis*process.genXSecAnalyzer )
 #process.ntup = cms.Path(process.egammaPostRecoSeq*process.oniaPhotonCandidates*process.bmmgVertexAnalysis )
 #process.ntup = cms.Path(process.oniaPhotonCandidates*process.bmmgVertexAnalysis )
 

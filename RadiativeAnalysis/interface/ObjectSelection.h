@@ -25,6 +25,16 @@ namespace bmmg {
     double minMVA = -99.;
   };
 
+  struct ConversionCuts {
+    double minPt = 0.5;              // pair momentum
+    double minVertexProb = 1e-6;
+  };
+
+  struct TrackCuts {
+    double minPt = 0.7;
+    double maxAbsEta = 2.5;
+  };
+
   // global or tracker muons with an inner track; mva[i] is the MVA of muons[i]
   std::vector<SelectedMuon> selectMuons(const std::vector<reco::Muon>& muons, const std::vector<float>& mva,
                                         const TransientTrackBuilder& ttBuilder, const MuonCuts& cuts);
@@ -34,6 +44,16 @@ namespace bmmg {
                                             const edm::Handle<edm::ValueMap<float>>& mva,
                                             const edm::Handle<edm::ValueMap<bool>>& tightId,
                                             const PhotonCuts& cuts);
+
+  // conversions with two opposite-charge tracks and a valid vertex; the e+ e- pair is refitted with a
+  // zero-mass constraint (SelectedConversion::photon, empty if that fit fails)
+  std::vector<SelectedConversion> selectConversions(const std::vector<reco::Conversion>& conversions,
+                                                    const TransientTrackBuilder& ttBuilder, const ConversionCuts& cuts);
+
+  // high-purity tracks for the kaon legs, excluding the inner tracks of the selected muons
+  std::vector<SelectedTrack> selectKaonTracks(const edm::Handle<std::vector<reco::Track>>& tracks,
+                                              const std::vector<SelectedMuon>& muons,
+                                              const TransientTrackBuilder& ttBuilder, const TrackCuts& cuts);
 
 }  // namespace bmmg
 

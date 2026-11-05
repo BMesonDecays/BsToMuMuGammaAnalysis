@@ -41,10 +41,10 @@ class MMGVertexFit
             int mu2Index = -1;
             int photonIndex = -1;
 
-            // The fitted photon particle keeps raw pointers to this photon copy and covariance;
-            // they are owned here so that they live as long as the result.
-            std::shared_ptr<const reco::Photon> fitPhoton;
-            std::shared_ptr<const TMatrixD> fitPhotonCovariance;
+            // The fitted photon particles keep raw pointers to the photon copies and their cluster
+            // covariances; they are owned here so that they live as long as the result.
+            std::vector<std::shared_ptr<const reco::Photon>> fitPhotons;
+            std::vector<std::shared_ptr<const TMatrixD>> fitPhotonCovariances;
         };
 
         // scale factors for the photon measurement uncertainties (sigma, not variance):
@@ -77,11 +77,43 @@ class MMGVertexFit
         static std::optional<RefCountedKinematicParticle> muonParticle(const reco::Muon& muon,
             const TransientTrackBuilder* TTBuilder);
 
+        // kinematic particle of a charged track with the given mass hypothesis (e.g. a kaon)
+        static RefCountedKinematicParticle trackParticle(const reco::TransientTrack& track, double mass);
+
+        // photon from a conversion: vertex fit of the e+ e- tracks with a zero-mass constraint;
+        // returns the photon particle at the conversion vertex (empty if the fit fails)
+        static std::optional<RefCountedKinematicParticle> conversionParticle(const reco::TransientTrack& e1,
+            const reco::TransientTrack& e2);
+
+        // photon measured by its ECAL cluster; the photon copy and the covariance the particle points to
+        // are returned together with it and must be kept alive (see Result::fitPhotons)
+        struct PhotonParticle
+        {
+            RefCountedKinematicParticle particle;
+            std::shared_ptr<const reco::Photon> photon;
+            std::shared_ptr<const TMatrixD> covariance;
+        };
+        std::optional<PhotonParticle> photonParticle(const reco::Photon& photon, const EcalClusterLazyTools& lazyTools,
+            const TransientTrackBuilder* TTBuilder, const GlobalPoint& expansionPoint) const;
+
+        // generic B fit: vertex fit of the particles, then the pointing constraint to pv.
+        // Returns nothing if the fit fails or diverges (non-finite chi2 or mass).
+        static std::optional<Result> fitParticles(const std::vector<RefCountedKinematicParticle>& particles,
+            const GlobalPoint& pv);
+
         // fit one mu mu gamma candidate; pv is the primary vertex used in the pointing constraint.
         // Returns nothing if the photon has no cluster hits or if the fit fails or diverges.
         std::optional<Result> fitCandidate(const RefCountedKinematicParticle& mu1,
             const RefCountedKinematicParticle& mu2,
             const reco::Photon& photon,
+            const EcalClusterLazyTools& lazyTools,
+            const TransientTrackBuilder* TTBuilder,
+            const GlobalPoint& pv) const;
+
+        // the same with any number of photons (e.g. mu mu gamma gamma); daughters: mu1, mu2, photons...
+        std::optional<Result> fitCandidate(const RefCountedKinematicParticle& mu1,
+            const RefCountedKinematicParticle& mu2,
+            const std::vector<const reco::Photon*>& photons,
             const EcalClusterLazyTools& lazyTools,
             const TransientTrackBuilder* TTBuilder,
             const GlobalPoint& pv) const;

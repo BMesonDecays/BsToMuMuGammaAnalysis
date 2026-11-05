@@ -2,9 +2,11 @@
 // Package:    BsToMuMuGammaAnalysis/RadiativeAnalysis
 // Class:      RadiativeAnalysis
 //
-// Ntuplizer for B -> mu mu gamma (photon reconstructed in the ECAL). The work is done by the
-// components of the package library (namespace bmmg):
-//   object selection -> dimuons -> mu mu gamma candidates (MMGVertexFit) -> NtupleWriter
+// Ntuplizer for B -> mu mu gamma and related channels. The work is done by the components of the
+// package library (namespace bmmg):
+//   object selection -> dimuons -> B candidates (MMGVertexFit) -> NtupleWriter
+// Channels (each can be switched off): mu mu gamma (ECAL photon), mu mu gamma (conversion),
+// mu mu gamma gamma, mu mu K K (Bs -> J/psi phi normalisation).
 // All selected objects and all candidates are stored (vectors); the best-candidate selection
 // is left to the offline analysis. The ntuple is documented in NTUPLE.md.
 
@@ -12,7 +14,7 @@
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/DimuonBuilder.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/GenChain.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/MMGVertexFit.h"
-#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/MuMuGammaBuilder.h"
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/CandidateBuilders.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/NtupleWriter.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/ObjectSelection.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/TriggerMatcher.h"
@@ -23,6 +25,8 @@
 #include "DataFormats/Common/interface/TriggerResults.h"
 #include "DataFormats/Common/interface/ValueMap.h"
 #include "DataFormats/EgammaCandidates/interface/Photon.h"
+#include "DataFormats/EgammaCandidates/interface/Conversion.h"
+#include "DataFormats/TrackReco/interface/Track.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/HLTReco/interface/TriggerEvent.h"
 #include "DataFormats/MuonReco/interface/Muon.h"
@@ -76,6 +80,8 @@ private:
   const edm::EDGetTokenT<EcalRecHitCollection> eeRecHitsToken_;
   const edm::EDGetTokenT<edm::TriggerResults> triggerResultsToken_;
   const edm::EDGetTokenT<trigger::TriggerEvent> triggerEventToken_;
+  edm::EDGetTokenT<std::vector<reco::Conversion>> conversionsToken_;
+  edm::EDGetTokenT<std::vector<reco::Track>> tracksToken_;
   edm::EDGetTokenT<std::vector<reco::GenParticle>> genParticlesToken_;
   edm::EDGetTokenT<std::vector<PileupSummaryInfo>> pileupToken_;
   edm::EDGetTokenT<GenRunInfoProduct> genRunInfoToken_;
@@ -86,10 +92,15 @@ private:
   // components
   bmmg::MuonCuts muonCuts_;
   bmmg::PhotonCuts photonCuts_;
-  bmmg::MuMuGammaConfig mmgConfig_;
+  bmmg::ConversionCuts conversionCuts_;
+  bmmg::TrackCuts trackCuts_;
+  bmmg::CandidateConfig candidateConfig_;
+  bmmg::DiphotonConfig diphotonConfig_;
+  bmmg::KaonConfig kaonConfig_;
   MMGVertexFit mmgVertexFit_;
   bmmg::TriggerMatcher triggerMatcher_;
   MuonMVAID muonMVA_;
+  const bool doMuMuGamma_, doMuMuConvGamma_, doMuMuGammaGamma_, doMuMuKK_;
   std::unique_ptr<bmmg::NtupleWriter> writer_;
 
   // job-level bookkeeping
@@ -120,7 +131,13 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& cfg)
       triggerMatcher_(cfg.getParameter<std::vector<std::string>>("triggerPaths"),
                       cfg.getParameter<std::string>("hltProcess"),
                       cfg.getParameter<double>("triggerMatchDeltaR")),
-      muonMVA_(cfg) {
+      muonMVA_(cfg),
+      doMuMuGamma_(cfg.getParameter<bool>("doMuMuGamma")),
+      doMuMuConvGamma_(cfg.getParameter<bool>("doMuMuConvGamma")),
+      doMuMuGammaGamma_(cfg.getParameter<bool>("doMuMuGammaGamma")),
+      doMuMuKK_(cfg.getParameter<bool>("doMuMuKK")) {
+    if (doMuMuConvGamma_) conversionsToken_ = consumes(cfg.getParameter<edm::InputTag>("conversions"));
+    if (doMuMuKK_) tracksToken_ = consumes(cfg.getParameter<edm::InputTag>("tracks"));
     if (isMC_) {
       genParticlesToken_ = consumes(cfg.getParameter<edm::InputTag>("genParticles"));
       pileupToken_ = consumes(cfg.getParameter<edm::InputTag>("pileup"));
@@ -133,15 +150,31 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& cfg)
     photonCuts_.minSCEnergy = cfg.getParameter<double>("photonMinSCEnergy");
     photonCuts_.maxAbsSCEta = cfg.getParameter<double>("photonMaxAbsSCEta");
     photonCuts_.minMVA = cfg.getParameter<double>("photonMinMVA");
-    mmgConfig_.minPrefitMass = cfg.getParameter<double>("mmgMinPrefitMass");
-    mmgConfig_.maxPrefitMass = cfg.getParameter<double>("mmgMaxPrefitMass");
-    mmgConfig_.computeTrackCompatibility = cfg.getParameter<bool>("computeTrackCompatibility");
+    conversionCuts_.minPt = cfg.getParameter<double>("conversionMinPt");
+    conversionCuts_.minVertexProb = cfg.getParameter<double>("conversionMinVertexProb");
+    trackCuts_.minPt = cfg.getParameter<double>("kaonMinPt");
+    candidateConfig_.minPrefitMass = cfg.getParameter<double>("minPrefitMass");
+    candidateConfig_.maxPrefitMass = cfg.getParameter<double>("maxPrefitMass");
+    candidateConfig_.computeTrackCompatibility = cfg.getParameter<bool>("computeTrackCompatibility");
+    diphotonConfig_.minMass = cfg.getParameter<double>("diphotonMinMass");
+    diphotonConfig_.maxMass = cfg.getParameter<double>("diphotonMaxMass");
+    kaonConfig_.minPt = trackCuts_.minPt;
+    kaonConfig_.minKKMass = cfg.getParameter<double>("kkMinMass");
+    kaonConfig_.maxKKMass = cfg.getParameter<double>("kkMaxMass");
+    kaonConfig_.jpsiOnly = cfg.getParameter<bool>("kkJpsiOnly");
+    kaonConfig_.minBMass = cfg.getParameter<double>("kkMinBMass");
+    kaonConfig_.maxBMass = cfg.getParameter<double>("kkMaxBMass");
     usesResource(TFileService::kSharedResource);
   }
 
 void RadiativeAnalysis::beginJob() {
   edm::Service<TFileService> fs;
-  writer_ = std::make_unique<bmmg::NtupleWriter>(*fs, triggerMatcher_.paths(), isMC_);
+  std::vector<bmmg::NtupleWriter::Channel> channels;
+  if (doMuMuGamma_) channels.push_back(bmmg::NtupleWriter::kMuMuGamma);
+  if (doMuMuConvGamma_) channels.push_back(bmmg::NtupleWriter::kMuMuConvGamma);
+  if (doMuMuGammaGamma_) channels.push_back(bmmg::NtupleWriter::kMuMuGammaGamma);
+  if (doMuMuKK_) channels.push_back(bmmg::NtupleWriter::kMuMuKK);
+  writer_ = std::make_unique<bmmg::NtupleWriter>(*fs, triggerMatcher_.paths(), isMC_, channels);
 }
 
 void RadiativeAnalysis::beginRun(const edm::Run& run, const edm::EventSetup& setup) {
@@ -223,13 +256,41 @@ void RadiativeAnalysis::analyze(const edm::Event& event, const edm::EventSetup& 
 
   // candidates
   const std::vector<bmmg::DimuonCandidate> dimuons = bmmg::buildDimuons(selMuons, beamSpot);
-  const std::vector<bmmg::MMGCandidate> mmg =
-      bmmg::buildMuMuGamma(selMuons, dimuons, selPhotons, vertices, lazyTools, ttBuilder, mmgVertexFit_, mmgConfig_);
-
+  // the object collections are filled first: the candidate truth flags use their gen matches
   writer_->fillMuons(selMuons, beamSpot, trigger, gen.get());
   writer_->fillPhotons(selPhotons, lazyTools, mmgVertexFit_, gen.get());
   writer_->fillDimuons(dimuons);
-  writer_->fillMuMuGamma(mmg, vertices);
+
+  if (doMuMuGamma_)
+    writer_->fillCandidates(bmmg::NtupleWriter::kMuMuGamma,
+                            bmmg::buildMuMuGamma(selMuons, dimuons, selPhotons, vertices, lazyTools, ttBuilder,
+                                                 mmgVertexFit_, candidateConfig_),
+                            vertices);
+  if (doMuMuGammaGamma_)
+    writer_->fillCandidates(bmmg::NtupleWriter::kMuMuGammaGamma,
+                            bmmg::buildMuMuGammaGamma(selMuons, dimuons, selPhotons, vertices, lazyTools, ttBuilder,
+                                                      mmgVertexFit_, candidateConfig_, diphotonConfig_),
+                            vertices);
+  if (doMuMuConvGamma_) {
+    const std::vector<bmmg::SelectedConversion> conversions =
+        bmmg::selectConversions(event.get(conversionsToken_), ttBuilder, conversionCuts_);
+    writer_->fillConversions(conversions, gen.get());
+    writer_->fillCandidates(
+        bmmg::NtupleWriter::kMuMuConvGamma,
+        bmmg::buildMuMuConvGamma(selMuons, dimuons, conversions, vertices, ttBuilder, candidateConfig_), vertices);
+  }
+  if (doMuMuKK_) {
+    const std::vector<bmmg::SelectedTrack> tracks =
+        bmmg::selectKaonTracks(event.getHandle(tracksToken_), selMuons, ttBuilder, trackCuts_);
+    std::vector<bmmg::SelectedTrack> usedTracks;
+    bmmg::CandidateConfig kkConfig = candidateConfig_;
+    kkConfig.minPrefitMass = kaonConfig_.minBMass;
+    kkConfig.maxPrefitMass = kaonConfig_.maxBMass;
+    const std::vector<bmmg::BCandidate> mmkk =
+        bmmg::buildMuMuKK(selMuons, dimuons, tracks, vertices, ttBuilder, kkConfig, kaonConfig_, usedTracks);
+    writer_->fillTracks(usedTracks, beamSpot, gen.get());   // before the candidates (truth flags)
+    writer_->fillCandidates(bmmg::NtupleWriter::kMuMuKK, mmkk, vertices);
+  }
   writer_->fill();
 }
 
@@ -291,9 +352,26 @@ void RadiativeAnalysis::fillDescriptions(edm::ConfigurationDescriptions& descrip
   desc.add<double>("photonMinSCEnergy", 1.0);
   desc.add<double>("photonMaxAbsSCEta", 2.5);
   desc.add<double>("photonMinMVA", -99.);
-  desc.add<double>("mmgMinPrefitMass", 4.0);
-  desc.add<double>("mmgMaxPrefitMass", 7.0);
+  // channels
+  desc.add<bool>("doMuMuGamma", true);
+  desc.add<bool>("doMuMuConvGamma", true);
+  desc.add<bool>("doMuMuGammaGamma", true);
+  desc.add<bool>("doMuMuKK", true);
+  desc.add<edm::InputTag>("conversions", edm::InputTag("allConversions"));
+  desc.add<edm::InputTag>("tracks", edm::InputTag("generalTracks"));
+  desc.add<double>("minPrefitMass", 4.0);   // pre-fit B mass window (photon channels)
+  desc.add<double>("maxPrefitMass", 7.0);
   desc.add<bool>("computeTrackCompatibility", true);
+  desc.add<double>("conversionMinPt", 0.5);
+  desc.add<double>("conversionMinVertexProb", 1e-6);
+  desc.add<double>("diphotonMinMass", 0.05);
+  desc.add<double>("diphotonMaxMass", 1.1);
+  desc.add<double>("kaonMinPt", 0.7);
+  desc.add<double>("kkMinMass", 0.99);
+  desc.add<double>("kkMaxMass", 1.05);
+  desc.add<bool>("kkJpsiOnly", true);
+  desc.add<double>("kkMinBMass", 4.9);   // pre-fit B mass window of mu mu K K
+  desc.add<double>("kkMaxBMass", 5.9);
   // MMGVertexFit photon error scale factors (sigma), tuned on gedPhotons (MMGVertexFitExample.py)
   desc.add<double>("clusterCovScalePhiEB", 0.16);
   desc.add<double>("clusterCovScaleThetaEB", 0.165);

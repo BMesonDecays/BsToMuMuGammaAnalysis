@@ -2,10 +2,12 @@
 """Validation of the mu mu gamma kinematic fit (MMGVertexFit).
 
 Usage:
-    python3 validateMMGFit.py --ntuple ntuple.root [--example histos.root] [--outdir plots] [--label text]
+    python3 validateMMGFit.py --ntuple ntuple.root [--example histos.root] [--outdir plots]
+                              [--prefix mmg_] [--min-vtx-prob 1e-3] [--matched]
 
-From the ntuple (RadiativeAnalysis, branch names of the current RadiativeRootTree), for events
-with a fitted mu mu gamma candidate:
+The ntuple can be the new one (tree bmmg/Events, candidates with prefix mmg_/mmcg_/mmgg_/mmkk_) or the
+legacy one (tree BMMGTree, one candidate per event); the format is detected automatically.
+From the ntuple, for fitted candidates:
   - B mass: pre-fit 4-vector and fitted, residual to the gen B mass (mean, RMS, core Gaussian width)
   - ct3D: residual to the gen ct3D, ct3D error, pull
 The selection can be restricted to gen-matched candidates (--matched).
@@ -63,32 +65,50 @@ def summarize(label, values, h=None):
     print(line)
 
 
-def ntuple_validation(path, outdir, matched):
-    t = uproot.open(path)["BMMGTree"]
-    n = t.num_entries
-    if "nEvents" in t.keys():  # the old tree has one extra endJob row (plan P2.17)
-        n -= 1
-    arr = lambda b: t[b].array(library="np", entry_stop=n).astype(float)
-
-    fit_mass = arr("VertexfitBsMass_mmrecog")
-    pre_mass = arr("FourvectorBsMass_mmrecog")
-    gen_mass = arr("GenB_mass")
-    ct, cterr, gen_ct = arr("BsCt3D_mmrecog"), arr("VertexfitBsCtErr3D_mmrecog"), arr("GenBct3D")
-    sel = (fit_mass > 0) & (gen_mass > 0)
-    if matched:
-        sel &= (arr("Topology_isMatched") > 0)
-    print("\n=== ntuple %s: %d events, %d with a fitted mu mu gamma candidate%s"
-          % (path, n, sel.sum(), " (gen-matched topology)" if matched else ""))
+def ntuple_validation(path, outdir, matched, prefix="mmg_", minVtxProb=-1.):
+    f = uproot.open(path)
+    if "bmmg" in f:   # new ntuple: vectors of candidates
+        import awkward as ak
+        t = f["bmmg/Events"]
+        a = t.arrays([prefix + n for n in ["mass", "prefitMass", "fitOK", "vtxProb", "ct3D", "ct3DErr"]] +
+                     ([prefix + "genMatched"] if prefix + "genMatched" in t.keys() else []) + ["gen_B_mass", "gen_B_ct3D"])
+        sel = (a[prefix + "fitOK"] == 1) & (a[prefix + "vtxProb"] > minVtxProb)
+        if matched: sel = sel & (a[prefix + "genMatched"] == 1)
+        gm = ak.broadcast_arrays(a.gen_B_mass, a[prefix + "mass"])[0]
+        gct = ak.broadcast_arrays(a.gen_B_ct3D, a[prefix + "mass"])[0]
+        flat = lambda x: ak.to_numpy(ak.flatten(x[sel])).astype(float)
+        fit_mass, pre_mass, gen_mass = flat(a[prefix + "mass"]), flat(a[prefix + "prefitMass"]), flat(gm)
+        ct, cterr, gen_ct = flat(a[prefix + "ct3D"]), flat(a[prefix + "ct3DErr"]), flat(gct)
+        n = t.num_entries
+        print("\n=== ntuple %s (new format, %s): %d events, %d fitted candidates%s%s"
+              % (path, prefix, n, len(fit_mass), " (gen-matched)" if matched else "",
+                 ", vtxProb > %g" % minVtxProb if minVtxProb > 0 else ""))
+        ok = np.ones(len(fit_mass), dtype=bool)
+    else:              # legacy ntuple
+        t = f["BMMGTree"]
+        n = t.num_entries
+        if "nEvents" in t.keys():  # the old tree has one extra endJob row (plan P2.17)
+            n -= 1
+        arr = lambda b: t[b].array(library="np", entry_stop=n).astype(float)
+        fit_mass = arr("VertexfitBsMass_mmrecog")
+        pre_mass = arr("FourvectorBsMass_mmrecog")
+        gen_mass = arr("GenB_mass")
+        ct, cterr, gen_ct = arr("BsCt3D_mmrecog"), arr("VertexfitBsCtErr3D_mmrecog"), arr("GenBct3D")
+        ok = (fit_mass > 0) & (gen_mass > 0)
+        if matched:
+            ok &= (arr("Topology_isMatched") > 0)
+        print("\n=== ntuple %s (legacy format): %d events, %d with a fitted mu mu gamma candidate%s"
+              % (path, n, ok.sum(), " (gen-matched topology)" if matched else ""))
 
     for name, m in [("pre-fit mass - gen", pre_mass), ("fitted mass - gen", fit_mass)]:
-        r = (m - gen_mass)[sel]
+        r = (m - gen_mass)[ok]
         h = hist(name.replace(" ", "_").replace("-", "m"), "%s;m - m_{gen} [GeV];candidates" % name, r, 120, -0.6, 0.6)
         summarize(name, r, h)
         save(h, outdir, h.GetName())
-    h = hist("fitted_mass", "fitted B mass;m [GeV];candidates", fit_mass[sel], 100, 4.5, 6.5)
+    h = hist("fitted_mass", "fitted B mass;m [GeV];candidates", fit_mass[ok], 100, 4.5, 6.5)
     save(h, outdir, "fitted_mass")
 
-    ok = sel & (cterr > 0)
+    ok = ok & (cterr > 0)
     r = (ct - gen_ct)[ok]
     h = hist("ct3D_residual", "ct3D - gen;#Delta ct [cm];candidates", r, 100, -0.05, 0.05)
     summarize("ct3D - gen [cm]", r, h)
@@ -121,11 +141,13 @@ def main():
     ap.add_argument("--ntuple")
     ap.add_argument("--example")
     ap.add_argument("--outdir", default="validation_plots")
-    ap.add_argument("--matched", action="store_true", help="only candidates with Topology_isMatched")
+    ap.add_argument("--matched", action="store_true", help="only gen-matched candidates (new: <prefix>genMatched, legacy: Topology_isMatched)")
+    ap.add_argument("--prefix", default="mmg_", help="candidate prefix in the new ntuple (mmg_, mmcg_, mmgg_, mmkk_)")
+    ap.add_argument("--min-vtx-prob", type=float, default=-1., help="cut on the fitted vertex probability (new ntuple)")
     args = ap.parse_args()
     os.makedirs(args.outdir, exist_ok=True)
     if args.ntuple:
-        ntuple_validation(args.ntuple, args.outdir, args.matched)
+        ntuple_validation(args.ntuple, args.outdir, args.matched, args.prefix, args.min_vtx_prob)
     if args.example:
         example_validation(args.example, args.outdir)
 

@@ -2,6 +2,9 @@
 #include "DataFormats/Common/interface/Ptr.h"
 #include "DataFormats/Common/interface/Ref.h"
 
+#include "RecoVertex/KinematicFitPrimitives/interface/KinematicParticle.h"
+#include "TMath.h"
+
 #include <cmath>
 
 namespace bmmg {
@@ -45,6 +48,64 @@ namespace bmmg {
       if (tightId.isValid() && tightId->contains(ptr.id())) sp.tightId = (*tightId)[ptr] ? 1 : 0;
       if (sp.mva < cuts.minMVA) continue;
       selected.push_back(sp);
+    }
+    return selected;
+  }
+
+  std::vector<SelectedConversion> selectConversions(const std::vector<reco::Conversion>& conversions,
+                                                    const TransientTrackBuilder& ttBuilder, const ConversionCuts& cuts) {
+    std::vector<SelectedConversion> selected;
+    for (size_t i = 0; i < conversions.size(); ++i) {
+      const reco::Conversion& conv = conversions[i];
+      if (conv.nTracks() != 2) continue;
+      const auto& trks = conv.tracks();
+      if (trks[0]->charge() * trks[1]->charge() >= 0) continue;
+      if (!conv.conversionVertex().isValid()) continue;
+      if (conv.pairMomentum().perp2() < cuts.minPt * cuts.minPt) continue;
+      if (TMath::Prob(conv.conversionVertex().chi2(), static_cast<int>(conv.conversionVertex().ndof())) < cuts.minVertexProb)
+        continue;
+      SelectedConversion sc;
+      sc.index = i;
+      sc.conversion = &conv;
+      const bool firstPositive = trks[0]->charge() > 0;
+      sc.track1 = ttBuilder.build(*trks[firstPositive ? 0 : 1]);
+      sc.track2 = ttBuilder.build(*trks[firstPositive ? 1 : 0]);
+      sc.photon = MMGVertexFit::conversionParticle(sc.track1, sc.track2);
+      if (sc.photon) {
+        const KinematicState& s = (*sc.photon)->currentState();
+        const GlobalVector p = s.globalMomentum();
+        sc.p4.SetXYZT(p.x(), p.y(), p.z(), p.mag());
+      } else {
+        const auto& p = conv.pairMomentum();
+        sc.p4.SetXYZT(p.x(), p.y(), p.z(), std::sqrt(p.mag2()));
+      }
+      selected.push_back(std::move(sc));
+    }
+    return selected;
+  }
+
+  std::vector<SelectedTrack> selectKaonTracks(const edm::Handle<std::vector<reco::Track>>& tracks,
+                                              const std::vector<SelectedMuon>& muons,
+                                              const TransientTrackBuilder& ttBuilder, const TrackCuts& cuts) {
+    std::vector<SelectedTrack> selected;
+    for (size_t i = 0; i < tracks->size(); ++i) {
+      const reco::Track& trk = (*tracks)[i];
+      if (!trk.quality(reco::TrackBase::highPurity)) continue;
+      if (trk.pt() < cuts.minPt || std::abs(trk.eta()) > cuts.maxAbsEta) continue;
+      bool isMuon = false;
+      for (const auto& m : muons) {
+        const reco::TrackRef inner = m.muon->innerTrack();
+        if (inner.id() == tracks.id() && inner.key() == i) {
+          isMuon = true;
+          break;
+        }
+      }
+      if (isMuon) continue;
+      SelectedTrack st;
+      st.index = i;
+      st.track = &trk;
+      st.ttrack = ttBuilder.build(trk);
+      selected.push_back(std::move(st));
     }
     return selected;
   }
