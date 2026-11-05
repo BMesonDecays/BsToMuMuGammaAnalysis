@@ -1,6 +1,35 @@
 # Progress report
 
-Entries are newest first. Each entry gives: the plan item(s) (see `plan.md`), what was done, the build result, the validation result, and open issues.
+Entries are newest first.
+
+## Status overview (2026-11-06), for review
+- **Done:** Phases 0–8 of `plan.md` and most of Phase 9. The code builds without warnings and the unit tests pass. All steps are committed on `sslawins_dev1` (`008bbc6` … `47cc319`) and **nothing is pushed**.
+- **Changes from the original code:**
+  - The ntuplizer is a new modular `RadiativeAnalysis` module: a `bmmg` library in `src/` plus a thin EDAnalyzer.
+  - **Channels:** μμγ (ECAL photon, MMGVertexFit), μμγ (conversion), μμγγ, μμKK.
+  - **Ntuple:** all candidates as vectors; documented in `NTUPLE.md`.
+  - **Formats:** AOD and MiniAOD.
+  - **Configs:** one driver config (`test/runNtuplizer_cfg.py`) and one CRAB config.
+  - The legacy module was removed in P7.4 (still in the git history at `bde3123`).
+- **Points to look at first:**
+  1. **Physics decisions** (each in the entry where it was made):
+     - no MVA cuts at ntuple level;
+     - pre-fit window 4–7 GeV;
+     - EE photons included;
+     - FSR handling in the gen classification;
+     - trigger matching to HLT muon objects only;
+     - μμKK uses J/ψ dimuons only;
+     - the ct definition (signed projection, full-covariance error);
+     - fits with mass > 100 GeV count as failed.
+  2. **Known limitation:** run-to-run differences in fits that don't converge (χ² ≫ ndf). valgrind finds no memory error; cut on `vtxProb`.
+  3. **Not validated:**
+     - μμKK on B_s→J/ψφ MC (no sample available);
+     - μμγγ: only 4 gen-matched candidates on J/ψπ⁰ MC (the soft photons are not reconstructed);
+     - the CRAB config was not submitted.
+  4. **MiniAOD:** no conversion channel, and few low-pt photons (`slimmedPhotons` threshold).
+  5. **Open:** low-energy photon cores for `BMMGCustomPhotonProducer` (Phase 9 research).
+  6. **Not committed:** the reference ntuples in `RadiativeAnalysis/test/reference/` (git-ignored, local only).
+ Each entry gives: the plan item(s) (see `plan.md`), what was done, the build result, the validation result, and open issues.
 
 ---
 
