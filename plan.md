@@ -21,8 +21,8 @@ The current structure is described in `structure_old.md`; progress is logged in 
 ## Open questions (to be decided by the user when the relevant step comes)
 1. ~~Photon collection~~ **Decided: gedPhotons** (2026-11-05).
 2. The photon exclusion `pt > 50 GeV || !isEB` in the analyzer: keep, make configurable, or drop?
-3. Gen decay-mode classification with FSR photons (`nGam == 1` today).
-4. Trigger-object matching: ΔR < 0.1, and whether a muon must match *all* terminal filters of a path (which includes photon and vertex filters).
+3. ~~FSR in the gen classification~~ **Decided in P2.18:** extra photons are treated as FSR (`nGam >= 1` / `>= 2`).
+4. ~~Trigger-object matching~~ **Resolved in P2.14:** muons are matched (ΔR < 0.1) only to HLT muon objects of the terminal filters; filters without muon objects (e/γ legs) are skipped.
 5. A data test file for `test_files.txt` (needed in Phase 6).
 
 ---
@@ -86,20 +86,20 @@ Each item is a small change, and they are committed in small groups.
   - The `isPFMuon()` category overwrites the computed category.
   - `isCowboy` is never reset; use `atan2`.
   - `muon::overlap` is checked after the expensive computations; move it first.
-- [ ] **P2.12** `ReferenceResonance`:
+- [x] **P2.12** `ReferenceResonance`:
   - `calculateMassFromComponents` shadows a variable and always returns 0.
   - The `NonResonant` window is 0, so the flag is never set.
   - `ReferenceModeratorVertex.cc:197` uses resonance eta/phi = -9999 when no resonance was found.
-- [ ] **P2.13** Constants:
+- [x] **P2.13** Constants:
   - `nominalPsiMass = 3.096916` should be 3.6861.
   - `PsiPDGMass` is never read from the config.
   - `KinematicConstrainedFit::vtxprob_Bhadron` and `mass_Bhadron` are uninitialised.
   - `genXsec_`, `genXsecErr_`, `lumiEquivalent_*` and `NSelectedVertices` are uninitialised.
-- [ ] **P2.14** Trigger:
+- [x] **P2.14** Trigger:
   - `HLT_DoubleMu4_3_LowMass` is stored in `triggerbit_HLT_DoubleMu4_LowMass_`.
   - `HLT_DoubleMu4_3_Jpsi` is in the list but has no bit.
   - Check the "all terminal filters" matching against the menu (open question 4).
-- [ ] **P2.15** The track collection is read from the parameter `pfCandTag`; add its own `tracks` parameter.
+- [x] **P2.15** The track collection is read from the parameter `pfCandTag`; add its own `tracks` parameter.
 
 **MC and bookkeeping**
 - [x] **P2.16** `if (!G.isValid) return;` (`RadiativeAnalysis.cc:982`) drops MC events from the ntuple. Fill the event with gen flags set to invalid.

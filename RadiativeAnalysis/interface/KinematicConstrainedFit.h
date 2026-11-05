@@ -99,8 +99,8 @@ class KinematicConstrainedFit{
 
 	private:
 	
-		double                              vtxprob_Bhadron;
-		double                              mass_Bhadron;
+		double                              vtxprob_Bhadron = -9999999;
+		double                              mass_Bhadron = -9999999;
 		RefCountedKinematicParticle         bhadron;
 		RefCountedKinematicVertex           bVertex;
 		RefCountedKinematicTree             myTree_B;

@@ -27,7 +27,7 @@
 RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig): 
 	theConfig_(iConfig),
 	nominalJpsiMass( 3.096916 ),
-	nominalPsiMass( 3.096916 ),
+	nominalPsiMass( 3.686097 ),   // psi(2S) (was set to the J/psi mass)
 	nominalPhiMass(1.019 ),
 	nominalElectronMass(0.00051099893),
 	nominalMuonMass(0.1056583),
@@ -92,7 +92,7 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig):
 
 	//pfCandTag                         = iConfig.getParameter<edm::InputTag>("pfCandTag");
     //pfCandTagTok                      = consumes<edm::View<pat::PackedCandidate>>(pfCandTag);
-	trackTag                          = iConfig.getParameter<edm::InputTag>("pfCandTag");
+	trackTag                          = iConfig.getParameter<edm::InputTag>("tracks");
 	trackTagTok                       = consumes<std::vector<reco::Track>>(trackTag);
 	if(isMINIAOD_){
 		IsoTrackTag                   = iConfig.getParameter<edm::InputTag>("IsoTrackTag");
@@ -131,6 +131,7 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig):
 	PionZeroPDGMass_                  = iConfig.getParameter<double>("PionZeroPDGMass");
 	EtaMesonPDGMass_                  = iConfig.getParameter<double>("EtaMesonPDGMass");
 	EtaPrimePDGMass_                  = iConfig.getParameter<double>("EtaPrimePDGMass");
+	PsiPDGMass_                       = iConfig.getParameter<double>("PsiPDGMass");
 	outputFile_                       = iConfig.getUntrackedParameter<std::string>("outputFile");
 	verbose_                          = iConfig.getParameter<bool>("verbose");
 	TestVerbose_                      = iConfig.getParameter<bool>("TestVerbose");
@@ -179,7 +180,17 @@ void RadiativeAnalysis::beginRun(const edm::Run& iRun, const edm::EventSetup& iS
     if (changed){
 		 edm::LogInfo("RadiativeAnalysis")
             << "HLT menu changed. Table: " << hltConfig_.tableName();
-
+		 if (verbose_) {
+			 // filters used for the trigger-object matching of each path of interest
+			 for (const auto& path : hltConfig_.triggerNames()) {
+				 for (const auto& base : triggersOfInterest_) {
+					 if (path.find(base + "_v") == std::string::npos) continue;
+					 std::cout << "[RadiativeAnalysis] trigger matching filters for " << path << ":";
+					 for (const auto& f : getFiltersForPath(path)) std::cout << " " << f << " (" << hltConfig_.moduleType(f) << ")";
+					 std::cout << std::endl;
+				 }
+			 }
+		 }
 	}
        
 }
@@ -244,6 +255,8 @@ std::vector<std::string>RadiativeAnalysis::getFiltersForPath(const std::string& 
     // Stop as soon as we leave the filter region (hit a producer going backward).
     for (int iMod = static_cast<int>(modules.size()) - 1; iMod >= 0; --iMod) {
         const std::string& mod     = modules[iMod];
+        // '-' (result ignored) and '!' (result inverted) prefixed modules do not select objects
+        if (!mod.empty() && (mod[0] == '-' || mod[0] == '!')) continue;
         const std::string  modType = hltConfig_.moduleType(mod);
         const std::string  edmType = hltConfig_.moduleEDMType(mod);
 
@@ -376,17 +389,7 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
     edm::Handle<edm::TriggerResults> hltbits;
     iEvent.getByToken(triggerbitsTok, hltbits);
 
-    static const std::vector<std::string> triggersOfInterest = {
-        "HLT_DoubleMu4_3_Bs",
-        "HLT_DoubleMu4_3_Jpsi",
-        "HLT_DoubleMu4_3_LowMass",
-        "HLT_DoubleMu4_LowMass_Displaced",
-        "HLT_DoubleMu4_3_Photon4_BsToMMG",
-        "HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG",
-        "HLT_DoubleMu4_JpsiTrkTrk_Displaced",
-        "HLT_DoubleMu4_Jpsi_NoVertexing",
-        "HLT_DoubleMu4_Jpsi_Displaced",
-    };
+    const std::vector<std::string>& triggersOfInterest = triggersOfInterest_;
 
     const edm::TriggerNames& triggerNames_ = iEvent.triggerNames(*hltbits);
 
@@ -417,7 +420,9 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
         else if (trigName.find("HLT_DoubleMu4_LowMass_Displaced_v") != std::string::npos)
             bmmgRootTree_->triggerbit_HLT_DoubleMu4_LowMass_Displaced_           = hltbits->accept(itrig);
         else if (trigName.find("HLT_DoubleMu4_3_LowMass_v") != std::string::npos)
-            bmmgRootTree_->triggerbit_HLT_DoubleMu4_LowMass_                     = hltbits->accept(itrig);
+            bmmgRootTree_->triggerbit_HLT_DoubleMu4_3_LowMass_                   = hltbits->accept(itrig);
+        else if (trigName.find("HLT_DoubleMu4_3_Jpsi_v") != std::string::npos)
+            bmmgRootTree_->triggerbit_HLT_DoubleMu4_3_Jpsi_                      = hltbits->accept(itrig);
         else if (trigName.find("HLT_DoubleMu4_3_Bs_v") != std::string::npos)
             bmmgRootTree_->triggerbit_HLT_DoubleMu4_3_Bs_                        = hltbits->accept(itrig);
         else if (trigName.find("HLT_DoubleMu4_JpsiTrkTrk_Displaced_v") != std::string::npos)
@@ -474,16 +479,19 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
             filterObjsForPath.reserve(filterLabels.size());
 
             for (const std::string& filterLabel : filterLabels) {
+                // only HLT muon objects are used for the muon matching; filters without
+                // muon objects (e.g. the e/gamma filter of the photon paths) are not muon legs
                 trigger::TriggerObjectCollection filterObjs;
                 const edm::InputTag filterTag(filterLabel, "", hltProcess_);
                 const size_t filterIdx = trigSummary->filterIndex(filterTag);
                 if (filterIdx < trigSummary->sizeFilters()) {
                     const trigger::Keys& keys = trigSummary->filterKeys(filterIdx);
-                    filterObjs.reserve(keys.size());
+                    const trigger::Vids& ids = trigSummary->filterIds(filterIdx);
                     for (size_t k = 0; k < keys.size(); ++k)
-                        filterObjs.push_back(allObjects[keys[k]]);
+                        if (ids[k] == trigger::TriggerMuon) filterObjs.push_back(allObjects[keys[k]]);
                 }
-                filterObjsForPath.push_back(std::move(filterObjs));
+                if (!filterObjs.empty() || filterIdx >= trigSummary->sizeFilters())
+                    filterObjsForPath.push_back(std::move(filterObjs));   // a muon leg (empty if the filter did not run)
             }
             pathFilterObjects[basePath] = std::move(filterObjsForPath);
         }

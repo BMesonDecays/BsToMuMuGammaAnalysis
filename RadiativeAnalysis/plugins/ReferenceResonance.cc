@@ -24,7 +24,7 @@ double ReferenceResonance::calculateMassFromComponents(const pat::CompositeCandi
     vec_e2.SetPtEtaPhiM(eletk1.pt(), eletk1.eta(), eletk1.phi(), electronMass);
     vec_e3.SetPtEtaPhiM(eletk2.pt(), eletk2.eta(), eletk2.phi(), electronMass);
     vec_e4.SetPtEtaPhiM(eletk3.pt(), eletk3.eta(), eletk3.phi(), electronMass);
-    TLorentzVector totalVec = vec_e1 + vec_e2 + vec_e3 + vec_e4;
+    totalVec = vec_e1 + vec_e2 + vec_e3 + vec_e4;   // was a shadowing local variable, so the function returned 0
     }
     }
     return totalVec.M();
@@ -40,8 +40,7 @@ ReferenceResonance::ResonanceDetails ReferenceResonance::findResonances(const re
     std::vector<std::pair<ResonanceFlag, std::pair<double, double>>> resonanceList = {
         {Jpsi, {Constants::JpsiMass_PDG, Constants::JpsiWindow_PDG}},
         {Phi, {Constants::PhiMass_PDG, Constants::PhiWindow_PDG}},
-        {KStar, {Constants::KStar0Mass_PDG, Constants::KStar0Window_PDG}},
-        {NonResonant, {Constants::nonResonantMass_PDG, Constants::nonResonantWindow_PDG}}
+        {KStar, {Constants::KStar0Mass_PDG, Constants::KStar0Window_PDG}}
     };
 
     result.resonanceFlag = ResonanceFlag::None;  // Default: no resonance found
@@ -57,6 +56,12 @@ ReferenceResonance::ResonanceDetails ReferenceResonance::findResonances(const re
             result.isValid = true;
             break;
         }
+    }
+
+    // dimuons outside all resonance windows (with the same muon pt requirement) are non-resonant
+    if (!result.isValid && mu1.pt() > Constants::PtCut && mu2.pt() > Constants::PtCut) {
+        result.resonanceFlag = NonResonant;
+        result.isValid = true;
     }
 
     result.mass = dimuonMass;

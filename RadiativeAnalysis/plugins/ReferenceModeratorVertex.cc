@@ -175,13 +175,14 @@ DecayChainVariables ReferenceModeratorVertex::ReferenceModeratorVertexObservable
       if( mu2.innerTrack()->quality(reco::TrackBase::highPurity) )	{dcv.mu2innertrkhq = 1 ;}
       if( muon::isGoodMuon(mu2, muon::TMOneStationTight) )	{ dcv.mu2isgood= 1 ;}
 
+      const reco::Candidate::LorentzVector dimuonP4 = mu1.p4() + mu2.p4();   // direction for the kaon dR cut
       for(size_t i =0 ; i<tracks.size(); i++){
           const reco::Track& trk1 = tracks[i];
           if (!trk1.quality(reco::TrackBase::highPurity))continue;
           if (trk1.charge()<0)continue;                          
           if (trk1.pt() < 0.7 ) continue;
           if (trk1.numberOfValidHits() < 1)continue;
-          double DeltaRKaon1Dimuon = deltaR(resonanceResult.eta, resonanceResult.phi, trk1.eta(), trk1.phi());
+          double DeltaRKaon1Dimuon = deltaR(dimuonP4.eta(), dimuonP4.phi(), trk1.eta(), trk1.phi());
           if (DeltaRKaon1Dimuon > 2.2) continue;   
           double DeltaRKaon1Muon1 = deltaR(mu1.eta(), mu1.phi(), trk1.eta(), trk1.phi());
           double DeltaRKaon1Muon2 = deltaR(mu2.eta(), mu2.phi(), trk1.eta(), trk1.phi());
@@ -192,7 +193,7 @@ DecayChainVariables ReferenceModeratorVertex::ReferenceModeratorVertexObservable
               if (trk2.charge()>0)continue;
               if (trk2.pt() < 0.7 ) continue;
               if (trk2.numberOfValidHits() < 1)continue;
-              double DeltaRKaon2Dimuon = deltaR(resonanceResult.eta, resonanceResult.phi, trk2.eta(), trk2.phi());
+              double DeltaRKaon2Dimuon = deltaR(dimuonP4.eta(), dimuonP4.phi(), trk2.eta(), trk2.phi());
               //std::cout<< "DeltaRKaon2Dimuon : "<<DeltaRKaon2Dimuon<<"\n";
               //std::cout<<" pt, eta and phi of the track2 :"<<trk2.pt()<<"\t"<<trk2.eta()<<"\t"<<trk2.phi()<<"\n";
               if (DeltaRKaon2Dimuon > 2.2) continue;
@@ -230,7 +231,6 @@ DecayChainVariables ReferenceModeratorVertex::ReferenceModeratorVertexObservable
               KinematicConstrainedFit BCandFitter;
               bool fitSuccess = BCandFitter.BsToJpsiPhiFit(t_tracks, nominalMuonMass, nominalKaonMass, nominalKaonMass);
               if (!fitSuccess) continue;
-              dcv.fittedBmassConvertedPhoton = BCandFitter.getBhadronMass();
                 rrt->FourvectorBsMass_mmkk_ = BCand.M();
                 rrt->FourvectorBsPt_mmkk_   = BCand.Pt();
                 rrt->FourvectorBsEta_mmkk_  = BCand.Eta();

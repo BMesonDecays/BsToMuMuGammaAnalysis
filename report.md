@@ -4,6 +4,47 @@ Entries are newest first. Each entry gives: the plan item(s) (see `plan.md`), wh
 
 ---
 
+## 2026-11-05: Phase 2, batch 2 of bug fixes (P2.12–P2.15) — Phase 2 complete
+New reference: `test/reference/reference_P2b_2000.root`.
+- **P2.12 (`ReferenceResonance`):**
+  - `calculateMassFromComponents` no longer shadows `totalVec`; it always returned 0 before.
+  - **NonResonant** (flag 4) is now set for dimuons with both muons above 3 GeV that are outside all resonance windows. Before, its window was 0, so it was never set, and the dimuon kinematics (`dcv.dimuonMass/Eta/Phi/Pt`) were filled **only for resonant pairs**.
+  - `KinematicConstrainedFit` treats NonResonant like None (pointing constraint only, no mass constraint). Without this, the conversion fits would have failed for these pairs.
+  - The μμKK kaon ΔR cut uses the dimuon direction from the muons, not the resonance eta/phi (which were −9999 for non-resonant pairs).
+  - `ReferenceModeratorVertex` no longer writes the μμKK mass into `fittedBmassConvertedPhoton` (copy-paste error). `HadronMass_fromVertexFitConPhoton` is now never filled and will be removed in Phase 5.
+- **P2.13:**
+  - `nominalPsiMass` set to 3.686097 (it held the J/ψ mass).
+  - `PsiPDGMass` is read from the config.
+  - The `KinematicConstrainedFit` result members are initialised.
+- **P2.14 (trigger):**
+  - The bit for `HLT_DoubleMu4_3_LowMass` is renamed `triggerbit_HLT_DoubleMu4_3_LowMass`, and a new bit `triggerbit_HLT_DoubleMu4_3_Jpsi` is added.
+  - The list of paths is now a member (`triggersOfInterest_`).
+  - With `verbose=True`, `beginRun` prints the filters used for the matching. For the test file:
+    - The `Photon4_BsToMMG` paths end with a μμγ mass filter **and** the e/γ filter `hltEG4R9Id50b80eFilter`.
+    - `Jpsi_NoVertexing` included a `-hltL1f...` module whose result the path ignores.
+  - The old logic required a muon to match an object of **every** terminal filter, so muons could never match the photon paths.
+  - **Fix (decision for open question 4):**
+    - Muons are matched (ΔR < 0.1) only to HLT muon objects (`filterIds == TriggerMuon`).
+    - Filters without muon objects are not legs.
+    - Ignored or negated modules (`-`/`!` prefix) are skipped.
+- **P2.15:** the track collection has its own `tracks` parameter, set in the MC config; `pfCandTag` is no longer read.
+- **Validation** (`reference_P2a_2000.root` → this version; with `--map` for the renamed LowMass bit), 523 of 555 branches identical:
+  - Dimuon kinematics (`DiMuon*_beffit`, `DiMuon_ResonanceType`, `LxyOverPt`) are filled in 417 more events, about 538 instead of 120. NoBound branches: 336.
+  - μμKK candidates in 76 events (before: almost none).
+  - Trigger matches in 2000 events:
+
+    | path | before | after |
+    |---|---|---|
+    | `Photon4_BsToMMG` (path fired in 466 events) | 31 matched muons | **974** |
+    | `Displaced_Photon4_BsToMMG` | 23 | **716** |
+    | `Jpsi_NoVertexing` | 0 | **229** |
+    | `DoubleMu4_3_Bs` | 43 | 43 (unchanged) |
+- **Build:** OK.
+
+**Phase 2 summary:** all items are done except P2.3, which is deferred to P4.1. Still open (not bugs): open question 2, the photon exclusion `pt > 50 || !isEB` in the leading-photon block. That block will be replaced by per-selected-photon vectors in Phase 5, so it is left as is.
+
+---
+
 ## 2026-11-05: Phase 2, batch 1 of bug fixes (P2.1, 2.2, 2.4–2.11, 2.16–2.20)
 All of these change the content of the ntuple on purpose. New reference: `test/reference/reference_P2a_2000.root`.
 

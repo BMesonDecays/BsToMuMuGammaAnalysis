@@ -140,7 +140,8 @@ bool KinematicConstrainedFit::TrippleObjectVertexFitConvertedPhoton(
     // create the constraint
     GlobalPoint vertexPosition(PV.x(), PV.y(), PV.z());
     RefCountedKinematicTree vertexFitTreeGlobal;
-    if(resonanceDetails.resonanceFlag == ReferenceResonance::ResonanceFlag::None)
+    if(resonanceDetails.resonanceFlag == ReferenceResonance::ResonanceFlag::None
+       || resonanceDetails.resonanceFlag == ReferenceResonance::ResonanceFlag::NonResonant)   // no mass constraint
     {
         MultiTrackKinematicConstraint* multiPointingConstraint = new MultiTrackPointingKinematicConstraint(vertexPosition);
         KinematicConstrainedVertexFitter constrainedFitter;
@@ -411,7 +412,8 @@ bool KinematicConstrainedFit::TetraObjectVertexFitRecoPhoton(
         // create the constraint
         GlobalPoint vertexPosition(PV.x(), PV.y(), PV.z());
         RefCountedKinematicTree vertexFitTreeGlobal;
-        if(resonanceDetails.resonanceFlag == ReferenceResonance::ResonanceFlag::None)
+        if(resonanceDetails.resonanceFlag == ReferenceResonance::ResonanceFlag::None
+       || resonanceDetails.resonanceFlag == ReferenceResonance::ResonanceFlag::NonResonant)   // no mass constraint
         {
             MultiTrackKinematicConstraint* multiPointingConstraint = new MultiTrackPointingKinematicConstraint(vertexPosition);
             KinematicConstrainedVertexFitter constrainedFitter;

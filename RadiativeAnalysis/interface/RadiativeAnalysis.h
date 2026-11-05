@@ -198,7 +198,19 @@ private:
   bool                                             hltConfigInitialized_;
   std::string                                      hltProcess_;
   std::map<std::string, std::vector<bool>>         muTrigMatchMap_;// map: HLT path base name -> per-muon match bool vector (filled per event)
-  std::vector<std::string> getFiltersForPath(const std::string& pathName) const;// Private helper: intrinsically extracts terminal filter labels for a path
+  std::vector<std::string> getFiltersForPath(const std::string& pathName) const;
+  // HLT paths (without version) whose bits are stored and whose objects are matched to the muons
+  const std::vector<std::string> triggersOfInterest_ = {
+      "HLT_DoubleMu4_3_Bs",
+      "HLT_DoubleMu4_3_Jpsi",
+      "HLT_DoubleMu4_3_LowMass",
+      "HLT_DoubleMu4_LowMass_Displaced",
+      "HLT_DoubleMu4_3_Photon4_BsToMMG",
+      "HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG",
+      "HLT_DoubleMu4_JpsiTrkTrk_Displaced",
+      "HLT_DoubleMu4_Jpsi_NoVertexing",
+      "HLT_DoubleMu4_Jpsi_Displaced"
+  };// Private helper: intrinsically extracts terminal filter labels for a path
 
   
 

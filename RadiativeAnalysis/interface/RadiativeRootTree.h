@@ -65,7 +65,8 @@ public:
 	double errdedxTrk_;
 	int numdedxTrk_;
 	int triggerbit_HLT_DoubleMu4_LowMass_Displaced_;
-	int triggerbit_HLT_DoubleMu4_LowMass_;
+	int triggerbit_HLT_DoubleMu4_3_LowMass_;
+	int triggerbit_HLT_DoubleMu4_3_Jpsi_;
 	int triggerbit_HLT_DoubleMu4_3_Bs_;
 	int triggerbit_HLT_DoubleMu4_3_Photon4_BsToMMG_;
 	int triggerbit_HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG_;
