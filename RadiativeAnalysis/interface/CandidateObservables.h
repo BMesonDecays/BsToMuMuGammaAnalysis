@@ -40,16 +40,15 @@ namespace bmmg {
   float leptonAngle(const TLorentzVector& lPlus, const TLorentzVector& lMinus);
 
   // ---- isolation and compatibility ----
-  // pt(B) / (pt(B) + sum pt of the charged PV tracks with pt > ptMin within dR < drMax of the B,
-  // excluding the two muon tracks)
-  // (and excluding the tracks in "exclude", e.g. the kaons of the candidate)
+  // pt(B) / (pt(B) + sum pt of the charged tracks of PV "pv" with pt > ptMin within dR < drMax of the B,
+  // excluding the two muon tracks and the tracks in "exclude", e.g. the kaons of the candidate)
   float candidateIsolation(const reco::Candidate::LorentzVector& candP4, const reco::Muon& mu1, const reco::Muon& mu2,
-                           const reco::Vertex& pv, const std::vector<const reco::Track*>& exclude = {},
-                           double drMax = 0.7, double ptMin = 0.9);
-  // highest vertex probability of the two muon tracks with one other PV track (pt > ptMin, not in "exclude")
-  float maxTrackCompatibility(const reco::TransientTrack& mu1, const reco::TransientTrack& mu2, const reco::Vertex& pv,
-                              const TransientTrackBuilder& ttBuilder, const std::vector<const reco::Track*>& exclude = {},
-                              double ptMin = 0.9);
+                           const std::vector<PVTrack>& pvTracks, int pv,
+                           const std::vector<const reco::Track*>& exclude = {}, double drMax = 0.7, double ptMin = 0.9);
+  // highest vertex probability of the two muon tracks with one other track of PV "pv" (pt > ptMin, not in "exclude")
+  float maxTrackCompatibility(const reco::TransientTrack& mu1, const reco::TransientTrack& mu2,
+                              const std::vector<PVTrack>& pvTracks, int pv, const TransientTrackBuilder& ttBuilder,
+                              const std::vector<const reco::Track*>& exclude = {}, double ptMin = 0.9);
 
   // transverse distance of closest approach of two tracks (-1 if not computable)
   float trackDCA(const reco::TransientTrack& t1, const reco::TransientTrack& t2);

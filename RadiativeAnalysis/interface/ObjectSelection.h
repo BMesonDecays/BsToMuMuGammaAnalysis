@@ -7,6 +7,9 @@
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/Candidates.h"
 #include "DataFormats/Common/interface/Handle.h"
 #include "DataFormats/Common/interface/ValueMap.h"
+#include "DataFormats/Common/interface/View.h"
+#include "DataFormats/PatCandidates/interface/PackedCandidate.h"
+#include "DataFormats/VertexReco/interface/Vertex.h"
 #include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
 
 #include <vector>
@@ -36,11 +39,12 @@ namespace bmmg {
   };
 
   // global or tracker muons with an inner track; mva[i] is the MVA of muons[i]
-  std::vector<SelectedMuon> selectMuons(const std::vector<reco::Muon>& muons, const std::vector<float>& mva,
+  // (edm::View: reco::Muon in AOD, pat::Muon in MiniAOD)
+  std::vector<SelectedMuon> selectMuons(const edm::View<reco::Muon>& muons, const std::vector<float>& mva,
                                         const TransientTrackBuilder& ttBuilder, const MuonCuts& cuts);
 
   // photons with a supercluster in the ECAL acceptance; the value maps may be invalid (then -99 / -1)
-  std::vector<SelectedPhoton> selectPhotons(const edm::Handle<std::vector<reco::Photon>>& photons,
+  std::vector<SelectedPhoton> selectPhotons(const edm::Handle<edm::View<reco::Photon>>& photons,
                                             const edm::Handle<edm::ValueMap<float>>& mva,
                                             const edm::Handle<edm::ValueMap<bool>>& tightId,
                                             const PhotonCuts& cuts);
@@ -50,10 +54,21 @@ namespace bmmg {
   std::vector<SelectedConversion> selectConversions(const std::vector<reco::Conversion>& conversions,
                                                     const TransientTrackBuilder& ttBuilder, const ConversionCuts& cuts);
 
-  // high-purity tracks for the kaon legs, excluding the inner tracks of the selected muons
-  std::vector<SelectedTrack> selectKaonTracks(const edm::Handle<std::vector<reco::Track>>& tracks,
+  // high-purity tracks for the kaon legs, excluding the inner tracks of the selected muons;
+  // "tracks" must outlive the result (SelectedTrack points to its elements)
+  std::vector<SelectedTrack> selectKaonTracks(const std::vector<reco::Track>& tracks,
                                               const std::vector<SelectedMuon>& muons,
                                               const TransientTrackBuilder& ttBuilder, const TrackCuts& cuts);
+
+  // ---- format-dependent track lists ----
+  // AOD: the tracks of each primary vertex fit
+  std::vector<PVTrack> pvTracksFromVertices(const std::vector<reco::Vertex>& pvs);
+  // MiniAOD: packed candidates and lost tracks with track details that were used in the fit of their PV
+  std::vector<PVTrack> pvTracksFromPacked(const std::vector<pat::PackedCandidate>& packed,
+                                          const std::vector<pat::PackedCandidate>& lost);
+  // MiniAOD: pseudo-tracks of all charged packed candidates and lost tracks with track details
+  std::vector<reco::Track> tracksFromPacked(const std::vector<pat::PackedCandidate>& packed,
+                                            const std::vector<pat::PackedCandidate>& lost);
 
 }  // namespace bmmg
 

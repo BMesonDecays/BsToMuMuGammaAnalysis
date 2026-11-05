@@ -1,6 +1,6 @@
 # Ntuple of the `RadiativeAnalysis` module
 
-Produced by `RadiativeAnalysis/test/runNtuplizer_cfg.py`. The output file (TFileService) contains the directory `bmmg/` with two trees:
+Produced by `RadiativeAnalysis/test/runNtuplizer_cfg.py` from AOD or MiniAOD; the branches are the same for both. The MiniAOD differences are listed at the end. The output file (TFileService) contains the directory `bmmg/` with two trees:
 
 | tree | entries | content |
 |---|---|---|
@@ -167,3 +167,17 @@ From `GenDecayChain`, using the B (B_s or B_d) with two muons among its descenda
   - The conversion fit uses the e⁺e⁻ pair refitted with a zero-mass constraint as one photon particle. There is no J/ψ mass constraint (use `fitDimuonMass`).
 - **Event PV:** `pv_*` is the first vertex (highest Σpt²); the legacy ntuple used the highest scalar Σpt.
 - **ct:** the legacy `BsCt3D` was m·|SV−PV|/|p| (unsigned, not projected), with an error that ignored the momentum uncertainty. The pull 68% width on signal MC goes from about 1.7 to 1.27.
+
+## MiniAOD input (`dataFormat=MINIAOD`)
+The same ntuple is written; the inputs differ:
+
+| | AOD | MiniAOD |
+|---|---|---|
+| muons, photons | `muons`, `gedPhotons` | `slimmedMuons`, `slimmedPhotons` (pat objects, through `edm::View`) |
+| primary vertices | `offlinePrimaryVertices` | `offlineSlimmedPrimaryVertices` |
+| PV tracks (isolation, track compatibility) | tracks of the PV fit (`vertex.tracks()`) | `packedPFCandidates` + `lostTracks` with track details and `fromPV == PVUsedInFit` |
+| kaon tracks (`trk_*`, `trk_index`) | `generalTracks` (index in that collection) | pseudo-tracks of the charged `packedPFCandidates` + `lostTracks` (index in that list) |
+| conversions (`conv_*`) | `allConversions` | `reducedEgamma:reducedConversions` (only conversions associated to photons) |
+| ECAL rechits | `reducedEcalRecHitsEB/EE` | `reducedEgamma:reducedEB/EERecHits` (only around e/γ objects: `pho_hasClusterHits` can be 0) |
+| trigger matching | `hltTriggerSummaryAOD`: muon objects of every terminal muon filter of the path | `slimmedPatTrigger`: HLT muon objects associated with the last filter of the path |
+| gen, pile-up | `genParticles`, `addPileupInfo` | `prunedGenParticles`, `slimmedAddPileupInfo` |

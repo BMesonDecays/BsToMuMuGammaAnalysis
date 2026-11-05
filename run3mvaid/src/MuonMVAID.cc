@@ -58,11 +58,19 @@ void MuonMVAID::fillSoftMva(pat::Muon& mu_cand){
 
 
 vector<float> MuonMVAID::produce(const std::vector<reco::Muon>& InputMuons) {
+    std::vector<const reco::Muon*> ptrs;
+    ptrs.reserve(InputMuons.size());
+    for (const auto& m : InputMuons) ptrs.push_back(&m);
+    return produce(ptrs);
+}
+
+vector<float> MuonMVAID::produce(const std::vector<const reco::Muon*>& InputMuons) {
 
     // Output collection
     auto muons = std::make_unique<std::vector<pat::Muon>>();
 
-    for ( const auto& muon: InputMuons){
+    for ( const reco::Muon* muonPtr: InputMuons){
+      const reco::Muon& muon = *muonPtr;
 
       pat::Muon mu_cand(muon);
 
@@ -124,7 +132,7 @@ vector<float> MuonMVAID::produce(const std::vector<reco::Muon>& InputMuons) {
 
       }
 	
-      fillMatchInfo(mu_cand, muon);
+      fillMatchInfo(mu_cand, mu_cand);   // mu_cand carries the chamber matches of muon
       fillSoftMva(mu_cand);
 
       muons->push_back(mu_cand);

@@ -4,12 +4,13 @@
 
 #include "RecoVertex/KinematicFitPrimitives/interface/KinematicParticle.h"
 #include "TMath.h"
+#include "DataFormats/Math/interface/deltaR.h"
 
 #include <cmath>
 
 namespace bmmg {
 
-  std::vector<SelectedMuon> selectMuons(const std::vector<reco::Muon>& muons, const std::vector<float>& mva,
+  std::vector<SelectedMuon> selectMuons(const edm::View<reco::Muon>& muons, const std::vector<float>& mva,
                                         const TransientTrackBuilder& ttBuilder, const MuonCuts& cuts) {
     std::vector<SelectedMuon> selected;
     for (size_t i = 0; i < muons.size(); ++i) {
@@ -32,7 +33,7 @@ namespace bmmg {
     return selected;
   }
 
-  std::vector<SelectedPhoton> selectPhotons(const edm::Handle<std::vector<reco::Photon>>& photons,
+  std::vector<SelectedPhoton> selectPhotons(const edm::Handle<edm::View<reco::Photon>>& photons,
                                             const edm::Handle<edm::ValueMap<float>>& mva,
                                             const edm::Handle<edm::ValueMap<bool>>& tightId,
                                             const PhotonCuts& cuts) {
@@ -45,7 +46,7 @@ namespace bmmg {
       SelectedPhoton sp;
       sp.index = i;
       sp.photon = &pho;
-      const edm::Ptr<reco::Photon> ptr(photons, i);
+      const edm::Ptr<reco::Photon> ptr = photons->ptrAt(i);
       if (mva.isValid() && mva->contains(ptr.id())) sp.mva = (*mva)[ptr];
       if (tightId.isValid() && tightId->contains(ptr.id())) sp.tightId = (*tightId)[ptr] ? 1 : 0;
       if (sp.mva < cuts.minMVA) continue;
@@ -61,6 +62,8 @@ namespace bmmg {
       const reco::Conversion& conv = conversions[i];
       if (conv.nTracks() != 2) continue;
       const auto& trks = conv.tracks();
+      // the tracks must be available (in MiniAOD the conversion track references point to tracks not stored)
+      if (!trks[0].isAvailable() || !trks[1].isAvailable()) continue;
       if (trks[0]->charge() * trks[1]->charge() >= 0) continue;
       if (!conv.conversionVertex().isValid()) continue;
       if (conv.pairMomentum().perp2() < cuts.minPt * cuts.minPt) continue;
@@ -89,18 +92,20 @@ namespace bmmg {
     return selected;
   }
 
-  std::vector<SelectedTrack> selectKaonTracks(const edm::Handle<std::vector<reco::Track>>& tracks,
+  std::vector<SelectedTrack> selectKaonTracks(const std::vector<reco::Track>& tracks,
                                               const std::vector<SelectedMuon>& muons,
                                               const TransientTrackBuilder& ttBuilder, const TrackCuts& cuts) {
     std::vector<SelectedTrack> selected;
-    for (size_t i = 0; i < tracks->size(); ++i) {
-      const reco::Track& trk = (*tracks)[i];
+    for (size_t i = 0; i < tracks.size(); ++i) {
+      const reco::Track& trk = tracks[i];
       if (!trk.quality(reco::TrackBase::highPurity)) continue;
       if (trk.pt() < cuts.minPt || std::abs(trk.eta()) > cuts.maxAbsEta) continue;
-      bool isMuon = false;
+      bool isMuon = false;   // same track as a muon inner track (works for AOD tracks and MiniAOD pseudo-tracks)
       for (const auto& m : muons) {
-        const reco::TrackRef inner = m.muon->innerTrack();
-        if (inner.id() == tracks.id() && inner.key() == i) {
+        const reco::Track& inner = *m.muon->innerTrack();
+        // tolerances allow for the reduced precision of the MiniAOD pseudo-tracks
+        if (reco::deltaR(inner, trk) < 5e-3 && std::abs(inner.pt() - trk.pt()) < 1e-2 * trk.pt() &&
+            inner.charge() == trk.charge()) {
           isMuon = true;
           break;
         }
@@ -113,6 +118,44 @@ namespace bmmg {
       selected.push_back(std::move(st));
     }
     return selected;
+  }
+
+  std::vector<PVTrack> pvTracksFromVertices(const std::vector<reco::Vertex>& pvs) {
+    std::vector<PVTrack> result;
+    for (size_t iv = 0; iv < pvs.size(); ++iv)
+      for (auto it = pvs[iv].tracks_begin(); it != pvs[iv].tracks_end(); ++it)
+        result.push_back({**it, static_cast<int>(iv)});
+    return result;
+  }
+
+  namespace {
+    void addPacked(const std::vector<pat::PackedCandidate>& cands, std::vector<PVTrack>& out) {
+      for (const auto& c : cands) {
+        if (c.charge() == 0 || !c.hasTrackDetails() || c.vertexRef().isNull()) continue;
+        if (c.fromPV() != pat::PackedCandidate::PVUsedInFit) continue;   // used in the fit of its PV
+        out.push_back({c.pseudoTrack(), static_cast<int>(c.vertexRef().key())});
+      }
+    }
+    void addPackedTracks(const std::vector<pat::PackedCandidate>& cands, std::vector<reco::Track>& out) {
+      for (const auto& c : cands)
+        if (c.charge() != 0 && c.hasTrackDetails()) out.push_back(c.pseudoTrack());
+    }
+  }  // namespace
+
+  std::vector<PVTrack> pvTracksFromPacked(const std::vector<pat::PackedCandidate>& packed,
+                                          const std::vector<pat::PackedCandidate>& lost) {
+    std::vector<PVTrack> result;
+    addPacked(packed, result);
+    addPacked(lost, result);
+    return result;
+  }
+
+  std::vector<reco::Track> tracksFromPacked(const std::vector<pat::PackedCandidate>& packed,
+                                            const std::vector<pat::PackedCandidate>& lost) {
+    std::vector<reco::Track> result;
+    addPackedTracks(packed, result);
+    addPackedTracks(lost, result);
+    return result;
   }
 
 }  // namespace bmmg

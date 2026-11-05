@@ -40,6 +40,8 @@ public:
 
   // Run-3 soft-muon MVA score (userFloat "run3muonmva") for every muon, in input order
   std::vector<float> produce(const std::vector<reco::Muon>& muons);
+  // the same for muons given by pointer (e.g. pat::Muon from MiniAOD through edm::View<reco::Muon>)
+  std::vector<float> produce(const std::vector<const reco::Muon*>& muons);
 
 
 private:

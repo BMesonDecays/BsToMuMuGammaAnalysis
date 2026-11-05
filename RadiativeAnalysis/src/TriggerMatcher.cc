@@ -47,23 +47,55 @@ namespace bmmg {
     return filters;
   }
 
+  std::vector<std::string> TriggerMatcher::resolvePaths(const edm::TriggerResults& results,
+                                                        const edm::TriggerNames& names, Result& r,
+                                                        size_t nMuons) const {
+    r.fired.assign(paths_.size(), -1);
+    r.muonMatched.assign(paths_.size(), std::vector<int>(nMuons, 0));
+    std::vector<std::string> resolved(paths_.size());
+    for (size_t ip = 0; ip < paths_.size(); ++ip)
+      for (unsigned int it = 0; it < names.size(); ++it)
+        if (names.triggerName(it).find(paths_[ip] + "_v") == 0) {   // prefix match on "<base>_v"
+          resolved[ip] = names.triggerName(it);
+          r.fired[ip] = results.accept(it) ? 1 : 0;
+          break;
+        }
+    return resolved;
+  }
+
+  TriggerMatcher::Result TriggerMatcher::evaluate(const edm::TriggerResults& results, const edm::TriggerNames& names,
+                                                  const std::vector<pat::TriggerObjectStandAlone>& objects,
+                                                  const std::vector<const reco::Muon*>& muons) const {
+    Result r;
+    const std::vector<std::string> resolved = resolvePaths(results, names, r, muons.size());
+    // unpacked copies of the HLT muon objects
+    std::vector<pat::TriggerObjectStandAlone> muonObjects;
+    for (const auto& obj : objects) {
+      if (!obj.hasTriggerObjectType(trigger::TriggerMuon)) continue;
+      muonObjects.push_back(obj);
+      muonObjects.back().unpackPathNames(names);
+    }
+    for (size_t ip = 0; ip < paths_.size(); ++ip) {
+      if (resolved[ip].empty() || r.fired[ip] != 1) continue;
+      for (size_t im = 0; im < muons.size(); ++im)
+        for (const auto& obj : muonObjects)
+          if (obj.hasPathName(resolved[ip], true, true) &&
+              reco::deltaR(muons[im]->eta(), muons[im]->phi(), obj.eta(), obj.phi()) < maxDeltaR_) {
+            r.muonMatched[ip][im] = 1;
+            break;
+          }
+    }
+    return r;
+  }
+
   TriggerMatcher::Result TriggerMatcher::evaluate(const edm::TriggerResults& results, const edm::TriggerNames& names,
                                                   const trigger::TriggerEvent* summary,
                                                   const std::vector<const reco::Muon*>& muons) const {
     Result r;
-    r.fired.assign(paths_.size(), -1);
-    r.muonMatched.assign(paths_.size(), std::vector<int>(muons.size(), 0));
+    const std::vector<std::string> resolvedPaths = resolvePaths(results, names, r, muons.size());
 
     for (size_t ip = 0; ip < paths_.size(); ++ip) {
-      // the versioned path name in this menu (prefix match on "<base>_v")
-      std::string resolved;
-      for (unsigned int it = 0; it < names.size(); ++it) {
-        if (names.triggerName(it).find(paths_[ip] + "_v") == 0) {
-          resolved = names.triggerName(it);
-          r.fired[ip] = results.accept(it) ? 1 : 0;
-          break;
-        }
-      }
+      const std::string& resolved = resolvedPaths[ip];
       if (resolved.empty() || r.fired[ip] != 1 || !summary) continue;
 
       // muon objects of each terminal filter (legs)

@@ -137,11 +137,12 @@ namespace bmmg {
   }  // namespace
 
   float candidateIsolation(const reco::Candidate::LorentzVector& candP4, const reco::Muon& mu1, const reco::Muon& mu2,
-                           const reco::Vertex& pv, const std::vector<const reco::Track*>& exclude, double drMax,
-                           double ptMin) {
+                           const std::vector<PVTrack>& pvTracks, int pv, const std::vector<const reco::Track*>& exclude,
+                           double drMax, double ptMin) {
     double sumPt = 0.;
-    for (auto it = pv.tracks_begin(); it != pv.tracks_end(); ++it) {
-      const reco::Track& trk = **it;
+    for (const PVTrack& t : pvTracks) {
+      if (t.pv != pv) continue;
+      const reco::Track& trk = t.track;
       if (trk.charge() == 0 || trk.pt() < ptMin) continue;
       if (reco::deltaR(mu1, trk) < 0.01 || reco::deltaR(mu2, trk) < 0.01) continue;   // muon tracks
       if (isExcluded(trk, exclude)) continue;
@@ -151,13 +152,14 @@ namespace bmmg {
     return candP4.pt() / (candP4.pt() + sumPt);
   }
 
-  float maxTrackCompatibility(const reco::TransientTrack& mu1, const reco::TransientTrack& mu2, const reco::Vertex& pv,
-                              const TransientTrackBuilder& ttBuilder, const std::vector<const reco::Track*>& exclude,
-                              double ptMin) {
+  float maxTrackCompatibility(const reco::TransientTrack& mu1, const reco::TransientTrack& mu2,
+                              const std::vector<PVTrack>& pvTracks, int pv, const TransientTrackBuilder& ttBuilder,
+                              const std::vector<const reco::Track*>& exclude, double ptMin) {
     float maxProb = 0.f;
     KalmanVertexFitter fitter(true);
-    for (auto it = pv.tracks_begin(); it != pv.tracks_end(); ++it) {
-      const reco::Track& trk = **it;
+    for (const PVTrack& t : pvTracks) {
+      if (t.pv != pv) continue;
+      const reco::Track& trk = t.track;
       if (trk.charge() == 0 || trk.pt() < ptMin) continue;
       if (reco::deltaR(mu1.track(), trk) < 1e-4 || reco::deltaR(mu2.track(), trk) < 1e-4) continue;
       if (isExcluded(trk, exclude)) continue;

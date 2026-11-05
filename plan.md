@@ -197,10 +197,10 @@ Rules for the components:
 - [x] **P7.4** Remove `KinematicConstrainedFit`, `TrippleObjectVertex`, `TetraObjectVertex`, `ReferenceModeratorVertex`, `ReferenceResonance` (reduced to a resonance flag in `DimuonBuilder`) and `DecayChainVariables`.
 
 ## Phase 8: MINIAOD support
-- [ ] **P8.1** Read `edm::View<reco::Muon>` and `edm::View<reco::Photon>` and pass pointers on (MMGVertexFit already supports `pat::` objects). Skip photons where `hasClusterHits()` is false.
-- [ ] **P8.2** Tracks and isolation from `packedPFCandidates`/`lostTracks`; rechits from `reducedEgamma`.
-- [ ] **P8.3** Trigger via `TriggerObjectStandAlone` (`unpackPathNames`); muon MVA on `pat::Muon`.
-- [ ] **P8.4** Validate on the MINIAOD file from `test_files.txt` against the AOD output of the same events.
+- [x] **P8.1** Read `edm::View<reco::Muon>` and `edm::View<reco::Photon>` and pass pointers on (MMGVertexFit already supports `pat::` objects). Skip photons where `hasClusterHits()` is false.
+- [x] **P8.2** Tracks and isolation from `packedPFCandidates`/`lostTracks`; rechits from `reducedEgamma`.
+- [x] **P8.3** Trigger via `TriggerObjectStandAlone` (`unpackPathNames`); muon MVA on `pat::Muon`.
+- [x] **P8.4** Validate on the MINIAOD file from `test_files.txt` against the AOD output of the same events.
 
 ## Phase 9: Custom low-energy photon (low priority)
 - [ ] **P9.1** Revive `BMMGCustomPhotonProducer` from `devel/`:

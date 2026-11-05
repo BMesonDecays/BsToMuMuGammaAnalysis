@@ -200,7 +200,7 @@ private:
   PhotonIsolationCalculator photonIsolationCalculator_;
 
   //MIP
-  const PhotonMIPHaloTagger photonMIPHaloTagger_;
+  PhotonMIPHaloTagger photonMIPHaloTagger_;
   //MVA based Halo tagger for the EE photons
   std::unique_ptr<const PhotonMVABasedHaloTagger> photonMVABasedHaloTagger_ = nullptr;
 

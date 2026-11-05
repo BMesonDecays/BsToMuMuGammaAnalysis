@@ -31,14 +31,15 @@ BMMGCustomPhotonProducer::BMMGCustomPhotonProducer(const edm::ParameterSet& iCon
           iConfig.getParameter<std::vector<std::string>>("RecHitSeverityToBeExcludedEB"))},
       severitiesexclEE_{StringToEnumValue<EcalSeverityLevel::SeverityLevel>(
           iConfig.getParameter<std::vector<std::string>>("RecHitSeverityToBeExcludedEE"))},
-      photonIsolationCalculator_(iConfig.getParameter<edm::ParameterSet>("isolationSumsCalculatorSet"),
-                                 flagsexclEB_,
-                                 flagsexclEE_,
-                                 severitiesexclEB_,
-                                 severitiesexclEE_,
-                                 consumesCollector()),
-      photonMIPHaloTagger_(iConfig.getParameter<edm::ParameterSet>("mipVariableSet"), consumesCollector()),
       photonEnergyCorrector_(iConfig, consumesCollector()) {
+  // CMSSW_14_1_1: the isolation calculator and the MIP tagger are default-constructed and set up here
+  photonIsolationCalculator_.setup(iConfig.getParameter<edm::ParameterSet>("isolationSumsCalculatorSet"),
+                                   flagsexclEB_,
+                                   flagsexclEE_,
+                                   severitiesexclEB_,
+                                   severitiesexclEE_,
+                                   consumesCollector());
+  photonMIPHaloTagger_.setup(iConfig.getParameter<edm::ParameterSet>("mipVariableSet"), consumesCollector());
 
   photonCoreProducer_ = consumes<reco::PhotonCoreCollection>(iConfig.getParameter<edm::InputTag>("photonCoreProducer"));
   barrelEcalHits_ = consumes<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("barrelEcalHits"));
@@ -154,24 +155,24 @@ void BMMGCustomPhotonProducer::produce(edm::Event& iEvent, const edm::EventSetup
   // Get EcalRecHits
   bool validEcalRecHits = true;
   Handle<EcalRecHitCollection> barrelHitHandle;
-  EcalRecHitCollection barrelRecHits;
+  const EcalRecHitCollection* barrelRecHits = nullptr;   // no copy of the collection
   iEvent.getByToken(barrelEcalHits_, barrelHitHandle);
   if (!barrelHitHandle.isValid()) {
     edm::LogError("PhotonProducer") << "Error! Can't get the barrelEcalHits";
     validEcalRecHits = false;
   }
   if (validEcalRecHits)
-    barrelRecHits = *(barrelHitHandle.product());
+    barrelRecHits = barrelHitHandle.product();
 
   Handle<EcalRecHitCollection> endcapHitHandle;
   iEvent.getByToken(endcapEcalHits_, endcapHitHandle);
-  EcalRecHitCollection endcapRecHits;
+  const EcalRecHitCollection* endcapRecHits = nullptr;
   if (!endcapHitHandle.isValid()) {
     edm::LogError("PhotonProducer") << "Error! Can't get the endcapEcalHits";
     validEcalRecHits = false;
   }
   if (validEcalRecHits)
-    endcapRecHits = *(endcapHitHandle.product());
+    endcapRecHits = endcapHitHandle.product();
 
   const CaloTopology* topology = &iSetup.getData(topologyToken_);
 
@@ -201,8 +202,8 @@ void BMMGCustomPhotonProducer::produce(edm::Event& iEvent, const edm::EventSetup
                          photonCoreHandle,
                          topology,
                          hcalCuts,
-                         &barrelRecHits,
-                         &endcapRecHits,
+                         barrelRecHits,
+                         endcapRecHits,
                          *hcalHelperCone_,
                          *hcalHelperBc_,
                          vertexCollection,
@@ -246,6 +247,8 @@ void BMMGCustomPhotonProducer::fillPhotonVector(edm::Event& evt,
   photonEnergyCorrector_.init(es);
   std::vector<int> flags_, severitiesexcl_;
   for (unsigned int lSC = 0; lSC < photonCoreHandle->size(); lSC++) {
+    hits = nullptr;   // reset per supercluster: an SC neither in EB nor EE must not reuse the previous settings
+    preselCutValues.clear();
     reco::PhotonCoreRef coreRef(reco::PhotonCoreRef(photonCoreHandle, lSC));
     reco::SuperClusterRef scRef = coreRef->superCluster();
     iSC++;
@@ -376,7 +379,8 @@ void BMMGCustomPhotonProducer::fillPhotonVector(edm::Event& evt,
 
     // fill MIP Vairables for Halo: Block for MIP are filled from PhotonMIPHaloTagger
     if (subdet == EcalBarrel && runMIPTagger_) {
-      auto mipVar = photonMIPHaloTagger_.mipCalculate(newCandidate, evt, es);
+      reco::Photon::MIPVariables mipVar;
+      photonMIPHaloTagger_.MIPcalculate(&newCandidate, evt, es, mipVar);
       newCandidate.setMIPVariables(mipVar);
     }
     /// Pre-selection loose  isolation cuts

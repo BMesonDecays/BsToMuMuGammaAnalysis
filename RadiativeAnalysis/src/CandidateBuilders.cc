@@ -23,8 +23,9 @@ namespace bmmg {
     class Finisher {
     public:
       Finisher(const std::vector<SelectedMuon>& muons, const std::vector<reco::Vertex>& pvs,
+               const std::vector<PVTrack>& pvTracks,
                const TransientTrackBuilder& ttBuilder, const CandidateConfig& config)
-          : muons_(muons), pvs_(pvs), ttBuilder_(ttBuilder), config_(config) {}
+          : muons_(muons), pvs_(pvs), pvTracks_(pvTracks), ttBuilder_(ttBuilder), config_(config) {}
 
       // choose the PV for candidate c (prefitP4 must be set)
       bool choosePV(BCandidate& c, const DimuonCandidate& dimu) const {
@@ -65,16 +66,18 @@ namespace bmmg {
         c.coplanarity = coplanarityAngle(m1, m2, x, bP4);
         c.cosThetaL = leptonAngle(m1, m2);   // m1 = mu+, m2 = mu-
         c.isolation = candidateIsolation(reco::Candidate::LorentzVector(bP4.Px(), bP4.Py(), bP4.Pz(), bP4.E()),
-                                         *mu1.muon, *mu2.muon, pv, exclude);
+                                         *mu1.muon, *mu2.muon, pvTracks_, c.pv, exclude);
         if (config_.computeTrackCompatibility) {
           if (exclude.empty()) {   // depends only on the dimuon and the PV: cached
             const auto key = std::make_pair(c.dimuon, c.pv);
             auto it = compatibilityCache_.find(key);
             if (it == compatibilityCache_.end())
-              it = compatibilityCache_.emplace(key, maxTrackCompatibility(mu1.track, mu2.track, pv, ttBuilder_)).first;
+              it = compatibilityCache_
+                       .emplace(key, maxTrackCompatibility(mu1.track, mu2.track, pvTracks_, c.pv, ttBuilder_))
+                       .first;
             c.maxTrackCompatibility = it->second;
           } else {
-            c.maxTrackCompatibility = maxTrackCompatibility(mu1.track, mu2.track, pv, ttBuilder_, exclude);
+            c.maxTrackCompatibility = maxTrackCompatibility(mu1.track, mu2.track, pvTracks_, c.pv, ttBuilder_, exclude);
           }
         }
       }
@@ -87,6 +90,7 @@ namespace bmmg {
     private:
       const std::vector<SelectedMuon>& muons_;
       const std::vector<reco::Vertex>& pvs_;
+      const std::vector<PVTrack>& pvTracks_;
       const TransientTrackBuilder& ttBuilder_;
       const CandidateConfig& config_;
       std::map<std::pair<int, int>, float> compatibilityCache_;   // (dimuon, pv) -> max track compatibility
@@ -110,12 +114,13 @@ namespace bmmg {
                                          const std::vector<DimuonCandidate>& dimuons,
                                          const std::vector<SelectedPhoton>& photons,
                                          const std::vector<reco::Vertex>& pvs,
+                                         const std::vector<PVTrack>& pvTracks,
                                          const EcalClusterLazyTools& lazyTools,
                                          const TransientTrackBuilder& ttBuilder,
                                          const MMGVertexFit& fitter,
                                          const CandidateConfig& config) {
     std::vector<BCandidate> candidates;
-    Finisher finisher(muons, pvs, ttBuilder, config);
+    Finisher finisher(muons, pvs, pvTracks, ttBuilder, config);
     for (size_t id = 0; id < dimuons.size(); ++id) {
       const DimuonCandidate& dimu = dimuons[id];
       if (!dimu.vtxValid) continue;
@@ -141,10 +146,11 @@ namespace bmmg {
                                              const std::vector<DimuonCandidate>& dimuons,
                                              const std::vector<SelectedConversion>& conversions,
                                              const std::vector<reco::Vertex>& pvs,
+                                             const std::vector<PVTrack>& pvTracks,
                                              const TransientTrackBuilder& ttBuilder,
                                              const CandidateConfig& config) {
     std::vector<BCandidate> candidates;
-    Finisher finisher(muons, pvs, ttBuilder, config);
+    Finisher finisher(muons, pvs, pvTracks, ttBuilder, config);
     for (size_t id = 0; id < dimuons.size(); ++id) {
       const DimuonCandidate& dimu = dimuons[id];
       if (!dimu.vtxValid) continue;
@@ -170,13 +176,14 @@ namespace bmmg {
                                               const std::vector<DimuonCandidate>& dimuons,
                                               const std::vector<SelectedPhoton>& photons,
                                               const std::vector<reco::Vertex>& pvs,
+                                              const std::vector<PVTrack>& pvTracks,
                                               const EcalClusterLazyTools& lazyTools,
                                               const TransientTrackBuilder& ttBuilder,
                                               const MMGVertexFit& fitter,
                                               const CandidateConfig& config,
                                               const DiphotonConfig& diphoton) {
     std::vector<BCandidate> candidates;
-    Finisher finisher(muons, pvs, ttBuilder, config);
+    Finisher finisher(muons, pvs, pvTracks, ttBuilder, config);
     for (size_t id = 0; id < dimuons.size(); ++id) {
       const DimuonCandidate& dimu = dimuons[id];
       if (!dimu.vtxValid) continue;
@@ -206,6 +213,7 @@ namespace bmmg {
                                       const std::vector<DimuonCandidate>& dimuons,
                                       const std::vector<SelectedTrack>& tracks,
                                       const std::vector<reco::Vertex>& pvs,
+                                      const std::vector<PVTrack>& pvTracks,
                                       const TransientTrackBuilder& ttBuilder,
                                       const CandidateConfig& config,
                                       const KaonConfig& kaons,
@@ -220,7 +228,7 @@ namespace bmmg {
       return usedIndex[i] = static_cast<int>(usedTracks.size()) - 1;
     };
 
-    Finisher finisher(muons, pvs, ttBuilder, config);
+    Finisher finisher(muons, pvs, pvTracks, ttBuilder, config);
     const double mK = pdg::kaonMass;
     for (size_t id = 0; id < dimuons.size(); ++id) {
       const DimuonCandidate& dimu = dimuons[id];

@@ -27,6 +27,9 @@
 #include "DataFormats/EgammaCandidates/interface/Photon.h"
 #include "DataFormats/EgammaCandidates/interface/Conversion.h"
 #include "DataFormats/TrackReco/interface/Track.h"
+#include "DataFormats/PatCandidates/interface/PackedCandidate.h"
+#include "DataFormats/PatCandidates/interface/TriggerObjectStandAlone.h"
+#include "DataFormats/Common/interface/View.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/HLTReco/interface/TriggerEvent.h"
 #include "DataFormats/MuonReco/interface/Muon.h"
@@ -70,8 +73,9 @@ private:
   const bool verbose_;
 
   // collections
-  const edm::EDGetTokenT<std::vector<reco::Muon>> muonsToken_;
-  const edm::EDGetTokenT<std::vector<reco::Photon>> photonsToken_;
+  const bool isMiniAOD_;
+  const edm::EDGetTokenT<edm::View<reco::Muon>> muonsToken_;
+  const edm::EDGetTokenT<edm::View<reco::Photon>> photonsToken_;
   const edm::EDGetTokenT<edm::ValueMap<float>> photonMvaToken_;
   const edm::EDGetTokenT<edm::ValueMap<bool>> photonTightIdToken_;
   const edm::EDGetTokenT<reco::BeamSpot> beamSpotToken_;
@@ -79,7 +83,9 @@ private:
   const edm::EDGetTokenT<EcalRecHitCollection> ebRecHitsToken_;
   const edm::EDGetTokenT<EcalRecHitCollection> eeRecHitsToken_;
   const edm::EDGetTokenT<edm::TriggerResults> triggerResultsToken_;
-  const edm::EDGetTokenT<trigger::TriggerEvent> triggerEventToken_;
+  edm::EDGetTokenT<trigger::TriggerEvent> triggerEventToken_;                     // AOD
+  edm::EDGetTokenT<std::vector<pat::TriggerObjectStandAlone>> triggerObjectsToken_;  // MiniAOD
+  edm::EDGetTokenT<std::vector<pat::PackedCandidate>> packedToken_, lostTracksToken_;  // MiniAOD
   edm::EDGetTokenT<std::vector<reco::Conversion>> conversionsToken_;
   edm::EDGetTokenT<std::vector<reco::Track>> tracksToken_;
   edm::EDGetTokenT<std::vector<reco::GenParticle>> genParticlesToken_;
@@ -112,6 +118,7 @@ private:
 RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& cfg)
     : isMC_(cfg.getParameter<bool>("isMC")),
       verbose_(cfg.getUntrackedParameter<bool>("verbose")),
+      isMiniAOD_(cfg.getParameter<std::string>("dataFormat") == "MINIAOD"),
       muonsToken_(consumes(cfg.getParameter<edm::InputTag>("muons"))),
       photonsToken_(consumes(cfg.getParameter<edm::InputTag>("photons"))),
       photonMvaToken_(consumes(cfg.getParameter<edm::InputTag>("photonMVA"))),
@@ -121,7 +128,6 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& cfg)
       ebRecHitsToken_(consumes(cfg.getParameter<edm::InputTag>("ebRecHits"))),
       eeRecHitsToken_(consumes(cfg.getParameter<edm::InputTag>("eeRecHits"))),
       triggerResultsToken_(consumes(cfg.getParameter<edm::InputTag>("triggerResults"))),
-      triggerEventToken_(consumes(cfg.getParameter<edm::InputTag>("triggerEvent"))),
       ttBuilderToken_(esConsumes(edm::ESInputTag("", "TransientTrackBuilder"))),
       lazyToolsTokens_(consumesCollector()),
       mmgVertexFit_({cfg.getParameter<double>("clusterCovScalePhiEB"), cfg.getParameter<double>("clusterCovScaleThetaEB"),
@@ -137,7 +143,14 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& cfg)
       doMuMuGammaGamma_(cfg.getParameter<bool>("doMuMuGammaGamma")),
       doMuMuKK_(cfg.getParameter<bool>("doMuMuKK")) {
     if (doMuMuConvGamma_) conversionsToken_ = consumes(cfg.getParameter<edm::InputTag>("conversions"));
-    if (doMuMuKK_) tracksToken_ = consumes(cfg.getParameter<edm::InputTag>("tracks"));
+    if (isMiniAOD_) {
+      triggerObjectsToken_ = consumes(cfg.getParameter<edm::InputTag>("triggerObjects"));
+      packedToken_ = consumes(cfg.getParameter<edm::InputTag>("packedCandidates"));
+      lostTracksToken_ = consumes(cfg.getParameter<edm::InputTag>("lostTracks"));
+    } else {
+      triggerEventToken_ = consumes(cfg.getParameter<edm::InputTag>("triggerEvent"));
+      if (doMuMuKK_) tracksToken_ = consumes(cfg.getParameter<edm::InputTag>("tracks"));
+    }
     if (isMC_) {
       genParticlesToken_ = consumes(cfg.getParameter<edm::InputTag>("genParticles"));
       pileupToken_ = consumes(cfg.getParameter<edm::InputTag>("pileup"));
@@ -221,9 +234,20 @@ void RadiativeAnalysis::analyze(const edm::Event& event, const edm::EventSetup& 
   const auto& ttBuilder = setup.getData(ttBuilderToken_);
   const auto& beamSpot = event.get(beamSpotToken_);
   const auto& vertices = event.get(verticesToken_);
-  const auto muonsHandle = event.getHandle(muonsToken_);
+  const auto& muons = event.get(muonsToken_);
   const auto photonsHandle = event.getHandle(photonsToken_);
-  const auto& muons = *muonsHandle;
+
+  // charged tracks associated to the primary vertices (isolation, track compatibility)
+  std::vector<bmmg::PVTrack> pvTracks;
+  std::vector<reco::Track> packedTracks;   // MiniAOD: pseudo-tracks (kaon candidates)
+  if (isMiniAOD_) {
+    const auto& packed = event.get(packedToken_);
+    const auto& lost = event.get(lostTracksToken_);
+    pvTracks = bmmg::pvTracksFromPacked(packed, lost);
+    if (doMuMuKK_) packedTracks = bmmg::tracksFromPacked(packed, lost);
+  } else {
+    pvTracks = bmmg::pvTracksFromVertices(vertices);
+  }
   EcalClusterLazyTools lazyTools(event, lazyToolsTokens_.get(setup), ebRecHitsToken_, eeRecHitsToken_);
 
   writer_->fillVertices(beamSpot, vertices);
@@ -237,7 +261,9 @@ void RadiativeAnalysis::analyze(const edm::Event& event, const edm::EventSetup& 
   }
 
   // objects
-  const std::vector<float> muonMVA = muonMVA_.produce(muons);
+  std::vector<const reco::Muon*> allMuons;
+  for (const auto& m : muons) allMuons.push_back(&m);
+  const std::vector<float> muonMVA = muonMVA_.produce(allMuons);
   const auto photonMVA = event.getHandle(photonMvaToken_);
   const auto photonTightId = event.getHandle(photonTightIdToken_);
   const std::vector<bmmg::SelectedMuon> selMuons = bmmg::selectMuons(muons, muonMVA, ttBuilder, muonCuts_);
@@ -248,10 +274,15 @@ void RadiativeAnalysis::analyze(const edm::Event& event, const edm::EventSetup& 
   std::vector<const reco::Muon*> muonPtrs;
   for (const auto& m : selMuons) muonPtrs.push_back(m.muon);
   const auto& triggerResults = event.get(triggerResultsToken_);
-  const auto triggerEvent = event.getHandle(triggerEventToken_);
-  const bmmg::TriggerMatcher::Result trigger =
-      triggerMatcher_.evaluate(triggerResults, event.triggerNames(triggerResults),
-                               triggerEvent.isValid() ? triggerEvent.product() : nullptr, muonPtrs);
+  const edm::TriggerNames& triggerNames = event.triggerNames(triggerResults);
+  bmmg::TriggerMatcher::Result trigger;
+  if (isMiniAOD_) {
+    trigger = triggerMatcher_.evaluate(triggerResults, triggerNames, event.get(triggerObjectsToken_), muonPtrs);
+  } else {
+    const auto triggerEvent = event.getHandle(triggerEventToken_);
+    trigger = triggerMatcher_.evaluate(triggerResults, triggerNames,
+                                       triggerEvent.isValid() ? triggerEvent.product() : nullptr, muonPtrs);
+  }
   writer_->fillTrigger(trigger);
 
   // candidates
@@ -263,12 +294,12 @@ void RadiativeAnalysis::analyze(const edm::Event& event, const edm::EventSetup& 
 
   if (doMuMuGamma_)
     writer_->fillCandidates(bmmg::NtupleWriter::kMuMuGamma,
-                            bmmg::buildMuMuGamma(selMuons, dimuons, selPhotons, vertices, lazyTools, ttBuilder,
+                            bmmg::buildMuMuGamma(selMuons, dimuons, selPhotons, vertices, pvTracks, lazyTools, ttBuilder,
                                                  mmgVertexFit_, candidateConfig_),
                             vertices);
   if (doMuMuGammaGamma_)
     writer_->fillCandidates(bmmg::NtupleWriter::kMuMuGammaGamma,
-                            bmmg::buildMuMuGammaGamma(selMuons, dimuons, selPhotons, vertices, lazyTools, ttBuilder,
+                            bmmg::buildMuMuGammaGamma(selMuons, dimuons, selPhotons, vertices, pvTracks, lazyTools, ttBuilder,
                                                       mmgVertexFit_, candidateConfig_, diphotonConfig_),
                             vertices);
   if (doMuMuConvGamma_) {
@@ -277,17 +308,18 @@ void RadiativeAnalysis::analyze(const edm::Event& event, const edm::EventSetup& 
     writer_->fillConversions(conversions, gen.get());
     writer_->fillCandidates(
         bmmg::NtupleWriter::kMuMuConvGamma,
-        bmmg::buildMuMuConvGamma(selMuons, dimuons, conversions, vertices, ttBuilder, candidateConfig_), vertices);
+        bmmg::buildMuMuConvGamma(selMuons, dimuons, conversions, vertices, pvTracks, ttBuilder, candidateConfig_),
+        vertices);
   }
   if (doMuMuKK_) {
     const std::vector<bmmg::SelectedTrack> tracks =
-        bmmg::selectKaonTracks(event.getHandle(tracksToken_), selMuons, ttBuilder, trackCuts_);
+        bmmg::selectKaonTracks(isMiniAOD_ ? packedTracks : event.get(tracksToken_), selMuons, ttBuilder, trackCuts_);
     std::vector<bmmg::SelectedTrack> usedTracks;
     bmmg::CandidateConfig kkConfig = candidateConfig_;
     kkConfig.minPrefitMass = kaonConfig_.minBMass;
     kkConfig.maxPrefitMass = kaonConfig_.maxBMass;
     const std::vector<bmmg::BCandidate> mmkk =
-        bmmg::buildMuMuKK(selMuons, dimuons, tracks, vertices, ttBuilder, kkConfig, kaonConfig_, usedTracks);
+        bmmg::buildMuMuKK(selMuons, dimuons, tracks, vertices, pvTracks, ttBuilder, kkConfig, kaonConfig_, usedTracks);
     writer_->fillTracks(usedTracks, beamSpot, gen.get());   // before the candidates (truth flags)
     writer_->fillCandidates(bmmg::NtupleWriter::kMuMuKK, mmkk, vertices);
   }
@@ -318,7 +350,9 @@ void RadiativeAnalysis::fillDescriptions(edm::ConfigurationDescriptions& descrip
   edm::ParameterSetDescription desc;
   desc.add<bool>("isMC", true);
   desc.addUntracked<bool>("verbose", false);
-  // collections (AOD)
+  // input format: "AOD" or "MINIAOD"; the collection names below must match (see runNtuplizer_cfg.py)
+  desc.add<std::string>("dataFormat", "AOD");
+  // collections (AOD defaults)
   desc.add<edm::InputTag>("muons", edm::InputTag("muons"));
   desc.add<edm::InputTag>("photons", edm::InputTag("gedPhotons"));
   desc.add<edm::InputTag>("photonMVA",
@@ -329,7 +363,10 @@ void RadiativeAnalysis::fillDescriptions(edm::ConfigurationDescriptions& descrip
   desc.add<edm::InputTag>("ebRecHits", edm::InputTag("reducedEcalRecHitsEB"));
   desc.add<edm::InputTag>("eeRecHits", edm::InputTag("reducedEcalRecHitsEE"));
   desc.add<edm::InputTag>("triggerResults", edm::InputTag("TriggerResults", "", "HLT"));
-  desc.add<edm::InputTag>("triggerEvent", edm::InputTag("hltTriggerSummaryAOD", "", "HLT"));
+  desc.add<edm::InputTag>("triggerEvent", edm::InputTag("hltTriggerSummaryAOD", "", "HLT"));   // AOD
+  desc.add<edm::InputTag>("triggerObjects", edm::InputTag("slimmedPatTrigger"));                // MiniAOD
+  desc.add<edm::InputTag>("packedCandidates", edm::InputTag("packedPFCandidates"));              // MiniAOD
+  desc.add<edm::InputTag>("lostTracks", edm::InputTag("lostTracks"));                            // MiniAOD
   desc.add<edm::InputTag>("genParticles", edm::InputTag("genParticles"));
   desc.add<edm::InputTag>("pileup", edm::InputTag("addPileupInfo"));
   desc.add<edm::InputTag>("genRunInfo", edm::InputTag("generator"));

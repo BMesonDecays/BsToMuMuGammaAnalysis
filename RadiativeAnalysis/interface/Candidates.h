@@ -72,6 +72,13 @@ namespace bmmg {
     reco::TransientTrack ttrack;
   };
 
+  // charged track associated to a primary vertex (isolation, track compatibility);
+  // AOD: tracks of the vertex fit, MiniAOD: packed candidates / lost tracks used in the PV fit
+  struct PVTrack {
+    reco::Track track;
+    int pv = -1;                        // index in the primary vertex collection
+  };
+
   // B candidate: dimuon + other legs (photon / conversion / two photons / two kaon tracks)
   struct BCandidate {
     int dimuon = -1, mu1 = -1, mu2 = -1;

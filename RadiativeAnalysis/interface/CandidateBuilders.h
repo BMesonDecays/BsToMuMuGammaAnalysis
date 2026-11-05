@@ -48,6 +48,7 @@ namespace bmmg {
                                          const std::vector<DimuonCandidate>& dimuons,
                                          const std::vector<SelectedPhoton>& photons,
                                          const std::vector<reco::Vertex>& pvs,
+                                         const std::vector<PVTrack>& pvTracks,
                                          const EcalClusterLazyTools& lazyTools,
                                          const TransientTrackBuilder& ttBuilder,
                                          const MMGVertexFit& fitter,
@@ -57,6 +58,7 @@ namespace bmmg {
                                              const std::vector<DimuonCandidate>& dimuons,
                                              const std::vector<SelectedConversion>& conversions,
                                              const std::vector<reco::Vertex>& pvs,
+                                             const std::vector<PVTrack>& pvTracks,
                                              const TransientTrackBuilder& ttBuilder,
                                              const CandidateConfig& config);
 
@@ -64,6 +66,7 @@ namespace bmmg {
                                               const std::vector<DimuonCandidate>& dimuons,
                                               const std::vector<SelectedPhoton>& photons,
                                               const std::vector<reco::Vertex>& pvs,
+                                              const std::vector<PVTrack>& pvTracks,
                                               const EcalClusterLazyTools& lazyTools,
                                               const TransientTrackBuilder& ttBuilder,
                                               const MMGVertexFit& fitter,
@@ -76,6 +79,7 @@ namespace bmmg {
                                       const std::vector<DimuonCandidate>& dimuons,
                                       const std::vector<SelectedTrack>& tracks,
                                       const std::vector<reco::Vertex>& pvs,
+                                      const std::vector<PVTrack>& pvTracks,
                                       const TransientTrackBuilder& ttBuilder,
                                       const CandidateConfig& config,
                                       const KaonConfig& kaons,

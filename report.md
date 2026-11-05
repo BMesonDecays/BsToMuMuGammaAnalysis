@@ -4,6 +4,43 @@ Entries are newest first. Each entry gives: the plan item(s) (see `plan.md`), wh
 
 ---
 
+## 2026-11-05: Phase 8, MINIAOD support (P8.1–P8.4); non-determinism conclusion
+**Non-determinism, conclusion of the investigation (from the previous entry):**
+- valgrind memcheck on 600 events (μμKK only), which contain the affected entries 456 and 520, finds **no uninitialised or invalid memory access** in RecoVertex, the vertex fitters or the `bmmg` library. The only reports are ROOT's known `TStorage::UpdateIsOnHeap` false positive.
+- The remaining run-to-run differences affect only fits that do not converge (χ² ≫ ndf); converged fits are bit-identical. The likely cause is numerical behaviour of the iterative KinematicFit that depends on memory layout.
+- **Decision:** accepted as a known limitation; documented in `NTUPLE.md` through the vtxProb recommendation.
+
+**MINIAOD support** (one module, `dataFormat` = `AOD` | `MINIAOD`):
+- **P8.1:**
+  - Muons and photons are read through `edm::View<reco::Muon>`/`edm::View<reco::Photon>` (pat objects in MINIAOD). Photon MVA and ID are looked up with `ptrAt`.
+  - `MuonMVAID::produce` accepts muon pointers; the segment-match information is taken from the pat copy, which avoids a second copy.
+- **P8.2:**
+  - New common `PVTrack` list for isolation and track compatibility. AOD: the tracks of each PV fit. MINIAOD: `packedPFCandidates` + `lostTracks` with track details and `fromPV == PVUsedInFit`.
+  - Kaon candidates in MINIAOD are the pseudo-tracks of the charged packed candidates and lost tracks. Muon tracks are excluded by matching (ΔR < 5e-3, |Δpt/pt| < 1%) instead of by reference.
+  - Rechits come from `reducedEgamma`.
+  - **Conversions:** in MINIAOD the `reducedConversions` point to tracks that are not stored (this was the job failure). `selectConversions` now skips conversions with unavailable tracks, and the driver switches the `mmcg` channel off for MINIAOD with a message.
+- **P8.3:** `TriggerMatcher::evaluate` has a MINIAOD overload. It uses `slimmedPatTrigger` (`unpackPathNames`); a muon matches a path if it is within ΔR < 0.1 of an HLT muon object associated with the path's last filter. The muon MVA runs on `pat::Muon`.
+- **Driver config:**
+  - `dataFormat` option, MINIAOD auto-detected from the test sample name. A dictionary of collection names per format; VID runs in MiniAOD mode on `slimmedPhotons`.
+  - New options `channels=` (list of channels) and `trackCompatibility=`.
+- **P8.4 validation:**
+  - **AOD unchanged:** compared with the previous version, everything outside the non-deterministic fit branches is identical (muons, photons, dimuons, trigger).
+  - **MC MINIAOD** (`BsTo2MuG_miniaod.root`, 32,884 events, 2.5 min) against MC AOD (2000 events). The files contain no common events, so distributions are compared:
+
+    | | AOD | MINIAOD |
+    |---|---|---|
+    | μ / dimuon / photon per event | 2.35 / 1.39 / 0.64 | 2.12 / 1.12 / 0.25 (`slimmedPhotons` only keep photons above ~10 GeV) |
+    | photon-path trigger fired / matched μ per fired event | 0.233 / 1.99 | 0.234 / 1.99 |
+    | `mmg` fitted mass 68% half-width (gen-matched, vtxProb > 1e-3) | 0.124 (pre-fit 0.150) | 0.117 (pre-fit 0.155), N=3664 |
+    | ct3D pull 68% half-width | 1.27 | 1.32 |
+    | isolation mean / max track compatibility mean | 0.922 / 0.164 | 0.950 / 0.097 (different track inputs) |
+    | photons with cluster hits | 100% | 98.7% |
+
+  - **Data MINIAOD** (6416 events, about 30 s): 287 branches; 2127 J/ψ dimuons; 0.19 μμKK candidates per event; `DoubleMu4_3_LowMass` fired in 6182 events with 12,385 matched muons. Only 0.09 photons per event (the `slimmedPhotons` threshold), so very few μμγ candidates: **for low-pt photons MINIAOD is limited**.
+- **Unit tests:** pass.
+
+---
+
 ## 2026-11-05: P7.4 legacy removed; TransientTrack lifetime fix; non-determinism investigation (in progress)
 - **P7.4:** removed `RadiativeAnalysisLegacy` and every class only it used:
   - `RadiativeRootTree`, `Tripple/Tetra/ReferenceModeratorVertex`, `KinematicConstrainedFit`, `ReferenceResonance`, `DecayChainVariables`, `BeamSpotAndVertex`;

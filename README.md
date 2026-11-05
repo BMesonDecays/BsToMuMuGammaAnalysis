@@ -30,6 +30,7 @@ scram b runtests     # unit tests of the analysis library
 cd BsToMuMuGammaAnalysis/RadiativeAnalysis/test
 cmsRun runNtuplizer_cfg.py maxEvents=1000                  # MC AOD test file (test_files.txt, sample 0)
 cmsRun runNtuplizer_cfg.py testSample=3 maxEvents=1000     # data AOD test file
+cmsRun runNtuplizer_cfg.py testSample=1 maxEvents=1000     # MC MiniAOD test file (dataFormat from the sample name)
 cmsRun runNtuplizer_cfg.py inputFiles=file:in.root isMC=0 lumiMask=Cert.json outputFile=out.root
 ```
 - The options are described at the top of `runNtuplizer_cfg.py`.
