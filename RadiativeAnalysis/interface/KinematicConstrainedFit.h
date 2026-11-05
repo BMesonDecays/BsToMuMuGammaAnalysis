@@ -58,13 +58,13 @@
 
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/ReferenceResonance.h"
 
+// DEPRECATED (plan P1.5): the mu mu (reco) gamma fit now uses MMGVertexFit.
+// This class is kept only for the channels that are not ported yet
+// (mu mu + conversion, mu mu gamma gamma, mu mu K K); it will be removed in plan Phase 7.
 class KinematicConstrainedFit{
 	public: 
 		KinematicConstrainedFit();
 		~KinematicConstrainedFit(){}
-		bool doFit(
-			std::vector<reco::TransientTrack> t_tracks, const double muonMass, 
-			const  double mass1, const double  mass2);
 		bool BsToJpsiPhiFit(
 			std::vector<reco::TransientTrack> t_tracks, const double muonMass, 
 			const  double mass1, const double  mass2);
@@ -79,16 +79,6 @@ class KinematicConstrainedFit{
 			std::vector<reco::TransientTrack> muonTT, const double muonMass, 
 			std::vector<reco::TransientTrack> electronTT, const double eleMass);
 
-		bool TrippleObjectVertexFitRecoPhoton(
-			std::vector<reco::TransientTrack> muonTT,
-			std::vector<reco::TransientTrack> photonTT,
-			ReferenceResonance::ResonanceDetails resonanceDetails,
-			const std::vector<reco::Photon>& photons,
-			TMatrixD* photonCovMatrix,
-			reco::Vertex PV,
-			const MagneticField& field,
-			const TransientTrackBuilder& theB);
-			
 		bool TetraObjectVertexFitRecoPhoton(
 			std::vector<reco::TransientTrack> muonTT,
 			std::vector<reco::TransientTrack>photonTT,

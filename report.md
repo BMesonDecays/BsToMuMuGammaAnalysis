@@ -4,6 +4,15 @@ Entries are newest first. Each entry gives: the plan item(s) (see `plan.md`), wh
 
 ---
 
+## 2026-11-05: Phase 1, deprecate KinematicConstrainedFit (P1.5)
+- `KinematicConstrainedFit` is marked deprecated in its header. It is kept only for μμ+conversion, μμγγ and μμKK until Phase 7.
+- Removed the unused methods `doFit` and `TrippleObjectVertexFitRecoPhoton` (replaced by MMGVertexFit), together with their declarations, about 200 lines.
+- The old dev1 `MMGVertexFit` code was already replaced in P1.1.
+- **Build:** OK.
+- **Validation:** 561/561 branches identical to `reference_P1_fit_2000.root`, including the event-330 conversion value. That 1e-5 shift seen in P1.3b is therefore reproducible and depends on the code, not random.
+
+---
+
 ## 2026-11-05: Phase 1, MMGVertexFit in the analyzer (P1.3b + P1.4)
 - **P1.4:**
   - `RadiativeAnalysis` owns an `MMGVertexFit mmgVertexFit_`, configured by the new parameters `clusterCovScalePhiEB/EE`, `clusterCovScaleThetaEB/EE`, `energyErrorScaleEB/EE`.
