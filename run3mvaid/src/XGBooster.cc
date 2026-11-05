@@ -71,6 +71,31 @@ XGBooster::XGBooster(std::string model_file, std::string model_features):XGBoost
 }
 
 
+XGBooster::~XGBooster()
+{
+  if (booster_) XGBoosterFree(booster_);
+}
+
+XGBooster::XGBooster(XGBooster&& other) noexcept
+  : features_(std::move(other.features_)),
+    feature_name_to_index_(std::move(other.feature_name_to_index_)),
+    booster_(other.booster_)
+{
+  other.booster_ = nullptr;
+}
+
+XGBooster& XGBooster::operator=(XGBooster&& other) noexcept
+{
+  if (this != &other) {
+    if (booster_) XGBoosterFree(booster_);
+    features_ = std::move(other.features_);
+    feature_name_to_index_ = std::move(other.feature_name_to_index_);
+    booster_ = other.booster_;
+    other.booster_ = nullptr;
+  }
+  return *this;
+}
+
 void XGBooster::reset()
 {
   std::fill(features_.begin(), features_.end(), std::nan(""));
@@ -83,7 +108,10 @@ void XGBooster::addFeature(std::string name){
 }
 
 void XGBooster::set(std::string name, float value){
-  features_.at(feature_name_to_index_[name]) = value;
+  const auto it = feature_name_to_index_.find(name);
+  if (it == feature_name_to_index_.end())
+    throw std::runtime_error("XGBooster: unknown feature " + name);
+  features_.at(it->second) = value;
 }
 
 float XGBooster::predict()

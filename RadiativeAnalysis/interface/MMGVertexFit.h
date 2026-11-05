@@ -30,6 +30,8 @@ class MMGVertexFit
         // fitted B candidate (after the pointing constraint) and its decay vertex
         struct Result
         {
+            // note: particle->lastConstraint() points to the constraint object local to fitCandidate()
+            // and must not be used after the fit
             RefCountedKinematicParticle particle;               // B candidate after the pointing constraint
             RefCountedKinematicVertex vertex;                   // B decay vertex
             std::vector<RefCountedKinematicParticle> daughters; // fitted mu1, mu2, photon (in this order)

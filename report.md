@@ -4,6 +4,26 @@ Entries are newest first. Each entry gives: the plan item(s) (see `plan.md`), wh
 
 ---
 
+## 2026-11-05: Phase 3 starts; the restructuring strategy (P3.2, P3.8)
+- **Decision, how Phases 3–5 are done:**
+  - Most of Phase 3 (ownership, TFileService, `fillDescriptions`, constants, includes) would patch code that Phase 4/5 replace anyway.
+  - The current analyzer will become **`RadiativeAnalysisLegacy`**: still compiled and still producing the old ntuple, with all channels (conversions, μμγγ, μμKK) until Phase 7 ports them.
+  - A **new `RadiativeAnalysis`** is built from the Phase 4 components (library in `src/`, namespace `bmmg`) and writes the Phase 5 ntuple. It is written to the Phase 3 standards from the start.
+  - Benefit: the old and new ntuples can be compared on the same events.
+- **P3.2 (`run3mvaid`):**
+  - `MuonMVAID.h` no longer has `using namespace std` or the global `MatchPair`/`LorentzVector` typedefs; they moved into the `.cc`, so nothing leaks into the analyzer headers.
+  - `XGBooster` owns its handle: a destructor with `XGBoosterFree`, no copies, move constructor and assignment. `MuonMVAID` builds the boosters with `emplace_back`.
+  - `XGBooster::set` throws on an unknown feature name; before, it silently wrote feature 0.
+- **P3.8:** `MVAAnalyzer` (+ config) and `ReadSoftMvaRun3ValueProducer` moved to `devel/`.
+- **Note:** `MMGVertexFit::Result::particle->lastConstraint()` points to a constraint local to the fit and must not be used (documented in the header). The same holds for the conversion pre-fit in `PhotonSelector`.
+- **Build:** OK.
+- **Validation:** identical to `reference_P2b_2000.root` except one known non-deterministic branch:
+  - **Known issue:** `VertexfitBsCtErr3D_mmconvg` differs at the 1e-5 level **between two runs of the same binary** (checked twice on 400 events).
+  - All other branches, including every MMGVertexFit `_mmrecog` branch, are reproducible, so the source is in the legacy conversion fit path (`KinematicConstrainedFit` + `PhotonSelector` conversion refit). I checked that the modified RecoVertex particle initialises its photon pointers.
+  - That path is replaced in Phase 7. Until then, regression checks use `--ignore VertexfitBsCtErr3D_mmconvg`.
+
+---
+
 ## 2026-11-05: Phase 2, batch 2 of bug fixes (P2.12–P2.15) — Phase 2 complete
 New reference: `test/reference/reference_P2b_2000.root`.
 - **P2.12 (`ReferenceResonance`):**

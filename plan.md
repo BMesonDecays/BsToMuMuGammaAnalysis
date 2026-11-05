@@ -120,7 +120,7 @@ Each item is a small change, and they are committed in small groups.
   - Constraints in `KinematicConstrainedFit` and `PhotonSelector`.
   - `TMatrixD` covariances.
   - `RadiativeRootTree` and `MuonMVAID` become `std::unique_ptr` members.
-- [ ] **P3.2** `XGBooster`: add a destructor with `XGBoosterFree`, delete copy, allow move. `MuonMVAID`: no `using namespace std` in the header.
+- [x] **P3.2** `XGBooster`: add a destructor with `XGBoosterFree`, delete copy, allow move. `MuonMVAID`: no `using namespace std` in the header.
 - [ ] **P3.3** Switch output to `TFileService` and call `usesResource(TFileService::kSharedResource)`.
 - [ ] **P3.4** Write a real `fillDescriptions` with every parameter and its default. Remove unused parameters and tokens: Jet, Electron, OOT photons, OOT SC, `MuonPtCut`, `phoEnergyCorrMap`, `StoreDeDxInfo`, `TestVerbose`, and the copied `PackedTriggerPrescales`.
 - [ ] **P3.5** Create a single `interface/Constants.h` (namespace `bmmg`) with PDG masses and fit sigmas. Remove the copies (`MassLimits` ×3, `MuMass`, `nominal*Mass`, `kaonmass`…) and the three different Bs masses (5.36677, 5.3699, 5.36689).
@@ -129,7 +129,7 @@ Each item is a small change, and they are committed in small groups.
   - Declared-but-undefined analyzer methods: `MCmatching*`, `reVertex*`, `CalculateCtErr*`, `sel*Muon`, `MuonChargeCone*`, `FindMuon*`, `LookForMother*`.
   - `listOfBmesonIds`, `doFit`, `BaselineMatching`, unused counters, commented-out blocks.
   - The ~300 never-filled `DecayChainVariables` fields.
-- [ ] **P3.8** Move `MVAAnalyzer` and `ReadSoftMvaRun3ValueProducer` to `devel/`, or fix them as tests. `MVAAnalyzer` builds `MuonMVAID` every event.
+- [x] **P3.8** Move `MVAAnalyzer` and `ReadSoftMvaRun3ValueProducer` to `devel/`, or fix them as tests. `MVAAnalyzer` builds `MuonMVAID` every event.
 
 ## Phase 4: Restructure (core of the plan)
 The goal is a thin analyzer that orchestrates small single-purpose components. Move gradually, one component per commit, comparing with the reference ntuple each time.

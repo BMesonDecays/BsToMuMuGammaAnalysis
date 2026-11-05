@@ -1,5 +1,9 @@
 #include "BsToMuMuGammaAnalysis/run3mvaid/interface/MuonMVAID.h"
 
+using namespace std;
+typedef reco::Candidate::LorentzVector LorentzVector;
+typedef pair<const reco::MuonChamberMatch*, const reco::MuonSegmentMatch*> MatchPair;
+
 
 // 
 // MiniRun3IdProducer is designed to add Run3 mva id to miniaod
@@ -10,8 +14,8 @@ xgboost_models_( iConfig.getParameter<vector<string>>( "xgboost_models" ) ),
 xgboost_variable_names_( iConfig.getParameter<vector<string>>( "xgboost_variable_names" ) )
 {
     for (auto model: xgboost_models_)
-      softMuonMva_.push_back(XGBooster(edm::FileInPath("BsToMuMuGammaAnalysis/run3mvaid/data/" + model + ".model").fullPath(),
-				       edm::FileInPath("BsToMuMuGammaAnalysis/run3mvaid/data/" + model + ".features").fullPath()));
+      softMuonMva_.emplace_back(edm::FileInPath("BsToMuMuGammaAnalysis/run3mvaid/data/" + model + ".model").fullPath(),
+				       edm::FileInPath("BsToMuMuGammaAnalysis/run3mvaid/data/" + model + ".features").fullPath());
 }
 
 void MuonMVAID::fillSoftMva(pat::Muon& mu_cand){

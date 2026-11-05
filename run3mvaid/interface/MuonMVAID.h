@@ -29,9 +29,6 @@
 // MiniRun3IdProducer is designed to add Run3 mva id to miniaod
 //
 
-using namespace std;
-typedef reco::Candidate::LorentzVector LorentzVector;
-typedef pair<const reco::MuonChamberMatch*, const reco::MuonSegmentMatch*> MatchPair;
 
 
 class MuonMVAID {
@@ -39,9 +36,10 @@ class MuonMVAID {
 public:
 
   MuonMVAID(const edm::ParameterSet &iConfig);
-  ~MuonMVAID() {};
+  ~MuonMVAID() = default;
 
-  vector<float> produce(const std::vector<reco::Muon>& muons);
+  // Run-3 soft-muon MVA score (userFloat "run3muonmva") for every muon, in input order
+  std::vector<float> produce(const std::vector<reco::Muon>& muons);
 
 
 private:
@@ -52,10 +50,10 @@ private:
 
   // ----------member data ---------------------------
 
-  vector<string> features_;
-  vector<string> xgboost_models_;
-  vector<string> xgboost_variable_names_;
-  vector<XGBooster> softMuonMva_;
+  std::vector<std::string> features_;
+  std::vector<std::string> xgboost_models_;
+  std::vector<std::string> xgboost_variable_names_;
+  std::vector<XGBooster> softMuonMva_;
 };
 
 #endif
