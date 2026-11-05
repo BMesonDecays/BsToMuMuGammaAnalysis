@@ -54,7 +54,7 @@ The current structure is described in `structure_old.md`; progress is logged in 
   - The PV used in the pointing constraint is the lowest-DCA PV. The fit has to be done before the B direction is known, so take the PV with the lowest DCA to the pre-fit μμγ direction from the dimuon vertex, and record that choice in `report.md`.
 - [x] **P1.4** Add the ErrorScale factors as parameters of `RadiativeAnalysis`: `clusterCovScalePhiEB/EE`, `clusterCovScaleThetaEB/EE`, `energyErrorScaleEB/EE`, with defaults from `MMGVertexFitExample.py`.
 - [x] **P1.5** Mark `KinematicConstrainedFit` as deprecated. It stays only for conversions, μμγγ and μμKK until Phase 7. Delete the old `MMGVertexFit` code paths and `doFit`.
-- [ ] **P1.6** Validate on the large filtered sample: mass resolution, vertex pulls and ct, compared with the reference ntuple and with `MMGVertexFitExample`. Put the plots and numbers in `report.md`.
+- [x] **P1.6** Validate on the large filtered sample: mass resolution, vertex pulls and ct, compared with the reference ntuple and with `MMGVertexFitExample`. Put the plots and numbers in `report.md`.
 
 ## Phase 2: Obvious local bug fixes
 Each item is a small change, and they are committed in small groups.

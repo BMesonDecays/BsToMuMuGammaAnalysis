@@ -4,6 +4,40 @@ Entries are newest first. Each entry gives: the plan item(s) (see `plan.md`), wh
 
 ---
 
+## 2026-11-05: Phase 1, validation on the large filtered sample (P1.6)
+- **New tool:** `test/validateMMGFit.py`. Mass and ct3D residuals and pulls against gen from the ntuple (optionally `--matched`, i.e. `Topology_isMatched`). Mean, RMS and core Gaussian width of every `MMGVertexFitExample` histogram. PNG plots.
+- **Input:** the first 20 files of the filtered sample (`testSample=2 testMaxFiles=20`), **36,281 events**. Code as of P1.5: gedPhotons, MMGVertexFit, EB photons only in the analyzer.
+- **Analyzer ntuple** (2133 events with a fitted μμγ candidate; gen-matched topology: 728):
+
+  | | pre-fit 4-vector | MMGVertexFit |
+  |---|---|---|
+  | m − m_gen core σ, all (N=2133) | 75.6 ± 3.3 MeV | **59.9 ± 2.6 MeV** |
+  | m − m_gen core σ, gen-matched (N=728) | 73.3 ± 5.6 MeV | 70.7 ± 5.4 MeV |
+  | fraction with \|m − m_gen\| > 0.1 / 0.2 / 0.3 / 0.5 GeV | 44% / 24% / 14% / 4.1% | **32% / 14% / 7.7% / 2.8%** |
+  | m − m_gen RMS | 0.203 | 0.271 |
+
+  The fit improves the core and lowers the tail fraction at every threshold. The larger RMS comes from a small number of far outliers (only 20 of 2133 candidates are more than 0.3 GeV off after the fit while within 0.1 GeV before it). The fit χ²/probability is not stored per candidate yet (P5.2 adds it), so these outliers can't be cut on yet.
+  - ct3D − ct_gen: core σ 17 µm, but RMS 411 µm.
+  - ct3D error: mean 15.6 µm.
+  - **ct3D pull: core σ 1.40, RMS 5.4.** The ct error is too small by about 40% in the core, and the definition has large tails. `calculateCt3D` uses the unsigned PV–SV distance instead of the projection on the B direction, and the error ignores correlations. This is planned for P4.7 (`CandidateObservables`).
+- **`MMGVertexFitExample`** (gen-matched μ, μ, γ, gen PV, EB+EE):
+
+  | quantity | N | core mean | core σ |
+  |---|---|---|---|
+  | fitted B mass | 14264 | 5.374 | 0.0716 |
+  | B mass without fit | 15687 | 5.376 | 0.0857 |
+  | mass residual / pull | 14264 | +0.007 / +0.17 | 0.0717 / 1.08 |
+  | vertex pull x / y / z | 14264 | ~0 | 1.08 / 1.10 / 1.05 |
+  | cluster pull φ / θ | 17940 | ~0 | 0.82 / 0.91 |
+  | photon energy pull | 18181 | +0.32 | 0.87 |
+  | χ²/ndf (mean); vertex prob (mean) | 14264 | 1.68; 0.379 | — |
+
+  The vertex and mass pulls have core width ≈ 1, so the error scales are consistent. The cluster pulls (0.82 / 0.91) and the energy pull (0.87, mean +0.32) are a bit narrower than 1. They are inputs whose scales were tuned on another sample, so re-tuning is possible but not needed now.
+- **Conclusion:** MMGVertexFit is an improvement over both the pre-fit mass and the old fit (P1.3b: RMS 0.162 vs 0.217 on the same candidates). Phase 1 is complete.
+- **Note for later:** the old combined job (analyzer + example started in one shell) failed because of a broken trailing `ls`; the example was rerun separately. Run jobs separately.
+
+---
+
 ## 2026-11-05: Phase 1, deprecate KinematicConstrainedFit (P1.5)
 - `KinematicConstrainedFit` is marked deprecated in its header. It is kept only for μμ+conversion, μμγγ and μμKK until Phase 7.
 - Removed the unused methods `doFit` and `TrippleObjectVertexFitRecoPhoton` (replaced by MMGVertexFit), together with their declarations, about 200 lines.
