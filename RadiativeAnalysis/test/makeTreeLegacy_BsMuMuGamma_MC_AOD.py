@@ -1,3 +1,5 @@
+# LEGACY ntuple (RadiativeAnalysisLegacy, old flat tree with all channels).
+# The new ntuplizer is configured in test/runNtuplizer_cfg.py.
 import FWCore.ParameterSet.Config as cms
 from FWCore.ParameterSet.VarParsing import VarParsing
 from pathlib import Path
@@ -241,7 +243,7 @@ process.egmPhotonIDs.physicsObjectSrc = cms.InputTag("gedPhotons")
 
 #-- ANALYZER TAGS AND PARAMETERS --#
 
-process.bmmgVertexAnalysis = cms.EDAnalyzer("RadiativeAnalysis",
+process.bmmgVertexAnalysis = cms.EDAnalyzer("RadiativeAnalysisLegacy",
                                           isMCstudy                     = cms.bool(True),
                                           isMINIAOD                     = cms.bool(False),
                                           genParticlesLabel             = cms.InputTag("genParticles"),

@@ -1,0 +1,42 @@
+<!-- library BsToMuMuGammaAnalysisRadiativeAnalysis: src/*.cc, headers in interface/ (namespace bmmg for new code) -->
+<use name="FWCore/Framework"/>
+<use name="FWCore/ParameterSet"/>
+<use name="FWCore/MessageLogger"/>
+<use name="FWCore/Utilities"/>
+<use name="FWCore/Common"/>
+<use name="DataFormats/BeamSpot"/>
+<use name="DataFormats/Candidate"/>
+<use name="DataFormats/Common"/>
+<use name="DataFormats/EgammaCandidates"/>
+<use name="DataFormats/EgammaReco"/>
+<use name="DataFormats/EcalRecHit"/>
+<use name="DataFormats/EcalDetId"/>
+<use name="DataFormats/GeometryVector"/>
+<use name="DataFormats/HepMCCandidate"/>
+<use name="DataFormats/HLTReco"/>
+<use name="DataFormats/Math"/>
+<use name="DataFormats/MuonReco"/>
+<use name="DataFormats/PatCandidates"/>
+<use name="DataFormats/TrackReco"/>
+<use name="DataFormats/VertexReco"/>
+<use name="Geometry/CaloGeometry"/>
+<use name="Geometry/Records"/>
+<use name="HLTrigger/HLTcore"/>
+<use name="MagneticField/Engine"/>
+<use name="RecoEcal/EgammaCoreTools"/>
+<use name="RecoVertex/KalmanVertexFit"/>
+<use name="RecoVertex/KinematicFit"/>
+<use name="RecoVertex/KinematicFitPrimitives"/>
+<use name="RecoVertex/VertexPrimitives"/>
+<use name="RecoVertex/VertexTools"/>
+<use name="TrackingTools/IPTools"/>
+<use name="TrackingTools/PatternTools"/>
+<use name="TrackingTools/TrajectoryParametrization"/>
+<use name="TrackingTools/TrajectoryState"/>
+<use name="TrackingTools/TransientTrack"/>
+<use name="CommonTools/Utils"/>
+<use name="root"/>
+<use name="rootmath"/>
+<export>
+  <lib name="1"/>
+</export>

@@ -62,6 +62,7 @@
   <use name="RecoTracker/DeDx"/>
   <use name="SimTracker/TrackAssociation"/>
   <use name="BsToMuMuGammaAnalysis/run3mvaid"/>
+  <use name="BsToMuMuGammaAnalysis/RadiativeAnalysis"/>
   <use name="clhep"/>
   <use name="boost"/>
   <use name="root"/>

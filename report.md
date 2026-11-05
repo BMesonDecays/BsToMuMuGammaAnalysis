@@ -4,6 +4,18 @@ Entries are newest first. Each entry gives: the plan item(s) (see `plan.md`), wh
 
 ---
 
+## 2026-11-05: Phase 4 step 1, legacy module and library layout
+- **Renames:**
+  - The analyzer is now **`RadiativeAnalysisLegacy`** (`plugins/RadiativeAnalysisLegacy.cc`, `interface/RadiativeAnalysisLegacy.h`).
+  - Its config is `test/makeTreeLegacy_BsMuMuGamma_MC_AOD.py`, previously `makeTree_BsMuMuGamma_MC_AOD.py`. **The CRAB configs still point to the old name; they are fixed in Phase 6.**
+- **New package library** `BsToMuMuGammaAnalysisRadiativeAnalysis`: `RadiativeAnalysis/BuildFile.xml` + `src/`.
+  - `MMGVertexFit.cc` and `GenChain.cc` moved there, so both analyzers link them.
+  - New code goes there in namespace `bmmg`.
+  - `plugins/` now holds the EDM modules and the legacy helper classes.
+- **Validation:** the legacy output is identical to `reference_P2b_2000.root` (555/555 branches, with the known non-deterministic branch ignored).
+
+---
+
 ## 2026-11-05: Phase 3 starts; the restructuring strategy (P3.2, P3.8)
 - **Decision, how Phases 3–5 are done:**
   - Most of Phase 3 (ownership, TFileService, `fillDescriptions`, constants, includes) would patch code that Phase 4/5 replace anyway.

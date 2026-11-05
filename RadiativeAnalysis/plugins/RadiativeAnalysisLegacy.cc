@@ -1,12 +1,14 @@
 // -*- C++ -*-
 // Package:    BsToMuMuGammaAnalysis/RadiativeAnalysis
-// Class:      RadiativeAnalysis
+// Class:      RadiativeAnalysisLegacy
+// LEGACY ntuplizer (old flat ntuple, all channels). Kept until all channels are ported to the
+// new RadiativeAnalysis module (plan.md Phase 7); not developed further.
 // Original Author:  Alibordi Muhammad
 //         Created:  Fri, 12 Jul 2024 10:27:36 GMT
 //============================================================
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/KinematicConstrainedFit.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/RadiativeRootTree.h"
-#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/RadiativeAnalysis.h"
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/RadiativeAnalysisLegacy.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/TrippleObjectVertex.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/TetraObjectVertex.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/BeamSpotAndVertex.h"
@@ -24,7 +26,7 @@
 
 
 
-RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig): 
+RadiativeAnalysisLegacy::RadiativeAnalysisLegacy(const edm::ParameterSet& iConfig): 
 	theConfig_(iConfig),
 	nominalJpsiMass( 3.096916 ),
 	nominalPsiMass( 3.686097 ),   // psi(2S) (was set to the J/psi mass)
@@ -157,9 +159,9 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig):
 edm::LogInfo("BsToMuMuGammaAnalysis/RadiativeAnalysis")<< "Initializing Bs to MuMu Gamma  analyser  - Output file: " << outputFile_ <<"\n";
 }
 
-RadiativeAnalysis::~RadiativeAnalysis() {}
+RadiativeAnalysisLegacy::~RadiativeAnalysisLegacy() {}
 
-void RadiativeAnalysis::beginJob() {
+void RadiativeAnalysisLegacy::beginJob() {
   bmmgRootTree_ = new RadiativeRootTree();
   bmmgRootTree_->createTree(outputFile_);
 
@@ -168,7 +170,7 @@ void RadiativeAnalysis::beginJob() {
 
 
 
-void RadiativeAnalysis::beginRun(const edm::Run& iRun, const edm::EventSetup& iSetup)
+void RadiativeAnalysisLegacy::beginRun(const edm::Run& iRun, const edm::EventSetup& iSetup)
 {
     bool changed = true;
     hltConfigInitialized_ = hltConfig_.init(iRun, iSetup, hltProcess_, changed);
@@ -195,7 +197,7 @@ void RadiativeAnalysis::beginRun(const edm::Run& iRun, const edm::EventSetup& iS
        
 }
 //------------Do not know when to use this function------------------
-void RadiativeAnalysis::endRun(const edm::Run& iRun, const edm::EventSetup& iSetup)
+void RadiativeAnalysisLegacy::endRun(const edm::Run& iRun, const edm::EventSetup& iSetup)
 {
 
 
@@ -223,11 +225,11 @@ void RadiativeAnalysis::endRun(const edm::Run& iRun, const edm::EventSetup& iSet
 
 
 }
-void RadiativeAnalysis::beginLuminosityBlock(const edm::LuminosityBlock& iLumi,const edm::EventSetup& iSetup)
+void RadiativeAnalysisLegacy::beginLuminosityBlock(const edm::LuminosityBlock& iLumi,const edm::EventSetup& iSetup)
 {
     // nothing needed here for now
 }
-void RadiativeAnalysis::endLuminosityBlock(const edm::LuminosityBlock& iLumi, const edm::EventSetup& iSetup)
+void RadiativeAnalysisLegacy::endLuminosityBlock(const edm::LuminosityBlock& iLumi, const edm::EventSetup& iSetup)
 {
     edm::Handle<GenFilterInfo> genFilter;
     iLumi.getByToken(genFilterTok, genFilter);
@@ -245,7 +247,7 @@ void RadiativeAnalysis::endLuminosityBlock(const edm::LuminosityBlock& iLumi, co
 }
     
 //------------- get filters for a given HLT path (helper function) -------------
-std::vector<std::string>RadiativeAnalysis::getFiltersForPath(const std::string& pathName) const
+std::vector<std::string>RadiativeAnalysisLegacy::getFiltersForPath(const std::string& pathName) const
 {
     std::vector<std::string> filters;
     if (!hltConfigInitialized_) return filters;
@@ -272,7 +274,7 @@ std::vector<std::string>RadiativeAnalysis::getFiltersForPath(const std::string& 
     return filters;
 }
 // ------------ method called for each event  ------------
-void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
+void RadiativeAnalysisLegacy::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 
 	event_counter_++;
 	excludedPhotons.clear();
@@ -1160,7 +1162,7 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 }
 ////////////////////////////////////////////////////////////
 ////////////////End Job///////////////////////////////////
-void RadiativeAnalysis::endJob() {
+void RadiativeAnalysisLegacy::endJob() {
   
   cout << "Total number of Events          : " << event_counter_ << endl;
   cout << "Total number of Tagged muons    : " << muoncounter_   << endl;
@@ -1212,13 +1214,13 @@ bmmgRootTree_->fillRunInfo();
 //////////////////////////////////////////////////////////////
 ////////// Helper Functions///////////////////////////////////
 //////////////////////////////////////////////////////////////
-GlobalVector RadiativeAnalysis::flightDirection(const reco::Vertex &pv, reco::Vertex &sv){
+GlobalVector RadiativeAnalysisLegacy::flightDirection(const reco::Vertex &pv, reco::Vertex &sv){
   GlobalVector res(sv.position().X() - pv.position().X(),
                     sv.position().Y() - pv.position().Y(),
                     sv.position().Z() - pv.position().Z());
   return res;
 }
-void RadiativeAnalysis::fillMCInfo(edm::Handle<edm::View<reco::GenParticle>>& genParticles){
+void RadiativeAnalysisLegacy::fillMCInfo(edm::Handle<edm::View<reco::GenParticle>>& genParticles){
   int iNumberOfBdecays = 0;
   Int_t SVindex =0;
   std::set<int> listOfBmesonIds;
@@ -1368,7 +1370,7 @@ void RadiativeAnalysis::fillMCInfo(edm::Handle<edm::View<reco::GenParticle>>& ge
   }
 }
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
-void RadiativeAnalysis::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
+void RadiativeAnalysisLegacy::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
   //The following says we do not know what parameters are allowed so do no validation
   // Please change this to state exactly what you do use, even if it is no parameters
   edm::ParameterSetDescription desc;
@@ -1383,4 +1385,4 @@ void RadiativeAnalysis::fillDescriptions(edm::ConfigurationDescriptions& descrip
 }
 
 //define this as a plug-in
-DEFINE_FWK_MODULE(RadiativeAnalysis);
+DEFINE_FWK_MODULE(RadiativeAnalysisLegacy);

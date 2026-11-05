@@ -1,5 +1,5 @@
-#ifndef BsToMuMuGammaAnalysis_RadiativeAnalysis_RadiativeAnalysis_h
-#define BsToMuMuGammaAnalysis_RadiativeAnalysis_RadiativeAnalysis_h
+#ifndef BsToMuMuGammaAnalysis_RadiativeAnalysis_RadiativeAnalysisLegacy_h
+#define BsToMuMuGammaAnalysis_RadiativeAnalysis_RadiativeAnalysisLegacy_h
 
 
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/GlobalIncludes.h"
@@ -74,10 +74,10 @@
 //#include "HLTrigger/HLTcore/interface/HLTPrescaleProvider.h"
 
 
-class RadiativeAnalysis : public edm::one::EDAnalyzer<edm::one::SharedResources,edm::one::WatchRuns, edm::one::WatchLuminosityBlocks> {
+class RadiativeAnalysisLegacy : public edm::one::EDAnalyzer<edm::one::SharedResources,edm::one::WatchRuns, edm::one::WatchLuminosityBlocks> {
 public:
-  explicit RadiativeAnalysis(const edm::ParameterSet&);
-  ~RadiativeAnalysis() override;
+  explicit RadiativeAnalysisLegacy(const edm::ParameterSet&);
+  ~RadiativeAnalysisLegacy() override;
 
   static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 
