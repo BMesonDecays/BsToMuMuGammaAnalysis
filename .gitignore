@@ -1,1 +1,4 @@
 *.root
+RadiativeAnalysis/test/reference/
+__pycache__/
+*.pyc

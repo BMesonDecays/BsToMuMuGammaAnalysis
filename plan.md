@@ -36,7 +36,7 @@ The current structure is described in `structure_old.md`; progress is logged in 
   - In `run3mvaid/BuildFile.xml`, add `FWCore/ParameterSet` and `DataFormats/PatCandidates`.
   - Disable the empty catch2 target in `test/BuildFile.xml`.
   - Apply whatever other minimal fixes P0.1 shows are needed.
-- [ ] **P0.5** Make the reference ntuple:
+- [x] **P0.5** Make the reference ntuple:
   - `makeTree_BsMuMuGamma_MC_AOD.py` reads its input from `test_files.txt` (via a `inputFiles` option); the hardcoded list is removed.
   - Run on `/eos/user/s/sslawins/testing_mc/BsTo2MuG_aod.root` and keep the output as the regression reference.
   - Write a small comparison script (`test/compareNtuples.py`, PyROOT) that compares the branches common to two ntuples.
@@ -112,6 +112,7 @@ Each item is a small change, and they are committed in small groups.
   - `processDaughters` has no `!muPlus_` guard.
   - `matchToGen` has no final-state/status requirement.
 - [ ] **P2.19** Topology matching uses `(*photons)[0..1]` instead of the selected photons (`RadiativeAnalysis.cc:1095-1100`).
+- [ ] **P2.20** `bool photonTightID_[2]` is booked as `"photonTightID[2]/I"` (`RadiativeRootTree.cc:519`), so ROOT reads 8 bytes from a 2-byte array: garbage, and the values change from run to run. Book it as `/O`, or store it as int. It was found by the P0.5 determinism check.
 
 ## Phase 3: Ownership, hygiene, conventions
 - [ ] **P3.1** Replace every `new` without `delete`:
