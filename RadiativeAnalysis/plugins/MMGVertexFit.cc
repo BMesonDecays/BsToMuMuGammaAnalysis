@@ -33,7 +33,7 @@ namespace
 TMatrixD MMGVertexFit::clusterCovariance(const reco::Photon& photon, const EcalClusterLazyTools& lazyTools) const
     {
         const TMatrixD cov = lazyTools.covariancesXYZ(*photon.superCluster());
-        const ClusterScale& scale = photon.isEB() ? ebScale_ : eeScale_;
+        const ErrorScale& scale = photon.isEB() ? ebScale_ : eeScale_;
 
         const double phi = photon.phi(), theta = photon.theta();
         const double ePhi[3] = {-std::sin(phi), std::cos(phi), 0.};
@@ -43,15 +43,21 @@ TMatrixD MMGVertexFit::clusterCovariance(const reco::Photon& photon, const EcalC
         TMatrixD S(3, 3);
         for (int a = 0; a < 3; ++a)
             for (int b = 0; b < 3; ++b)
-                S(a, b) = scale.phi * ePhi[a] * ePhi[b] + scale.theta * eTheta[a] * eTheta[b] + u[a] * u[b];
+                S(a, b) = scale.clusterPhi * ePhi[a] * ePhi[b] + scale.clusterTheta * eTheta[a] * eTheta[b] + u[a] * u[b];
         return S * cov * S;
     }
 
-// The energy uncertainty of the photon candidate underestimates the spread of E_reco - E_gen;
+bool MMGVertexFit::hasClusterHits(const reco::Photon& photon)
+    {
+        return !photon.superCluster()->hitsAndFractions().empty();
+    }
+
+// The energy uncertainty of the photon candidate does not match the spread of E_reco - E_gen;
 // it is rescaled with a factor from the photon energy pulls.
 double MMGVertexFit::photonEnergyError(const reco::Photon& photon) const
     {
-        return energyErrorScale_ * photon.getCorrectedEnergyError(energyType(photon));
+        const ErrorScale& scale = photon.isEB() ? ebScale_ : eeScale_;
+        return scale.energy * photon.getCorrectedEnergyError(energyType(photon));
     }
 
 // Sequential fit of B -> mu mu gamma:
@@ -62,8 +68,8 @@ double MMGVertexFit::photonEnergyError(const reco::Photon& photon) const
 //     with PointingKinematicConstraint): the B momentum must point from the primary vertex
 //     to the B decay vertex. The constraint uses the full covariance of the B candidate,
 //     including the correlations between the daughters from step 1.
-std::vector<MMGVertexFit::Result> MMGVertexFit::fit(const std::vector<reco::Muon>& muons,
-    const std::vector<reco::Photon>& photons,
+std::vector<MMGVertexFit::Result> MMGVertexFit::fit(const std::vector<const reco::Muon*>& muons,
+    const std::vector<const reco::Photon*>& photons,
     const EcalClusterLazyTools& lazyTools,
     const std::vector<reco::Vertex>& primaryVertices,
     const TransientTrackBuilder* TTBuilder)
@@ -77,9 +83,9 @@ std::vector<MMGVertexFit::Result> MMGVertexFit::fit(const std::vector<reco::Muon
 
         // kinematic particle creation
         std::vector<RefCountedKinematicParticle> muonKinematicParticles;
-        for(const auto& recoMu : muons)
+        for(const reco::Muon* recoMu : muons)
         {
-            reco::TrackRef muTrack = recoMu.track();
+            reco::TrackRef muTrack = recoMu->track();
             if(!muTrack) continue;
             reco::TransientTrack muonTT = TTBuilder->build(muTrack);
 
@@ -94,14 +100,16 @@ std::vector<MMGVertexFit::Result> MMGVertexFit::fit(const std::vector<reco::Muon
         std::vector<std::unique_ptr<reco::Photon>> fitPhotons;
         std::vector<std::unique_ptr<TMatrixD>> photonCovariances;
         std::vector<RefCountedKinematicParticle> photonKinematicParticles;
-        for(const auto& inputPho : photons)
+        for(const reco::Photon* inputPho : photons)
         {
+          if (!hasClusterHits(*inputPho)) continue;
 
-          // copy of the photon with the rescaled energy uncertainty; the energy is unchanged
-          fitPhotons.push_back(std::make_unique<reco::Photon>(inputPho));
+          // copy of the photon with the rescaled energy uncertainty; the energy is unchanged.
+          // clone() keeps the full type, e.g. pat::Photon with its embedded supercluster
+          fitPhotons.emplace_back(inputPho->clone());
           reco::Photon& recoPho = *fitPhotons.back();
           const reco::Photon::P4type p4type = energyType(recoPho);
-          recoPho.setCorrectedEnergy(p4type, recoPho.getCorrectedEnergy(p4type), photonEnergyError(inputPho), false);
+          recoPho.setCorrectedEnergy(p4type, recoPho.getCorrectedEnergy(p4type), photonEnergyError(*inputPho), false);
 
           GlobalVector p3(recoPho.px(), recoPho.py(), recoPho.pz());
           TrackCharge ch = 0;

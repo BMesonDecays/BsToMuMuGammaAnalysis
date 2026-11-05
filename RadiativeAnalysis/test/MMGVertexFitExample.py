@@ -20,6 +20,31 @@ process.options = cms.untracked.PSet(wantSummary = cms.untracked.bool(False))
 # process.MessageLogger.cerr.threshold = "DEBUG"
 # process.MessageLogger.debugModules = ["*"]
 
+# input data format: 'AOD' or 'MINIAOD'
+dataFormat = 'AOD'
+
+# collection names for each data format
+collections = {
+    'AOD': dict(
+        genParticles    = 'genParticles',
+        muons           = 'muons',
+        photons         = 'gedPhotons',
+        ebRecHits       = 'reducedEcalRecHitsEB',
+        eeRecHits       = 'reducedEcalRecHitsEE',
+        beamSpot        = 'offlineBeamSpot',
+        primaryVertices = 'offlinePrimaryVertices',
+    ),
+    'MINIAOD': dict(
+        genParticles    = 'prunedGenParticles',
+        muons           = 'slimmedMuons',
+        photons         = 'slimmedPhotons',
+        ebRecHits       = 'reducedEgamma:reducedEBRecHits',
+        eeRecHits       = 'reducedEgamma:reducedEERecHits',
+        beamSpot        = 'offlineBeamSpot',
+        primaryVertices = 'offlineSlimmedPrimaryVertices',
+    ),
+}[dataFormat]
+
 # dataDir = '/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToMuMuGamma_MCTunesRun3ECM13p6TeV_09_07_2025/BsToMuMuGamma_CMSSW_12_4_11_patch3_09_07_2025/250709_075534/0000/'
 # dataDir = '/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_Pi0ToGammaGamma_Pi0PythiaGun/Pi0ToGammaGamma_CMSSW_12_4_11_patch3_12_12_2024/241212_131944/0000/'
 # dataDir = '/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BdToMuMuGamma_MCTunesRun3ECM13p6TeV/BdToMuMuGamma_CMSSW_12_4_11_patch3_06_12_2024/241221_163854/0000/'
@@ -76,16 +101,25 @@ process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_mc_FULL','')
 
 process.analiza= cms.EDAnalyzer("MMGVertexFitExample",
   outHist = cms.string('histosMMGVertexFitExample.root'),
+  # input collections, see dataFormat above
+  genParticles    = cms.InputTag(collections['genParticles']),
+  muons           = cms.InputTag(collections['muons']),
+  photons         = cms.InputTag(collections['photons']),
+  ebRecHits       = cms.InputTag(collections['ebRecHits']),
+  eeRecHits       = cms.InputTag(collections['eeRecHits']),
+  beamSpot        = cms.InputTag(collections['beamSpot']),
+  primaryVertices = cms.InputTag(collections['primaryVertices']),
   # scale factors for the cluster position uncertainties (sigma) along e_phi and e_theta,
   # perpendicular to the photon, for barrel and endcap photons,
-  # from the core width of the cluster pulls with the unscaled covariance
-  clusterCovScalePhiEB = cms.untracked.double(0.32),
-  clusterCovScaleThetaEB = cms.untracked.double(0.15),
-  clusterCovScalePhiEE = cms.untracked.double(0.34),
-  clusterCovScaleThetaEE = cms.untracked.double(0.23),
-  # scale factor for the photon energy uncertainty, from the core width of the photon energy pull
-  # (flat in E_gen between 10 and 30 GeV)
-  energyErrorScale = cms.untracked.double(1.4),
+  # tuned so that the core width of the cluster pulls is 1 (gedPhotons)
+  clusterCovScalePhiEB = cms.untracked.double(0.16),
+  clusterCovScaleThetaEB = cms.untracked.double(0.165),
+  clusterCovScalePhiEE = cms.untracked.double(0.20),
+  clusterCovScaleThetaEE = cms.untracked.double(0.24),
+  # scale factors for the photon energy uncertainty, for barrel and endcap photons,
+  # from the core width of the photon energy pull in bins of E_gen (roughly flat, gedPhotons)
+  energyErrorScaleEB = cms.untracked.double(1.2),
+  energyErrorScaleEE = cms.untracked.double(1.3),
   # ECAL region of the matched photons used in the fit: 'EB', 'EE' or 'both'
   photonRegion = cms.untracked.string('both'),
 )

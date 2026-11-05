@@ -3,6 +3,7 @@
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "DataFormats/Common/interface/Handle.h"
+#include "DataFormats/Common/interface/View.h"
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
@@ -79,9 +80,11 @@ private:
   edm::ParameterSet theConfig;
   unsigned int theEventCount;
 
+  // muons and photons are read as views of the reco base classes, so the same code runs on
+  // AOD (reco::Muon, reco::Photon) and MiniAOD (pat::Muon, pat::Photon)
   edm::EDGetTokenT < vector<reco::GenParticle> > theGenParticleToken;
-  edm::EDGetTokenT < vector<reco::Muon> > theMuonToken;
-  edm::EDGetTokenT < vector<reco::Photon> > thePhotonToken;
+  edm::EDGetTokenT < edm::View<reco::Muon> > theMuonToken;
+  edm::EDGetTokenT < edm::View<reco::Photon> > thePhotonToken;
   edm::ESGetToken<MagneticField, IdealMagneticFieldRecord> m_fieldToken;
   edm::EDGetTokenT < edm::TriggerResults > theTriggerResultsToken;
   edm::ESGetToken <TransientTrackBuilder, TransientTrackRecord> theTransientTrackBuilderToken;
@@ -115,11 +118,9 @@ private:
 
   std::vector<TH1*> histograms;
 
-  // scale factors for the cluster position uncertainties along e_phi and e_theta, see MMGVertexFit
-  MMGVertexFit::ClusterScale clusterCovScaleEB;
-  MMGVertexFit::ClusterScale clusterCovScaleEE;
-  // scale factor for the photon energy uncertainty, see MMGVertexFit
-  double energyErrorScale;
+  // scale factors for the photon measurement uncertainties in barrel and endcap, see MMGVertexFit
+  MMGVertexFit::ErrorScale errorScaleEB;
+  MMGVertexFit::ErrorScale errorScaleEE;
   // ECAL region of the matched photons: "EB", "EE" or "both"
   std::string photonRegion;
 
@@ -130,30 +131,32 @@ private:
 
 MMGVertexFitExample::MMGVertexFitExample(const edm::ParameterSet& conf)
   : theConfig(conf), theEventCount(0),
-    clusterCovScaleEB{conf.getUntrackedParameter<double>("clusterCovScalePhiEB", 1.),
-                      conf.getUntrackedParameter<double>("clusterCovScaleThetaEB", 1.)},
-    clusterCovScaleEE{conf.getUntrackedParameter<double>("clusterCovScalePhiEE", 1.),
-                      conf.getUntrackedParameter<double>("clusterCovScaleThetaEE", 1.)},
-    energyErrorScale(conf.getUntrackedParameter<double>("energyErrorScale", 1.)),
+    errorScaleEB{conf.getUntrackedParameter<double>("clusterCovScalePhiEB", 1.),
+                 conf.getUntrackedParameter<double>("clusterCovScaleThetaEB", 1.),
+                 conf.getUntrackedParameter<double>("energyErrorScaleEB", 1.)},
+    errorScaleEE{conf.getUntrackedParameter<double>("clusterCovScalePhiEE", 1.),
+                 conf.getUntrackedParameter<double>("clusterCovScaleThetaEE", 1.),
+                 conf.getUntrackedParameter<double>("energyErrorScaleEE", 1.)},
     photonRegion(conf.getUntrackedParameter<std::string>("photonRegion", "both"))
 {
   if (photonRegion != "EB" && photonRegion != "EE" && photonRegion != "both")
     throw cms::Exception("Configuration") << "MMGVertexFitExample: photonRegion must be EB, EE or both, got " << photonRegion;
   cout <<" CTORXX" << endl;
 
-  theGenParticleToken = consumes< vector<reco::GenParticle>  >( edm::InputTag("genParticles"));
-  theMuonToken = consumes< vector<reco::Muon>  >( edm::InputTag("muons"));
-  thePhotonToken = consumes< vector<reco::Photon>  >( edm::InputTag("photons"));
+  // collection names depend on the data format (AOD or MiniAOD), they are set in the config
+  theGenParticleToken = consumes< vector<reco::GenParticle>  >(conf.getParameter<edm::InputTag>("genParticles"));
+  theMuonToken = consumes< edm::View<reco::Muon>  >(conf.getParameter<edm::InputTag>("muons"));
+  thePhotonToken = consumes< edm::View<reco::Photon>  >(conf.getParameter<edm::InputTag>("photons"));
   m_fieldToken = esConsumes<MagneticField, IdealMagneticFieldRecord>();
   theTriggerResultsToken = consumes<edm::TriggerResults>(edm::InputTag("TriggerResults", "", "HLT"));
   theTransientTrackBuilderToken = esConsumes(edm::ESInputTag("", "TransientTrackBuilder"));
-  ebRecHitsToken_ = consumes<EcalRecHitCollection>(edm::InputTag("reducedEcalRecHitsEB"));
-  eeRecHitsToken_ = consumes<EcalRecHitCollection>(edm::InputTag("reducedEcalRecHitsEE"));
+  ebRecHitsToken_ = consumes<EcalRecHitCollection>(conf.getParameter<edm::InputTag>("ebRecHits"));
+  eeRecHitsToken_ = consumes<EcalRecHitCollection>(conf.getParameter<edm::InputTag>("eeRecHits"));
 
   esGetTokens = make_unique<EcalClusterLazyToolsBase::ESGetTokens>(consumesCollector());
 
-  theBeamSpotToken = consumes< reco::BeamSpot >( edm::InputTag("offlineBeamSpot"));
-  theVertexToken = consumes< vector<reco::Vertex>  >( edm::InputTag("offlinePrimaryVertices"));
+  theBeamSpotToken = consumes< reco::BeamSpot >(conf.getParameter<edm::InputTag>("beamSpot"));
+  theVertexToken = consumes< vector<reco::Vertex>  >(conf.getParameter<edm::InputTag>("primaryVertices"));
 
 }
 
@@ -197,7 +200,7 @@ void MMGVertexFitExample::beginJob()
   hChi2Ndf = new TH1D("hChi2Ndf", "vertex #chi^{2}/ndf;#chi^{2}/ndf;candidates", 100, 0, 10);
   hVtxProb = new TH1D("hVtxProb", "vertex probability;P(#chi^{2}, ndf);candidates", 100, 0, 1);
   hPhotonEnergyPull = new TH1D("hPhotonEnergyPull", "photon energy pull;(E_{reco} - E_{gen})/#sigma_{E};photons", 100, -5, 5);
-  hPhotonEnergyPullVsE = new TH2D("hPhotonEnergyPullVsE", "photon energy pull;E_{gen} [GeV];(E_{reco} - E_{gen})/#sigma_{E}", 30, 0, 30, 100, -5, 5);
+  hPhotonEnergyPullVsE = new TH2D("hPhotonEnergyPullVsE", "photon energy pull;E_{gen} [GeV];(E_{reco} - E_{gen})/#sigma_{E}", 50, 0, 100, 100, -5, 5);
   histograms.insert(histograms.end(), {hBsMassResidual, hBsMassPull, hChi2Ndf, hVtxProb, hPhotonEnergyPull, hPhotonEnergyPullVsE});
 
   cout << "HERE MMGVertexFitExample::beginJob()" << endl;
@@ -227,8 +230,8 @@ void MMGVertexFitExample::analyze(
   std::cout << " -------------------------------- HERE MMGVertexFitExample::analyze "<< std::endl;
 
   const std::vector<reco::GenParticle> & genPar = ev.get(theGenParticleToken);
-  const std::vector<reco::Muon> & recoMuons = ev.get(theMuonToken);
-  const std::vector<reco::Photon> & recoPhotons = ev.get(thePhotonToken);
+  const edm::View<reco::Muon> & recoMuons = ev.get(theMuonToken);
+  const edm::View<reco::Photon> & recoPhotons = ev.get(thePhotonToken);
   auto const& field = es.getData(m_fieldToken);
 
   const reco::BeamSpot & beamSpot = ev.get(theBeamSpotToken);
@@ -240,11 +243,11 @@ void MMGVertexFitExample::analyze(
 
 
   vector<const reco::Candidate*> genMuons;
-  vector<reco::Muon> recoMatchedMuons;
+  vector<const reco::Muon*> recoMatchedMuons;
   vector<const reco::Candidate*> genMatchedMuons;
 
   vector<const reco::Candidate*> genPhotons;
-  vector<reco::Photon> recoMatchedPhotons;
+  vector<const reco::Photon*> recoMatchedPhotons;
   vector<const reco::Candidate*> genMatchedPhotons;
 
 
@@ -273,13 +276,14 @@ void MMGVertexFitExample::analyze(
         genBsMomentum = GlobalVector(genP.px(), genP.py(), genP.pz());
         genBsMass = genP.mass();
 
-        // find the primary vertex
-        const reco::Candidate* mother = genP.mother();
-        while(mother->mother()->pdgId() != 2212)
+        // find the primary vertex: the production vertex of the first ancestor coming from a proton,
+        // or of the oldest ancestor kept in the (pruned, in MiniAOD) gen record
+        const reco::Candidate* ancestor = &genP;
+        while(ancestor->numberOfMothers() > 0 && ancestor->mother()->pdgId() != 2212)
         {
-          mother = mother->mother();
+          ancestor = ancestor->mother();
         }
-        genPV = GlobalPoint(mother->vx(), mother->vy(), mother->vz());
+        genPV = GlobalPoint(ancestor->vx(), ancestor->vy(), ancestor->vz());
 
       }
     }
@@ -306,7 +310,7 @@ void MMGVertexFitExample::analyze(
     // if (matched) hMuDeltaR->Fill(minDR);
     if (matched && minDR < 0.01)
     {
-      recoMatchedMuons.push_back(*bestMatchedMuon);
+      recoMatchedMuons.push_back(bestMatchedMuon);
       genMatchedMuons.push_back(genMu);
       // hRecoVsGenMuPt->Fill(genMu->pt(), bestMatchedMuon->pt());
       // hMuPtError->Fill((bestMatchedMuon->pt() - genMu->pt())/genMu->pt());
@@ -330,11 +334,12 @@ void MMGVertexFitExample::analyze(
       }
     }
     // if (matched) hGammaDeltaR->Fill(minDR);
+    if (!matched) continue;
     const bool inRegion = photonRegion == "both" || (photonRegion == "EB" && bestMatchedPhoton->isEB()) ||
                           (photonRegion == "EE" && bestMatchedPhoton->isEE());
-    if (matched && minDR < 0.03 && inRegion)
+    if (minDR < 0.03 && inRegion && MMGVertexFit::hasClusterHits(*bestMatchedPhoton))
     {
-      recoMatchedPhotons.push_back(*bestMatchedPhoton);
+      recoMatchedPhotons.push_back(bestMatchedPhoton);
       genMatchedPhotons.push_back(genPh);
       // hRecoVsGenGammaPt->Fill(genPh->pt(), bestMatchedPhoton->pt());
       // hGammaPtError->Fill((bestMatchedPhoton->pt() - genPh->pt())/genPh->pt());
@@ -343,7 +348,7 @@ void MMGVertexFitExample::analyze(
 
 //////////////////////////////////////
 /////////////////////////////////////
-  MMGVertexFit mmgVertexFit(clusterCovScaleEB, clusterCovScaleEE, energyErrorScale);
+  MMGVertexFit mmgVertexFit(errorScaleEB, errorScaleEE);
   std::vector<MMGVertexFit::Result> fitResults = mmgVertexFit.fit(recoMatchedMuons, recoMatchedPhotons, lazyTools, genPrimaryVertices, TTBuilder);
 
   // the inputs are gen-matched, so every fitted candidate is compared with the generated Bs
@@ -378,7 +383,7 @@ void MMGVertexFitExample::analyze(
 
   // photon measurement pulls, for the photons used in the fit
   for (unsigned int iPh = 0; iPh < recoMatchedPhotons.size(); ++iPh) {
-    const reco::Photon& recoPh = recoMatchedPhotons[iPh];
+    const reco::Photon& recoPh = *recoMatchedPhotons[iPh];
     const reco::Candidate* genPh = genMatchedPhotons[iPh];
 
     // The fit measures the photon direction: only the displacement of the cluster perpendicular
@@ -418,9 +423,9 @@ void MMGVertexFitExample::analyze(
 
   if(recoMatchedMuons.size() == 2 && recoMatchedPhotons.size() == 1) {
     TLorentzVector mu1, mu2, pho;
-    mu1.SetPxPyPzE(recoMatchedMuons[0].px(), recoMatchedMuons[0].py(), recoMatchedMuons[0].pz(), recoMatchedMuons[0].energy());
-    mu2.SetPxPyPzE(recoMatchedMuons[1].px(), recoMatchedMuons[1].py(), recoMatchedMuons[1].pz(), recoMatchedMuons[1].energy());
-    pho.SetPxPyPzE(recoMatchedPhotons[0].px(), recoMatchedPhotons[0].py(), recoMatchedPhotons[0].pz(), recoMatchedPhotons[0].energy());
+    mu1.SetPxPyPzE(recoMatchedMuons[0]->px(), recoMatchedMuons[0]->py(), recoMatchedMuons[0]->pz(), recoMatchedMuons[0]->energy());
+    mu2.SetPxPyPzE(recoMatchedMuons[1]->px(), recoMatchedMuons[1]->py(), recoMatchedMuons[1]->pz(), recoMatchedMuons[1]->energy());
+    pho.SetPxPyPzE(recoMatchedPhotons[0]->px(), recoMatchedPhotons[0]->py(), recoMatchedPhotons[0]->pz(), recoMatchedPhotons[0]->energy());
     TLorentzVector total = mu1 + mu2 + pho;
     hBsMassNoFit->Fill(total.M());
   }

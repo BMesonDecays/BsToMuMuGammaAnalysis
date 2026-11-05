@@ -26,38 +26,43 @@ class MMGVertexFit
             RefCountedKinematicVertex vertex;
         };
 
-        // scale factors for the cluster position uncertainties (sigma, not variance) along
-        // e_phi and e_theta, the two directions perpendicular to the photon
-        struct ClusterScale
+        // scale factors for the photon measurement uncertainties (sigma, not variance):
+        // cluster position along e_phi and e_theta, the two directions perpendicular to the photon,
+        // and photon energy
+        struct ErrorScale
         {
-            double phi = 1.;
-            double theta = 1.;
+            double clusterPhi = 1.;
+            double clusterTheta = 1.;
+            double energy = 1.;
         };
 
-        // ebScale, eeScale: cluster scale factors for barrel and endcap photons
-        // energyErrorScale: scale factor for the photon energy uncertainty
-        MMGVertexFit(ClusterScale ebScale = {1., 1.}, ClusterScale eeScale = {1., 1.}, double energyErrorScale = 1.)
-            : ebScale_(ebScale), eeScale_(eeScale), energyErrorScale_(energyErrorScale) {}
+        // ebScale, eeScale: scale factors for barrel and endcap photons
+        MMGVertexFit(ErrorScale ebScale = {1., 1., 1.}, ErrorScale eeScale = {1., 1., 1.})
+            : ebScale_(ebScale), eeScale_(eeScale) {}
         ~MMGVertexFit(){}
 
         // cluster position covariance used in the fit: V' = S V S with
         // S = s_phi e_phi e_phi^T + s_theta e_theta e_theta^T + u u^T, u the photon direction
         TMatrixD clusterCovariance(const reco::Photon& photon, const EcalClusterLazyTools& lazyTools) const;
 
+        // false if the supercluster has no rechits, so its covariance cannot be computed;
+        // happens in MiniAOD for photons that fail the reducedEgamma selection
+        static bool hasClusterHits(const reco::Photon& photon);
+
         // photon energy uncertainty used in the fit
         double photonEnergyError(const reco::Photon& photon) const;
 
-        // one Result per mu mu gamma combination that was fitted successfully
-        std::vector<Result> fit(const std::vector<reco::Muon>& muons,
-            const std::vector<reco::Photon>& photons,
+        // one Result per mu mu gamma combination that was fitted successfully;
+        // muons and photons are passed by pointer, so pat::Muon and pat::Photon (MiniAOD) work as well
+        std::vector<Result> fit(const std::vector<const reco::Muon*>& muons,
+            const std::vector<const reco::Photon*>& photons,
             const EcalClusterLazyTools& lazyTools,
             const std::vector<reco::Vertex>& primaryVertices,
             const TransientTrackBuilder* TTBuilder);
 
     private:
-        ClusterScale ebScale_;
-        ClusterScale eeScale_;
-        double energyErrorScale_;
+        ErrorScale ebScale_;
+        ErrorScale eeScale_;
 };
 
 #endif
