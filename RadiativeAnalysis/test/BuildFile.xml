@@ -1,7 +1,7 @@
-<!-- catch2 unit tests are disabled (sources renamed to *.cc.disabled; they are only the cmsdriver template).
-     Re-enable by renaming the sources and restoring:
-<bin file="test_catch2_*.cc" name="testBsToMuMuGammaAnalysisRadiativeAnalysisTP">
-  <use name="FWCore/TestProcessor"/>
+<!-- unit tests of the bmmg library: scram b runtests -->
+<bin file="test_bmmgLibrary.cc" name="testBmmgLibrary">
   <use name="catch2"/>
+  <use name="root"/>
+  <use name="BsToMuMuGammaAnalysis/RadiativeAnalysis"/>
 </bin>
--->
+

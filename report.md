@@ -4,6 +4,18 @@ Entries are newest first. Each entry gives: the plan item(s) (see `plan.md`), wh
 
 ---
 
+## 2026-11-05: Phase 4, unit tests
+- `test/test_bmmgLibrary.cc` (catch2, `scram b runtests`) tests:
+  - `flightInfo`: distances, cosα, the sign and value of ct3D/ct2D, and the full-covariance error ≥ the position-only error.
+  - `lowestDCAVertex`, including the empty PV collection.
+  - The helicity, coplanarity and lepton angles.
+  - The dimuon resonance flags.
+  - `BranchSet`: double booking, unbooked access and wrong-type access throw; reset; fill.
+- **Result:** all tests pass (27 assertions in 5 test cases).
+- The unused CMSSW template tests (`test_catch2_*.cc.disabled`) are removed.
+
+---
+
 ## 2026-11-05: Phase 4 + 5 (+ P6.1/P6.2), the new `RadiativeAnalysis` module and ntuple
 **New library code** (`src/` + `interface/`, namespace `bmmg`):
 
