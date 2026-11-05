@@ -6,3 +6,9 @@ Bs to mu mu gamma MC MINIAOD:
 
 Bs to mu mu gamma MC AOD files, every event contains at least 2 reconstructed muons and a reconstructed photon, large sample to test if districutions are correct:
 /eos/user/s/sslawins/filtered_BsToMuMuGamma_official/BsTo2MuG_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/BsToMuMuGamma_official/261102_143603/0000/*.root
+
+data aod:
+/eos/user/s/sslawins/data/ParkingDoubleMuonLowMass0_Run2022C-PromptReco-v1_aod.root
+
+data miniaod:
+/eos/user/s/sslawins/data/Run2022C_ParkingDoubleMuonLowMass0_PromptReco-v1_miniaod.root
