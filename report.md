@@ -4,6 +4,20 @@ Entries are newest first. Each entry gives: the plan item(s) (see `plan.md`), wh
 
 ---
 
+## 2026-11-05: Phase 6, configuration, CRAB, README (P6.3–P6.5)
+- **P6.3:** removed the stale configs `makeTree_BsMuMuGamma_DATA_AOD.py`, `..._MC_AOD_Test.py` and `..._MC_MINIAOD.py`; none of them could run.
+  - The new driver `test/runNtuplizer_cfg.py` covers MC and data. It was tested on the MC and data AOD test files (P4/P5 entry).
+  - The legacy config `makeTreeLegacy_BsMuMuGamma_MC_AOD.py` is kept, together with the legacy module.
+- **P6.4:** `crab/`, `crab_mc/` and `crab_data/` are replaced by **one** `crab/crabConfig.py`:
+  - It runs `runNtuplizer_cfg.py`. The sample comes from environment variables: `BMMG_NAME` and `BMMG_DATASET` or `BMMG_FILELIST`; optionally `BMMG_ISMC`, `BMMG_LUMIMASK`, `BMMG_GLOBALTAG`, `BMMG_UNITS`, `BMMG_OUTLFN`, `BMMG_SITE`.
+  - Request names are distinct (taken from `BMMG_NAME`). The output goes to the submitter's area (`getUsername()`), no longer to another user's.
+  - Data from DAS uses LumiBased splitting, with the lumi mask applied by CRAB.
+  - `crab/makeFileList.py` takes a glob pattern and an output name, which fixes the file-list name mismatch.
+  - Only a syntax check was possible here; it **has not been submitted**.
+- **P6.5:** `README.md` rewritten: setup including the modified CMSSW packages, how to run, layout, documentation links.
+
+---
+
 ## 2026-11-05: Phase 4, unit tests
 - `test/test_bmmgLibrary.cc` (catch2, `scram b runtests`) tests:
   - `flightInfo`: distances, cosα, the sign and value of ct3D/ct2D, and the full-covariance error ≥ the position-only error.

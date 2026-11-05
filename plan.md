@@ -184,9 +184,9 @@ Rules for the components:
   - VarParsing options: `isMC`, `inputFiles` (or a key from `test_files.txt`), `maxEvents`, `outputFile`, `globalTag`.
   - Collections from a dictionary keyed by data format, as in `MMGVertexFitExample.py`.
   - Data uses a data GlobalTag and a JSON lumi mask.
-- [ ] **P6.3** Remove the stale `makeTree_*` configs: DATA_AOD, MC_AOD_Test, MC_MINIAOD.
-- [ ] **P6.4** One parametrised CRAB config replacing `crab/`, `crab_mc/` and `crab_data/`. This fixes the shared `requestName`, the file-list name case and the foreign `outLFNDirBase`.
-- [ ] **P6.5** Update `README.md`: setup with the RecoVertex/RecoEcal branch, how to run, the documentation files.
+- [x] **P6.3** Remove the stale `makeTree_*` configs: DATA_AOD, MC_AOD_Test, MC_MINIAOD.
+- [x] **P6.4** One parametrised CRAB config replacing `crab/`, `crab_mc/` and `crab_data/`. This fixes the shared `requestName`, the file-list name case and the foreign `outLFNDirBase`.
+- [x] **P6.5** Update `README.md`: setup with the RecoVertex/RecoEcal branch, how to run, the documentation files.
 
 ## Phase 7: Other channels on the new framework
 - [ ] **P7.1** Bs→μμγ with a converted photon (γ→e⁺e⁻):
