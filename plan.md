@@ -28,10 +28,10 @@ The current structure is described in `structure_old.md`; progress is logged in 
 ---
 
 ## Phase 0: Make it build, and a baseline
-- [ ] **P0.1** Run `scram b -j8` and record every compile error and warning in `report.md`.
-- [ ] **P0.2** Move `BMMGCustomPhotonProducer.{h,cc}` and `test/customPhotonConfig*.py` to `RadiativeAnalysis/devel/` (not compiled).
-- [ ] **P0.3** Delete `interface/SPRecHitAccumulator.h`: it is unused and has a syntax error at line 43.
-- [ ] **P0.4** Fix the BuildFiles:
+- [x] **P0.1** Run `scram b -j8` and record every compile error and warning in `report.md`.
+- [x] **P0.2** Move `BMMGCustomPhotonProducer.{h,cc}` and `test/customPhotonConfig*.py` to `RadiativeAnalysis/devel/` (not compiled).
+- [x] **P0.3** Delete `interface/SPRecHitAccumulator.h`: it is unused and has a syntax error at line 43.
+- [x] **P0.4** Fix the BuildFiles:
   - In `plugins/BuildFile.xml`, add `SimDataFormats/GeneratorProducts`, `DataFormats/HepMCCandidate`, `DataFormats/ParticleFlowCandidate`, `Geometry/CaloGeometry`, `RecoVertex/VertexTools` and `HLTrigger/HLTcore`.
   - In `run3mvaid/BuildFile.xml`, add `FWCore/ParameterSet` and `DataFormats/PatCandidates`.
   - Disable the empty catch2 target in `test/BuildFile.xml`.

@@ -1,4 +1,11 @@
 <use   name="xgboost"/>
+<use   name="FWCore/Framework"/>
+<use   name="FWCore/ParameterSet"/>
+<use   name="FWCore/Utilities"/>
+<use   name="DataFormats/Math"/>
+<use   name="DataFormats/MuonReco"/>
+<use   name="DataFormats/PatCandidates"/>
+<use   name="DataFormats/Scouting"/>
 <use   name="DataFormats/EgammaCandidates"/>
 <use   name="TrackingTools/TrajectoryState"/>
 <use   name="MagneticField/Engine"/>
