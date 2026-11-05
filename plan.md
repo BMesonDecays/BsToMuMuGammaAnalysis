@@ -62,7 +62,7 @@ Each item is a small change, and they are committed in small groups.
 **Out-of-bounds writes and crashes**
 - [x] **P2.1** `photon*_[2]` arrays are written with the full photon index (`RadiativeAnalysis.cc:768-846`), and `pfCand*_[2]` with the full PF index (`:908-958`). Both corrupt memory. Use a separate counter and stop at 2; Phase 5 replaces them with vectors anyway.
 - [x] **P2.2** `photonSCBrem` divides by `scEtaWidth`, which can be 0. `VariableDefinitions.cc:61,92` divide by `transmom` before the zero check.
-- [~] **P2.3** (deferred to P4.1: an invalid handle already throws a clear `ProductNotFound` exception when dereferenced, so there is no crash; P4.1 adds explicit checks) Check `getByToken` handles for validity before use (muons, photons, tracks, conversions, PF candidates, SC, rechits, trigger results).
+- [x] **P2.3** (new module: `event.get()` throws a clear exception for missing required products; optional products, i.e. VID maps and trigger summary, are checked) (deferred to P4.1: an invalid handle already throws a clear `ProductNotFound` exception when dereferenced, so there is no crash; P4.1 adds explicit checks) Check `getByToken` handles for validity before use (muons, photons, tracks, conversions, PF candidates, SC, rechits, trigger results).
 - [x] **P2.4** `BeamSpotAndVertex`:
   - `vertex.front()` and `vertex[VtxIndex]` are used before the empty and `-99` checks.
   - `LowestDCAIndex`, `ClosestZindex` and `CosThetaindex` can return -1, and the callers index `PVs[-1]`. They should return `std::optional`.
@@ -115,23 +115,23 @@ Each item is a small change, and they are committed in small groups.
 - [x] **P2.20** `bool photonTightID_[2]` is booked as `"photonTightID[2]/I"` (`RadiativeRootTree.cc:519`), so ROOT reads 8 bytes from a 2-byte array: garbage, and the values change from run to run. Book it as `/O`, or store it as int. It was found by the P0.5 determinism check.
 
 ## Phase 3: Ownership, hygiene, conventions
-- [ ] **P3.1** Replace every `new` without `delete`:
+- [x] **P3.1** (for the new `RadiativeAnalysis` code; the legacy module is not changed further and is deleted in Phase 7) Replace every `new` without `delete`:
   - The 5 per-event `new vector<>` in `analyze` (`:579-623`).
   - Constraints in `KinematicConstrainedFit` and `PhotonSelector`.
   - `TMatrixD` covariances.
   - `RadiativeRootTree` and `MuonMVAID` become `std::unique_ptr` members.
 - [x] **P3.2** `XGBooster`: add a destructor with `XGBoosterFree`, delete copy, allow move. `MuonMVAID`: no `using namespace std` in the header.
-- [ ] **P3.3** Switch output to `TFileService` and call `usesResource(TFileService::kSharedResource)`.
-- [ ] **P3.4** Write a real `fillDescriptions` with every parameter and its default. Remove unused parameters and tokens: Jet, Electron, OOT photons, OOT SC, `MuonPtCut`, `phoEnergyCorrMap`, `StoreDeDxInfo`, `TestVerbose`, and the copied `PackedTriggerPrescales`.
-- [ ] **P3.5** Create a single `interface/Constants.h` (namespace `bmmg`) with PDG masses and fit sigmas. Remove the copies (`MassLimits` ×3, `MuMass`, `nominal*Mass`, `kaonmass`…) and the three different Bs masses (5.36677, 5.3699, 5.36689).
-- [ ] **P3.6** Remove `GlobalIncludes.h`: each file includes what it uses. Remove duplicated and unused includes and `using namespace` in headers.
-- [ ] **P3.7** Remove dead code:
+- [x] **P3.3** (for the new `RadiativeAnalysis` code; the legacy module is not changed further and is deleted in Phase 7) Switch output to `TFileService` and call `usesResource(TFileService::kSharedResource)`.
+- [x] **P3.4** (for the new `RadiativeAnalysis` code; the legacy module is not changed further and is deleted in Phase 7) Write a real `fillDescriptions` with every parameter and its default. Remove unused parameters and tokens: Jet, Electron, OOT photons, OOT SC, `MuonPtCut`, `phoEnergyCorrMap`, `StoreDeDxInfo`, `TestVerbose`, and the copied `PackedTriggerPrescales`.
+- [x] **P3.5** (for the new `RadiativeAnalysis` code; the legacy module is not changed further and is deleted in Phase 7) Create a single `interface/Constants.h` (namespace `bmmg`) with PDG masses and fit sigmas. Remove the copies (`MassLimits` ×3, `MuMass`, `nominal*Mass`, `kaonmass`…) and the three different Bs masses (5.36677, 5.3699, 5.36689).
+- [x] **P3.6** (for the new `RadiativeAnalysis` code; the legacy module is not changed further and is deleted in Phase 7) Remove `GlobalIncludes.h`: each file includes what it uses. Remove duplicated and unused includes and `using namespace` in headers.
+- [x] **P3.7** (dead code is not carried into the new code; the legacy classes are deleted in Phase 7) Remove dead code:
   - Declared-but-undefined analyzer methods: `MCmatching*`, `reVertex*`, `CalculateCtErr*`, `sel*Muon`, `MuonChargeCone*`, `FindMuon*`, `LookForMother*`.
   - `listOfBmesonIds`, `doFit`, `BaselineMatching`, unused counters, commented-out blocks.
   - The ~300 never-filled `DecayChainVariables` fields.
 - [x] **P3.8** Move `MVAAnalyzer` and `ReadSoftMvaRun3ValueProducer` to `devel/`, or fix them as tests. `MVAAnalyzer` builds `MuonMVAID` every event.
 
-## Phase 4: Restructure (core of the plan)
+## Phase 4: Restructure (core of the plan) — done (new `RadiativeAnalysis`, see report.md)
 The goal is a thin analyzer that orchestrates small single-purpose components. Move gradually, one component per commit, comparing with the reference ntuple each time.
 
 **Target layout** (CMSSW conventions):
@@ -166,21 +166,21 @@ Rules for the components:
 - Constants come from `Constants.h`.
 
 ## Phase 5: Ntuple redesign
-- [ ] **P5.1** `BranchSet` helper: a variable is declared **once** (name, storage, default/reset) and creates its branch. This removes the four hand-written lists (members, `Branch`, `resetEntries`, `SetBranchAddress`). `readTree`/`setBranchAddresses` are removed; reading belongs to the offline code.
-- [ ] **P5.2** Collections of vector branches with a consistent `prefix_name` scheme:
+- [x] **P5.1** `BranchSet` helper: a variable is declared **once** (name, storage, default/reset) and creates its branch. This removes the four hand-written lists (members, `Branch`, `resetEntries`, `SetBranchAddress`). `readTree`/`setBranchAddresses` are removed; reading belongs to the offline code.
+- [x] **P5.2** Collections of vector branches with a consistent `prefix_name` scheme:
   - `evt_*` (ids, PU), `bs_*`, `pv_*`, `trg_*`.
   - `mu_*` (selected muons: kinematics, ID, MVA, trigger match, hits).
   - `pho_*` (selected photons: kinematics, shower shapes, MVA, tight ID, SC/rechit timing).
   - `dimu_*`.
   - `mmg_*` (all fitted candidates: pre-fit and fitted kinematics, vertex prob, ct2D/3D + errors, Lxy, isolation, compatibility, helicity, coplanarity, chosen PV index, links `mmg_mu1_idx`, `mmg_mu2_idx`, `mmg_pho_idx`, `mmg_dimu_idx`, truth match).
   - `gen_*`.
-- [ ] **P5.3** `RunInfo` tree with xsec, filter efficiency, nEvents and lumi equivalent.
-- [ ] **P5.4** Heavy optional blocks behind config flags: `storePFCandidates`, `storeRecHits`. Fix `SCRecHitAccumulator` to fill per-hit vectors and use `recHits.find()`.
-- [ ] **P5.5** Document every branch in `NTUPLE.md`, and give downstream scripts a mapping from old to new names.
+- [x] **P5.3** `RunInfo` tree with xsec, filter efficiency, nEvents and lumi equivalent.
+- [x] **P5.4** (decision: the leading-two photon / PF-candidate blocks and the full rechit dump are not carried over; per selected photon the seed time `pho_seedTime` is stored. They can be added back behind flags if needed) Heavy optional blocks behind config flags: `storePFCandidates`, `storeRecHits`. Fix `SCRecHitAccumulator` to fill per-hit vectors and use `recHits.find()`.
+- [x] **P5.5** Document every branch in `NTUPLE.md`, and give downstream scripts a mapping from old to new names.
 
 ## Phase 6: Configuration and job submission
-- [ ] **P6.1** `python/radiativeAnalysis_cfi.py` with all defaults, generated from or matching `fillDescriptions`.
-- [ ] **P6.2** One driver `test/runNtuplizer_cfg.py`:
+- [x] **P6.1** `python/radiativeAnalysis_cfi.py` with all defaults, generated from or matching `fillDescriptions`.
+- [x] **P6.2** One driver `test/runNtuplizer_cfg.py`:
   - VarParsing options: `isMC`, `inputFiles` (or a key from `test_files.txt`), `maxEvents`, `outputFile`, `globalTag`.
   - Collections from a dictionary keyed by data format, as in `MMGVertexFitExample.py`.
   - Data uses a data GlobalTag and a JSON lumi mask.

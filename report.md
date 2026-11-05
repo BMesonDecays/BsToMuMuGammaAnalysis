@@ -4,6 +4,67 @@ Entries are newest first. Each entry gives: the plan item(s) (see `plan.md`), wh
 
 ---
 
+## 2026-11-05: Phase 4 + 5 (+ P6.1/P6.2), the new `RadiativeAnalysis` module and ntuple
+**New library code** (`src/` + `interface/`, namespace `bmmg`):
+
+| component | file | replaces |
+|---|---|---|
+| constants (PDG 2024 masses, dimuon mass windows) | `Constants.h` | 3 copies of `MassLimits`, `nominal*Mass`, `ReferenceResonance::Constants` |
+| data structs | `Candidates.h` | `DecayChainVariables` |
+| PV choice, flight distance / ct, angles, isolation, track compatibility, DCA | `CandidateObservables.{h,cc}` | `VariableDefinitions`, `BeamSpotAndVertex` statics, angle code in the analyzer, `MuonClosestApproachCalculator` |
+| muon / photon preselection | `ObjectSelection.{h,cc}` | `MuonSelector`, `PhotonSelector` (reco photons) |
+| dimuons | `DimuonBuilder.{h,cc}` | the 3 copied dimuon blocks |
+| μμγ candidates | `MuMuGammaBuilder.{h,cc}` | `TrippleObjectVertex` (reco-photon part) |
+| trigger bits + muon matching | `TriggerMatcher.{h,cc}` | trigger code in the analyzer |
+| ntuple storage | `BranchSet.h` | each variable declared once instead of 4 hand-written lists |
+| ntuple | `NtupleWriter.{h,cc}` | `RadiativeRootTree` |
+| gen truth | `GenChain` + new `fromSignalB()` | `fillMCInfo`, analyzer matching code |
+
+- **The module** (`plugins/RadiativeAnalysis.cc`, about 300 lines):
+  - It only orchestrates the components.
+  - It uses TFileService (`usesResource`) and a complete `fillDescriptions`, which auto-generates `radiativeAnalysis_cfi`.
+  - No raw `new`; MC-only products are consumed only when `isMC`.
+- **Driver config** `test/runNtuplizer_cfg.py`:
+  - Takes `inputFiles` or a `testSample` from `test_files.txt`.
+  - `isMC` is detected from the sample name; the GlobalTag defaults depend on MC/data; `lumiMask` is supported.
+  - It runs the photon VID on gedPhotons, then the analyzer.
+- **Ntuple:** `bmmg/Events` + `bmmg/RunInfo`, 209 branches (MC) / 162 (data). All muons, photons, dimuons and μμγ candidates are stored as vectors with index links. **Documented in `NTUPLE.md`**, including the differences from the legacy ntuple.
+
+**Decisions:**
+- **Preselection:**
+  - **No MVA cuts at ntuple level**; the scores are stored. Muon pt > 2 GeV, |η| < 2.4. Photon E_SC > 1 GeV, |η_SC| < 2.5.
+  - μμγ pre-fit window 4–7 GeV (sidebands included).
+  - All of these are configurable.
+- **Candidates:**
+  - Every dimuon with a valid vertex × every photon. A candidate is kept even if its fit fails (`mmg_fitOK=0`).
+  - The dimuon resonance flag uses J/ψ / ψ(2S) / φ windows. K* is dropped (no K*→μμ).
+- **ct definition and error:**
+  - ct = m(B_s)·(d·p)/|p|², signed projection; same for ct2D.
+  - The error is propagated from the full 6×6 covariance of the fitted state (SV position, momentum and their correlations) plus the PV covariance.
+  - With only position errors the pull width was about 1.7; with the full covariance it is 1.27.
+- **Lxy error:** `dimu_lxyBSErr` includes the beam-spot covariance. The legacy error had only the vertex error.
+- **Event PV:** `pv_*` is the first vertex (highest Σpt², the CMS default). The PV for each candidate is in `mmg_pv*`.
+- **Dropped:** the leading-two-photon / PF-candidate blocks and the full SC rechit dump (P5.4). A per-photon seed time is kept.
+- **Phase 3 for the legacy code:** not done. The legacy module stays frozen as a reference until Phase 7 and is then deleted.
+
+**Validation:**
+- **MC**, `BsTo2MuG_aod.root`, 2000 events (`reference_new_P45_mc2000.root`):
+  - Per event: 2.35 muons, 0.64 photons, 1.39 dimuons, 0.25 μμγ candidates.
+  - 508 candidates; 78% fitted; **387 gen-matched candidates in 386 events**. The legacy ntuple had 68 fitted candidates in the same events.
+  - Fitted mass − gen mass, gen-matched with `vtxProb > 1e-3` (N=272): median 0.000, 68% half-width **0.124 GeV**; pre-fit: median −0.007, half-width 0.150.
+  - ct3D pull: median 0.02, 68% half-width **1.27**, 2.6% with |pull| > 4. ct3D residual width 20 µm, mean error 18 µm.
+  - Diverging fits (8 of 396) have `vtxProb ≈ 0` and absurd masses; `NTUPLE.md` recommends a vtxProb cut.
+  - 76% of the selected muons and 37% of the selected photons come from the signal B.
+  - Trigger: the photon path fired in 466 events, with 926 matched muons.
+  - `RunInfo` agrees with the legacy values (xsec 5.754e8 pb, filter efficiency 0.001663).
+- **Data**, `testSample=3` (2022C ParkingDoubleMuonLowMass0 AOD), 2000 events in 36 s (`reference_new_P45_data2000.root`):
+  - Runs without errors; no gen branches; `RunInfo` is −1 except nEvents.
+  - 664 J/ψ dimuons. `DoubleMu4_3_LowMass` fired in 1919 events with 3856 matched muons.
+  - 48% of the μμγ candidates have a successful fit (background).
+- **Legacy module:** unchanged (it shares only `MMGVertexFit`/`GenChain` with the new code, plus the added `fromSignalB`).
+
+---
+
 ## 2026-11-05: Phase 4 step 1, legacy module and library layout
 - **Renames:**
   - The analyzer is now **`RadiativeAnalysisLegacy`** (`plugins/RadiativeAnalysisLegacy.cc`, `interface/RadiativeAnalysisLegacy.h`).

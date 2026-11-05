@@ -1,0 +1,307 @@
+// -*- C++ -*-
+// Package:    BsToMuMuGammaAnalysis/RadiativeAnalysis
+// Class:      RadiativeAnalysis
+//
+// Ntuplizer for B -> mu mu gamma (photon reconstructed in the ECAL). The work is done by the
+// components of the package library (namespace bmmg):
+//   object selection -> dimuons -> mu mu gamma candidates (MMGVertexFit) -> NtupleWriter
+// All selected objects and all candidates are stored (vectors); the best-candidate selection
+// is left to the offline analysis. The ntuple is documented in NTUPLE.md.
+
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/CandidateObservables.h"
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/DimuonBuilder.h"
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/GenChain.h"
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/MMGVertexFit.h"
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/MuMuGammaBuilder.h"
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/NtupleWriter.h"
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/ObjectSelection.h"
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/TriggerMatcher.h"
+#include "BsToMuMuGammaAnalysis/run3mvaid/interface/MuonMVAID.h"
+
+#include "CommonTools/UtilAlgos/interface/TFileService.h"
+#include "DataFormats/BeamSpot/interface/BeamSpot.h"
+#include "DataFormats/Common/interface/TriggerResults.h"
+#include "DataFormats/Common/interface/ValueMap.h"
+#include "DataFormats/EgammaCandidates/interface/Photon.h"
+#include "DataFormats/HepMCCandidate/interface/GenParticle.h"
+#include "DataFormats/HLTReco/interface/TriggerEvent.h"
+#include "DataFormats/MuonReco/interface/Muon.h"
+#include "DataFormats/VertexReco/interface/Vertex.h"
+#include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/LuminosityBlock.h"
+#include "FWCore/Framework/interface/MakerMacros.h"
+#include "FWCore/Framework/interface/Run.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
+#include "FWCore/ParameterSet/interface/ConfigurationDescriptions.h"
+#include "FWCore/ParameterSet/interface/ParameterSet.h"
+#include "FWCore/ParameterSet/interface/ParameterSetDescription.h"
+#include "FWCore/ServiceRegistry/interface/Service.h"
+#include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
+#include "SimDataFormats/GeneratorProducts/interface/GenFilterInfo.h"
+#include "SimDataFormats/GeneratorProducts/interface/GenRunInfoProduct.h"
+#include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
+#include "TrackingTools/Records/interface/TransientTrackRecord.h"
+#include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
+
+#include <cmath>
+#include <memory>
+
+class RadiativeAnalysis
+    : public edm::one::EDAnalyzer<edm::one::SharedResources, edm::one::WatchRuns, edm::one::WatchLuminosityBlocks> {
+public:
+  explicit RadiativeAnalysis(const edm::ParameterSet&);
+  static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
+
+private:
+  void beginJob() override;
+  void analyze(const edm::Event&, const edm::EventSetup&) override;
+  void endJob() override;
+  void beginRun(const edm::Run&, const edm::EventSetup&) override;
+  void endRun(const edm::Run&, const edm::EventSetup&) override;
+  void beginLuminosityBlock(const edm::LuminosityBlock&, const edm::EventSetup&) override {}
+  void endLuminosityBlock(const edm::LuminosityBlock&, const edm::EventSetup&) override;
+
+  const bool isMC_;
+  const bool verbose_;
+
+  // collections
+  const edm::EDGetTokenT<std::vector<reco::Muon>> muonsToken_;
+  const edm::EDGetTokenT<std::vector<reco::Photon>> photonsToken_;
+  const edm::EDGetTokenT<edm::ValueMap<float>> photonMvaToken_;
+  const edm::EDGetTokenT<edm::ValueMap<bool>> photonTightIdToken_;
+  const edm::EDGetTokenT<reco::BeamSpot> beamSpotToken_;
+  const edm::EDGetTokenT<std::vector<reco::Vertex>> verticesToken_;
+  const edm::EDGetTokenT<EcalRecHitCollection> ebRecHitsToken_;
+  const edm::EDGetTokenT<EcalRecHitCollection> eeRecHitsToken_;
+  const edm::EDGetTokenT<edm::TriggerResults> triggerResultsToken_;
+  const edm::EDGetTokenT<trigger::TriggerEvent> triggerEventToken_;
+  edm::EDGetTokenT<std::vector<reco::GenParticle>> genParticlesToken_;
+  edm::EDGetTokenT<std::vector<PileupSummaryInfo>> pileupToken_;
+  edm::EDGetTokenT<GenRunInfoProduct> genRunInfoToken_;
+  edm::EDGetTokenT<GenFilterInfo> genFilterInfoToken_;
+  const edm::ESGetToken<TransientTrackBuilder, TransientTrackRecord> ttBuilderToken_;
+  const EcalClusterLazyToolsBase::ESGetTokens lazyToolsTokens_;
+
+  // components
+  bmmg::MuonCuts muonCuts_;
+  bmmg::PhotonCuts photonCuts_;
+  bmmg::MuMuGammaConfig mmgConfig_;
+  MMGVertexFit mmgVertexFit_;
+  bmmg::TriggerMatcher triggerMatcher_;
+  MuonMVAID muonMVA_;
+  std::unique_ptr<bmmg::NtupleWriter> writer_;
+
+  // job-level bookkeeping
+  unsigned long long nEvents_ = 0;
+  double xsecSumW_ = 0., xsecSumWX_ = 0., xsec_ = -1., xsecErr_ = -1.;
+  std::unique_ptr<GenFilterInfo> genFilterInfo_;
+};
+
+RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& cfg)
+    : isMC_(cfg.getParameter<bool>("isMC")),
+      verbose_(cfg.getUntrackedParameter<bool>("verbose")),
+      muonsToken_(consumes(cfg.getParameter<edm::InputTag>("muons"))),
+      photonsToken_(consumes(cfg.getParameter<edm::InputTag>("photons"))),
+      photonMvaToken_(consumes(cfg.getParameter<edm::InputTag>("photonMVA"))),
+      photonTightIdToken_(consumes(cfg.getParameter<edm::InputTag>("photonTightId"))),
+      beamSpotToken_(consumes(cfg.getParameter<edm::InputTag>("beamSpot"))),
+      verticesToken_(consumes(cfg.getParameter<edm::InputTag>("primaryVertices"))),
+      ebRecHitsToken_(consumes(cfg.getParameter<edm::InputTag>("ebRecHits"))),
+      eeRecHitsToken_(consumes(cfg.getParameter<edm::InputTag>("eeRecHits"))),
+      triggerResultsToken_(consumes(cfg.getParameter<edm::InputTag>("triggerResults"))),
+      triggerEventToken_(consumes(cfg.getParameter<edm::InputTag>("triggerEvent"))),
+      ttBuilderToken_(esConsumes(edm::ESInputTag("", "TransientTrackBuilder"))),
+      lazyToolsTokens_(consumesCollector()),
+      mmgVertexFit_({cfg.getParameter<double>("clusterCovScalePhiEB"), cfg.getParameter<double>("clusterCovScaleThetaEB"),
+                     cfg.getParameter<double>("energyErrorScaleEB")},
+                    {cfg.getParameter<double>("clusterCovScalePhiEE"), cfg.getParameter<double>("clusterCovScaleThetaEE"),
+                     cfg.getParameter<double>("energyErrorScaleEE")}),
+      triggerMatcher_(cfg.getParameter<std::vector<std::string>>("triggerPaths"),
+                      cfg.getParameter<std::string>("hltProcess"),
+                      cfg.getParameter<double>("triggerMatchDeltaR")),
+      muonMVA_(cfg) {
+    if (isMC_) {
+      genParticlesToken_ = consumes(cfg.getParameter<edm::InputTag>("genParticles"));
+      pileupToken_ = consumes(cfg.getParameter<edm::InputTag>("pileup"));
+      genRunInfoToken_ = consumes<GenRunInfoProduct, edm::InRun>(cfg.getParameter<edm::InputTag>("genRunInfo"));
+      genFilterInfoToken_ = consumes<GenFilterInfo, edm::InLumi>(cfg.getParameter<edm::InputTag>("genFilterInfo"));
+    }
+    muonCuts_.minPt = cfg.getParameter<double>("muonMinPt");
+    muonCuts_.maxAbsEta = cfg.getParameter<double>("muonMaxAbsEta");
+    muonCuts_.minMVA = cfg.getParameter<double>("muonMinMVA");
+    photonCuts_.minSCEnergy = cfg.getParameter<double>("photonMinSCEnergy");
+    photonCuts_.maxAbsSCEta = cfg.getParameter<double>("photonMaxAbsSCEta");
+    photonCuts_.minMVA = cfg.getParameter<double>("photonMinMVA");
+    mmgConfig_.minPrefitMass = cfg.getParameter<double>("mmgMinPrefitMass");
+    mmgConfig_.maxPrefitMass = cfg.getParameter<double>("mmgMaxPrefitMass");
+    mmgConfig_.computeTrackCompatibility = cfg.getParameter<bool>("computeTrackCompatibility");
+    usesResource(TFileService::kSharedResource);
+  }
+
+void RadiativeAnalysis::beginJob() {
+  edm::Service<TFileService> fs;
+  writer_ = std::make_unique<bmmg::NtupleWriter>(*fs, triggerMatcher_.paths(), isMC_);
+}
+
+void RadiativeAnalysis::beginRun(const edm::Run& run, const edm::EventSetup& setup) {
+  triggerMatcher_.beginRun(run, setup, verbose_);
+}
+
+void RadiativeAnalysis::endRun(const edm::Run& run, const edm::EventSetup&) {
+  if (!isMC_) return;
+  edm::Handle<GenRunInfoProduct> info;
+  run.getByToken(genRunInfoToken_, info);
+  if (!info.isValid()) {
+    edm::LogWarning("RadiativeAnalysis") << "GenRunInfoProduct not found";
+    return;
+  }
+  // inverse-variance weighted mean over the runs of the job
+  const auto& xs = info->internalXSec();
+  if (xs.value() > 0 && xs.error() > 0) {
+    const double w = 1. / (xs.error() * xs.error());
+    xsecSumW_ += w;
+    xsecSumWX_ += w * xs.value();
+    xsec_ = xsecSumWX_ / xsecSumW_;
+    xsecErr_ = 1. / std::sqrt(xsecSumW_);
+  } else if (xsecSumW_ == 0) {
+    xsec_ = xs.value();
+    xsecErr_ = xs.error();
+  }
+}
+
+void RadiativeAnalysis::endLuminosityBlock(const edm::LuminosityBlock& lumi, const edm::EventSetup&) {
+  if (!isMC_) return;
+  edm::Handle<GenFilterInfo> info;
+  lumi.getByToken(genFilterInfoToken_, info);
+  if (!info.isValid()) return;
+  if (!genFilterInfo_)
+    genFilterInfo_ = std::make_unique<GenFilterInfo>(*info);
+  else
+    genFilterInfo_->mergeProduct(*info);
+}
+
+void RadiativeAnalysis::analyze(const edm::Event& event, const edm::EventSetup& setup) {
+  ++nEvents_;
+  writer_->beginEvent(event.id(), event.luminosityBlock());
+
+  const auto& ttBuilder = setup.getData(ttBuilderToken_);
+  const auto& beamSpot = event.get(beamSpotToken_);
+  const auto& vertices = event.get(verticesToken_);
+  const auto muonsHandle = event.getHandle(muonsToken_);
+  const auto photonsHandle = event.getHandle(photonsToken_);
+  const auto& muons = *muonsHandle;
+  EcalClusterLazyTools lazyTools(event, lazyToolsTokens_.get(setup), ebRecHitsToken_, eeRecHitsToken_);
+
+  writer_->fillVertices(beamSpot, vertices);
+
+  // generator truth (MC)
+  std::unique_ptr<GenDecayChain> gen;
+  if (isMC_) {
+    writer_->fillPileup(event.get(pileupToken_));
+    gen = std::make_unique<GenDecayChain>(event.get(genParticlesToken_));
+    writer_->fillGen(*gen);
+  }
+
+  // objects
+  const std::vector<float> muonMVA = muonMVA_.produce(muons);
+  const auto photonMVA = event.getHandle(photonMvaToken_);
+  const auto photonTightId = event.getHandle(photonTightIdToken_);
+  const std::vector<bmmg::SelectedMuon> selMuons = bmmg::selectMuons(muons, muonMVA, ttBuilder, muonCuts_);
+  const std::vector<bmmg::SelectedPhoton> selPhotons =
+      bmmg::selectPhotons(photonsHandle, photonMVA, photonTightId, photonCuts_);
+
+  // trigger
+  std::vector<const reco::Muon*> muonPtrs;
+  for (const auto& m : selMuons) muonPtrs.push_back(m.muon);
+  const auto& triggerResults = event.get(triggerResultsToken_);
+  const auto triggerEvent = event.getHandle(triggerEventToken_);
+  const bmmg::TriggerMatcher::Result trigger =
+      triggerMatcher_.evaluate(triggerResults, event.triggerNames(triggerResults),
+                               triggerEvent.isValid() ? triggerEvent.product() : nullptr, muonPtrs);
+  writer_->fillTrigger(trigger);
+
+  // candidates
+  const std::vector<bmmg::DimuonCandidate> dimuons = bmmg::buildDimuons(selMuons, beamSpot);
+  const std::vector<bmmg::MMGCandidate> mmg =
+      bmmg::buildMuMuGamma(selMuons, dimuons, selPhotons, vertices, lazyTools, ttBuilder, mmgVertexFit_, mmgConfig_);
+
+  writer_->fillMuons(selMuons, beamSpot, trigger, gen.get());
+  writer_->fillPhotons(selPhotons, lazyTools, mmgVertexFit_, gen.get());
+  writer_->fillDimuons(dimuons);
+  writer_->fillMuMuGamma(mmg, vertices);
+  writer_->fill();
+}
+
+void RadiativeAnalysis::endJob() {
+  bmmg::NtupleWriter::RunInfo info;
+  info.nEvents = nEvents_;
+  if (isMC_) {
+    info.xsec = xsec_;
+    info.xsecErr = xsecErr_;
+    if (genFilterInfo_) {
+      info.filterEff = genFilterInfo_->filterEfficiency(-1);
+      info.filterEffErr = genFilterInfo_->filterEfficiencyError(-1);
+    }
+    // integrated luminosity equivalent of the processed events
+    if (info.xsec > 0 && info.filterEff > 0 && nEvents_ > 0) {
+      info.lumiEquivalent = nEvents_ / (info.xsec * info.filterEff);
+      const double rel = std::hypot(info.xsecErr / info.xsec, info.filterEffErr / info.filterEff);
+      info.lumiEquivalentErr = info.lumiEquivalent * rel;
+    }
+  }
+  writer_->fillRunInfo(info);
+}
+
+void RadiativeAnalysis::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
+  edm::ParameterSetDescription desc;
+  desc.add<bool>("isMC", true);
+  desc.addUntracked<bool>("verbose", false);
+  // collections (AOD)
+  desc.add<edm::InputTag>("muons", edm::InputTag("muons"));
+  desc.add<edm::InputTag>("photons", edm::InputTag("gedPhotons"));
+  desc.add<edm::InputTag>("photonMVA",
+                          edm::InputTag("photonMVAValueMapProducer", "PhotonMVAEstimatorRunIIIWinter22v1Values"));
+  desc.add<edm::InputTag>("photonTightId", edm::InputTag("egmPhotonIDs", "cutBasedPhotonID-RunIIIWinter22-122X-V1-tight"));
+  desc.add<edm::InputTag>("beamSpot", edm::InputTag("offlineBeamSpot"));
+  desc.add<edm::InputTag>("primaryVertices", edm::InputTag("offlinePrimaryVertices"));
+  desc.add<edm::InputTag>("ebRecHits", edm::InputTag("reducedEcalRecHitsEB"));
+  desc.add<edm::InputTag>("eeRecHits", edm::InputTag("reducedEcalRecHitsEE"));
+  desc.add<edm::InputTag>("triggerResults", edm::InputTag("TriggerResults", "", "HLT"));
+  desc.add<edm::InputTag>("triggerEvent", edm::InputTag("hltTriggerSummaryAOD", "", "HLT"));
+  desc.add<edm::InputTag>("genParticles", edm::InputTag("genParticles"));
+  desc.add<edm::InputTag>("pileup", edm::InputTag("addPileupInfo"));
+  desc.add<edm::InputTag>("genRunInfo", edm::InputTag("generator"));
+  desc.add<edm::InputTag>("genFilterInfo", edm::InputTag("genFilterEfficiencyProducer"));
+  // trigger
+  desc.add<std::vector<std::string>>("triggerPaths",
+                                     {"HLT_DoubleMu4_3_Bs", "HLT_DoubleMu4_3_Jpsi", "HLT_DoubleMu4_3_LowMass",
+                                      "HLT_DoubleMu4_LowMass_Displaced", "HLT_DoubleMu4_3_Photon4_BsToMMG",
+                                      "HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG", "HLT_DoubleMu4_JpsiTrkTrk_Displaced",
+                                      "HLT_DoubleMu4_Jpsi_NoVertexing", "HLT_DoubleMu4_Jpsi_Displaced"});
+  desc.add<std::string>("hltProcess", "HLT");
+  desc.add<double>("triggerMatchDeltaR", 0.1);
+  // muon MVA (run3mvaid)
+  desc.add<std::vector<std::string>>("xgboost_models", {"Run2022-20231030-1731-Event0"});
+  desc.add<std::vector<std::string>>("xgboost_variable_names", {"run3muonmva"});
+  // preselection
+  desc.add<double>("muonMinPt", 2.0);
+  desc.add<double>("muonMaxAbsEta", 2.4);
+  desc.add<double>("muonMinMVA", -99.);
+  desc.add<double>("photonMinSCEnergy", 1.0);
+  desc.add<double>("photonMaxAbsSCEta", 2.5);
+  desc.add<double>("photonMinMVA", -99.);
+  desc.add<double>("mmgMinPrefitMass", 4.0);
+  desc.add<double>("mmgMaxPrefitMass", 7.0);
+  desc.add<bool>("computeTrackCompatibility", true);
+  // MMGVertexFit photon error scale factors (sigma), tuned on gedPhotons (MMGVertexFitExample.py)
+  desc.add<double>("clusterCovScalePhiEB", 0.16);
+  desc.add<double>("clusterCovScaleThetaEB", 0.165);
+  desc.add<double>("energyErrorScaleEB", 1.2);
+  desc.add<double>("clusterCovScalePhiEE", 0.20);
+  desc.add<double>("clusterCovScaleThetaEE", 0.24);
+  desc.add<double>("energyErrorScaleEE", 1.3);
+  descriptions.add("radiativeAnalysis", desc);
+}
+
+DEFINE_FWK_MODULE(RadiativeAnalysis);

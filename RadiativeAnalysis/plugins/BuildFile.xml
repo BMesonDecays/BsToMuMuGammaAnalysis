@@ -55,6 +55,7 @@
   <use name="RecoEcal/EgammaCoreTools"/>
   <!-- misc -->
   <use name="CommonTools/CandUtils"/>
+  <use name="CommonTools/UtilAlgos"/>
   <use name="CommonTools/Statistics"/>
   <use name="HLTrigger/HLTcore"/>
   <use name="MuonAnalysis/MuonAssociators"/>

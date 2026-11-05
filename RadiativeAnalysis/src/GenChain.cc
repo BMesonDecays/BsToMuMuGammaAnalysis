@@ -684,3 +684,8 @@ int GenDecayChain::countMuonsInDecayChain(const reco::GenParticle* particle) con
     }
     return count;
 }
+
+bool GenDecayChain::fromSignalB(const TruthMatchInfo& match) const {
+    return match.isMatched && match.genIndex >= 0 && BMeson_ &&
+           isAncestor(BMeson_, &genParticles_[match.genIndex]);
+}

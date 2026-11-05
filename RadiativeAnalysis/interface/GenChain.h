@@ -221,6 +221,13 @@ public:
     }
    
     bool isJpsiBackground() const { return info_.hasJpsi; }
+
+    // true if the gen particle of a match descends from the signal B of the event
+    bool fromSignalB(const TruthMatchInfo& match) const;
+    // the gen particle of a match (nullptr if not matched)
+    const reco::GenParticle* genParticle(const TruthMatchInfo& match) const {
+        return (match.genIndex >= 0) ? &genParticles_[match.genIndex] : nullptr;
+    }
    
 private:
     GenInfo info_;
