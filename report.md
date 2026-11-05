@@ -4,6 +4,25 @@ Entries are newest first. Each entry gives: the plan item(s) (see `plan.md`), wh
 
 ---
 
+## 2026-11-05: Phase 1, switch to gedPhotons (P1.3a)
+- **Config:** in `makeTree_BsMuMuGamma_MC_AOD.py`, `PhotonTag`, `photonMVAValueMapProducer.src` and `egmPhotonIDs.physicsObjectSrc` now use `gedPhotons` instead of `photons` (user decision: the MMGVertexFit error scales are tuned on gedPhotons).
+- **New reference:** `test/reference/reference_P1_ged_2000.root` (same 2000 events). **Later Phase 1 steps compare against this one.**
+- **Comparison with P0:**
+  - 476 of 561 branches are identical: all muon, dimuon, trigger, PV/BS, μμKK, gen-level and PF branches.
+  - The 85 that differ are all photon-dependent: photon variables, the μμγ/μμγγ pre-fit and fit branches, photon MVA and gen match, and topology matching.
+  - No "missing photon MVA" warnings, so the VID ValueMaps match the collection.
+
+  | quantity | P0 (`photons`) | P1 (`gedPhotons`) |
+  |---|---|---|
+  | photons per event (leading 2) | 0.435 | 0.674 |
+  | events with a selected-photon MVA (`GammaMVAScore_mmrecog`) | 90 | 203 |
+  | events with pre-fit μμγ mass (`Bsmass_recommg`) | 77 | 89 |
+  | events with fitted μμγ mass (`VertexfitBsMass_mmrecog`) | 30 (mean 5.376) | 49 (mean 5.327) |
+  | `Photon_isMatched[0]` | 0.995 | 0.951 |
+- **Note:** the topology-matching fractions drop (`Topology_isMatched` 0.904 → 0.866) because they use the two leading *raw* photons, not the selected one (bug P2.19). With more photons in the collection, the leading ones are more often not the signal photon.
+
+---
+
 ## 2026-11-05: Phase 1, MMGVertexFit API for the analyzer (P1.2)
 - **New API:**
   - `static std::optional<RefCountedKinematicParticle> muonParticle(const reco::Muon&, const TransientTrackBuilder*)`: built once per muon and event.

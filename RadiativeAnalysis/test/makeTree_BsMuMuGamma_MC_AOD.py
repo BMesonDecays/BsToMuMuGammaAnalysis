@@ -225,8 +225,8 @@ switchOnVIDPhotonIdProducer(process, dataFormat)
 id_modules = ["RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_RunIIIWinter22_122X_V1_cff"]
 for idmod in id_modules:
     setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
-process.photonMVAValueMapProducer.src = cms.InputTag("photons")
-process.egmPhotonIDs.physicsObjectSrc = cms.InputTag("photons")
+process.photonMVAValueMapProducer.src = cms.InputTag("gedPhotons")
+process.egmPhotonIDs.physicsObjectSrc = cms.InputTag("gedPhotons")
 
 
 # egamma post reco tools corrections
@@ -247,7 +247,7 @@ process.bmmgVertexAnalysis = cms.EDAnalyzer("RadiativeAnalysis",
                                           genParticlesLabel             = cms.InputTag("genParticles"),
                                           MuonTag                       = cms.InputTag("muons"),
                                           JetTag                        = cms.InputTag("jets"),
-                                          PhotonTag                     = cms.InputTag("photons"),
+                                          PhotonTag                     = cms.InputTag("gedPhotons"),
                                           OOTPhotonTag                  = cms.InputTag("ootPhotons"),
                                           ElectronTag                   = cms.InputTag("electrons"),
                                           #SuperClusterTag               = cms.InputTag("reducedEgamma","reducedSuperClusters","PAT"),
