@@ -39,14 +39,10 @@ enum DecayMode {
     kBs_MuMu_Gamma     = 1,
     kBs_Jpsi_Gamma     = 2,
     kBd_Jpsi_Gamma     = 3,
-    kBs_Kstar0_Gamma   = 4,
-    kBs_Phi_Gamma      = 5,
-    kBd_Kstar_Gamma    = 6,
-    kBs_Jpsi_Eta       = 7,
-    kBs_Jpsi_Etap      = 8,
-    kBs_Jpsi_Pi0       = 9,
+    kBs_Phi_Gamma      = 5,     // Bs -> phi(-> mu mu) gamma
     kBd_MuMu_Gamma     = 10,
-    kPi0_Gun           = 11
+    kBs_Psi2S_Gamma    = 12,    // Bs -> psi(2S)(-> mu mu) gamma
+    kBd_Psi2S_Gamma    = 13     // Bd -> psi(2S)(-> mu mu) gamma
 };
 
 namespace PhotonOrigin {
@@ -81,14 +77,11 @@ public:
    
     
     struct GenInfo {
-        
-        int motherPdgId;
+
+        int bMesonPdgId;
         TLorentzVector Bp4;
         TVector3 Bvtx;
         TVector3 Bdecayvtx;
-        float BLxy;
-        float Bct2D;
-        float Bct3D;
        
         bool hasMuonPlus;
         bool hasMuonMinus;
@@ -97,34 +90,25 @@ public:
         int muPlusMotherId;
         int muMinusMotherId;
        
-        std::vector<PhotonInfo> photons;
+        std::vector<PhotonInfo> photons;        // signal photon + FSR photons
+        TLorentzVector signalPhotonP4;          // the photon from the B decay vertex
        
         int jpsiPdgId;
         TLorentzVector jpsiP4;
-        int neutralMesonId;
-        TLorentzVector neutralMesonP4;
         int vectorMesonId;
         TLorentzVector vectorMesonP4;
        
         float helicity3;
         float coplanarity3;
         float cosTheta_l;
-       
-        float helicity4;
-        float coplanarity4;
-       
+
         float dimuonMass;
         float dimuonPt;
-        float diphotonMass;
-        float diphotonPt;
         float triBodyMass;
-        float fourBodyMass;
-       
+
         DecayMode decayMode;
         bool is3BodyDecay;
-        bool is4BodyDecay;
         bool hasJpsi;
-        bool hasNeutralMeson;
         bool hasVectorMeson;
        
         bool isValid;
@@ -133,19 +117,16 @@ public:
         int nPhotons;
        
         GenInfo() :
-            motherPdgId(0),
-            BLxy(-999), Bct2D(-999), Bct3D(-999),
+            bMesonPdgId(0),
             hasMuonPlus(false), hasMuonMinus(false),
             muPlusMotherId(0), muMinusMotherId(0),
-            jpsiPdgId(0), neutralMesonId(0), vectorMesonId(0),
+            jpsiPdgId(0), vectorMesonId(0),
             helicity3(-999), coplanarity3(-999), cosTheta_l(-999),
-            helicity4(-999), coplanarity4(-999),
             dimuonMass(-999), dimuonPt(-999),
-            diphotonMass(-999), diphotonPt(-999),
-            triBodyMass(-999), fourBodyMass(-999),
+            triBodyMass(-999),
             decayMode(kUnknown),
-            is3BodyDecay(false), is4BodyDecay(false),
-            hasJpsi(false), hasNeutralMeson(false), hasVectorMeson(false),
+            is3BodyDecay(false),
+            hasJpsi(false), hasVectorMeson(false),
             isValid(false), isHardProcess(false),
             nMuons(0), nPhotons(0)
         {}
@@ -167,25 +148,7 @@ public:
             isMatched(false), genPdgId(0), genMotherPdgId(0),
             genGMotherPdgId(0), deltaR(999), deltaPt(999), genIndex(-1) {}
     };
-   
-    struct TopologyMatch {
-        bool isMatched;
-        bool mu1Matched;
-        bool mu2Matched;
-        bool photon1Matched;
-        bool photon2Matched;
-        bool decayModeMatched;
-       
-        TruthMatchInfo mu1Info;
-        TruthMatchInfo mu2Info;
-        std::vector<TruthMatchInfo> photonInfo;
-       
-        TopologyMatch() :
-            isMatched(false), mu1Matched(false), mu2Matched(false),
-            photon1Matched(false), photon2Matched(false),
-            decayModeMatched(false) {}
-    };
-   
+
     // ------------------------------------------------------------------------
     // Constructor: Store reference to gen particles
     // ------------------------------------------------------------------------
@@ -193,32 +156,12 @@ public:
    
     ~GenDecayChain() = default;
     const GenInfo& info() const { return info_; }
-    TruthMatchInfo matchToGen(
-        const reco::Candidate& recoTrack,
-        int expectedPdgId = 0,
-        int expectedMotherPdgId = 0,
-        int expectedGMotherPdgId = 0,
-        float deltaRCut = 0.05,
-        float deltaPtCut = 0.5
-    ) const;
-   
-    // Convenience methods
-    TruthMatchInfo matchMuonToGen(const reco::Candidate& recoMuon) const { return matchToGen(recoMuon, 13, 0, 0, 0.05, 0.5); }
-    TruthMatchInfo matchPhotonToGen(const reco::Candidate& recoPhoton)const { return matchToGen(recoPhoton, 22, 0, 0, 0.1, 0.5); }
-    TopologyMatch matchTopology(
-        const reco::Candidate& recoMu1,
-        const reco::Candidate& recoMu2,
-        const std::vector<const reco::Photon*>& recoPhotons
-    ) const;
-   
-    
-    bool isSignalLike() const {
-        return (info_.decayMode == kBs_MuMu_Gamma ||
-                info_.decayMode == kBd_MuMu_Gamma);
-    }
-   
-    bool isJpsiBackground() const { return info_.hasJpsi; }
-   
+
+    // Match only to the particles of the found decay chain (not to any gen particle in the event)
+    // muons are matched to the gen muon of the same charge, photons only to the signal photon (not FSR)
+    TruthMatchInfo matchMuonToChain(const reco::Candidate& recoMuon, float deltaRCut = 0.05, float deltaPtCut = 0.5) const;
+    TruthMatchInfo matchPhotonToChain(const reco::Candidate& recoPhoton, float deltaRCut = 0.1, float deltaPtCut = 0.5) const;
+
 private:
     GenInfo info_;
     const std::vector<reco::GenParticle>& genParticles_;  
@@ -227,24 +170,21 @@ private:
     const reco::GenParticle* BMeson_;
     const reco::GenParticle* muPlus_;
     const reco::GenParticle* muMinus_;
-    std::vector<const reco::GenParticle*> photons_;
-    const reco::GenParticle* jpsi_;
-    const reco::GenParticle* neutralMeson_;
-    const reco::GenParticle* vectorMeson_;
-   
- 
+    std::vector<const reco::GenParticle*> photons_;     // all photons of the chain (signal + FSR)
+    const reco::GenParticle* signalPhoton_;              // the photon from the B decay vertex
+    const reco::GenParticle* jpsi_;                      // J/psi or psi(2S)
+    const reco::GenParticle* vectorMeson_;               // phi
+
+
     void analyze();
-    void findBMeson();
-    void walkDecayChain();
+    void findSignalDecay();
     void extractKinematics();
-    void computeLifetimeVariables();
-    void classifyDecayMode();
     void computeAngularVariables();
     void fillDileptonVariables();
-   
-  
-    void processDaughters(const reco::GenParticle* mother);
-    void processCascade(const reco::GenParticle* intermediate);
+
+
+    const reco::GenParticle* lastCopy(const reco::GenParticle* particle) const;
+    DecayMode matchSignalDecay(const reco::GenParticle* decayingB);
     void identifyResonances();
     int classifyPhotonOrigin(const reco::GenParticle* photon) const;
     bool isFromHardProcess(const reco::GenParticle* particle) const;
@@ -257,14 +197,12 @@ private:
                             const TLorentzVector& parent) const;
    
     void extractVertexInfo();
-    float computeProperTime(const TVector3& prod, const TVector3& decay,
-                           const TLorentzVector& p4) const;
-   
-    const reco::GenParticle* findMother(const reco::GenParticle* particle) const;
-    bool isAncestor(const reco::GenParticle* ancestor, const reco::GenParticle* particle) const;
-    void sortPhotonsByPt();
 
-    int countMuonsInDecayChain(const reco::GenParticle* particle) const;
+    const reco::GenParticle* findMother(const reco::GenParticle* particle) const;
+
+    TruthMatchInfo matchToParticles(const reco::Candidate& recoCand,
+                                    const std::vector<const reco::GenParticle*>& genCands,
+                                    float deltaRCut, float deltaPtCut) const;
 };
 
 #endif

@@ -4,57 +4,30 @@
 // Original Author:  Alibordi Muhammad
 //         Created:  Fri, 12 Jul 2024 10:27:36 GMT
 //============================================================
-#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/KinematicConstrainedFit.h"
-#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/RadiativeRootTree.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/RadiativeAnalysis.h"
-#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/TrippleObjectVertex.h"
-#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/TetraObjectVertex.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/BeamSpotAndVertex.h"
-#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/RecoPhotons.h"
-#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/ParticleFlowCandidate.h"
-#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/SCRecHitAccumulator.h"
-
-#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/ReferenceModeratorVertex.h"
-#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/DecayChainVariables.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/GenChain.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/MuonSelector.h"
-#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/PhotonSelector.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/TripleObjectVertexFit.h"
+#include <optional>
 
 
 
 
 
 RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig): 
-	theConfig_(iConfig),
-	nominalJpsiMass( 3.096916 ),
-	nominalPsiMass( 3.096916 ),
-	nominalPhiMass(1.019 ),
-	nominalElectronMass(0.00051099893),
-	nominalMuonMass(0.1056583),
-	nominalPiZeroMass(0.1349768),
-	nominalEtaMesonMass(0.547862),
-	nominalEtaPrimeMass(0.957780),
-	nominalKaonMass(0.493677)
+	theConfig_(iConfig)
 {
 	generatorInfoTok                  = consumes<GenRunInfoProduct, edm::InRun>(edm::InputTag("generator"));
 	genFilterTok                      = consumes<GenFilterInfo, edm::InLumi>(edm::InputTag("genFilterEfficiencyProducer"));
 	isMCstudy_                        = iConfig.getParameter<bool>("isMCstudy");
 	isMINIAOD_                        = iConfig.getParameter<bool>("isMINIAOD");
 	genParticlesLabel                 = iConfig.getParameter<edm::InputTag>("genParticlesLabel");
-	genParticlesTok                   = consumes<edm::View<reco::GenParticle>>(genParticlesLabel);
+	genParticlesTok                   = consumes<std::vector<reco::GenParticle>>(genParticlesLabel);
 	MuonTag                           = iConfig.getParameter<edm::InputTag>("MuonTag");
 	MuonTagTok                        = consumes<edm::View<reco::Muon>>(MuonTag);
-	JetTag                            = iConfig.getParameter<edm::InputTag>("JetTag");
-	JetTagTok                         = consumes<edm::View<pat::Jet>>(JetTag);
 	PhotonTag                         = iConfig.getParameter<edm::InputTag>("PhotonTag");
 	PhotonTagTok                      = consumes<edm::View<reco::Photon>>(PhotonTag);
-	PFCandTag                         = iConfig.getParameter<edm::InputTag>("PFCandTag");
-	PFCandTagTok                      = consumes<edm::View<reco::Candidate>>(PFCandTag);
-	OOTPhotonTag                      = iConfig.getParameter<edm::InputTag>("OOTPhotonTag");
-	OOTPhotonTagTok                   = consumes<edm::View<pat::Photon>>(OOTPhotonTag);
-	ElectronTag                       = iConfig.getParameter<edm::InputTag>("ElectronTag");
-	ElectronTagTok                    = consumes<edm::View<pat::Electron>>(ElectronTag);
 	PUInfo                            = iConfig.getParameter<edm::InputTag>("PUInfo");
 	PUInfoTok                         = consumes<edm::View<PileupSummaryInfo>>(PUInfo);
 	vertexBeamSpot                    = iConfig.getParameter<edm::InputTag>("vertexBeamSpot");
@@ -63,81 +36,31 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& iConfig):
 	primaryvertexTok                  = consumes<std::vector<reco::Vertex>>(primaryvertex);
 	triggerbits                       = iConfig.getParameter<edm::InputTag>("triggerbits");
 	triggerbitsTok                    = consumes<edm::TriggerResults>(triggerbits);
-	if(isMINIAOD_){
-		prescale                          = iConfig.getParameter<edm::InputTag>("prescale");
-		prescaleTok                       = consumes<pat::PackedTriggerPrescales>(prescale);
-		triggerobj                        = iConfig.getParameter<edm::InputTag>("triggerobj");
-		triggerobjTok                     = consumes<edm::View<pat::TriggerObjectStandAlone>>(triggerobj);
-	}
-	triggerSummaryTag              = iConfig.getParameter<edm::InputTag>("triggerSummary");
-	triggerSummaryTok              = consumes<trigger::TriggerEvent>(triggerSummaryTag);
-	pfSupcluster                   = iConfig.getParameter<edm::InputTag>("pfSupcluster");
-	pfSupclusterTok                = consumes<std::vector<reco::SuperCluster>>(pfSupcluster);
 	ecalrechitEB                   = iConfig.getParameter<edm::InputTag>("ecalrechitEB");
 	ecalrechitEBTok                = consumes<EcalRecHitCollection>(ecalrechitEB);
 	ecalrechitEE                   = iConfig.getParameter<edm::InputTag>("ecalrechitEE");
 	ecalrechitEETok                = consumes<EcalRecHitCollection>(ecalrechitEE);
-	ecalrechitES                   = iConfig.getParameter<edm::InputTag>("ecalrechitES");
-	ecalrechitESTok                = consumes<EcalRecHitCollection>(ecalrechitES);
 	valMapTag					   = iConfig.getParameter<edm::InputTag>("mvaValuesMap");
 	valMapTok					   = consumes<edm::ValueMap<float>>(valMapTag);
-	valMapPhoTightTag				= iConfig.getParameter<edm::InputTag>("phoTightIDMap");
-	valMapPhoTightTok				= consumes<edm::ValueMap<bool>>(valMapPhoTightTag);
 
-	trackTag                          = iConfig.getParameter<edm::InputTag>("pfCandTag");
-	trackTagTok                       = consumes<std::vector<reco::Track>>(trackTag);
+	trackTag                          = iConfig.getParameter<edm::InputTag>("TrackTag");
 	if(isMINIAOD_){
-		IsoTrackTag                   = iConfig.getParameter<edm::InputTag>("IsoTrackTag");
-		IsoTrackTagTok                = consumes<edm::View<pat::IsolatedTrack>>(IsoTrackTag);
+		packedTrackTagTok             = consumes<edm::View<pat::PackedCandidate>>(trackTag);
+		lostTrackTag                  = iConfig.getParameter<edm::InputTag>("LostTrackTag");
+		lostTrackTagTok               = consumes<edm::View<pat::PackedCandidate>>(lostTrackTag);
 	}
-	convertedPhotonsTag               = iConfig.getParameter<edm::InputTag>("convertedPhotons");
-	convertedPhotonsTagTok            = consumes<std::vector<pat::CompositeCandidate>>(convertedPhotonsTag);
+	else{
+		trackTagTok                   = consumes<std::vector<reco::Track>>(trackTag);
+	}
 	trackBuilderTok                   = esConsumes(edm::ESInputTag("", "TransientTrackBuilder"));
 	theBFieldTok                      = esConsumes<MagneticField, IdealMagneticFieldRecord>();
-	caloGeomTok                       = esConsumes<CaloGeometry, CaloGeometryRecord>();
-	iSetupGetTok                      = make_unique<EcalClusterLazyToolsBase::ESGetTokens>(consumesCollector());
+	iSetupGetTok                     = make_unique<EcalClusterLazyToolsBase::ESGetTokens>(consumesCollector());
 	
 
 
-	StoreDeDxInfo_                    = iConfig.getParameter<bool>("StoreDeDxInfo");
-	PionZeroMassWindowNoFit_          = iConfig.getParameter<double>("PionZeroMassWindowNoFit");
-	JpsiMassWindowBeforeFit_          = iConfig.getParameter<double>("JpsiMassWindowBeforeFit");
-	JpsiMassWindowAfterFit_           = iConfig.getParameter<double>("JpsiMassWindowAfterFit");
-	JpsiPtCut_                        = iConfig.getParameter<double>("JpsiPtCut");
-	KaonTrackPtCut_                   = iConfig.getParameter<double>("KaonTrackPtCut");//https://arxiv.org/pdf/1307.2782.pdf
-	PsiMassWindowBeforeFit_           = iConfig.getParameter<double>("PsiMassWindowBeforeFit");
-	PsiMassWindowAfterFit_            = iConfig.getParameter<double>("PsiMassWindowAfterFit");
-	PhiMassWindowBeforeFit_           = iConfig.getParameter<double>("PhiMassWindowBeforeFit");
-	PhiMassWindowAfterFit_            = iConfig.getParameter<double>("PhiMassWindowAfterFit");
-	EtaMesonMassWindowNoFit_          = iConfig.getParameter<double>("EtaMesonMassWindowNoFit");
-	EtaPrimeMassWindowNoFit_          = iConfig.getParameter<double>("EtaPrimeMassWindowNoFit");
-	BsLowerMassCutBeforeFit_          = iConfig.getParameter<double>("BsLowerMassCutBeforeFit");
-	BsUpperMassCutBeforeFit_          = iConfig.getParameter<double>("BsUpperMassCutBeforeFit");
-	BdLowerMassCutBeforeFit_          = iConfig.getParameter<double>("BdLowerMassCutBeforeFit");
-	BdUpperMassCutBeforeFit_          = iConfig.getParameter<double>("BdUpperMassCutBeforeFit");
-	BsLowerMassCutAfterFit_           = iConfig.getParameter<double>("BsLowerMassCutAfterFit");
-	BsUpperMassCutAfterFit_           = iConfig.getParameter<double>("BsUpperMassCutAfterFit");
-	BdPDGMass_                        = iConfig.getParameter<double>("BdPDGMass");
-	BpPDGMass_                        = iConfig.getParameter<double>("BpPDGMass");
-	BsPDGMass_                        = iConfig.getParameter<double>("BsPDGMass");
-	PionZeroPDGMass_                  = iConfig.getParameter<double>("PionZeroPDGMass");
-	EtaMesonPDGMass_                  = iConfig.getParameter<double>("EtaMesonPDGMass");
-	EtaPrimePDGMass_                  = iConfig.getParameter<double>("EtaPrimePDGMass");
 	outputFile_                       = iConfig.getUntrackedParameter<std::string>("outputFile");
-	verbose_                          = iConfig.getParameter<bool>("verbose");
-	TestVerbose_                      = iConfig.getParameter<bool>("TestVerbose");
-	hltProcess_                       = iConfig.getUntrackedParameter<std::string>("HLTprocess","HLT");
-	hltConfigInitialized_             = false;
-
-	muMVACut_                         = iConfig.getParameter<double>("muMVACut");
-	photonMVACut_                     = iConfig.getParameter<double>("photonMVACut");
 
 	event_counter_ = 0;
-	elecounter_    = 0;
-	muoncounter_   = 0;
-	jetcounter_    = 0;
-	tagmucounter_  = 0;
-	photoncounter_ = 0;
 
 edm::LogInfo("BsToMuMuGammaAnalysis/RadiativeAnalysis")<< "Initializing Bs to MuMu Gamma  analyser  - Output file: " << outputFile_ <<"\n";
 }
@@ -155,19 +78,7 @@ void RadiativeAnalysis::beginJob() {
 
 void RadiativeAnalysis::beginRun(const edm::Run& iRun, const edm::EventSetup& iSetup)
 {
-    bool changed = true;
-    hltConfigInitialized_ = hltConfig_.init(iRun, iSetup, hltProcess_, changed);
-    if (!hltConfigInitialized_) {
-        edm::LogError("RadiativeAnalysis") 
-            << "HLTConfigProvider::init failed for process: " << hltProcess_;
-        return;
-    }
-    if (changed){
-		 edm::LogInfo("RadiativeAnalysis")
-            << "HLT menu changed. Table: " << hltConfig_.tableName();
-
-	}
-       
+    // nothing needed here for now
 }
 //------------Do not know when to use this function------------------
 void RadiativeAnalysis::endRun(const edm::Run& iRun, const edm::EventSetup& iSetup)
@@ -183,7 +94,13 @@ void RadiativeAnalysis::endRun(const edm::Run& iRun, const edm::EventSetup& iSet
       return;
     }
 
-      genXsec_   = genRunInfo->internalXSec().value();
+      const double runXsec = genRunInfo->internalXSec().value();
+      // one sample = one cross section; only the last run's value is kept, so warn if runs disagree
+      if (genXsec_ > 0 && std::abs(runXsec - genXsec_) > 1e-6 * genXsec_) {
+          edm::LogWarning("GenRunInfo") << "Cross section changed between runs: " << genXsec_ << " -> " << runXsec
+                                        << " (run " << iRun.run() << "); the last value is saved.";
+      }
+      genXsec_   = runXsec;
 	  genXsecErr_ = genRunInfo->internalXSec().error();
 
 
@@ -202,8 +119,9 @@ void RadiativeAnalysis::endLuminosityBlock(const edm::LuminosityBlock& iLumi, co
         return;
     }
 
-    filterEff_ = genFilter->filterEfficiency(-1);
-    filterEffErr_ = genFilter->filterEfficiencyError(-1);
+    // merge the counts of all luminosity blocks; the efficiency is computed in endJob
+    totalGenFilter_.mergeProduct(*genFilter);
+    hasGenFilter_ = true;
 }
 
 void RadiativeAnalysis::processHLTBits(const edm::Event& iEvent)
@@ -248,8 +166,6 @@ void RadiativeAnalysis::processHLTBits(const edm::Event& iEvent)
 void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 
 	event_counter_++;
-	excludedPhotons.clear();
-	int nBs=0;
 	outputTree_->resetAllEntries();
 	
 
@@ -274,7 +190,6 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	}	
 	
 	const auto& theBField             = iSetup.getData(theBFieldTok);
-	const auto& caloGeom              = iSetup.getData(caloGeomTok);
 	const auto& lazyTools             = EcalClusterLazyTools(iEvent, iSetupGetTok->get(iSetup), ecalrechitEBTok, ecalrechitEETok);
 	const auto& trackBuilder          = iSetup.getData(trackBuilderTok);
 
@@ -286,32 +201,35 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
 	edm::Handle<edm::View<reco::Muon>> muons;
         iEvent.getByToken(MuonTagTok, muons);
-	edm::Handle<std::vector<pat::CompositeCandidate>> convPhotons;
-        iEvent.getByToken(convertedPhotonsTagTok, convPhotons);
-	const pat::CompositeCandidateCollection * conversions = convPhotons.product();
 
-	edm::Handle<std::vector<reco::Track>> tracks;
-		iEvent.getByToken(trackTagTok, tracks);
-	//particle flow supercluster ECAL - This only does exists in AOD ???
-	edm::Handle<std::vector<reco::SuperCluster>> supercluster;
-		iEvent.getByToken(pfSupclusterTok, supercluster);
-	edm::Handle<EcalRecHitCollection> ecalRecHits;
-		iEvent.getByToken(ecalrechitEBTok, ecalRecHits);
-	//std::cout<< " super cluster multiplicity : "<< supercluster->size()<< "\n";
+	// MINIAOD: count the same tracks PATTrackAndVertexUnpacker would rebuild
+	// An alternative is to run the mentioned process before this analyzer, that would produce the tracks as a separate collection
+	size_t nTracks = 0;
+	if(isMINIAOD_){
+		edm::Handle<edm::View<pat::PackedCandidate>> packedCands;
+			iEvent.getByToken(packedTrackTagTok, packedCands);
+		edm::Handle<edm::View<pat::PackedCandidate>> lostTracks;
+			iEvent.getByToken(lostTrackTagTok, lostTracks);
+		for (const auto& c : *packedCands)
+			if (c.hasTrackDetails() && c.charge() != 0 && c.numberOfHits() > 0) ++nTracks;
+		for (const auto& c : *lostTracks)
+			if (c.hasTrackDetails()) ++nTracks;
+	}
+	else{
+		edm::Handle<std::vector<reco::Track>> tracks;
+			iEvent.getByToken(trackTagTok, tracks);
+		nTracks = tracks->size();
+	}
 	edm::Handle<edm::View<reco::Photon>> photons;
     	iEvent.getByToken(PhotonTagTok, photons);
-	edm::Handle<edm::View<reco::Candidate>> pfCandidates;
-		iEvent.getByToken(PFCandTagTok, pfCandidates);
 	edm::Handle<edm::ValueMap<float>> mvaValuesMap;
 		iEvent.getByToken(valMapTok, mvaValuesMap);
-	edm::Handle<edm::ValueMap<bool>> phoTightIDMap;
-		iEvent.getByToken(valMapPhoTightTok, phoTightIDMap);
 
 
 	//-------FILL THE TREE WITH THE GENERAL VARIABLES-------//
 	outputTree_->nMuons_ = muons->size();
 	outputTree_->nPhotons_ = photons->size();
-	outputTree_->nTracks_ = tracks->size();    
+	outputTree_->nTracks_ = nTracks;
 
 	BeamSpotAndVertex bsandvtxObservables(isMINIAOD_);
 	auto bsandvtxVar = bsandvtxObservables.BSAndVtxObservables(*vertexBeamSpot, *recVtxs);
@@ -349,6 +267,25 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	}
 	
 
+	//-----GEN DECAY CHAIN (MC study only)-------//
+	// with isMCstudy only the muons and photons matched to the gen decay chain are analyzed
+	edm::Handle<std::vector<reco::GenParticle>> genParticles;
+	std::optional<GenDecayChain> genChain;
+	std::vector<reco::Photon> genMatchedPhotons;
+	std::vector<float> genMatchedPhotonMVAIDs;		// parallel to genMatchedPhotons
+	if(isMCstudy_){
+		iEvent.getByToken(genParticlesTok, genParticles);
+		genChain.emplace(*genParticles);
+		if (!genChain->info().isValid) return;
+		outputTree_->addGenInfo(genChain->info());
+		for (size_t i = 0; i < photons->size(); ++i) {
+			const auto& photon = photons->at(i);
+			if (!genChain->matchPhotonToChain(photon).isMatched) continue;
+			genMatchedPhotons.push_back(photon);
+			genMatchedPhotonMVAIDs.push_back(photonMVAIDs.at(i));
+		}
+	}
+
 	//-----START OF THE DECAY RECONSTRUCTION------//
 	TripleObjectVertexFit tripleVertexFitter;
 
@@ -358,9 +295,32 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	// (e.g. {firstMuonIndices[i], secondMuonIndices[i]}, where commonVtxProbs[i] is their common vertex probability)
 	auto [firstMuonIndices, secondMuonIndices, commonVtxProbs] = muonSelector.selectMuonPairs( *muons, trackBuilder );
 
+	// MC study: keep only the pair whose both muons are matched to the gen signal muons
+	// (smallest sum of the two deltaRs if more than one pair is matched)
+	size_t genMatchedPair = firstMuonIndices.size();	// no pair matched
+	float genMatchedMu1DeltaR = -9999.;
+	float genMatchedMu2DeltaR = -9999.;
+	if (genChain) {
+		float bestDeltaRSum = std::numeric_limits<float>::max();
+		for (size_t iPair = 0; iPair < firstMuonIndices.size(); iPair++) {
+			auto mu1Match = genChain->matchMuonToChain( muons->at(firstMuonIndices[iPair]) );
+			auto mu2Match = genChain->matchMuonToChain( muons->at(secondMuonIndices[iPair]) );
+			if (!mu1Match.isMatched || !mu2Match.isMatched) continue;
+			if (mu1Match.deltaR + mu2Match.deltaR < bestDeltaRSum) {
+				bestDeltaRSum = mu1Match.deltaR + mu2Match.deltaR;
+				genMatchedPair = iPair;
+				genMatchedMu1DeltaR = mu1Match.deltaR;
+				genMatchedMu2DeltaR = mu2Match.deltaR;
+			}
+		}
+	}
+
 	// loop over muon pairs
 	for (size_t iPair = 0; iPair < firstMuonIndices.size(); iPair++)
-	{
+	{	
+		// if MC study (i.e. genChain != 0), analyze only the best matched muon pair
+		if (genChain && iPair != genMatchedPair) continue;
+
 		size_t mu1Idx = firstMuonIndices[iPair];
 		size_t mu2Idx = secondMuonIndices[iPair];
 		const reco::Muon& mu1 = muons->at(mu1Idx);
@@ -371,34 +331,50 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 		outputTree_->resetDecayEntries();
 
 		// muon variables
+		// soft/tight IDs w.r.t. the highest-sum-pT PV (index 0 in MINIAOD)
+		outputTree_->addMuonPair(mu1, mu2, recVtxs->at(bsandvtxVar.VtxIndex));
 		outputTree_->mu1MVAScore_ = muonMVAIDs.at(mu1Idx);
 		outputTree_->mu2MVAScore_ = muonMVAIDs.at(mu2Idx);
 		outputTree_->DiMuon_KalmanVtxProb_ = commonVtxProbs.at(iPair);
+		if (genChain) {
+			outputTree_->mu1GenDeltaR_ = genMatchedMu1DeltaR;
+			outputTree_->mu2GenDeltaR_ = genMatchedMu2DeltaR;
+		}
 
 		// MMG vertex fit
 		// The TripleObjectVertexFit::fitMmgVertices function takes the considered muon pair and all photons in the event
+		// (only the gen-matched photons in the MC study)
 		// A struct is returned with variables for this muon pair and all the photons
-		auto tripleVertexResults = tripleVertexFitter.fitMmgVertices( muonPair, *photons, *recVtxs, lazyTools, bsandvtxVar, theBField, trackBuilder );
+		TripleObjectVertexFit::MmgFitResults tripleVertexResults;
+		if (genChain) {
+			tripleVertexResults = tripleVertexFitter.fitMmgVertices( muonPair, genMatchedPhotons, genMatchedPhotonMVAIDs, *recVtxs, lazyTools, bsandvtxVar, theBField, trackBuilder, &*genChain );
+		}
+		else {
+			tripleVertexResults = tripleVertexFitter.fitMmgVertices( muonPair, *photons, photonMVAIDs, *recVtxs, lazyTools, bsandvtxVar, theBField, trackBuilder );
+		}
 		outputTree_->addMmgFitResults(tripleVertexResults);
 
 		// one tree entry for each muon pair
 		outputTree_->fill();
+
 	} // muon pairs (mu+,mu-)
-}
+} // analyze
+
 
 ////////////////////////////////////////////////////////////
 ////////////////End Job///////////////////////////////////
 void RadiativeAnalysis::endJob() {
   
 	cout << "Total number of Events          : " << event_counter_ << endl;
-	cout << "Total number of Tagged muons    : " << muoncounter_   << endl;
-	cout << "Total number of Tagged electrons: " << elecounter_    << endl;
-	cout << "Total number of Tagged jets     : " << jetcounter_    << endl;
-	cout << "Max amount of Tag muons         : " << tagmucounter_ <<  endl;
-	cout << "Max number of photon            : " << photoncounter_ << endl;
 
 
     int nEvents = event_counter_;
+
+	// filter efficiency from the counts merged over all luminosity blocks
+	if (hasGenFilter_) {
+		filterEff_    = totalGenFilter_.filterEfficiency(-1);
+		filterEffErr_ = totalGenFilter_.filterEfficiencyError(-1);
+	}
 
 	if (genXsec_ > 0 && filterEff_ > 0 && nEvents > 0) {
 		lumiEquivalent_ = nEvents / (genXsec_ * filterEff_);
@@ -431,16 +407,6 @@ void RadiativeAnalysis::endJob() {
 	outputTree_->writeFile();
 	delete outputTree_;
 	delete muonMVAIDProducer_;	      
-}
-
-//////////////////////////////////////////////////////////////
-////////// Helper Functions///////////////////////////////////
-//////////////////////////////////////////////////////////////
-GlobalVector RadiativeAnalysis::flightDirection(const reco::Vertex &pv, reco::Vertex &sv){
-  GlobalVector res(sv.position().X() - pv.position().X(),
-                    sv.position().Y() - pv.position().Y(),
-                    sv.position().Z() - pv.position().Z());
-  return res;
 }
 
 

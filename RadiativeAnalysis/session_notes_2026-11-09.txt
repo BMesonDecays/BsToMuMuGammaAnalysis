@@ -1,0 +1,127 @@
+Session notes, 2026-11-09 (Claude Code), RadiativeAnalysis
+Most recent first.
+
+======================================================================
+5. CRAB submission: ParkingDoubleMuonLowMass 2024 B/C/D MINIAOD
+======================================================================
+Everything is ready to submit, and a crash that would have hit almost
+every 2024 job is fixed. Nothing has been submitted yet. The script, the
+2024 JSON URL and 2000-event local runs on 2024C and 2024D files all work,
+with no exceptions.
+
+What was set up
+- crab_data/multicrab_DATA_2024BCD.py submits 24 CRAB tasks, one per
+  dataset: ParkingDoubleMuonLowMass0-7 for each of three eras.
+  - 2024B uses PromptReco, the only processing there is.
+  - 2024C and 2024D use 2024CDEReprocessing. MINIv6NANOv15 was skipped
+    because it was made with CMSSW_15_0_2, which CMSSW_14_1_1 most likely
+    can't read.
+  - Jobs are filtered with the full-year 2024 Golden JSON
+    (Cert_Collisions2024_378981_386951_Golden.json). Golden rather than
+    the Muon JSON, because the ECAL is needed for the photon.
+  - CRAB sizes jobs automatically, at about 3 hours each.
+  - Output goes to /store/user/psajdak/crab_out
+    (= /eos/user/p/psajdak/crab_out on CERNBox).
+  - Size: about 1.29 billion events (about 67 TB of input), roughly 1300
+    CPU-hours, about 250 GB of output.
+- test/runRadiativeAnalysis_MINIAOD_test.py: progress is reported every
+  1000 events instead of every 10, and KalmanVertexUpdator warnings are
+  capped at 10 per job.
+
+Crash that was fixed
+- On a 2024D file the analyzer stopped with "InvalidCluster: The cluster
+  has no crystals!". About 5% of slimmedPhotons in 2024 MINIAOD (both B
+  and D) have a supercluster with no crystal list, and
+  EcalClusterLazyTools::covariancesXYZ throws on those.
+- src/TripleObjectVertexFit.cc: these photons now skip the Bs fit. They
+  are still stored, with bsFitSuccessful = false, so about 5% of photons
+  in data lose the Bs fit. No effect on the private AOD MC.
+
+To submit
+  cd $CMSSW_BASE/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/crab_data
+  cmsenv; source /cvmfs/cms.cern.ch/common/crab-setup.sh
+  voms-proxy-init --voms cms --valid 192:00
+  python3 multicrab_DATA_2024BCD.py --dryrun        # test one task first
+  python3 multicrab_DATA_2024BCD.py                 # all 24 tasks
+  python3 multicrab_DATA_2024BCD.py --only 2024B    # or one era at a time
+Suggestion: submit 2024B first (15 million events), check its output,
+then C and D (about 1.27 billion events).
+
+Before submitting
+- CERNBox quota: about 250 GB of output in total.
+- GlobalTag: auto:run3_data = 140X_dataRun3_v14, a general Run 3 data
+  tag. It worked in the tests; set the group's specific 2024 Prompt and
+  reprocessing GlobalTags if there are any.
+- Delete the old simpleAnalysis_jobs output before comparing results.
+
+======================================================================
+4. Photon MVA on MINIAOD data
+======================================================================
+- The data config now runs photonMVAValueMapProducer on slimmedPhotons,
+  with only the Winter22 MVA (same setup as the AOD config). MINIAOD
+  already contains both rho collections.
+- The path is photonMVAValueMapProducer -> Analysis.
+- Test, 3000 events of Run2023D: no "Failed to retrieve MVA values map"
+  errors, and all 37 stored photons have scores in [-1, 1] (mean -0.85,
+  probably mostly background photons).
+- Note: when maxEvents is passed on the command line, VarParsing adds
+  "_numEventN" to the output filename.
+
+======================================================================
+3. Cleanup of the MINIAOD data config
+======================================================================
+test/runRadiativeAnalysis_MINIAOD_test.py: removed the parameters the
+analyzer never reads (JetTag, OOTPhotonTag, ElectronTag, prescale,
+triggerobj, triggerSummary, HLTprocess, IsoTrackTag, pfSupcluster,
+ecalrechitES, convertedPhotons, phoTightIDMap, muMVACut, photonMVACut,
+StoreDeDxInfo, all mass windows and PDG masses, Bs/Bd mass cuts,
+JpsiPtCut, KaonTrackPtCut, verbose, TestVerbose).
+Kept genParticlesLabel and PUInfo: the constructor reads them
+unconditionally, so they are required even for data, although they are
+only used when isMCstudy = True.
+
+======================================================================
+2. Photon MVA cut
+======================================================================
+RadiativeAnalysis does not cut on the photon MVA anywhere. The score is
+only stored in the photonMVA branch. photonMVACut = -0.07 exists only as
+a leftover parameter in the older ntupler configs. Photon selection:
+supercluster present, supercluster energy >= 1 GeV, |eta| < 2.5, and
+dR(gamma, mumu) < 0.5. The 10 GeV edge in photonPt is the minimum photon
+ET of the standard AOD "photons" reconstruction.
+Recommendation: choose the MVA threshold offline. (Open: add a
+configurable cut to the analyzer if wanted.)
+
+======================================================================
+1. Muon pT cut moved from the resonance flag to MuonSelector
+======================================================================
+Why: about 20% of MC candidates were not flagged as J/psi. 86% of those
+had one muon with pT < 3 GeV (the J/psi flag required both muons above
+3 GeV); the rest were outside the +-150 MeV mass window. Unflagged
+candidates miss the J/psi mass constraint, and their bsMass is about 50%
+wider (RMS 0.232 vs 0.158).
+
+Changes
+- src/MuonSelector.cc: passMuonSelection requires pT > muonPtCut for both
+  muons, before the dimuon vertex fit.
+- interface/MuonSelector.h: muonPtCut = 3.0 GeV (public constant).
+- src/ReferenceResonance.cc: resonance flag is decided by mass only.
+- interface/ReferenceResonance.h: removed the unused Constants::PtCut.
+
+Check (job-000 files, 8520 MC events): Bs candidates 12 -> 10, J/psi 9 ->
+9, unflagged 3 -> 1, with a soft muon 2 -> 0. Muon pairs stored in the
+tree 702 -> 277. Expected loss on the full MC sample: about 18% of Bs
+candidates.
+
+======================================================================
+Still open from the branches.pdf review
+======================================================================
+- Mu-mu-gamma mass peaks about +55 MeV (~1%) above the generated Bs mass;
+  check the photon energy correction (photonEnergy vs generated energy).
+- bsVtxProb spikes at 0 and at 1: the fit errors are wrong. Likely cause:
+  the photon pseudo-track with 1e6 errors next to muons with 1e-10
+  errors (also behind the KalmanVertexUpdator warnings).
+- mu2 quality: mu2IsGlobal 0.82, mu2IsTight 0.69 (vs 0.99 / 0.90 for mu1).
+- PUinteraction and PUTrueinteraction are always 0 in the private MC;
+  genIsHardProcess is always 0.
+- Photon MVA scores are low for signal photons in MC (mean -0.57).

@@ -11,9 +11,11 @@ options.parseArguments()
 process = cms.Process("Analysis")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 10
+process.MessageLogger.cerr.FwkReport.reportEvery = 1000
+# failed Kalman updates are reported once per fit iteration (up to 100 lines per event) -> keep grid logs small
+process.MessageLogger.cerr.KalmanVertexUpdator = cms.untracked.PSet(limit = cms.untracked.int32(10))
 
-# ES products needed by the analyzer: B field, transient tracks, calo geometry, ECAL conditions, HLT config
+# ES products needed by the analyzer: B field, transient tracks, calo geometry/topology + ECAL conditions (EcalClusterLazyTools)
 process.load("Configuration.StandardSequences.MagneticField_cff")
 process.load("Configuration.Geometry.GeometryRecoDB_cff")
 process.load("TrackingTools.TransientTrack.TransientTrackBuilder_cfi")
@@ -29,68 +31,34 @@ process.CaloGeometryBuilder = cms.ESProducer("CaloGeometryBuilder",
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(options.maxEvents))
 process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(options.inputFiles))
 
-# MINIAOD has no std::vector<reco::Track>; rebuild it from packedPFCandidates + lostTracks
-process.load("PhysicsTools.PatAlgos.slimming.unpackedTracksAndVertices_cfi")
+# photon MVA values (Run3 Winter22) on MINIAOD photons; fixedGridRhoAll/fixedGridRhoFastjetAll are already in MINIAOD
+from RecoEgamma.PhotonIdentification.PhotonMVAValueMapProducer_cfi import photonMVAValueMapProducer
+from RecoEgamma.PhotonIdentification.Identification.mvaPhotonID_Winter22_122X_V1_cff import mvaPhoID_RunIIIWinter22_v1_producer_config
+process.photonMVAValueMapProducer = photonMVAValueMapProducer.clone(
+    src               = cms.InputTag("slimmedPhotons"),
+    mvaConfigurations = cms.VPSet(mvaPhoID_RunIIIWinter22_v1_producer_config),
+)
 
 process.Analysis = cms.EDAnalyzer("RadiativeAnalysis",
     isMCstudy               = cms.bool(False),
     isMINIAOD               = cms.bool(True),
+    # required by the analyzer, but only read when isMCstudy = True
     genParticlesLabel       = cms.InputTag("prunedGenParticles"),
-    MuonTag                 = cms.InputTag("slimmedMuons"),
-    JetTag                  = cms.InputTag("slimmedJets"),
-    PhotonTag               = cms.InputTag("slimmedPhotons"),
-    OOTPhotonTag            = cms.InputTag("slimmedOOTPhotons"),
-    ElectronTag             = cms.InputTag("slimmedElectrons"),
     PUInfo                  = cms.InputTag("slimmedAddPileupInfo"),
+    MuonTag                 = cms.InputTag("slimmedMuons"),
+    PhotonTag               = cms.InputTag("slimmedPhotons"),
     vertexBeamSpot          = cms.InputTag("offlineBeamSpot"),
     primaryvertex           = cms.InputTag("offlineSlimmedPrimaryVertices"),
     triggerbits             = cms.InputTag("TriggerResults", "", "HLT"),
-    prescale                = cms.InputTag("patTrigger"),
-    triggerobj              = cms.InputTag("slimmedPatTrigger"),
-    triggerSummary          = cms.InputTag("hltTriggerSummaryAOD", "", "HLT"),  # not in MINIAOD, unused in analyze()
-    HLTprocess              = cms.untracked.string("HLT"),
-    pfCandTag               = cms.InputTag("unpackedTracksAndVertices"),
-    PFCandTag               = cms.InputTag("packedPFCandidates"),
-    IsoTrackTag             = cms.InputTag("isolatedTracks"),
-    pfSupcluster            = cms.InputTag("reducedEgamma", "reducedSuperClusters"),
+    TrackTag                = cms.InputTag("packedPFCandidates"),
+    LostTrackTag            = cms.InputTag("lostTracks"),
     ecalrechitEB            = cms.InputTag("reducedEgamma", "reducedEBRecHits"),
     ecalrechitEE            = cms.InputTag("reducedEgamma", "reducedEERecHits"),
-    ecalrechitES            = cms.InputTag("reducedEgamma", "reducedESRecHits"),
-    convertedPhotons        = cms.InputTag("oniaPhotonCandidates", "conversions"),
-    # photon VID is not run here -> photon MVA scores are set to -99
-    mvaValuesMap            = cms.InputTag("photonMVAValueMapProducer", "PhotonMVAEstimatorRunIIIWinter22v1Values"),
-    phoTightIDMap           = cms.InputTag("egmPhotonIDs", "cutBasedPhotonID-RunIIIWinter22-122X-V1-tight"),
+    mvaValuesMap           = cms.InputTag("photonMVAValueMapProducer", "PhotonMVAEstimatorRunIIIWinter22v1Values"),
+    # muon MVA (MuonMVAID)
     xgboost_models          = cms.vstring("Run2022-20231030-1731-Event0"),
     xgboost_variable_names  = cms.vstring("run3muonmva"),
-    muMVACut                = cms.double(0.83),
-    photonMVACut            = cms.double(-0.07),
-    StoreDeDxInfo           = cms.bool(True),
-    PionZeroMassWindowNoFit = cms.double(0.05),
-    EtaMesonMassWindowNoFit = cms.double(0.05),
-    EtaPrimeMassWindowNoFit = cms.double(0.05),
-    JpsiMassWindowBeforeFit = cms.double(0.310),
-    JpsiMassWindowAfterFit  = cms.double(0.150),
-    PsiMassWindowBeforeFit  = cms.double(0.293),
-    PsiMassWindowAfterFit   = cms.double(0.028),
-    PhiMassWindowBeforeFit  = cms.double(0.03),
-    PhiMassWindowAfterFit   = cms.double(0.02),
-    JpsiPtCut               = cms.double(7),
-    KaonTrackPtCut          = cms.double(0.7),
-    BsLowerMassCutBeforeFit = cms.double(4.5),
-    BsUpperMassCutBeforeFit = cms.double(6.5),
-    BdLowerMassCutBeforeFit = cms.double(4.2),
-    BdUpperMassCutBeforeFit = cms.double(6.2),
-    BsLowerMassCutAfterFit  = cms.double(4.5),
-    BsUpperMassCutAfterFit  = cms.double(6.5),
-    BsPDGMass               = cms.double(5.3699),
-    BdPDGMass               = cms.double(5.2794),
-    BpPDGMass               = cms.double(5.2790),
-    PionZeroPDGMass         = cms.double(0.1349),
-    EtaMesonPDGMass         = cms.double(0.5478),
-    EtaPrimePDGMass         = cms.double(0.9577),
-    verbose                 = cms.bool(False),
-    TestVerbose             = cms.bool(False),
     outputFile              = cms.untracked.string(options.outputFile),
 )
 
-process.path = cms.Path(process.unpackedTracksAndVertices * process.Analysis)
+process.path = cms.Path(process.photonMVAValueMapProducer * process.Analysis)

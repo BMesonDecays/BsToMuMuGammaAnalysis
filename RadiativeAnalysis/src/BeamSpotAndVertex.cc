@@ -7,21 +7,17 @@ BeamSpotAndVertex::BeamSpotAndVertex(bool isMINIAOD) {isMINIAOD_ = isMINIAOD;}
 BeamSpotAndVertex::BSAndVtxVariables BeamSpotAndVertex::BSAndVtxObservables(const reco::BeamSpot& beamSpot,
                         const std::vector<reco::Vertex>& vertices){
     BSAndVtxVariables bsvtxv;
-    
-    for(size_t i=0; i<9;++i){bsvtxv.pv_covariance[i] = -9999;} 
-    const reco::Vertex &recVtxs_track = vertices.front();
-    bsvtxv.pv_ntracks = recVtxs_track.nTracks();
     bsvtxv.pv_multiplicity = vertices.size();
-    NSelectedVertices = 0;
-	size_t VtxIndex_maxPt = 0;
+
+    // highest sum-pT vertex and number of vertices passing the quality cuts
+    int nSelectedVertices = 0;
+	size_t VtxIndex_maxPt = 0;     // MINIAOD: stays 0 (vertices have no track references)
 	double maxSumPt = -1.0;
     for (size_t iVtx = 0; iVtx < vertices.size(); ++iVtx) {
-		
 		const reco::Vertex& vtx = vertices[iVtx];
-		double sumpT = 0.0;
 
-		// may not work with MiniAOD ("vertices don't contain track references, but the association of candidates to vertices is provided in the packed candidates themself")
 		if (!isMINIAOD_) {
+			double sumpT = 0.0;
 			for (const auto& track : vtx.tracks()) {
 				sumpT += track->pt();
 			}
@@ -30,62 +26,37 @@ BeamSpotAndVertex::BSAndVtxVariables BeamSpotAndVertex::BSAndVtxObservables(cons
 				VtxIndex_maxPt = iVtx;
 			}
 		}
-		bsvtxv.VtxIndex = VtxIndex_maxPt;
-		// PAWEL: Does it overwrite data with the next vertex? Only the last vertex covariance is saved?
-		int iteratorCov =0;
-		for(int i = 0; i < 3 ; ++i){
-			for(int j =0; j< 3; ++j){
-				bsvtxv.pv_covariance[iteratorCov] = vtx.covariance(i, j);
-				iteratorCov++;
-			}
-		}
-		//std::cout << " size of the vertex : " << bsvtxv.VtxIndex << "\n";
-		bsvtxv.pv_ndof = vtx.ndof();
-		bsvtxv.pv_rho = vtx.position().Rho();
+
 		if(!vtx.isValid())continue;
 	        if(vtx.isFake())continue;
 	        if(vtx.ndof() < 4)continue;
 	        if(fabs(vtx.z()) >= 24.0)continue;
 	        if(vtx.position().Rho() >= 2)continue;
-	 	NSelectedVertices++;
+	 	nSelectedVertices++;
     }
+    bsvtxv.VtxIndex = VtxIndex_maxPt;
+    bsvtxv.pv_cutmultiplicity = nSelectedVertices;
 
-    bsvtxv.pv_cutmultiplicity = NSelectedVertices;
-    const reco::Vertex &RecVtx = vertices[bsvtxv.VtxIndex];
-    if(bsvtxv.VtxIndex !=-99) {
-	    bsvtxv.ispv     = 1;
-		bsvtxv.pv_x     = RecVtx.x();
-		bsvtxv.pv_y     = RecVtx.y();
-		bsvtxv.pv_z     = RecVtx.z();
-		bsvtxv.pv_errx  = RecVtx.xError();
-		bsvtxv.pv_erry  = RecVtx.yError();
-		bsvtxv.pv_errz  = RecVtx.zError();
-
+    // position of the highest sum-pT vertex (used by SCRecHitAccumulator)
+    if (!vertices.empty()) {
+		const reco::Vertex &RecVtx = vertices[bsvtxv.VtxIndex];
+		bsvtxv.pv_x = RecVtx.x();
+		bsvtxv.pv_y = RecVtx.y();
+		bsvtxv.pv_z = RecVtx.z();
 	}
-	else {
-		bsvtxv.isbs     = 1;
-                bsvtxv.pv_x     = beamSpot.x0();
-                bsvtxv.pv_y     = beamSpot.y0();
-                bsvtxv.pv_z     = beamSpot.z0();
-                bsvtxv.pv_errx  = beamSpot.x0Error();
-                bsvtxv.pv_erry  = beamSpot.y0Error();
-                bsvtxv.pv_errz  = beamSpot.z0Error();
-	}
-
 
 	bsvtxv.bs_x = beamSpot.x0();
 	bsvtxv.bs_y = beamSpot.y0();
 	bsvtxv.bs_z = beamSpot.z0();
-	//bsvtxv.bs_dx = beamSpot.x0Error();
-	////bsvtxv.bs_dy = beamSpot.y0Error();
-	////bsvtxv.bs_dz = beamSpot.z0Error();
+	bsvtxv.bs_dx = beamSpot.x0Error();
+	bsvtxv.bs_dy = beamSpot.y0Error();
+	bsvtxv.bs_dz = beamSpot.z0Error();
 	bsvtxv.bs_dxdz = beamSpot.dxdz();
 	bsvtxv.bs_dydz = beamSpot.dydz();
 	bsvtxv.bs_sigmaZ = beamSpot.sigmaZ();
 	bsvtxv.bs_dsigmaZ = beamSpot.sigmaZ0Error();
 	bsvtxv.position = beamSpot.position();
-	bsvtxv.BeamSpot_cov2d = beamSpot.covariance(); // not sure if this is meant, this is 7 dimensional covariance
-	bsvtxv.BeamSpot_cov3d = beamSpot.covariance3D();
+	bsvtxv.BeamSpot_cov2d = beamSpot.covariance(); // the full 7x7 beam-spot covariance (used by TrippleObjectVertex)
 
     
     return bsvtxv;

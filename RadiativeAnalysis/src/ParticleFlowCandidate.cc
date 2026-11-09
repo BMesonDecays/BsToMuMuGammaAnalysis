@@ -83,7 +83,6 @@ std::vector<ParticleFlowCandidate::PFCandidateVariables> ParticleFlowCandidate::
 
 
             } else {
-                bool hasPhotonRef = photonRef.isNull();
                 //std::cout << "No valid photonRef for this PFCandidate.\n";
             }
         //std::cout<<" ========================================================================="<<"\n";

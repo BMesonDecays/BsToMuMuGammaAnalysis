@@ -44,42 +44,36 @@ class ReferenceResonance{
         bool isValid = false;
     };
     enum ResonanceFlag {
-	    None = 0,
+	    None = 0,       // no resonance: no dimuon mass constraint
 	    Jpsi = 1,
 	    Phi = 2,
-	    KStar = 3,
-	    NonResonant = 4
+	    Psi2S = 5       // 3 (K*0) and 4 (NonResonant) were removed; numbering kept for older ntuples
     };
 
     
     struct Constants {
         
-        static constexpr double JpsiMass_PDG           = 3.0969;    
-        static constexpr double PhiMass_PDG            = 1.019;      
-        static constexpr double KStar0Mass_PDG         = 0.89555; 
-        static constexpr double nonResonantMass_PDG    = 0.0;   
+        static constexpr double JpsiMass_PDG           = 3.0969;
+        static constexpr double Psi2SMass_PDG          = 3.6861;
+        static constexpr double PhiMass_PDG            = 1.019;
         static constexpr double EtaMass_PDG            = 0.547862;      
         static constexpr double EtaPrimeMass_PDG       = 0.957780; 
         static constexpr double Pi0Mass_PDG            = 0.1349768;
         static constexpr double BsMass_PDG             = 5.3699;
         static constexpr double BdMass_PDG             = 5.2794;
         static constexpr double BpMass_PDG             = 5.2790;
-        static constexpr double JpsiWindow_PDG         = 0.31;
+        static constexpr double JpsiWindow_PDG         = 0.15;
+        static constexpr double Psi2SWindow_PDG        = 0.1;
         static constexpr double PhiWindow_PDG          = 0.03;
-        static constexpr double nonResonantWindow_PDG  = 0.0;
-        static constexpr double KStar0Window_PDG       = 0.2;
         static constexpr double EtaWindow_PDG          = 0.017;
         static constexpr double EtaPrimeWindow_PDG     = 0.230;
         static constexpr double Pi0Window_PDG          = 0.0005;
-        static constexpr double PtCut                  = 3.0;          
     };
 
     
 
     template <typename patOrRecoMuon>
     static ResonanceDetails findResonances(const patOrRecoMuon& mu1, const patOrRecoMuon& mu2, bool verbose = false);
-    static ResonanceDetails findResonances(const reco::Photon& photon1, const reco::Photon& photon2, const std::string& resonanceType, bool verbose = false);
-    static ResonanceDetails findResonances(const pat::CompositeCandidateCollection& conversions1,const pat::CompositeCandidateCollection& conversions2, const std::string& resonanceType, bool verbose = false);
  
 
 private:
@@ -93,11 +87,6 @@ private:
         auto combinedP4 = CombinedpFour(p1, p2);
         return propertyExtractor(combinedP4);
     }
-
-    //template <typename T1, typename T2>
-    //static double calculateMassFromComponents(const T1& p1, const T2& p2);
-
-      static double calculateMassFromComponents(const pat::CompositeCandidateCollection& conv1, const pat::CompositeCandidateCollection& conv2);
 };
 
 #endif

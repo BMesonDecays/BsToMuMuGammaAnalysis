@@ -69,9 +69,6 @@ class KinematicConstrainedFit{
 			const ReferenceResonance::ResonanceDetails& resonanceDetails
 		);
 
-		bool doFit(
-			std::vector<reco::TransientTrack> t_tracks, const double muonMass, 
-			const  double mass1, const double  mass2);
 		bool BsToJpsiPhiFit(
 			std::vector<reco::TransientTrack> t_tracks, const double muonMass, 
 			const  double mass1, const double  mass2);
@@ -82,10 +79,6 @@ class KinematicConstrainedFit{
 			ReferenceResonance::ResonanceDetails resonanceDetails,
 			reco::Vertex PV, bool verbose = true);
 
-		bool TetraObjectVertexFitConvertedPhoton(
-			std::vector<reco::TransientTrack> muonTT, const double muonMass, 
-			std::vector<reco::TransientTrack> electronTT, const double eleMass);
-
 		bool TrippleObjectVertexFitRecoPhoton(
 			std::vector<reco::TransientTrack> muonTT,
 			std::vector<reco::TransientTrack> photonTT,
@@ -95,24 +88,12 @@ class KinematicConstrainedFit{
 			reco::Vertex& PV,
 			const MagneticField& field,
 			const TransientTrackBuilder& theB);
-			
-		bool TetraObjectVertexFitRecoPhoton(
-			std::vector<reco::TransientTrack> muonTT,
-			std::vector<reco::TransientTrack>photonTT,
-			ReferenceResonance::ResonanceDetails resonanceDetails, 
-			const std::vector<reco::Photon>& photons, 
-			std::vector<TMatrixD*> photonCovMatrices,
-			reco::Vertex PV,
-			const MagneticField& field,
-			const TransientTrackBuilder& theB);
 
 
 		double getBhadronProb() {return vtxprob_Bhadron;}
 		double getBhadronMass() {return mass_Bhadron;}
 		RefCountedKinematicParticle getBhadron()       {return bhadron;}
 		RefCountedKinematicVertex   getVertex()        {return bVertex;}
-		RefCountedKinematicTree     getBhadronTree()   {return myTree_B;}
-		RefCountedKinematicTree     getJpsiTree()      {return myTree_Jpsi;}
 
 		double getDimuonProb()						   {return vtxprob_dimuon;}
 		RefCountedKinematicParticle	getDimuon()		   {return dimuon;}

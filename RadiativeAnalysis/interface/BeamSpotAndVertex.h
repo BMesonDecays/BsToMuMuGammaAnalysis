@@ -42,25 +42,14 @@ class BeamSpotAndVertex{
 			double bs_dydz = -9999.0;
 			double bs_sigmaZ = -9999.0;
 			double bs_dsigmaZ = -9999.0;
+			reco::BeamSpot::CovarianceMatrix BeamSpot_cov2d;	// full 7x7 beam-spot covariance
+			reco::BeamSpot::Point position;
 			// Vertex Variables
-			double pv_x = -9999.0;
+			double pv_x = -9999.0;		// highest sum-pT vertex (index VtxIndex)
 			double pv_y = -9999.0;
 			double pv_z = -9999.0;
-			double pv_errx = -9999.0;
-			double pv_erry = -9999.0;
-			double pv_errz = -9999.0;
-			int pv_ntracks = -9999;
-			int pv_multiplicity = -9999;
-			double pv_ndof = -9999.0;
-			double pv_rho = -9999.0;
-			double pv_covariance[9];
-			int pv_cutmultiplicity = -9999.0;
-			bool isValidPV = false;
-			bool ispv = false;
-			bool isbs = false;
-			reco::BeamSpot::CovarianceMatrix BeamSpot_cov2d ;
-			reco::BeamSpot::Covariance3DMatrix  BeamSpot_cov3d;
-			reco::BeamSpot::Point position;
+			int pv_multiplicity = -9999;	// all vertices
+			int pv_cutmultiplicity = -9999;	// vertices passing the quality cuts
 		};
 
 	BSAndVtxVariables BSAndVtxObservables(const reco::BeamSpot& beamSpot, 
@@ -76,8 +65,6 @@ class BeamSpotAndVertex{
 	static int LowestDCAIndex(const std::vector<reco::Vertex>& vertex,
 			GlobalPoint bVertex,
 			GlobalVector Bsvec);
-			
-	int    NSelectedVertices;
 
 	private:
 	static math::XYZPoint pca(math::XYZPoint pv, math::XYZPoint sv, math::XYZVectorD pMuMu);

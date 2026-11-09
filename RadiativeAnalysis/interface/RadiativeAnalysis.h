@@ -53,6 +53,7 @@
 #include "DataFormats/Candidate/interface/CompositeCandidateFwd.h"
 #include "DataFormats/BTauReco/interface/SecondaryVertexTagInfo.h"
 #include "DataFormats/PatCandidates/interface/IsolatedTrack.h"
+#include "DataFormats/PatCandidates/interface/PackedCandidate.h"
 #include "TLorentzVector.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/RadiativeRootTree.h"
@@ -84,45 +85,13 @@ public:
   void beginJob() override;
   void analyze(const edm::Event&, const edm::EventSetup&)override ;
   void endJob() override;
-  void fillMCInfo( edm::Handle<edm::View<reco::GenParticle>>& genParticles);
-  void setFitParGamma(RefCountedKinematicTree& myTree);
-  void setFitParHyp1(RefCountedKinematicTree& myTree);
-  void setFitParHyp2(RefCountedKinematicTree& myTree);
   void beginLuminosityBlock(const edm::LuminosityBlock&, const edm::EventSetup&) override;
   void endLuminosityBlock(const edm::LuminosityBlock& iLumi, const edm::EventSetup&  iSetup) override;
   void beginRun(const edm::Run& iRun, const edm::EventSetup& iSetup) override;
   void endRun(const edm::Run& iRun, const edm::EventSetup& iSetup) override;
 private:
-  
-  bool MCmatching(const reco::Candidate & particle,  edm::Handle<edm::View<reco::GenParticle>>& genParticles,
-                  int &particlemcId, int &particlemomId, int &particlegmomId,
-                  int condMom, int condGMom);
-  bool MCmatchingBsMuMu(const reco::Candidate & muParticle, edm::Handle<edm::View<reco::GenParticle>>& genParticles,
-                        int &particlemcId, int &particlemomId,
-                        int condMom);
-  bool MCmatchingJpsi(const reco::Candidate& particle,  edm::Handle<edm::View<reco::GenParticle>>& genParticles, int &particlemcId, int &particlemomId,	int condMom);
-  bool MCmatchingPsi(const reco::Candidate& particle,  edm::Handle<edm::View<reco::GenParticle>>& genParticles, int &particlemcId, int &particlemomId, int condMom);
-  reco::Vertex reVertex(const edm::Event& theEvent,  const edm::EventSetup& iSetup, edm::Handle<reco::BeamSpot>& vertexBeamSpot, reco::Vertex RecVtx, pat::Muon mu1, pat::Muon mu2, pat::Photon photon);
-  reco::Vertex reVertex2(const edm::EventSetup& iSetup, edm::Handle<reco::BeamSpot>& vertexBeamSpot, reco::Vertex RecVtx, pat::Muon mu1, pat::Muon mu2, pat::Photon photon, double &vtxCL);
-  double CalculateCtErrvertex(const edm::EventSetup& iSetup, reco::Vertex PV, TransientVertex SV, TMatrix SVcovariance2D ,GlobalVector Ptvec, double Bmass);
-  double CalculateCtErrbeamspot(const edm::EventSetup& iSetup, edm::Handle<reco::BeamSpot>& vertexBeamSpot, TransientVertex SV, TMatrix SVcovariance2D ,GlobalVector Ptvec, double Bmass);
-  void RecursivelyPrintMother( const reco::Candidate & genp );
-  GlobalVector flightDirection(const reco::Vertex &pv, reco::Vertex &sv);
-  bool selGlobalMuon(const pat::Muon theMuon, const math::XYZPoint RefVtx);
-  bool selTrackerMuon(const pat::Muon theMuon, const math::XYZPoint RefVtx);
-  bool selTightMuon(const pat::Muon theMuon, const reco::Vertex RecVtx);
-  double MuonChargeCone(const edm::Event& theEvent, reco::TrackRef muTrackRef, const double delR, const double KExp, bool IncludingMuon);
-  double MuonChargeConeWrtPV(const edm::Event& theEvent, reco::TrackRef muTrackRef, reco::Vertex PVtx, const double delR, const double KExp, bool IncludingMuon);
-  double LeptonChargeCone(const reco::PFCandidateCollection & PFCand, const reco::PFCandidate theLept, const double Dr, const double KExp, bool IncludingLepton);
-  short int FindMuonMCCode(const pat::Muon theMu, edm::Handle<edm::View<reco::GenParticle>>& genParticles);
-  short int FindMuonMCSimpleCode(const pat::Muon theMu, edm::Handle<edm::View<reco::GenParticle>>& genParticles);
-  int FindMuonAncestor(const pat::Muon theMu, edm::Handle<edm::View<reco::GenParticle>>& genParticles);
-  int LookForMotherStringId(reco::GenParticle theGenP);
-  short int LookForMotherString(reco::GenParticle theGenP);
- 
-  // -------------------------------------------------------------------------
+  void processHLTBits(const edm::Event& iEvent);
 
-  const TrackerGeometry* m_tracker;
   bool isMCstudy_;
   bool isMINIAOD_;
   std::string outputFile_; // output file
@@ -134,23 +103,11 @@ private:
   edm::EDGetTokenT<GenFilterInfo> genFilterTok;
 
   edm::InputTag genParticlesLabel;
-  edm::EDGetTokenT<edm::View<reco::GenParticle>> genParticlesTok;
+  edm::EDGetTokenT<std::vector<reco::GenParticle>> genParticlesTok;
   edm::InputTag MuonTag;
   edm::EDGetTokenT<edm::View<reco::Muon>> MuonTagTok;
-  edm::InputTag JetTag;
-  edm::EDGetTokenT<edm::View<pat::Jet>> JetTagTok;
   edm::InputTag PhotonTag;
   edm::EDGetTokenT<edm::View<reco::Photon>> PhotonTagTok;
-  edm::InputTag PFCandTag;
-  edm::EDGetTokenT<edm::View<reco::Candidate>> PFCandTagTok;
-  edm::InputTag OOTPhotonTag;
-  edm::EDGetTokenT<edm::View<pat::Photon>> OOTPhotonTagTok;
-  edm::InputTag ElectronTag;
-  edm::EDGetTokenT<edm::View<pat::Electron>> ElectronTagTok;
-  edm::InputTag SuperClusterTag;
-  edm::EDGetTokenT<edm::View<reco::SuperCluster>> SuperClusterTagTok;
-  edm::InputTag OOTSuperClusterTag;
-  edm::EDGetTokenT<edm::View<reco::SuperCluster>> OOTSuperClusterTagTok;
   edm::InputTag PUInfo;
   edm::EDGetTokenT<edm::View<PileupSummaryInfo>> PUInfoTok;
   edm::InputTag vertexBeamSpot;
@@ -159,127 +116,33 @@ private:
   edm::EDGetTokenT<std::vector<reco::Vertex>> primaryvertexTok;
   edm::InputTag triggerbits;
   edm::EDGetTokenT<edm::TriggerResults> triggerbitsTok;
-  edm::InputTag prescale;
-  edm::EDGetTokenT<pat::PackedTriggerPrescales> prescaleTok;
-  edm::InputTag triggerobj;
-  edm::EDGetTokenT<edm::View<pat::TriggerObjectStandAlone>> triggerobjTok;
-  edm::InputTag pfSupcluster; 
-   edm::InputTag triggerSummaryTag;
-  edm::EDGetTokenT<trigger::TriggerEvent> triggerSummaryTok;
-  edm::EDGetTokenT<std::vector<reco::SuperCluster>>pfSupclusterTok; 
-  edm::InputTag ecalrechitEB; 
+  edm::InputTag ecalrechitEB;
   edm::EDGetTokenT<EcalRecHitCollection> ecalrechitEBTok;
-  edm::InputTag ecalrechitEE; 
+  edm::InputTag ecalrechitEE;
   edm::EDGetTokenT<EcalRecHitCollection> ecalrechitEETok;
-  edm::InputTag ecalrechitES;
-  edm::EDGetTokenT<EcalRecHitCollection> ecalrechitESTok;
   edm::InputTag valMapTag;
   edm::EDGetTokenT<edm::ValueMap<float>> valMapTok;
 
-  edm::InputTag valMapPhoTightTag;
-  edm::EDGetTokenT<edm::ValueMap<bool>> valMapPhoTightTok;
-
-  //edm::InputTag pfCandTag;
-  //edm::EDGetTokenT<edm::View<pat::PackedCandidate>> pfCandTagTok;
+  // AOD: reco::Track collection; MINIAOD: packedPFCandidates + lostTracks
   edm::InputTag trackTag;
   edm::EDGetTokenT<std::vector<reco::Track>> trackTagTok;
-  edm::InputTag IsoTrackTag;
-  edm::EDGetTokenT<edm::View<pat::IsolatedTrack>> IsoTrackTagTok;
-  edm::InputTag convertedPhotonsTag;
-  edm::EDGetTokenT<std::vector<pat::CompositeCandidate>> convertedPhotonsTagTok;
+  edm::EDGetTokenT<edm::View<pat::PackedCandidate>> packedTrackTagTok;
+  edm::InputTag lostTrackTag;
+  edm::EDGetTokenT<edm::View<pat::PackedCandidate>> lostTrackTagTok;
   edm::ESGetToken<TransientTrackBuilder, TransientTrackRecord> trackBuilderTok;
   edm::ESGetToken<MagneticField, IdealMagneticFieldRecord> theBFieldTok;
-  edm::ESGetToken<CaloGeometry, CaloGeometryRecord> caloGeomTok;
   unique_ptr<EcalClusterLazyToolsBase::ESGetTokens> iSetupGetTok;
-  
-  HLTConfigProvider                                hltConfig_;
-  bool                                             hltConfigInitialized_;
-  std::string                                      hltProcess_;
-  std::map<std::string, std::vector<bool>>         muTrigMatchMap_;// map: HLT path base name -> per-muon match bool vector (filled per event)
-  std::vector<std::string> getFiltersForPath(const std::string& pathName) const;// Private helper: intrinsically extracts terminal filter labels for a path
-  
-  void processHLTBits(const edm::Event& iEvent);
 
-  
-
-  bool StoreDeDxInfo_;
-  bool verbose_;
-  bool TestVerbose_;
+  // generator summary
   double genXsec_ = -1.0;
   double genXsecErr_ = 0.0;
-  double lumiEquivalent_ = -1.0;
-  double lumiEquivalentErr_ = 0.0;
-  
-  
-  const double nominalJpsiMass;
-  const double nominalPsiMass;
-  const double nominalPhiMass;
-  const double nominalElectronMass;
-  const double nominalMuonMass;
-  const double nominalPiZeroMass;
-  const double nominalEtaMesonMass;
-  const double nominalEtaPrimeMass;
-  const double nominalKaonMass;
-  double PionZeroMassWindowNoFit_;
-  double EtaMesonMassWindowNoFit_;
-  double EtaPrimeMassWindowNoFit_;
-  double JpsiMassWindowBeforeFit_;
-  double JpsiMassWindowAfterFit_;
-  double PhiMassWindowAfterFit_;
-  double PhiMassWindowBeforeFit_;
-  double JpsiPtCut_;
-  double KaonTrackPtCut_;
-  double PsiMassWindowAfterFit_;
-  double PsiMassWindowBeforeFit_;
-  double BsLowerMassCutBeforeFit_;
-  double BsUpperMassCutBeforeFit_;
-  double BdLowerMassCutBeforeFit_ ;
-  double BdUpperMassCutBeforeFit_ ;
-  double BsLowerMassCutAfterFit_ ;
-  double BsUpperMassCutAfterFit_ ;
-
-  double BsPDGMass_;
-  double BdPDGMass_;
-  double BpPDGMass_;
-  double JpsiPDGMass_;
-  double PsiPDGMass_;
-  double PionZeroPDGMass_;
-  double EtaMesonPDGMass_;
-  double EtaPrimePDGMass_;
-
-  double muMVACut_;
-  double photonMVACut_;
-
-
-  unsigned int tagmucounter_;
-  unsigned int event_counter_;
-  unsigned int elecounter_;
-  unsigned int muoncounter_;
-  unsigned int jetcounter_;
-  unsigned int photoncounter_;
-
-  int    isCowboy              = 0;
-  double MuonsDCA              = -9999999;
-  double kaonmass              = 0.493677;
-  double pionmass              = 0.139570; 
-  double muonmass              = 0.105658;
-  double electronmass          = 0.000510;
-  double DeltaRPhotonJpsi      = -9999999;
-  double DeltaRPhotonPsi       = -9999999;
-  double JpsiPhotonDCA         = -9999999;
-  double PsiPhotonDCA          = -9999999;
-  double minVtxP               = -9999999;
-  double KKDCA                = -9999999; 
   double filterEff_ = 1.0;
   double filterEffErr_ = 0.0;
-  double MinPtVertex = 0.0;
-  int    NSelectedVertices;
-  double PtSumVertex = 0.0;
-  std::set<size_t> excludedPhotons;
-  TLorentzVector muonleg1 , muonleg2;
-	TLorentzVector photonleg1, photonleg2;
-  TLorentzVector bsleg;
-  TVector3 pgamma, pbs, pdigamma;
-  TVector3 mu1vec, mu2vec;
+  GenFilterInfo totalGenFilter_;      // filter counts merged over all luminosity blocks of the job
+  bool hasGenFilter_ = false;
+  double lumiEquivalent_ = -1.0;
+  double lumiEquivalentErr_ = 0.0;
+
+  unsigned int event_counter_;
 };
 #endif

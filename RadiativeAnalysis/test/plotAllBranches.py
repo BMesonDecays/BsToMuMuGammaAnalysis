@@ -6,7 +6,7 @@ chain = ROOT.TChain("tree")
 for f in sys.argv[1:]:
     chain.Add(f)
 
-out = "branches.pdf"
+out = str(sys.argv[1])[:-5]+".pdf"
 canvas = ROOT.TCanvas("c", "c", 800, 600)
 canvas.Print(out + "[")
 for br in chain.GetListOfBranches():

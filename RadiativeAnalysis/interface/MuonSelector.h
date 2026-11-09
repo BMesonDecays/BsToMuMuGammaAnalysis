@@ -16,14 +16,6 @@ public:
     MuonSelector();
     ~MuonSelector();
 
-    /// Select the muon pair from a vector of reco::Muon objects
-    std::pair<std::vector<reco::Muon>, std::vector<float>> selectMuonPair(
-        const std::vector<reco::Muon>& muons,
-        const TransientTrackBuilder& transientTrackBuilder,
-        const reco::BeamSpot& beamSpot,
-        std::vector<float> mvaScores,
-        double mvaCut);
-
     // Return all muon pairs passing the selection and common vertex criteria
     // return a tuple with 3 vectors: firstMuonIndex, secondMuonIndex, commonVertexProbability
     // MuonCollection can be e.g. std::vector<reco::Muon> or edm::View<reco::Muon>
@@ -31,6 +23,9 @@ public:
     std::tuple < std::vector<size_t>, std::vector<size_t>, std::vector<double> > selectMuonPairs(
         const MuonCollection& muons,
         const TransientTrackBuilder& transientTrackBuilder);
+
+    /// Minimum transverse momentum required for each muon of the pair [GeV]
+    static constexpr double muonPtCut = 3.0;
 
 private:
     /// Check if a muon passes selection criteria
