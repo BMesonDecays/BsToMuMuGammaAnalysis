@@ -33,6 +33,32 @@ Entries are newest first.
 
 ---
 
+## 2026-11-09: CRAB submission for many datasets from a YAML task file
+- **Requests:**
+  1. The data type (AOD/MiniAOD) must be a job parameter.
+  2. Submit tasks on many datasets with one script, following the CRAB library API (twiki `CRABClientLibraryAPI`).
+  3. Set the parameters in a config file, not on the command line.
+- **Problem found in the existing tasks** (`crab_projects/crab_Parking2022C`, `crab_BsTo2MuG`, MiniAOD datasets submitted with the old `crabConfig.py`):
+  - `dataFormat` was not passed. Without `inputFiles`, `runNtuplizer_cfg.py` takes the format from the default test sample (AOD), so the jobs ran the AOD configuration on MiniAOD.
+  - The Parking jobs fail with `ProductNotFound`. The MC task will fail the same way.
+- **New `crab/submitCrab.py` + `crab/tasks_example.yaml`** (replaces the environment-variable `crabConfig.py`):
+  - **Task file (YAML):** `defaults` plus a list of `tasks`.
+    - A task has a `dataset`, a list of `datasets` (one task each, names from the dataset names) or a `fileList` (private LFNs).
+    - It can set `isMC`, `dataFormat`, `lumiMask`, `runRange`, splitting, resources, output site/LFN, `tag` and `options` (any `runNtuplizer_cfg.py` option: `skim`, `skimMinVtxProb`, `globalTag`, `channels`, …).
+  - **Data type:** `isMC` and `dataFormat` default to the data tier of the dataset (…SIM = MC, AOD/MINIAOD); explicit values must agree with it. They are always passed to cmsRun.
+  - **Checks before anything is submitted:** unknown keys (typos), malformed dataset names, options the script sets itself, request-name length and characters, duplicate names; a warning for data without a lumi mask.
+  - **Submission:** `crabCommand('submit', config=…)`, each task in its own `multiprocessing.Process`, as in the twiki. CRAB imports the CMSSW configuration once per Python session, so different `pyCfgParams` per task need separate processes.
+    - Tasks whose project directory exists are skipped; there is a summary of submitted, skipped and failed tasks.
+    - `--dry-run` prints the configurations without contacting CRAB; `--tasks` selects tasks by glob; `--command status|resubmit|kill` runs over the same tasks.
+  - **Paths:** the pset path is absolute, so the script runs from any directory. A relative `workArea` is relative to the task file. `crab_projects/` is git-ignored.
+- **Tests:**
+  - `--dry-run` of the example file: the expected configurations, with `dataFormat=MINIAOD` and the right `isMC`.
+  - Validation errors: AOD on a MINIAOD dataset, `isMC` on data, a key typo, a reserved option, duplicate names, a `fileList` without `dataFormat`.
+  - The generated `pyCfgParams` were run locally with cmsRun on the MiniAOD test files (300 events each): data with skim 300 → 10 stored; MC without skim 300 → 300.
+  - `--command status` reaches CRAB with the right project directories. The live query was not possible in this session: no grid proxy.
+  - **Nothing was submitted.**
+- **To do (user):** kill the two old tasks and resubmit with `submitCrab.py`. Choose the global tags: the example uses `130X_mcRun3_2022_realistic_v5` for Run3Summer22 MC, while the config default `auto:run3_mc_FULL` is the 2024 MC GT in CMSSW_14_1_1.
+
 ## 2026-11-09: Event skim, store only events with a valid B candidate
 - **Request:** Run-3 data ntuples must stay small. Add a switch that keeps only the events with valid B candidates.
 - **Module parameters:**

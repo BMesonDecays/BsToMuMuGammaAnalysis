@@ -17,7 +17,7 @@ CMSSW_14_1_1/src/
         ├── plugins/                 EDM modules: RadiativeAnalysis, MMGVertexFitExample, BMMGCustomPhotonProducer
         ├── python/                  testFiles.py (reads test/test_files.txt)
         ├── test/                    configs, unit tests, validation and regression scripts, test_files.txt
-        ├── crab/                    crabConfig.py, makeFileList.py
+        ├── crab/                    submitCrab.py + tasks_example.yaml (CRAB API, many datasets), makeFileList.py
         └── devel/                   not compiled: old debugging analyzers
 ```
 
@@ -212,7 +212,7 @@ No cut is made on the fit χ² or probability. **Recommended offline:** `<p>vtxP
 ---
 
 ### 3.9 Event skim (optional, off by default)
-- Switch: `skim=1` in `runNtuplizer_cfg.py` (`BMMG_SKIM=1` for CRAB); module parameter `onlyEventsWithCandidates`.
+- Switch: `skim=1` in `runNtuplizer_cfg.py` (`options: {skim: 1}` in the CRAB task file); module parameter `onlyEventsWithCandidates`.
 - An event is written if at least one candidate of any enabled channel (`mmg`, `mmcg`, `mmgg`, `mmkk`) has a successful fit (§3.5) and, if `skimMinVtxProb` / `minCandidateVtxProb` ≥ 0, a vertex probability above it (default −1: any successful fit).
 - Events without a dimuon with a valid vertex are rejected before the candidates are built.
 - `RunInfo.nEvents` still counts all processed events; `RunInfo.nEventsStored` the written ones.

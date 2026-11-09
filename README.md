@@ -38,7 +38,20 @@ cmsRun runNtuplizer_cfg.py testSample=15 skim=1             # store only events 
 - The test input files are listed in `RadiativeAnalysis/test/test_files.txt`; `python3 RadiativeAnalysis/python/testFiles.py` prints them with their `testSample` index. Besides B_s → μμγ and data there are MC samples (AOD and MiniAOD) of B_s → J/ψγ, φγ, J/ψπ⁰, J/ψη, J/ψη′ and B_d → μμγ.
 - The ntuple content is documented in **[NTUPLE.md](NTUPLE.md)**.
 
-Grid submission uses one config for MC and data, `RadiativeAnalysis/crab/crabConfig.py`. The sample is set with environment variables; see the header of the file.
+### Grid submission (CRAB)
+All tasks (data and MC, AOD and MiniAOD, any number of datasets) are described in a YAML task file and submitted with one script. Each submission goes through the CRAB library API in its own process:
+```bash
+cd BsToMuMuGammaAnalysis/RadiativeAnalysis/crab
+source /cvmfs/cms.cern.ch/common/crab-setup.sh
+voms-proxy-init -voms cms -valid 192:00
+python3 submitCrab.py tasks_example.yaml --dry-run          # print the generated CRAB configurations
+python3 submitCrab.py tasks_example.yaml                    # submit every task (existing project directories are skipped)
+python3 submitCrab.py tasks_example.yaml --tasks 'Parking*' # only some tasks
+python3 submitCrab.py tasks_example.yaml --command status   # also: resubmit, kill
+```
+- `tasks_example.yaml` documents the keys: dataset(s) or file list, `isMC`, `dataFormat`, lumi mask, splitting, output site, and the `runNtuplizer_cfg.py` options (`skim`, `globalTag`, `channels`, …).
+- `isMC` and `dataFormat` default to the dataset's data tier and must agree with it.
+- `makeFileList.py` writes the LFN list for private samples.
 
 ## Layout
 | path | content |

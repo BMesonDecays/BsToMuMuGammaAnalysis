@@ -2,3 +2,4 @@
 RadiativeAnalysis/test/reference/
 __pycache__/
 *.pyc
+crab_projects/

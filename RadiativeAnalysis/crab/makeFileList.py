@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Write a list of LFNs (for crabConfig.py, BMMG_FILELIST) from a glob pattern of files on /eos/cms.
+"""Write a list of LFNs (for a "fileList" task of submitCrab.py) from a glob pattern of files on /eos/cms.
 
     python3 makeFileList.py '/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToMuMuGamma_*/**/*.root' BsToMuMuGammaFileList.txt
 """

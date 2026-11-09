@@ -1,0 +1,61 @@
+# Task file for submitCrab.py: one CRAB task per dataset.
+#
+#   python3 submitCrab.py tasks_example.yaml --dry-run    # check the generated CRAB configurations
+#   python3 submitCrab.py tasks_example.yaml              # submit
+#   python3 submitCrab.py tasks_example.yaml --command status
+#
+# "defaults" apply to every task; a task can override any of them. "options" are merged key by key.
+#
+# Task keys:
+#   dataset          input dataset (DAS name)
+#   datasets         list of datasets: one task per dataset, same settings, names from the dataset names
+#   fileList         instead of a dataset: text file with LFNs (one per line; e.g. from makeFileList.py),
+#                    relative to this directory; needs name, isMC and dataFormat
+#   name             request name (default: <primary dataset>_<processed dataset>); the CRAB project
+#                    directory is <workArea>/crab_<name>[_<tag>]
+#   tag              suffix of the request name and of the output directory, e.g. a production version
+#   isMC             true / false        default: from the data tier (…SIM = MC); must agree with it
+#   dataFormat       AOD / MINIAOD       default: from the data tier; must agree with it
+#   lumiMask         JSON file or URL of certified lumi sections (data); applied by CRAB
+#   runRange         e.g. "355100-357900" (data)
+#   splitting        default LumiBased (data datasets) / FileBased (MC, file lists)
+#   unitsPerJob      default 50 lumis (LumiBased) / 5 files (FileBased)
+#   totalUnits       limit the number of units (tests)
+#   maxMemoryMB, maxJobRuntimeMin, numCores
+#   workArea         CRAB project directories, relative to this file (default crab_projects)
+#   outLFNDirBase    default /store/user/{user}/bmmg_ntuples ({user} = your CERN user name)
+#   storageSite      default T3_CH_CERNBOX
+#   whitelist, blacklist   lists of sites (file lists run at T2_CH_CERN unless a whitelist is given)
+#   options          options of test/runNtuplizer_cfg.py (key: value), e.g. skim, skimMinVtxProb,
+#                    globalTag, channels, photonID, trackCompatibility. isMC, dataFormat and outputFile
+#                    are set by the script from the task.
+
+defaults:
+  tag: v1
+  storageSite: T3_CH_CERNBOX
+  outLFNDirBase: /store/user/{user}/bmmg_ntuples
+  options:
+    skim: 1                  # store only events with a valid B candidate
+    skimMinVtxProb: 1.0e-3   # ... whose vertex probability is > 1e-3
+
+tasks:
+  # ---------------------------------------------------------------- data, 2022C, MiniAOD
+  - datasets:
+      - /ParkingDoubleMuonLowMass0/Run2022C-PromptReco-v1/MINIAOD
+      - /ParkingDoubleMuonLowMass1/Run2022C-PromptReco-v1/MINIAOD
+    lumiMask: /eos/user/c/cmsdqm/www/CAF/certification/Run3/PromptReco/Run3_2022_2023_Golden.json
+    options:
+      globalTag: auto:run3_data_prompt
+
+  # ---------------------------------------------------------------- MC, MiniAOD
+  - name: BsTo2MuG_Run3Summer22
+    dataset: /BsTo2MuG_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/Run3Summer22MiniAODv4-130X_mcRun3_2022_realistic_v5-v2/MINIAODSIM
+    options:
+      globalTag: 130X_mcRun3_2022_realistic_v5   # the GT of the campaign
+      skim: 0                                     # keep all MC events (efficiencies)
+
+  # ---------------------------------------------------------------- private MC from a file list
+  # - name: BsToMuMuGamma_private
+  #   fileList: BsToMuMuGammaFileList.txt
+  #   isMC: true
+  #   dataFormat: AOD
