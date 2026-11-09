@@ -249,6 +249,13 @@ def _command(command, directory):
         print('SUMMARY %s: task %s, %d jobs: %s' % (os.path.basename(directory), result.get('status'), total, summary))
 
 
+def banner(i, n, command, t):
+    """Separator printed before the output of each task."""
+    line = '#' * 100
+    print('\n%s\n#  [%d/%d]  %s  %s\n#  %s\n%s' % (line, i, n, command.upper(), t['requestName'],
+                                                t.get('dataset') or 'file list ' + t.get('fileList', ''), line), flush=True)
+
+
 def runInProcess(target, *args):
     p = Process(target=target, args=args)
     p.start()
@@ -278,9 +285,15 @@ def main():
         sys.exit('no task selected')
 
     if args.command != 'submit':
-        missing = [t['requestName'] for t in tasks if not os.path.isdir(projectDir(t))]
-        failed = [t['requestName'] for t in tasks if t['requestName'] not in missing
-                  and not runInProcess(_command, args.command, projectDir(t))]
+        missing, failed = [], []
+        for i, t in enumerate(tasks, 1):
+            banner(i, len(tasks), args.command, t)
+            if not os.path.isdir(projectDir(t)):
+                print('  no project directory %s: not submitted' % projectDir(t))
+                missing.append(t['requestName'])
+            elif not runInProcess(_command, args.command, projectDir(t)):
+                failed.append(t['requestName'])
+        print('\n' + '#' * 100)
         print('\ncrab %s for %d task(s); failed: %s; not submitted (no project directory): %s'
               % (args.command, len(tasks) - len(missing), failed or 'none', missing or 'none'))
         sys.exit(1 if failed else 0)
@@ -291,10 +304,9 @@ def main():
         user = getUsername()   # needs a valid grid proxy
 
     submitted, skipped, failed = [], [], []
-    for t in tasks:
+    for i, t in enumerate(tasks, 1):
         config = crabConfig(t, user)
-        print('=' * 100)
-        print('task %s' % t['requestName'])
+        banner(i, len(tasks), 'dry-run' if args.dry_run else 'submit', t)
         if args.dry_run:
             print(config)
             continue
@@ -305,7 +317,8 @@ def main():
         (submitted if runInProcess(_submit, config) else failed).append(t['requestName'])
 
     if not args.dry_run:
-        print('\nsubmitted: %s\nskipped (existing project directory): %s\nfailed: %s'
+        print('\n' + '#' * 100)
+        print('submitted: %s\nskipped (existing project directory): %s\nfailed: %s'
               % (submitted or 'none', skipped or 'none', failed or 'none'))
         sys.exit(1 if failed else 0)
 

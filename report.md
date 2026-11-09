@@ -57,6 +57,7 @@ Entries are newest first.
   - The generated `pyCfgParams` were run locally with cmsRun on the MiniAOD test files (300 events each): data with skim 300 → 10 stored; MC without skim 300 → 300.
   - `--command status` reaches CRAB with the right project directories. The live query was not possible in this session: no grid proxy.
   - **Nothing was submitted.**
+- **Output:** every task (submit, dry-run, status, resubmit, kill) starts with a banner: `[i/n] COMMAND request name`, plus the dataset.
 - **To do (user):** kill the two old tasks and resubmit with `submitCrab.py`. Choose the global tags: the example uses `130X_mcRun3_2022_realistic_v5` for Run3Summer22 MC, while the config default `auto:run3_mc_FULL` is the 2024 MC GT in CMSSW_14_1_1.
 
 ## 2026-11-09: Event skim, store only events with a valid B candidate
