@@ -24,12 +24,64 @@ Entries are newest first.
   2. **Known limitation:** run-to-run differences in fits that don't converge (χ² ≫ ndf). valgrind finds no memory error; cut on `vtxProb`.
   3. **Not validated:**
      - μμKK on B_s→J/ψφ MC (no sample available);
-     - μμγγ: only 4 gen-matched candidates on J/ψπ⁰ MC (the soft photons are not reconstructed);
+     - μμγγ: few gen-matched candidates on the J/ψπ⁰/η/η′ MC (2 / 47 / 8, 2026-11-09 entry): the soft photons are rarely reconstructed;
      - the CRAB config was not submitted.
   4. **MiniAOD:** no conversion channel, and few low-pt photons (`slimmedPhotons` threshold).
   5. **Open:** low-energy photon cores for `BMMGCustomPhotonProducer` (Phase 9 research).
   6. **Not committed:** the reference ntuples in `RadiativeAnalysis/test/reference/` (git-ignored, local only).
  Each entry gives: the plan item(s) (see `plan.md`), what was done, the build result, the validation result, and open issues.
+
+---
+
+## 2026-11-09: Check on MC samples of other decay modes; MiniAOD gen fix
+- **Samples:** the new `test_files.txt` entries (indices 3–14). B_s → J/ψγ, φγ (φ → μμ), J/ψπ⁰, J/ψη, J/ψη′ and B_d → μμγ, each in AOD and MiniAOD, plus B_s → μμγ (0, 1) as baseline. 3000 events each (J/ψη′ AOD: all 771 events). All 14 jobs ran without errors.
+  - The data samples moved to indices 15 (AOD) and 16 (MiniAOD); README and the config header are updated.
+- **New tool:** `test/checkDecayModes.py` prints the gen summary and the per-channel candidate summary of an ntuple.
+- **Bugs found and fixed (`GenDecayChain`):**
+  1. **MiniAOD, π⁰/η/η′ modes:** `prunedGenParticles` drops most photons from π⁰/η/η′ → γγ (e.g. 99 of 303 π⁰ keep their photons). Only about 20% of the events got the right `gen_decayMode`; the rest got 0. The photon gen matching also failed.
+     - **Fix:** the analyzer also reads `packedGenParticles` (new parameter `packedGenParticles`, MiniAOD only). Packed particles that are not in the pruned collection (`lastPrunedRef()` not a status-1 copy) are attached to their pruned mother when the decay is walked. The reco–gen matching uses the packed final state. `GenDecayChain` now works on `reco::Candidate*`.
+  2. **Wrong B in ~0.3–0.5% of events (AOD and MiniAOD):** the first B with two muons among its descendants was taken. That can be the other b hadron of the event through semileptonic cascades (B → D μν, D → μX).
+     - **Fix:** the muon count does not follow open-charm hadrons and τ.
+     - **Remaining:** ≤ 0.1% of events where the other b hadron genuinely decays to J/ψ(→μμ)X.
+- **New gen branches:** `gen_neutralMesonPdgId`, `gen_vectorMesonPdgId`, `gen_diphotonMass`, `gen_fourBodyMass`, `gen_helicity4`, `gen_coplanarity4`. They were computed but not written.
+- **Regression (before/after the fix, same events):**
+  - Only gen branches, `mu/pho/conv_gen*` and `<p>genMatched` change, in the events with a corrected B (AOD: 6–13 of 3000). On MiniAOD the matching now uses the packed final state: `mu_genDR` changes at the 1e-5 level (packed precision), and a few photon matches change.
+  - Fit quantities also change for some candidates. This is the known non-determinism of non-converging fits (P7.4 / P8 entries):
+    - `mmg`: 0.3–0.6% of the candidates differ, almost all with vtxProb < 1e-3;
+    - `mmcg`: **4–5%** differ, 0–4 per sample with vtxProb > 1e-3;
+    - `mmkk`: about 15 of 3000 events.
+    - The `mmcg` rate is higher than the ~1% measured in P7.4; it is open (see below).
+- **Results after the fix:** the gen-matched rows use candidates with fitOK and vtxProb > 1e-3; s68 = half of the 16–84% interval.
+
+  | sample | gen_decayMode correct (AOD / MiniAOD) | gen m(μμ) / m(γγ) | mmg fitted − gen B mass, med / s68 [MeV] (AOD) | ct pull s68 (AOD) |
+  |---|---|---|---|---|
+  | B_s→μμγ | 100% / 99.9% | continuum | +3 / 125 | 1.33 |
+  | B_s→J/ψγ | 99.97% / 100% | 3.097 | +8 / 112 (J/ψ-corrected: s68 99) | 1.28 |
+  | B_s→φγ | 99.9% / 99.9% | 1.019 | −5 / 162 | 1.36 |
+  | B_d→μμγ | 99.97% / 100% | continuum, m_B = 5.2795 | +14 / 122 | 1.46 (median +0.25: ct uses m(B_s), see NTUPLE.md) |
+  | B_s→J/ψπ⁰ | 99.9% / 99.97% | 0.135 | −98 / 228 (one cluster = merged π⁰) | 1.63 |
+  | B_s→J/ψη | 100% / 100% | 0.548 | −442 / 341 (one photon missing) | 2.56 |
+  | B_s→J/ψη′ | 100% / 99.97% | 0.958 | −587 / 284 (one photon missing) | 2.65 |
+
+- **Observations, consistent with expectations:**
+  - **Gen:** the B species, B mass, dimuon resonance mass and m(γγ) are right in every sample. The 4-body modes are classified as 4-body; J/ψγ and φγ as 3-body. `gen_isSignal` is 1 only for B_s/B_d → μμγ (by design).
+  - **Muons:** both signal muons are reconstructed in 78–84% of the events in all samples.
+  - **Photons:** ≥ 1 signal photon is reconstructed in 22–33% of the events (AOD), 18–28% (MiniAOD, `slimmedPhotons` threshold). ≥ 2 signal photons only in 0.2% (π⁰), 2–3% (η) and 3–4% (η′).
+    - So `mmgg` has very few candidates: 47 matched on 3000 J/ψη AOD events, 8 on 771 J/ψη′, 2 on J/ψπ⁰. This is the low-energy photon reconstruction of Phase 9.
+  - **mmg on the 3-body modes:** the fitted mass is unbiased (|median| ≤ 14 MeV) with 110–160 MeV resolution (φγ is wider: harder spectrum). The highest-vtxProb candidate is the gen-matched one in 83–87% (AOD) and 98% (MiniAOD) of the events with a matched candidate.
+  - **mmg on the 4-body modes** (`genMatched` means all legs come from the signal B, so partial reconstruction counts):
+    - J/ψη, J/ψη′: the mass is shifted down by the missing photon, and the ct pull is biased because of the missing momentum.
+    - J/ψπ⁰: the single "photon" is mostly the merged π⁰ cluster, so the mass is near m(B_s).
+  - **Photon energy response:** reco pt / gen pt of the matched photon is about 1.00 in B_s→μμγ and J/ψγ, 1.03–1.11 in J/ψη/η′ and 1.3–2.7 in J/ψπ⁰. The other photon of the meson overlaps with the cluster.
+    - Because of this the `mmgg` m(γγ) of J/ψη is high (median 0.66 instead of 0.548, n = 65), and the J/ψη `mmgg` pre-fit mass is +0.38 GeV.
+    - For J/ψη′ m(γγ) = 0.94–0.98, close to 0.958.
+  - **mmcg (AOD):** about 47% of the candidate fits succeed (the conversion refit succeeds for about 53% of conversions, P7). The fitted mass is 60–135 MeV low (electron energy loss).
+  - **mmkk:** no gen-matched candidates in these samples (none of them has kaons), as expected. There are 0.4–0.5 random J/ψ + track-pair candidates per event in the J/ψ samples.
+  - **ct:** the pulls (s68 1.28–1.46 for the 3-body modes) agree with the B_s→μμγ validation (P1.6).
+- **Open:**
+  - The `mmcg` non-determinism rate (~4% of candidates, a few with vtxProb > 1e-3).
+  - No J/ψφ (μμKK) sample to validate `mmkk`.
+- **Build:** clean; unit tests pass.
 
 ---
 

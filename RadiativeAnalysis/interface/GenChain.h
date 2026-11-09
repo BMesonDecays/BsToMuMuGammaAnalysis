@@ -2,6 +2,7 @@
 #define BsToMuMuGammaAnalysis_RadiativeAnalysis_GenChain_h
 
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
+#include "DataFormats/PatCandidates/interface/PackedGenParticle.h"
 #include "SimDataFormats/GeneratorProducts/interface/HepMCProduct.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenRunInfoProduct.h"
 #include "DataFormats/Math/interface/deltaR.h"
@@ -21,6 +22,7 @@
 #include <cfloat>
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 #include "TLorentzVector.h"
 #include "TVector3.h"
@@ -189,10 +191,12 @@ public:
             decayModeMatched(false) {}
     };
    
-    // ------------------------------------------------------------------------
-    // Constructor: Store reference to gen particles
-    // ------------------------------------------------------------------------
-    explicit GenDecayChain(const std::vector<reco::GenParticle>& genParticles);
+    // genParticles: genParticles (AOD) or prunedGenParticles (MiniAOD).
+    // packed: packedGenParticles (MiniAOD), or nullptr. The pruned collection drops most final-state
+    // photons (e.g. from pi0 / eta decays); with the packed collection they are attached to their
+    // pruned mother when the decay is walked, and the truth matching uses the packed final state.
+    explicit GenDecayChain(const std::vector<reco::GenParticle>& genParticles,
+                           const std::vector<pat::PackedGenParticle>* packed = nullptr);
    
     ~GenDecayChain() = default;
     const GenInfo& info() const { return info_; }
@@ -225,22 +229,28 @@ public:
     // true if the gen particle of a match descends from the signal B of the event
     bool fromSignalB(const TruthMatchInfo& match) const;
     // the gen particle of a match (nullptr if not matched)
-    const reco::GenParticle* genParticle(const TruthMatchInfo& match) const {
-        return (match.genIndex >= 0) ? &genParticles_[match.genIndex] : nullptr;
+    const reco::Candidate* genParticle(const TruthMatchInfo& match) const {
+        return (match.genIndex >= 0) ? finalState_[match.genIndex] : nullptr;
     }
    
 private:
     GenInfo info_;
-    const std::vector<reco::GenParticle>& genParticles_;  
-   
-  
-    const reco::GenParticle* BMeson_;
-    const reco::GenParticle* muPlus_;
-    const reco::GenParticle* muMinus_;
-    std::vector<const reco::GenParticle*> photons_;
-    const reco::GenParticle* jpsi_;
-    const reco::GenParticle* neutralMeson_;
-    const reco::GenParticle* vectorMeson_;
+    const std::vector<reco::GenParticle>& genParticles_;
+    // final-state particles used for the truth matching: packed (MiniAOD) or status-1 genParticles (AOD)
+    std::vector<const reco::Candidate*> finalState_;
+    // packed final-state particles that are not in the pruned collection, keyed by their pruned mother
+    std::unordered_multimap<const reco::Candidate*, const reco::Candidate*> packedChildren_;
+
+    const reco::Candidate* BMeson_;
+    const reco::Candidate* muPlus_;
+    const reco::Candidate* muMinus_;
+    std::vector<const reco::Candidate*> photons_;
+    const reco::Candidate* jpsi_;
+    const reco::Candidate* neutralMeson_;
+    const reco::Candidate* vectorMeson_;
+
+    // daughters of a particle, including the packed final-state children (MiniAOD)
+    std::vector<const reco::Candidate*> daughters(const reco::Candidate* mother) const;
    
  
     void analyze();
@@ -253,11 +263,11 @@ private:
     void fillDileptonVariables();
    
   
-    void processDaughters(const reco::GenParticle* mother);
-    void processCascade(const reco::GenParticle* intermediate);
+    void processDaughters(const reco::Candidate* mother);
+    void processCascade(const reco::Candidate* intermediate);
     void identifyResonances();
-    int classifyPhotonOrigin(const reco::GenParticle* photon) const;
-    bool isFromHardProcess(const reco::GenParticle* particle) const;
+    int classifyPhotonOrigin(const reco::Candidate* photon) const;
+    bool isFromHardProcess(const reco::Candidate* particle) const;
    
   
     float computeHelicity(const TLorentzVector& daughter, const TLorentzVector& parent) const;
@@ -270,11 +280,13 @@ private:
     float computeProperTime(const TVector3& prod, const TVector3& decay,
                            const TLorentzVector& p4) const;
    
-    const reco::GenParticle* findMother(const reco::GenParticle* particle) const;
-    bool isAncestor(const reco::GenParticle* ancestor, const reco::GenParticle* particle) const;
+    const reco::Candidate* findMother(const reco::Candidate* particle) const;
+    bool isAncestor(const reco::Candidate* ancestor, const reco::Candidate* particle) const;
     void sortPhotonsByPt();
 
-    int countMuonsInDecayChain(const reco::GenParticle* particle) const;
+    // muons from the decay of a particle; open-charm hadrons and taus are not followed
+    // (semileptonic cascades of the other b hadron of the event)
+    int countMuonsInDecayChain(const reco::Candidate* particle) const;
 };
 
 #endif

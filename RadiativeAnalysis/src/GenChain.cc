@@ -7,7 +7,19 @@
 using namespace std;
 
 
-GenDecayChain::GenDecayChain(const std::vector<reco::GenParticle>& genParticles_in) :
+namespace {
+  // hadron with exactly one charm quark (D, D*, Lambda_c, ...); charmonium is not included
+  bool isOpenCharm(int pdgId) {
+    const int a = std::abs(pdgId);
+    const int q1 = (a / 1000) % 10, q2 = (a / 100) % 10, q3 = (a / 10) % 10;
+    if (q2 == 0) return false;               // not a hadron
+    const int nCharm = (q1 == 4) + (q2 == 4) + (q3 == 4);
+    return nCharm == 1;
+  }
+}
+
+GenDecayChain::GenDecayChain(const std::vector<reco::GenParticle>& genParticles_in,
+                             const std::vector<pat::PackedGenParticle>* packed) :
     genParticles_(genParticles_in),
     BMeson_(nullptr),
     muPlus_(nullptr),
@@ -16,6 +28,19 @@ GenDecayChain::GenDecayChain(const std::vector<reco::GenParticle>& genParticles_
     neutralMeson_(nullptr),
     vectorMeson_(nullptr)
 {
+    if (packed) {
+        for (const auto& q : *packed) {
+            finalState_.push_back(&q);
+            // a packed particle that is also kept in the pruned collection points to its pruned copy
+            const auto& pruned = q.lastPrunedRef();
+            const bool inPruned = pruned.isNonnull() && pruned.isAvailable() && pruned->status() == 1;
+            if (!inPruned && q.numberOfMothers() > 0 && q.mother(0))
+                packedChildren_.emplace(q.mother(0), &q);
+        }
+    } else {
+        for (const auto& p : genParticles_)
+            if (p.status() == 1) finalState_.push_back(&p);
+    }
     analyze();
 }
 void GenDecayChain::analyze() {
@@ -49,13 +74,9 @@ void GenDecayChain::findBMeson() {
 
             if (nMuons == 2) {
                 // now find the oldest ancestor B meson in the chain (handle oscillations)
-                const reco::GenParticle* current = &p;
+                const reco::Candidate* current = &p;
                 while (current->mother() && abs(current->mother()->pdgId()) == absId)
-                {
-                    const reco::GenParticle* mother = dynamic_cast<const reco::GenParticle*>(current->mother());
-                    if (!mother) break;
-                    current = mother;
-                }
+                    current = current->mother();
                 BMeson_ = current;
                 info_.motherPdgId = current->pdgId();
                 return;
@@ -86,12 +107,20 @@ void GenDecayChain::walkDecayChain() {
 }
 
 // Process daughters of a given particle
-void GenDecayChain::processDaughters(const reco::GenParticle* mother) {
+std::vector<const reco::Candidate*> GenDecayChain::daughters(const reco::Candidate* mother) const {
+    std::vector<const reco::Candidate*> d;
+    if (!mother) return d;
+    for (size_t i = 0; i < mother->numberOfDaughters(); ++i)
+        if (mother->daughter(i)) d.push_back(mother->daughter(i));
+    auto range = packedChildren_.equal_range(mother);
+    for (auto it = range.first; it != range.second; ++it) d.push_back(it->second);
+    return d;
+}
+
+void GenDecayChain::processDaughters(const reco::Candidate* mother) {
     if (!mother) return;
    
-    for (size_t i = 0; i < mother->numberOfDaughters(); ++i) {
-        const reco::GenParticle* dau = dynamic_cast<const reco::GenParticle*>(mother->daughter(i));
-        if (!dau) continue;
+    for (const reco::Candidate* dau : daughters(mother)) {
        
         int dauId = dau->pdgId();
         int absDauId = abs(dauId);
@@ -142,12 +171,10 @@ void GenDecayChain::processDaughters(const reco::GenParticle* mother) {
 }
 
 
-void GenDecayChain::processCascade(const reco::GenParticle* intermediate) {
+void GenDecayChain::processCascade(const reco::Candidate* intermediate) {
     if (!intermediate) return;
    
-    for (size_t i = 0; i < intermediate->numberOfDaughters(); ++i) {
-        const reco::GenParticle* dau = dynamic_cast<const reco::GenParticle*>(intermediate->daughter(i));
-        if (!dau) continue;
+    for (const reco::Candidate* dau : daughters(intermediate)) {
        
         int dauId = dau->pdgId();
         int absDauId = abs(dauId);
@@ -205,7 +232,7 @@ void GenDecayChain::extractKinematics() {
     if (muPlus_) {
         info_.hasMuonPlus = true;
         info_.muPlusP4.SetPxPyPzE(muPlus_->px(), muPlus_->py(), muPlus_->pz(), muPlus_->energy());
-        const reco::GenParticle* muPlusMom = findMother(muPlus_);
+        const reco::Candidate* muPlusMom = findMother(muPlus_);
         info_.muPlusMotherId = muPlusMom ? muPlusMom->pdgId() : 0;
         info_.nMuons++;
     }
@@ -213,7 +240,7 @@ void GenDecayChain::extractKinematics() {
     if (muMinus_) {
         info_.hasMuonMinus = true;
         info_.muMinusP4.SetPxPyPzE(muMinus_->px(), muMinus_->py(), muMinus_->pz(), muMinus_->energy());
-        const reco::GenParticle* muMinusMom = findMother(muMinus_);
+        const reco::Candidate* muMinusMom = findMother(muMinus_);
         info_.muMinusMotherId = muMinusMom ? muMinusMom->pdgId() : 0;
         info_.nMuons++;
     }
@@ -225,7 +252,7 @@ void GenDecayChain::extractKinematics() {
         pInfo.p4.SetPxPyPzE(photon->px(), photon->py(), photon->pz(), photon->energy());
         pInfo.origin = classifyPhotonOrigin(photon);
        
-        const reco::GenParticle* mother = findMother(photon);
+        const reco::Candidate* mother = findMother(photon);
         pInfo.motherPdgId = mother ? mother->pdgId() : 0;
         pInfo.isHardProcess = isFromHardProcess(photon);
        
@@ -266,12 +293,11 @@ void GenDecayChain::extractVertexInfo() {
     if (!BMeson_) return;
     info_.Bvtx.SetXYZ(BMeson_->vx(), BMeson_->vy(), BMeson_->vz());
     if (BMeson_->numberOfDaughters() > 0) {
-        const reco::GenParticle* firstDau =
-            dynamic_cast<const reco::GenParticle*>(BMeson_->daughter(0));
+        const reco::Candidate* firstDau = BMeson_->daughter(0);
         // find the first daughter after oscillations
         while (firstDau && abs(firstDau->pdgId()) == abs(info_.motherPdgId) &&
                firstDau->numberOfDaughters() > 0) {
-            firstDau = dynamic_cast<const reco::GenParticle*>(firstDau->daughter(0));
+            firstDau = firstDau->daughter(0);
         }
         if (firstDau) {
             info_.Bdecayvtx.SetXYZ(firstDau->vx(), firstDau->vy(), firstDau->vz());
@@ -461,10 +487,10 @@ float GenDecayChain::computeLeptonAngle(const TLorentzVector& lPlus,
 // ============================================================================
 // Classify photon origin
 // ============================================================================
-int GenDecayChain::classifyPhotonOrigin(const reco::GenParticle* photon) const {
+int GenDecayChain::classifyPhotonOrigin(const reco::Candidate* photon) const {
     if (!photon) return PhotonOrigin::pUnknown;
    
-    const reco::GenParticle* mother = findMother(photon);
+    const reco::Candidate* mother = findMother(photon);
    
     // Orphan photon (no mother)
     if (!mother) return PhotonOrigin::pOrphan;
@@ -490,7 +516,7 @@ int GenDecayChain::classifyPhotonOrigin(const reco::GenParticle* photon) const {
     }
    
     // Check grandmother for cascades
-    const reco::GenParticle* grandmother = findMother(mother);
+    const reco::Candidate* grandmother = findMother(mother);
     if (grandmother) {
         int absGmId = abs(grandmother->pdgId());
         if (absGmId == 531 || absGmId == 511) {
@@ -504,23 +530,26 @@ int GenDecayChain::classifyPhotonOrigin(const reco::GenParticle* photon) const {
     return PhotonOrigin::pUnknown;
 }
 
-bool GenDecayChain::isFromHardProcess(const reco::GenParticle* particle) const {
-    if (!particle) return false;
-    return (particle->isHardProcess() || particle->fromHardProcessFinalState());
+bool GenDecayChain::isFromHardProcess(const reco::Candidate* particle) const {
+    if (auto g = dynamic_cast<const reco::GenParticle*>(particle))
+        return (g->isHardProcess() || g->fromHardProcessFinalState());
+    if (auto q = dynamic_cast<const pat::PackedGenParticle*>(particle))
+        return q->fromHardProcessFinalState();
+    return false;
 }
 
 
-const reco::GenParticle* GenDecayChain::findMother(const reco::GenParticle* particle) const {
+const reco::Candidate* GenDecayChain::findMother(const reco::Candidate* particle) const {
     if (!particle || particle->numberOfMothers() == 0) return nullptr;
-    return dynamic_cast<const reco::GenParticle*>(particle->mother(0));
+    return particle->mother(0);
 }
 
 
-bool GenDecayChain::isAncestor(const reco::GenParticle* ancestor,
-                              const reco::GenParticle* particle) const {
+bool GenDecayChain::isAncestor(const reco::Candidate* ancestor,
+                              const reco::Candidate* particle) const {
     if (!ancestor || !particle) return false;
    
-    const reco::GenParticle* current = particle;
+    const reco::Candidate* current = particle;
     while (current) {
         if (current == ancestor) return true;
         current = findMother(current);
@@ -553,14 +582,13 @@ GenDecayChain::TruthMatchInfo GenDecayChain::matchToGen(
     double minDeltaR = 999.;
     int bestMatchIdx = -1;
    
-    // Use stored genParticles_ reference
-    for (size_t i = 0; i < genParticles_.size(); ++i) {
-        const reco::GenParticle& genPart = genParticles_[i];
+    // final-state particles only (no intermediate copies)
+    for (size_t i = 0; i < finalState_.size(); ++i) {
+        const reco::Candidate& genPart = *finalState_[i];
        
         if (expectedPdgId != 0 && abs(genPart.pdgId()) != abs(expectedPdgId)) {
             continue;
         }
-        if (genPart.status() != 1) continue;   // final-state particles only (no intermediate copies)
        
         double dR = deltaR(genPart.eta(), genPart.phi(),
                           recoTrack.eta(), recoTrack.phi());
@@ -578,7 +606,7 @@ GenDecayChain::TruthMatchInfo GenDecayChain::matchToGen(
     }
    
     if (bestMatchIdx >= 0) {
-        const reco::GenParticle& genPart = genParticles_[bestMatchIdx];
+        const reco::Candidate& genPart = *finalState_[bestMatchIdx];
        
         matchInfo.genPdgId = genPart.pdgId();
         matchInfo.deltaR = minDeltaR;
@@ -586,14 +614,12 @@ GenDecayChain::TruthMatchInfo GenDecayChain::matchToGen(
         matchInfo.deltaPt = std::abs(genPart.pt() - recoTrack.pt()) / genPart.pt();
        
         if (genPart.numberOfMothers() > 0) {
-            const reco::GenParticle* mother =
-                dynamic_cast<const reco::GenParticle*>(genPart.mother(0));
+            const reco::Candidate* mother = genPart.mother(0);
             if (mother) {
                 matchInfo.genMotherPdgId = mother->pdgId();
                
                 if (mother->numberOfMothers() > 0) {
-                    const reco::GenParticle* gmother =
-                        dynamic_cast<const reco::GenParticle*>(mother->mother(0));
+                    const reco::Candidate* gmother = mother->mother(0);
                     if (gmother) {
                         matchInfo.genGMotherPdgId = gmother->pdgId();
                     }
@@ -628,7 +654,7 @@ GenDecayChain::TopologyMatch GenDecayChain::matchTopology(
     // a reco object is matched if its gen match descends from the signal B of this event
     // (works for direct B -> mu mu gamma and for cascades via J/psi, eta, ...)
     auto fromSignalB = [this](const TruthMatchInfo& m) {
-        return m.isMatched && m.genIndex >= 0 && isAncestor(BMeson_, &genParticles_[m.genIndex]);
+        return m.isMatched && m.genIndex >= 0 && isAncestor(BMeson_, finalState_[m.genIndex]);
     };
     topoMatch.mu1Info = matchToGen(recoMu1, 13, 0, 0, 0.05, 0.5);
     topoMatch.mu2Info = matchToGen(recoMu2, 13, 0, 0, 0.05, 0.5);
@@ -667,18 +693,15 @@ GenDecayChain::TopologyMatch GenDecayChain::matchTopology(
     return topoMatch;
 }
 
-int GenDecayChain::countMuonsInDecayChain(const reco::GenParticle* particle) const {
+int GenDecayChain::countMuonsInDecayChain(const reco::Candidate* particle) const {
     if (!particle) return 0;
    
     int count = 0;
-    for (size_t i = 0; i < particle->numberOfDaughters(); ++i) {
-        const reco::GenParticle* dau = dynamic_cast<const reco::GenParticle*>(particle->daughter(i));
-        if (!dau) continue;
-       
+    for (const reco::Candidate* dau : daughters(particle)) {
         int absId = abs(dau->pdgId());
         if (absId == 13) {
             count++;
-        } else {
+        } else if (absId != 15 && !isOpenCharm(absId)) {
             count += countMuonsInDecayChain(dau);
         }
     }
@@ -687,5 +710,5 @@ int GenDecayChain::countMuonsInDecayChain(const reco::GenParticle* particle) con
 
 bool GenDecayChain::fromSignalB(const TruthMatchInfo& match) const {
     return match.isMatched && match.genIndex >= 0 && BMeson_ &&
-           isAncestor(BMeson_, &genParticles_[match.genIndex]);
+           isAncestor(BMeson_, finalState_[match.genIndex]);
 }

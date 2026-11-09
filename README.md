@@ -29,12 +29,12 @@ scram b runtests     # unit tests of the analysis library
 ```bash
 cd BsToMuMuGammaAnalysis/RadiativeAnalysis/test
 cmsRun runNtuplizer_cfg.py maxEvents=1000                  # MC AOD test file (test_files.txt, sample 0)
-cmsRun runNtuplizer_cfg.py testSample=3 maxEvents=1000     # data AOD test file
+cmsRun runNtuplizer_cfg.py testSample=15 maxEvents=1000    # data AOD test file
 cmsRun runNtuplizer_cfg.py testSample=1 maxEvents=1000     # MC MiniAOD test file (dataFormat from the sample name)
 cmsRun runNtuplizer_cfg.py inputFiles=file:in.root isMC=0 lumiMask=Cert.json outputFile=out.root
 ```
 - The options are described at the top of `runNtuplizer_cfg.py`.
-- The test input files are listed in `RadiativeAnalysis/test/test_files.txt`.
+- The test input files are listed in `RadiativeAnalysis/test/test_files.txt`; `python3 RadiativeAnalysis/python/testFiles.py` prints them with their `testSample` index. Besides B_s → μμγ and data there are MC samples (AOD and MiniAOD) of B_s → J/ψγ, φγ, J/ψπ⁰, J/ψη, J/ψη′ and B_d → μμγ.
 - The ntuple content is documented in **[NTUPLE.md](NTUPLE.md)**.
 
 Grid submission uses one config for MC and data, `RadiativeAnalysis/crab/crabConfig.py`. The sample is set with environment variables; see the header of the file.
@@ -45,7 +45,7 @@ Grid submission uses one config for MC and data, `RadiativeAnalysis/crab/crabCon
 | `RadiativeAnalysis/plugins/RadiativeAnalysis.cc` | the ntuplizer (EDAnalyzer), which orchestrates the library components. Channels: μμγ (ECAL photon), μμγ (conversion), μμγγ, μμKK (normalisation) |
 | `RadiativeAnalysis/interface`, `src` | library (namespace `bmmg`): `MMGVertexFit` (μμγ kinematic fit), object selection, `DimuonBuilder`, `CandidateBuilders`, `CandidateObservables`, `TriggerMatcher`, `GenChain` (gen truth), `BranchSet`/`NtupleWriter` |
 | `RadiativeAnalysis/plugins/MMGVertexFitExample.cc`, `test/MMGVertexFitExample.py` | standalone validation of the photon kinematic fit (pulls, resolution) |
-| `RadiativeAnalysis/test` | configs, `test_files.txt`, unit tests, `compareNtuples.py` (regression check), `validateMMGFit.py` (fit validation) |
+| `RadiativeAnalysis/test` | configs, `test_files.txt`, unit tests, `compareNtuples.py` (regression check), `validateMMGFit.py` (fit validation), `checkDecayModes.py` (consistency check per MC decay mode) |
 | `RadiativeAnalysis/devel` | not compiled: custom low-energy photon producer (work in progress), old debugging analyzers |
 | `run3mvaid` | Run-3 soft-muon MVA (XGBoost) |
 

@@ -89,6 +89,7 @@ private:
   edm::EDGetTokenT<std::vector<reco::Conversion>> conversionsToken_;
   edm::EDGetTokenT<std::vector<reco::Track>> tracksToken_;
   edm::EDGetTokenT<std::vector<reco::GenParticle>> genParticlesToken_;
+  edm::EDGetTokenT<std::vector<pat::PackedGenParticle>> packedGenParticlesToken_;   // MiniAOD
   edm::EDGetTokenT<std::vector<PileupSummaryInfo>> pileupToken_;
   edm::EDGetTokenT<GenRunInfoProduct> genRunInfoToken_;
   edm::EDGetTokenT<GenFilterInfo> genFilterInfoToken_;
@@ -153,6 +154,7 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& cfg)
     }
     if (isMC_) {
       genParticlesToken_ = consumes(cfg.getParameter<edm::InputTag>("genParticles"));
+      if (isMiniAOD_) packedGenParticlesToken_ = consumes(cfg.getParameter<edm::InputTag>("packedGenParticles"));
       pileupToken_ = consumes(cfg.getParameter<edm::InputTag>("pileup"));
       genRunInfoToken_ = consumes<GenRunInfoProduct, edm::InRun>(cfg.getParameter<edm::InputTag>("genRunInfo"));
       genFilterInfoToken_ = consumes<GenFilterInfo, edm::InLumi>(cfg.getParameter<edm::InputTag>("genFilterInfo"));
@@ -256,7 +258,8 @@ void RadiativeAnalysis::analyze(const edm::Event& event, const edm::EventSetup& 
   std::unique_ptr<GenDecayChain> gen;
   if (isMC_) {
     writer_->fillPileup(event.get(pileupToken_));
-    gen = std::make_unique<GenDecayChain>(event.get(genParticlesToken_));
+    gen = std::make_unique<GenDecayChain>(event.get(genParticlesToken_),
+                                          isMiniAOD_ ? &event.get(packedGenParticlesToken_) : nullptr);
     writer_->fillGen(*gen);
   }
 
@@ -367,7 +370,8 @@ void RadiativeAnalysis::fillDescriptions(edm::ConfigurationDescriptions& descrip
   desc.add<edm::InputTag>("triggerObjects", edm::InputTag("slimmedPatTrigger"));                // MiniAOD
   desc.add<edm::InputTag>("packedCandidates", edm::InputTag("packedPFCandidates"));              // MiniAOD
   desc.add<edm::InputTag>("lostTracks", edm::InputTag("lostTracks"));                            // MiniAOD
-  desc.add<edm::InputTag>("genParticles", edm::InputTag("genParticles"));
+  desc.add<edm::InputTag>("genParticles", edm::InputTag("genParticles"));                         // MiniAOD: prunedGenParticles
+  desc.add<edm::InputTag>("packedGenParticles", edm::InputTag("packedGenParticles"));            // MiniAOD
   desc.add<edm::InputTag>("pileup", edm::InputTag("addPileupInfo"));
   desc.add<edm::InputTag>("genRunInfo", edm::InputTag("generator"));
   desc.add<edm::InputTag>("genFilterInfo", edm::InputTag("genFilterEfficiencyProducer"));

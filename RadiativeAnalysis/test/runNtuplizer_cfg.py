@@ -2,13 +2,14 @@
 #
 # Examples:
 #   cmsRun runNtuplizer_cfg.py                                   # MC AOD test file, all events
-#   cmsRun runNtuplizer_cfg.py testSample=3 maxEvents=1000       # data AOD test file (isMC from the sample name)
+#   cmsRun runNtuplizer_cfg.py testSample=15 maxEvents=1000      # data AOD test file (isMC from the sample name)
 #   cmsRun runNtuplizer_cfg.py testSample=1 maxEvents=1000       # MC MiniAOD test file (format from the sample name)
 #   cmsRun runNtuplizer_cfg.py inputFiles=file:a.root isMC=0 lumiMask=Cert.json outputFile=out.root
 #
 # Options:
 #   inputFiles   input files; if empty, sample "testSample" of test/test_files.txt is used
-#   testSample   index of the sample in test/test_files.txt (default 0, the MC AOD test file)
+#   testSample   index of the sample in test/test_files.txt (default 0, the MC AOD test file);
+#                python3 ../python/testFiles.py lists the samples with their indices
 #   testMaxFiles maximal number of files taken from the test sample (-1: all)
 #   isMC         1 / 0; default (-1): data if the test sample name starts with "data", MC otherwise
 #   dataFormat   AOD / MINIAOD; default: MINIAOD if the test sample name contains "miniaod", AOD otherwise

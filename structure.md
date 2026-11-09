@@ -50,7 +50,7 @@ CMSSW_14_1_1/src/
 | `customPhotons_cfg.py` | custom photon producer + ntuplizer on its photons |
 | `test_files.txt` | test input samples (used by the configs through `python/testFiles.py`) |
 | `test_bmmgLibrary.cc` | catch2 unit tests (`scram b runtests`) |
-| `compareNtuples.py`, `validateMMGFit.py` | regression check between two ntuples; fit validation (mass and ct resolution, pulls) |
+| `compareNtuples.py`, `validateMMGFit.py`, `checkDecayModes.py` | regression check between two ntuples; fit validation (mass and ct resolution, pulls); per-decay-mode consistency check (gen classification, candidates) |
 
 ---
 
@@ -192,15 +192,16 @@ No cut is made on the fit χ² or probability. **Recommended offline:** `<p>vtxP
   - MiniAOD: ΔR < 0.1 to an HLT muon object associated with the last filter of the path.
 
 ### 3.7 Generator truth (MC)
-- **Signal B:** the B_s or B_d with exactly two muons among its descendants (oldest copy, to handle oscillations). If there is no such B and no b hadron at all in the event, the first π⁰ is used (π⁰-gun samples).
+- **Signal B:** the B_s or B_d with exactly two muons among its descendants (oldest copy, to handle oscillations). Open-charm hadrons and τ are not followed when the muons are counted, so the other b hadron of the event is not taken through semileptonic cascades (B → D μν, D → μX). If there is no such B and no b hadron at all in the event, the first π⁰ is used (π⁰-gun samples).
 - **Decay mode:** classified from the B daughters. Extra photons are treated as FSR; for example B_s → μμγ needs ≥ 1 photon.
-- **Object matching:** the closest **final-state** (status 1) gen particle of the same type, with \|Δpt/pt\| < 0.5:
+- **MiniAOD:** `prunedGenParticles` drops most final-state photons, e.g. those from π⁰/η/η′ → γγ. The final-state particles are taken from `packedGenParticles`; those not kept in the pruned collection are attached to their pruned mother when the decay is walked.
+- **Object matching:** the closest **final-state** gen particle of the same type (status 1 `genParticles` in AOD, `packedGenParticles` in MiniAOD), with \|Δpt/pt\| < 0.5:
   - muons ΔR < 0.05;
   - photons and conversions ΔR < 0.1;
   - kaons ΔR < 0.05.
 
   `<obj>_genFromSignalB` is set if the matched particle descends from the signal B.
-- **Candidates:** `<p>genMatched` = the muons and all legs match particles that descend from the signal B.
+- **Candidates:** `<p>genMatched` = the muons and all legs match particles that descend from the signal B. Partially reconstructed decays are matched as well, e.g. an `mmg` candidate with one photon of J/ψ η.
 
 ### 3.8 Isolation and track compatibility (observables, no cut)
 - **Isolation:** pt(B) / (pt(B) + Σ pt). The sum runs over the charged tracks of the candidate's PV with pt > 0.9 GeV and ΔR(B) < 0.7, excluding the muon tracks (ΔR < 0.01) and the candidate's own tracks (kaons, conversion tracks).
@@ -218,6 +219,6 @@ No cut is made on the fit χ² or probability. **Recommended offline:** `<p>vtxP
 | conversions | `allConversions` | not available (tracks not stored): `mmcg` is switched off |
 | ECAL rechits | `reducedEcalRecHitsEB/EE` | `reducedEgamma:reducedEB/EERecHits` |
 | trigger objects | `hltTriggerSummaryAOD` | `slimmedPatTrigger` |
-| gen / pile-up | `genParticles` / `addPileupInfo` | `prunedGenParticles` / `slimmedAddPileupInfo` |
+| gen / pile-up | `genParticles` / `addPileupInfo` | `prunedGenParticles` + `packedGenParticles` / `slimmedAddPileupInfo` |
 
 The driver config chooses the collections from `dataFormat`. It is set by hand or detected from the test-sample name.

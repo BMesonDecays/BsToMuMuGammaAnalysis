@@ -134,17 +134,18 @@ Fits that fail, or that diverge (non-finite χ², mass > 100 GeV, |p| > 10 TeV),
 | `<p>cosThetaL` | cos θ of μ⁺ in the dimuon rest frame w.r.t. the dimuon direction |
 | `<p>isolation` | pt(B) / (pt(B) + Σ pt of charged PV tracks with pt > 0.9 GeV within ΔR < 0.7, excluding the tracks of the candidate) |
 | `<p>maxTrackCompatibility` | highest Kalman vertex probability of the two muons plus one other PV track (pt > 0.9, not a track of the candidate) |
-| `<p>genMatched` (MC) | the muons and all legs match gen particles that descend from the signal B |
+| `<p>genMatched` (MC) | the muons and all legs match gen particles that descend from the signal B. Partially reconstructed decays also count (e.g. `mmg` with one photon of J/ψ η: its mass is below the B mass). A π⁰ whose two photons are merged in one cluster is usually not matched (photon energy ≫ gen photon) |
 
 ## Generator: `gen_*` (MC)
-From `GenDecayChain`, using the B (B_s or B_d) with two muons among its descendants.
+From `GenDecayChain`, using the B (B_s or B_d) with two muons among its descendants (open-charm hadrons and τ are not followed). In MiniAOD the final-state particles, in particular the photons of π⁰/η/η′ decays that `prunedGenParticles` drops, come from `packedGenParticles`.
 - **Status:**
   - `gen_valid`: a B was found.
   - `gen_decayMode`: the `DecayMode` enum in `GenChain.h` (1 B_s→μμγ, 10 B_d→μμγ, 2/3 J/ψγ, 7–9 / 12–14 J/ψ π⁰/η/η′, …). Extra photons are treated as FSR.
   - `gen_B_pdgId`, `gen_isSignal` (μμγ modes), `gen_is3Body`, `gen_is4Body`, `gen_hasJpsi`.
+  - `gen_neutralMesonPdgId` (π⁰/η/η′, 0 if none), `gen_vectorMesonPdgId` (φ/K*, 0 if none).
 - **B:** `gen_B_pt/eta/phi/mass`, `gen_B_ct2D`, `gen_B_ct3D`, `gen_B_lxy`, production vertex `gen_pvX/Y/Z`, decay vertex `gen_svX/Y/Z`.
 - **Muons:** `gen_muPlus_*`, `gen_muMinus_*` (pt, eta, phi), `gen_dimuonMass`.
-- **Angles and masses:** `gen_helicity`, `gen_coplanarity`, `gen_cosThetaL`, `gen_triBodyMass` (3-body decays).
+- **Angles and masses:** `gen_helicity`, `gen_coplanarity`, `gen_cosThetaL`, `gen_triBodyMass` (3-body decays); `gen_diphotonMass` (two leading photons), `gen_fourBodyMass`, `gen_helicity4`, `gen_coplanarity4` (4-body decays). −999 if not applicable.
 - **Photons:** `gen_pho_pt/eta/phi/origin/motherPdgId` (vectors, all photons of the decay ordered by pt). The origin codes are in `PhotonOrigin` in `GenChain.h`: 1 from B, 2 from resonance, 3 from neutral meson, 4 FSR, …
 
 ## RunInfo
@@ -180,4 +181,4 @@ The same ntuple is written; the inputs differ:
 | conversions (`conv_*`) | `allConversions` | `reducedEgamma:reducedConversions` (only conversions associated to photons) |
 | ECAL rechits | `reducedEcalRecHitsEB/EE` | `reducedEgamma:reducedEB/EERecHits` (only around e/γ objects: `pho_hasClusterHits` can be 0) |
 | trigger matching | `hltTriggerSummaryAOD`: muon objects of every terminal muon filter of the path | `slimmedPatTrigger`: HLT muon objects associated with the last filter of the path |
-| gen, pile-up | `genParticles`, `addPileupInfo` | `prunedGenParticles`, `slimmedAddPileupInfo` |
+| gen, pile-up | `genParticles`, `addPileupInfo` | `prunedGenParticles` + `packedGenParticles` (final state), `slimmedAddPileupInfo` |

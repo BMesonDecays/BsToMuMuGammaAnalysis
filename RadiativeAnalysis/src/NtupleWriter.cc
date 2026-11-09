@@ -129,11 +129,14 @@ namespace bmmg {
       b_.bookScalar<int>("gen_is3Body", 0);
       b_.bookScalar<int>("gen_is4Body", 0);
       b_.bookScalar<int>("gen_hasJpsi", 0);
+      b_.bookScalar<int>("gen_neutralMesonPdgId", 0);
+      b_.bookScalar<int>("gen_vectorMesonPdgId", 0);
       for (const char* n : {"gen_B_pt", "gen_B_eta", "gen_B_phi", "gen_B_mass", "gen_B_ct2D", "gen_B_ct3D", "gen_B_lxy",
                             "gen_pvX", "gen_pvY", "gen_pvZ", "gen_svX", "gen_svY", "gen_svZ",
                             "gen_muPlus_pt", "gen_muPlus_eta", "gen_muPlus_phi",
                             "gen_muMinus_pt", "gen_muMinus_eta", "gen_muMinus_phi",
-                            "gen_dimuonMass", "gen_helicity", "gen_coplanarity", "gen_cosThetaL", "gen_triBodyMass"})
+                            "gen_dimuonMass", "gen_helicity", "gen_coplanarity", "gen_cosThetaL", "gen_triBodyMass",
+                            "gen_diphotonMass", "gen_fourBodyMass", "gen_helicity4", "gen_coplanarity4"})
         b_.bookScalar<float>(n, kNaN);
       bookInts(b_, "gen_pho_", {"origin", "motherPdgId"});
       bookFloats(b_, "gen_pho_", {"pt", "eta", "phi"});
@@ -527,6 +530,12 @@ namespace bmmg {
     b_.scalar<float>("gen_coplanarity") = g.coplanarity3;
     b_.scalar<float>("gen_cosThetaL") = g.cosTheta_l;
     b_.scalar<float>("gen_triBodyMass") = g.triBodyMass;
+    b_.scalar<int>("gen_neutralMesonPdgId") = g.neutralMesonId;
+    b_.scalar<int>("gen_vectorMesonPdgId") = g.vectorMesonId;
+    b_.scalar<float>("gen_diphotonMass") = g.diphotonMass;
+    b_.scalar<float>("gen_fourBodyMass") = g.fourBodyMass;
+    b_.scalar<float>("gen_helicity4") = g.helicity4;
+    b_.scalar<float>("gen_coplanarity4") = g.coplanarity4;
     for (const auto& p : g.photons) {
       b_.vec<int>("gen_pho_origin").push_back(p.origin);
       b_.vec<int>("gen_pho_motherPdgId").push_back(p.motherPdgId);
