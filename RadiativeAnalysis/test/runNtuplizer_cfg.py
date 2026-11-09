@@ -99,15 +99,6 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 globalTag = options.globalTag or ('auto:run3_mc_FULL' if isMC else 'auto:run3_data_prompt')
 process.GlobalTag = GlobalTag(process.GlobalTag, globalTag, '')
 
-# ---------------------------------------------------------------- photon ID (VID on gedPhotons / slimmedPhotons)
-from PhysicsTools.SelectorUtils.tools.vid_id_tools import switchOnVIDPhotonIdProducer, setupAllVIDIdsInModule, \
-    setupVIDPhotonSelection, DataFormat
-switchOnVIDPhotonIdProducer(process, DataFormat.MiniAOD if dataFormat == 'MINIAOD' else DataFormat.AOD)
-setupAllVIDIdsInModule(process, 'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_RunIIIWinter22_122X_V1_cff',
-                       setupVIDPhotonSelection)
-process.photonMVAValueMapProducer.src = cms.InputTag(collections['photons'])
-process.egmPhotonIDs.physicsObjectSrc = cms.InputTag(collections['photons'])
-
 # ---------------------------------------------------------------- ntuplizer
 from BsToMuMuGammaAnalysis.RadiativeAnalysis.radiativeAnalysis_cfi import radiativeAnalysis
 channels = options.channels.split(',')
@@ -134,6 +125,18 @@ process.bmmg = radiativeAnalysis.clone(
     computeTrackCompatibility=bool(options.trackCompatibility),
 )
 process.TFileService = cms.Service('TFileService', fileName=cms.string(options.outputFile))
+
+# ---------------------------------------------------------------- photon ID (VID), on the photons of the ntuplizer
+from PhysicsTools.SelectorUtils.tools.vid_id_tools import switchOnVIDPhotonIdProducer, setupAllVIDIdsInModule, \
+    setupVIDPhotonSelection, DataFormat
+switchOnVIDPhotonIdProducer(process, DataFormat.MiniAOD if dataFormat == 'MINIAOD' else DataFormat.AOD)
+setupAllVIDIdsInModule(process, 'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_RunIIIWinter22_122X_V1_cff',
+                       setupVIDPhotonSelection)
+# The value maps are keyed by the photon collection, so both producers must read the ntuplizer's photons.
+# switchOnVIDPhotonIdProducer sets egmPhotonIDs to gedPhotons (AOD) / slimmedPhotons (MiniAOD), but
+# photonMVAValueMapProducer always defaults to slimmedPhotons (an AOD job fails without the setting below).
+process.egmPhotonIDs.physicsObjectSrc = process.bmmg.photons
+process.photonMVAValueMapProducer.src = process.bmmg.photons
 
 if options.photonID:
     process.p = cms.Path(process.egmPhotonIDSequence * process.bmmg)

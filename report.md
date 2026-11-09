@@ -33,6 +33,15 @@ Entries are newest first.
 
 ---
 
+## 2026-11-09: Photon ID inputs follow the ntuplizer photons (comments.md, item 1)
+- **Comment:** the photon ID was configured with an explicit input collection, a leftover from when the `photons` collection was used. The VID producer should pick the right collection on its own.
+- **Check:**
+  - `switchOnVIDPhotonIdProducer` does set `egmPhotonIDs` to `gedPhotons` (AOD) or `slimmedPhotons` (MiniAOD) by itself.
+  - `photonMVAValueMapProducer` always defaults to `slimmedPhotons`. Without an explicit setting, an AOD job stops with `ProductNotFound` (tested).
+  - The config already used `gedPhotons` / `slimmedPhotons` (no remaining use of `photons`).
+- **Change (`runNtuplizer_cfg.py`):** the VID block moved after the ntuplizer. Both producers now take their input from `process.bmmg.photons`, so the ID value maps always belong to the collection the ntuplizer reads. A comment explains why the MVA producer needs it.
+- **Validation:** 300 events each of AOD and MiniAOD are identical to the previous output (apart from the known `mmkk`/`mmcg` non-converging-fit noise). `pho_mva` is filled for all photons.
+
 ## 2026-11-09: Check on MC samples of other decay modes; MiniAOD gen fix
 - **Samples:** the new `test_files.txt` entries (indices 3–14). B_s → J/ψγ, φγ (φ → μμ), J/ψπ⁰, J/ψη, J/ψη′ and B_d → μμγ, each in AOD and MiniAOD, plus B_s → μμγ (0, 1) as baseline. 3000 events each (J/ψη′ AOD: all 771 events). All 14 jobs ran without errors.
   - The data samples moved to indices 15 (AOD) and 16 (MiniAOD); README and the config header are updated.
