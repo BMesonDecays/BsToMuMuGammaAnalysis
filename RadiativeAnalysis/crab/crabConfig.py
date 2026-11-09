@@ -16,6 +16,8 @@
 #   BMMG_ISMC      1 (default) or 0
 #   BMMG_LUMIMASK  JSON lumi mask (data)
 #   BMMG_GLOBALTAG global tag (default: see runNtuplizer_cfg.py)
+#   BMMG_SKIM      1: store only the events with a valid B candidate (see 'skim' in runNtuplizer_cfg.py)
+#   BMMG_SKIMMINVTXPROB  vertex-probability threshold of the skim (default: any successful fit)
 #   BMMG_UNITS     files (FileBased) / lumis (LumiBased, data) per job, default 5 / 50
 #   BMMG_OUTLFN    output LFN base, default /store/user/<CERN user name>/bmmg_ntuples
 #   BMMG_SITE      storage site, default T3_CH_CERNBOX
@@ -44,6 +46,10 @@ config.JobType.outputFiles = [outputFile]
 pyCfgParams = ['isMC=%d' % isMC, 'outputFile=' + outputFile]
 if os.environ.get('BMMG_GLOBALTAG'):
     pyCfgParams.append('globalTag=' + os.environ['BMMG_GLOBALTAG'])
+if os.environ.get('BMMG_SKIM', '0') == '1':
+    pyCfgParams.append('skim=1')
+    if os.environ.get('BMMG_SKIMMINVTXPROB'):
+        pyCfgParams.append('skimMinVtxProb=' + os.environ['BMMG_SKIMMINVTXPROB'])
 config.JobType.pyCfgParams = pyCfgParams
 config.JobType.maxMemoryMB = 2500
 

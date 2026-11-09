@@ -51,7 +51,10 @@
 #include "TrackingTools/Records/interface/TransientTrackRecord.h"
 #include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
 
+#include <algorithm>
 #include <cmath>
+
+#include "TMath.h"
 #include <memory>
 
 class RadiativeAnalysis
@@ -108,10 +111,15 @@ private:
   bmmg::TriggerMatcher triggerMatcher_;
   MuonMVAID muonMVA_;
   const bool doMuMuGamma_, doMuMuConvGamma_, doMuMuGammaGamma_, doMuMuKK_;
+  // write only the events with at least one valid candidate: fit OK and vertex probability > minCandidateVtxProb_
+  const bool onlyEventsWithCandidates_;
+  const double minCandidateVtxProb_;
+  bool isValidCandidate(const bmmg::BCandidate& c) const;
   std::unique_ptr<bmmg::NtupleWriter> writer_;
 
   // job-level bookkeeping
-  unsigned long long nEvents_ = 0;
+  unsigned long long nEvents_ = 0;         // processed events
+  unsigned long long nEventsStored_ = 0;   // events written to the tree
   double xsecSumW_ = 0., xsecSumWX_ = 0., xsec_ = -1., xsecErr_ = -1.;
   std::unique_ptr<GenFilterInfo> genFilterInfo_;
 };
@@ -142,7 +150,9 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& cfg)
       doMuMuGamma_(cfg.getParameter<bool>("doMuMuGamma")),
       doMuMuConvGamma_(cfg.getParameter<bool>("doMuMuConvGamma")),
       doMuMuGammaGamma_(cfg.getParameter<bool>("doMuMuGammaGamma")),
-      doMuMuKK_(cfg.getParameter<bool>("doMuMuKK")) {
+      doMuMuKK_(cfg.getParameter<bool>("doMuMuKK")),
+      onlyEventsWithCandidates_(cfg.getParameter<bool>("onlyEventsWithCandidates")),
+      minCandidateVtxProb_(cfg.getParameter<double>("minCandidateVtxProb")) {
     if (doMuMuConvGamma_) conversionsToken_ = consumes(cfg.getParameter<edm::InputTag>("conversions"));
     if (isMiniAOD_) {
       triggerObjectsToken_ = consumes(cfg.getParameter<edm::InputTag>("triggerObjects"));
@@ -290,6 +300,16 @@ void RadiativeAnalysis::analyze(const edm::Event& event, const edm::EventSetup& 
 
   // candidates
   const std::vector<bmmg::DimuonCandidate> dimuons = bmmg::buildDimuons(selMuons, beamSpot);
+  // every candidate needs a dimuon with a valid vertex: nothing to store without one
+  if (onlyEventsWithCandidates_ &&
+      std::none_of(dimuons.begin(), dimuons.end(), [](const bmmg::DimuonCandidate& d) { return d.vtxValid; }))
+    return;
+  bool hasValidCandidate = false;
+  auto check = [this, &hasValidCandidate](const std::vector<bmmg::BCandidate>& cands) -> const std::vector<bmmg::BCandidate>& {
+    for (const auto& c : cands)
+      if (!hasValidCandidate && isValidCandidate(c)) hasValidCandidate = true;
+    return cands;
+  };
   // the object collections are filled first: the candidate truth flags use their gen matches
   writer_->fillMuons(selMuons, beamSpot, trigger, gen.get());
   writer_->fillPhotons(selPhotons, lazyTools, mmgVertexFit_, gen.get());
@@ -297,13 +317,13 @@ void RadiativeAnalysis::analyze(const edm::Event& event, const edm::EventSetup& 
 
   if (doMuMuGamma_)
     writer_->fillCandidates(bmmg::NtupleWriter::kMuMuGamma,
-                            bmmg::buildMuMuGamma(selMuons, dimuons, selPhotons, vertices, pvTracks, lazyTools, ttBuilder,
-                                                 mmgVertexFit_, candidateConfig_),
+                            check(bmmg::buildMuMuGamma(selMuons, dimuons, selPhotons, vertices, pvTracks, lazyTools,
+                                                       ttBuilder, mmgVertexFit_, candidateConfig_)),
                             vertices);
   if (doMuMuGammaGamma_)
     writer_->fillCandidates(bmmg::NtupleWriter::kMuMuGammaGamma,
-                            bmmg::buildMuMuGammaGamma(selMuons, dimuons, selPhotons, vertices, pvTracks, lazyTools, ttBuilder,
-                                                      mmgVertexFit_, candidateConfig_, diphotonConfig_),
+                            check(bmmg::buildMuMuGammaGamma(selMuons, dimuons, selPhotons, vertices, pvTracks, lazyTools,
+                                                            ttBuilder, mmgVertexFit_, candidateConfig_, diphotonConfig_)),
                             vertices);
   if (doMuMuConvGamma_) {
     const std::vector<bmmg::SelectedConversion> conversions =
@@ -311,7 +331,7 @@ void RadiativeAnalysis::analyze(const edm::Event& event, const edm::EventSetup& 
     writer_->fillConversions(conversions, gen.get());
     writer_->fillCandidates(
         bmmg::NtupleWriter::kMuMuConvGamma,
-        bmmg::buildMuMuConvGamma(selMuons, dimuons, conversions, vertices, pvTracks, ttBuilder, candidateConfig_),
+        check(bmmg::buildMuMuConvGamma(selMuons, dimuons, conversions, vertices, pvTracks, ttBuilder, candidateConfig_)),
         vertices);
   }
   if (doMuMuKK_) {
@@ -324,14 +344,25 @@ void RadiativeAnalysis::analyze(const edm::Event& event, const edm::EventSetup& 
     const std::vector<bmmg::BCandidate> mmkk =
         bmmg::buildMuMuKK(selMuons, dimuons, tracks, vertices, pvTracks, ttBuilder, kkConfig, kaonConfig_, usedTracks);
     writer_->fillTracks(usedTracks, beamSpot, gen.get());   // before the candidates (truth flags)
-    writer_->fillCandidates(bmmg::NtupleWriter::kMuMuKK, mmkk, vertices);
+    writer_->fillCandidates(bmmg::NtupleWriter::kMuMuKK, check(mmkk), vertices);
   }
+  if (onlyEventsWithCandidates_ && !hasValidCandidate) return;
   writer_->fill();
+  ++nEventsStored_;
+}
+
+bool RadiativeAnalysis::isValidCandidate(const bmmg::BCandidate& c) const {
+  if (!c.fit) return false;
+  const auto& v = c.fit->vertex;
+  if (!v || !v->vertexIsValid()) return false;
+  if (minCandidateVtxProb_ < 0.) return true;
+  return TMath::Prob(v->chiSquared(), static_cast<int>(std::lround(v->degreesOfFreedom()))) > minCandidateVtxProb_;
 }
 
 void RadiativeAnalysis::endJob() {
   bmmg::NtupleWriter::RunInfo info;
   info.nEvents = nEvents_;
+  info.nEventsStored = nEventsStored_;
   if (isMC_) {
     info.xsec = xsec_;
     info.xsecErr = xsecErr_;
@@ -398,6 +429,10 @@ void RadiativeAnalysis::fillDescriptions(edm::ConfigurationDescriptions& descrip
   desc.add<bool>("doMuMuConvGamma", true);
   desc.add<bool>("doMuMuGammaGamma", true);
   desc.add<bool>("doMuMuKK", true);
+  // skim: write only the events with >= 1 candidate (any enabled channel) whose fit succeeded and whose vertex
+  // probability is > minCandidateVtxProb (< 0: any successful fit). RunInfo.nEvents still counts all events.
+  desc.add<bool>("onlyEventsWithCandidates", false);
+  desc.add<double>("minCandidateVtxProb", -1.);
   desc.add<edm::InputTag>("conversions", edm::InputTag("allConversions"));
   desc.add<edm::InputTag>("tracks", edm::InputTag("generalTracks"));
   desc.add<double>("minPrefitMass", 4.0);   // pre-fit B mass window (photon channels)

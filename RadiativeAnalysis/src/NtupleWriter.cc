@@ -146,6 +146,7 @@ namespace bmmg {
     for (const char* n : {"xsec", "xsecErr", "filterEff", "filterEffErr", "lumiEquivalent", "lumiEquivalentErr"})
       r_.bookScalar<double>(n, -1.);
     r_.bookScalar<unsigned long long>("nEvents", 0);
+    r_.bookScalar<unsigned long long>("nEventsStored", 0);
   }
 
   void NtupleWriter::bookCandidates(const Channel& ch) {
@@ -556,6 +557,7 @@ namespace bmmg {
     r_.scalar<double>("lumiEquivalent") = info.lumiEquivalent;
     r_.scalar<double>("lumiEquivalentErr") = info.lumiEquivalentErr;
     r_.scalar<unsigned long long>("nEvents") = info.nEvents;
+    r_.scalar<unsigned long long>("nEventsStored") = info.nEventsStored;
     runInfo_->Fill();
   }
 

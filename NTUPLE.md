@@ -4,8 +4,10 @@ Produced by `RadiativeAnalysis/test/runNtuplizer_cfg.py` from AOD or MiniAOD; th
 
 | tree | entries | content |
 |---|---|---|
-| `bmmg/Events` | one per processed event | event-level scalars and collections stored as `std::vector` |
-| `bmmg/RunInfo` | one per job | cross section, filter efficiency, number of processed events |
+| `bmmg/Events` | one per processed event (with `skim=1`: only events with a valid B candidate) | event-level scalars and collections stored as `std::vector` |
+| `bmmg/RunInfo` | one per job | cross section, filter efficiency, number of processed and stored events |
+
+**Skim** (`skim=1` in `runNtuplizer_cfg.py`, module parameter `onlyEventsWithCandidates`): an event is written only if at least one candidate of an enabled channel has a successful fit (`<p>fitOK = 1`) and, if `skimMinVtxProb` (`minCandidateVtxProb`) ≥ 0, `<p>vtxProb` above it. The stored events are unchanged; all their candidates are kept, including failed fits. Off by default.
 
 Everything is stored, with no best-candidate choice:
 - **Every** preselected muon, photon and dimuon.
@@ -151,7 +153,8 @@ From `GenDecayChain`, using the B (B_s or B_d) with two muons among its descenda
 ## RunInfo
 - `xsec`, `xsecErr`: generator cross section [pb], an inverse-variance weighted mean over the runs.
 - `filterEff`, `filterEffErr`: filter efficiency, merged over all luminosity blocks.
-- `nEvents`: processed events.
+- `nEvents`: processed events (all of them, also with the skim). Use it for the normalisation.
+- `nEventsStored`: entries written to `Events` (= `nEvents` without the skim).
 - `lumiEquivalent`, `lumiEquivalentErr`: nEvents / (xsec · filterEff) [pb⁻¹].
 - Data: −1, except `nEvents`.
 

@@ -15,6 +15,9 @@
 #   dataFormat   AOD / MINIAOD; default: MINIAOD if the test sample name contains "miniaod", AOD otherwise
 #   globalTag    default auto:run3_mc_FULL (MC) / auto:run3_data_prompt (data)
 #   lumiMask     JSON file with the certified luminosity sections (data)
+#   skim         1: write only the events with >= 1 B candidate (any enabled channel) whose fit succeeded and,
+#                if skimMinVtxProb >= 0, whose vertex probability is > skimMinVtxProb (default 0: all events);
+#                RunInfo nEvents counts all processed events, nEventsStored the written ones
 #   photonID     1 (default): run the photon MVA ID (score and wp90); 0: skip it (pho_mva = -99, pho_tightId = -1),
 #                e.g. for private samples without fixedGridRhoFastjetAll
 #   maxEvents, outputFile (standard VarParsing options)
@@ -40,6 +43,10 @@ options.register('channels', 'mmg,mmcg,mmgg,mmkk', VarParsing.multiplicity.singl
                  'comma-separated list of the channels to build: mmg, mmcg, mmgg, mmkk')
 options.register('trackCompatibility', 1, VarParsing.multiplicity.singleton, VarParsing.varType.int,
                  'compute the max track compatibility of the dimuon (slow-ish)')
+options.register('skim', 0, VarParsing.multiplicity.singleton, VarParsing.varType.int,
+                 '1: write only the events with >= 1 candidate whose fit succeeded (and vtxProb > skimMinVtxProb)')
+options.register('skimMinVtxProb', -1., VarParsing.multiplicity.singleton, VarParsing.varType.float,
+                 'vertex probability a candidate needs for the skim (< 0: any successful fit)')
 options.register('verbose', 0, VarParsing.multiplicity.singleton, VarParsing.varType.int,
                  'print the trigger filters used for the muon matching')
 options.setDefault('outputFile', 'bmmg_ntuple.root')
@@ -123,6 +130,8 @@ process.bmmg = radiativeAnalysis.clone(
     doMuMuGammaGamma='mmgg' in channels,
     doMuMuKK='mmkk' in channels,
     computeTrackCompatibility=bool(options.trackCompatibility),
+    onlyEventsWithCandidates=bool(options.skim),
+    minCandidateVtxProb=options.skimMinVtxProb,
 )
 process.TFileService = cms.Service('TFileService', fileName=cms.string(options.outputFile))
 

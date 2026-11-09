@@ -33,6 +33,29 @@ Entries are newest first.
 
 ---
 
+## 2026-11-09: Event skim, store only events with a valid B candidate
+- **Request:** Run-3 data ntuples must stay small. Add a switch that keeps only the events with valid B candidates.
+- **Module parameters:**
+  - `onlyEventsWithCandidates` (default `False`).
+  - `minCandidateVtxProb` (default −1).
+  - An event is written if at least one candidate of an enabled channel has a successful fit and, if the threshold is ≥ 0, a vertex probability above it.
+  - With the skim on, events without a dimuon with a valid vertex return before the candidates are built.
+- **Config and CRAB:** `runNtuplizer_cfg.py` options `skim=0/1` and `skimMinVtxProb`; CRAB variables `BMMG_SKIM=1` and `BMMG_SKIMMINVTXPROB`.
+- **RunInfo:** new `nEventsStored`. `nEvents` still counts all processed events (normalisation).
+- **Validation, 2000 events of the 2022C data AOD test file:**
+
+  | | stored events | file size | time |
+  |---|---|---|---|
+  | no skim | 2000 | 3.25 MB | 43 s |
+  | `skim=1` | 725 | 1.50 MB | 46 s |
+  | `skim=1 skimMinVtxProb=1e-3` | 110 | 0.33 MB | 43 s |
+
+  - The run time is dominated by input reading and the photon ID, so the skim doesn't save time here.
+  - **Selected events vs the unskimmed ntuple:** the selection is reproduced except for events whose only "valid" candidate is a non-converging fit (vtxProb ≈ 0, χ² up to 10⁷; 9 events, and 2 at the 1e-3 threshold, one of them a borderline `mmcg` fit with prob 0.004). These flip because of the known run-to-run non-determinism.
+  - **Stored events vs the same events unskimmed:** candidate values differ at the same rate as two identical unskimmed runs (160 of 2000 events differ there, nearly all non-converging `mmcg`/`mmkk` fits; 3 with a candidate of vtxProb > 1e-3, all `mmcg`). Nothing else changes.
+  - **MC (1000 events, `skim=1`):** AOD 343 events stored (167 with a gen-matched fitted `mmg`), MiniAOD 170 (146).
+- **Docs:** NTUPLE.md, structure.md (§2.2 and new §3.9), README, config and CRAB headers.
+
 ## 2026-11-09: Photon ID: MVA working point instead of the cut-based ID (user change)
 - **User change:** VID is set up with `mvaPhotonID_Winter22_122X_V1_cff` instead of the cut-based RunIIIWinter22 V1 ID. `pho_tightId` now stores `mvaPhoID-RunIIIWinter22-v1-wp90` (default of `photonTightId` in `fillDescriptions`).
 - **Fix to that change:** the edit also forced `DataFormat.AOD` in `switchOnVIDPhotonIdProducer` and removed the `egmPhotonIDs.physicsObjectSrc` setting. MiniAOD jobs then stopped (`ProductNotFound: gedPhotons`). Both lines are restored: format-dependent setup, and both producers read `process.bmmg.photons`.

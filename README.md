@@ -32,6 +32,7 @@ cmsRun runNtuplizer_cfg.py maxEvents=1000                  # MC AOD test file (t
 cmsRun runNtuplizer_cfg.py testSample=15 maxEvents=1000    # data AOD test file
 cmsRun runNtuplizer_cfg.py testSample=1 maxEvents=1000     # MC MiniAOD test file (dataFormat from the sample name)
 cmsRun runNtuplizer_cfg.py inputFiles=file:in.root isMC=0 lumiMask=Cert.json outputFile=out.root
+cmsRun runNtuplizer_cfg.py testSample=15 skim=1             # store only events with a valid B candidate (smaller ntuples)
 ```
 - The options are described at the top of `runNtuplizer_cfg.py`.
 - The test input files are listed in `RadiativeAnalysis/test/test_files.txt`; `python3 RadiativeAnalysis/python/testFiles.py` prints them with their `testSample` index. Besides B_s → μμγ and data there are MC samples (AOD and MiniAOD) of B_s → J/ψγ, φγ, J/ψπ⁰, J/ψη, J/ψη′ and B_d → μμγ.

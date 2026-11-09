@@ -57,7 +57,8 @@ namespace bmmg {
 
     struct RunInfo {
       double xsec = -1., xsecErr = -1., filterEff = -1., filterEffErr = -1., lumiEquivalent = -1., lumiEquivalentErr = -1.;
-      unsigned long long nEvents = 0;
+      unsigned long long nEvents = 0;         // processed events
+      unsigned long long nEventsStored = 0;   // events written to the Events tree
     };
     void fillRunInfo(const RunInfo& info);
 

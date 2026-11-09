@@ -66,11 +66,11 @@ cmsRun runNtuplizer_cfg.py
        analyze             per event, §2.2
        endLuminosityBlock  MC: merges GenFilterInfo (filter efficiency) over all lumi blocks
        endRun              MC: inverse-variance mean of the generator cross section over the runs
-       endJob              one RunInfo entry: xsec, filter efficiency, nEvents, lumi equivalent
+       endJob              one RunInfo entry: xsec, filter efficiency, nEvents, nEventsStored, lumi equivalent
 ```
 
 ### 2.2 One event (`RadiativeAnalysis::analyze`)
-**No event-level selection:** every processed event gets one entry in `Events`.
+**No event-level selection by default:** every processed event gets one entry in `Events`. With the skim switch (`skim=1`, §3.9) only events with a valid B candidate are written.
 
 ```
 1. event ids, beam spot, primary vertices                 → evt_*, bs_*, pv_* (first PV of the collection)
@@ -87,7 +87,9 @@ cmsRun runNtuplizer_cfg.py
       mmgg  dimuon × photon pair            → mmgg_*
       mmcg  conversions (§3.2) → dimuon × conversion   → conv_*, mmcg_*      (AOD only)
       mmkk  kaon tracks (§3.2) → J/ψ dimuon × K⁺K⁻      → trk_*, mmkk_*
-10. fill the event
+10. skim (if enabled, §3.9): no valid candidate → the event is not written
+    (with the skim, step 9 is skipped already when no dimuon has a valid vertex)
+11. fill the event
 ```
 
 The muon, photon, conversion and track collections are written **before** the candidates. Each candidate's truth flag (`<p>genMatched`) is the AND of the gen matches of its legs.
@@ -208,6 +210,12 @@ No cut is made on the fit χ² or probability. **Recommended offline:** `<p>vtxP
 - **Max track compatibility:** the highest Kalman vertex probability of the two muon tracks plus one other track of the candidate's PV (pt > 0.9 GeV, not a muon or candidate track).
 
 ---
+
+### 3.9 Event skim (optional, off by default)
+- Switch: `skim=1` in `runNtuplizer_cfg.py` (`BMMG_SKIM=1` for CRAB); module parameter `onlyEventsWithCandidates`.
+- An event is written if at least one candidate of any enabled channel (`mmg`, `mmcg`, `mmgg`, `mmkk`) has a successful fit (§3.5) and, if `skimMinVtxProb` / `minCandidateVtxProb` ≥ 0, a vertex probability above it (default −1: any successful fit).
+- Events without a dimuon with a valid vertex are rejected before the candidates are built.
+- `RunInfo.nEvents` still counts all processed events; `RunInfo.nEventsStored` the written ones.
 
 ## 4. Data formats
 | | AOD | MiniAOD |
