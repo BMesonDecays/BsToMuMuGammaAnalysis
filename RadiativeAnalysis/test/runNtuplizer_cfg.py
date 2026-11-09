@@ -15,7 +15,7 @@
 #   dataFormat   AOD / MINIAOD; default: MINIAOD if the test sample name contains "miniaod", AOD otherwise
 #   globalTag    default auto:run3_mc_FULL (MC) / auto:run3_data_prompt (data)
 #   lumiMask     JSON file with the certified luminosity sections (data)
-#   photonID     1 (default): run the photon MVA / cut-based ID; 0: skip it (pho_mva = -99, pho_tightId = -1),
+#   photonID     1 (default): run the photon MVA ID (score and wp90); 0: skip it (pho_mva = -99, pho_tightId = -1),
 #                e.g. for private samples without fixedGridRhoFastjetAll
 #   maxEvents, outputFile (standard VarParsing options)
 
@@ -130,7 +130,7 @@ process.TFileService = cms.Service('TFileService', fileName=cms.string(options.o
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import switchOnVIDPhotonIdProducer, setupAllVIDIdsInModule, \
     setupVIDPhotonSelection, DataFormat
 switchOnVIDPhotonIdProducer(process, DataFormat.MiniAOD if dataFormat == 'MINIAOD' else DataFormat.AOD)
-setupAllVIDIdsInModule(process, 'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_RunIIIWinter22_122X_V1_cff',
+setupAllVIDIdsInModule(process, 'RecoEgamma.PhotonIdentification.Identification.mvaPhotonID_Winter22_122X_V1_cff',
                        setupVIDPhotonSelection)
 # The value maps are keyed by the photon collection, so both producers must read the ntuplizer's photons.
 # switchOnVIDPhotonIdProducer sets egmPhotonIDs to gedPhotons (AOD) / slimmedPhotons (MiniAOD), but

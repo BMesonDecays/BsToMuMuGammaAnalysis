@@ -59,7 +59,7 @@ CMSSW_14_1_1/src/
 ### 2.1 Job level
 ```
 cmsRun runNtuplizer_cfg.py
-  ├─ (photon ID)  egmPhotonIDSequence: VID on gedPhotons / slimmedPhotons → MVA and tight-ID ValueMaps
+  ├─ (photon ID)  egmPhotonIDSequence: VID on gedPhotons / slimmedPhotons → MVA score and MVA wp90 ValueMaps
   └─ RadiativeAnalysis
        beginJob            NtupleWriter books the trees (TFileService directory "bmmg/")
        beginRun            TriggerMatcher reads the HLT menu (HLTConfigProvider)

@@ -360,7 +360,7 @@ void RadiativeAnalysis::fillDescriptions(edm::ConfigurationDescriptions& descrip
   desc.add<edm::InputTag>("photons", edm::InputTag("gedPhotons"));
   desc.add<edm::InputTag>("photonMVA",
                           edm::InputTag("photonMVAValueMapProducer", "PhotonMVAEstimatorRunIIIWinter22v1Values"));
-  desc.add<edm::InputTag>("photonTightId", edm::InputTag("egmPhotonIDs", "cutBasedPhotonID-RunIIIWinter22-122X-V1-tight"));
+  desc.add<edm::InputTag>("photonTightId", edm::InputTag("egmPhotonIDs", "mvaPhoID-RunIIIWinter22-v1-wp90"));
   desc.add<edm::InputTag>("beamSpot", edm::InputTag("offlineBeamSpot"));
   desc.add<edm::InputTag>("primaryVertices", edm::InputTag("offlinePrimaryVertices"));
   desc.add<edm::InputTag>("ebRecHits", edm::InputTag("reducedEcalRecHitsEB"));

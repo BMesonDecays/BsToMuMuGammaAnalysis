@@ -33,6 +33,13 @@ Entries are newest first.
 
 ---
 
+## 2026-11-09: Photon ID: MVA working point instead of the cut-based ID (user change)
+- **User change:** VID is set up with `mvaPhotonID_Winter22_122X_V1_cff` instead of the cut-based RunIIIWinter22 V1 ID. `pho_tightId` now stores `mvaPhoID-RunIIIWinter22-v1-wp90` (default of `photonTightId` in `fillDescriptions`).
+- **Fix to that change:** the edit also forced `DataFormat.AOD` in `switchOnVIDPhotonIdProducer` and removed the `egmPhotonIDs.physicsObjectSrc` setting. MiniAOD jobs then stopped (`ProductNotFound: gedPhotons`). Both lines are restored: format-dependent setup, and both producers read `process.bmmg.photons`.
+- **Note:** `photonMVAValueMapProducer` keeps its `slimmedPhotons` default in AOD mode (`switchOnVIDPhotonIdProducer` changes only `egmPhotonIDs`), which looks like a CMSSW inconsistency; the config sets it explicitly.
+- **Validation (200 events each):** AOD and MiniAOD run. `pho_tightId` ∈ {0, 1} for all photons; 47% (AOD) and 60% (MiniAOD) pass wp90; every photon with MVA score > 0.5 passes.
+- **Docs:** NTUPLE.md (`pho_tightId`), structure.md, config header.
+
 ## 2026-11-09: Photon ID inputs follow the ntuplizer photons (comments.md, item 1)
 - **Comment:** the photon ID was configured with an explicit input collection, a leftover from when the `photons` collection was used. The VID producer should pick the right collection on its own.
 - **Check:**

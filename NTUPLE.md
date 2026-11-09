@@ -55,7 +55,7 @@ Preselection: `gedPhotons` with a supercluster, E_SC > `photonMinSCEnergy` (1 Ge
 | `pho_pt`, `pho_eta`, `pho_phi`, `pho_energy`, `pho_energyErr` | kinematics, energy uncertainty of the candidate |
 | `pho_fitEnergyErr` | energy uncertainty used in the kinematic fit (scaled, see `energyErrorScaleEB/EE`) |
 | `pho_mva` | photon MVA (`PhotonMVAEstimatorRunIIIWinter22v1`), −99 if not available |
-| `pho_tightId` | cut-based tight ID (RunIIIWinter22 V1), −1 if not available |
+| `pho_tightId` | MVA ID working point 90% (`mvaPhoID-RunIIIWinter22-v1-wp90`), −1 if not available |
 | `pho_isEB`, `pho_isEE`, `pho_hasPixelSeed`, `pho_hasConversionTracks` | flags |
 | `pho_hasClusterHits` | the supercluster has rechits (needed for the fit and for `pho_seedTime`) |
 | `pho_scEnergy`, `pho_scRawEnergy`, `pho_scEta`, `pho_scPhi`, `pho_scEtaWidth`, `pho_scPhiWidth` | supercluster |
