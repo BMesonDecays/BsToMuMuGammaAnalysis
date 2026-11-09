@@ -53,6 +53,7 @@ Grid submission uses one config for MC and data, `RadiativeAnalysis/crab/crabCon
 - [NTUPLE.md](NTUPLE.md): branches of the ntuple.
 - [plan.md](plan.md): development plan and its status.
 - [report.md](report.md): log of the changes, validations and decisions.
+- [structure.md](structure.md): structure, processing flow and cuts of the analysis code.
 - [structure_old.md](structure_old.md): description of the code before the restructuring. The old ntuplizer (`RadiativeAnalysisLegacy`) was removed in plan step P7.4; it is still in the git history (commit `bde3123`).
 
 ## MC production
