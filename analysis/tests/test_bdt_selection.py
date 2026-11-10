@@ -35,3 +35,16 @@ def test_best_candidate_and_cutflow():
     cf = selection.cutflow(df, {'pt': 'pt > 5', 'prob': 'vtxProb > 0.2'})
     assert list(cf['candidates']) == [3, 2, 1] and list(cf['events']) == [2, 2, 1]
     assert selection.in_windows(np.array([4.6, 5.3, 6.0]), [[4.5, 5.0], [5.8, 6.5]]).tolist() == [True, False, True]
+
+
+def test_early_stopping_split_keeps_events_together():
+    # every event has two candidates; with early stopping the training must still work and be deterministic
+    sig, bkg = toy(2000, 1.5, 1, 0), toy(2000, -1.5, 2, 10**6)
+    sig['evt_event'] //= 2
+    bkg['evt_event'] //= 2
+    m1, i1 = bdt.train_kfold(sig, bkg, ['x', 'y'], k=3, params={'n_estimators': 50}, n_jobs=2, early_stopping=5)
+    m2, i2 = bdt.train_kfold(sig, bkg, ['x', 'y'], k=3, params={'n_estimators': 50}, n_jobs=2, early_stopping=5)
+    assert np.allclose(i1['oof']['score'], i2['oof']['score'])
+    ev = np.arange(3000, dtype=np.uint64)
+    val = (ev // np.uint64(3)) % np.uint64(10) == 0
+    assert 0.08 < val.mean() < 0.12

@@ -74,6 +74,11 @@ Entries are newest first.
     - A `best_candidate` column that was neither a feature nor in `columns` was not loaded.
   - **Fix:** signal MC is preselected and ranked first, then the truth query is applied. The ranking column is always loaded.
   - **Tests:** a new test, which fails on the old code; 16 pass. No effect with the current config, where `best_candidate: null`.
+- **Fix 6, early-stopping split grouped by event** (`bmmg_ana/bdt.py`):
+  - **Problem:** the 10% validation split for early stopping was random per candidate, so candidates of one event could be in both the training and the validation set.
+  - **Fix:** the validation set is the events with `(evt_event // k) % 10 == 0`. It is deterministic and independent of the fold, which uses `evt_event % k`.
+  - **Validation:** 17 tests pass. On the production the out-of-fold AUC is 0.957, unchanged, and the Punzi optimum is at 0.956 (before: 0.949).
+  - **Note:** with all candidates kept, the row-based KS p-values still overstate the independent information. Use them as a qualitative check.
 
 ---
 

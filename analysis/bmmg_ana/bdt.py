@@ -23,8 +23,8 @@ def folds(df, k):
 def train_kfold(sig, bkg, features, k=5, params=None, n_jobs=-1, early_stopping=20):
     """Train k models. sig, bkg: DataFrames with the features and evt_event.
 
-    The two classes get equal total weight. With early_stopping > 0, 10% of the training folds are
-    used as a validation set to stop adding trees.
+    The two classes get equal total weight. With early_stopping > 0, the events with
+    (evt_event // k) % 10 == 0 of the training folds (10%) are the validation set that stops adding trees.
     Returns (models, info): info has 'oof' (DataFrame of the sig+bkg rows with label, fold, score),
     'ks' (per fold, train vs test score KS p-values) and 'importance' (mean gain per feature).
     """
@@ -35,7 +35,6 @@ def train_kfold(sig, bkg, features, k=5, params=None, n_jobs=-1, early_stopping=
     w = np.where(data['label'] == 1, 1.0 / max(1, len(sig)), 1.0 / max(1, len(bkg))) * len(data) / 2
     data['score'] = np.nan
     models, ks, gains = [], [], []
-    rng = np.random.default_rng(12345)
     for i in range(k):
         tr = (data['fold'] != i).to_numpy()
         te = ~tr
@@ -43,7 +42,9 @@ def train_kfold(sig, bkg, features, k=5, params=None, n_jobs=-1, early_stopping=
         fit_kw = {}
         p = dict(params)
         if early_stopping:
-            val = rng.random(len(idx_tr)) < 0.1
+            # 10% of the events (not candidates) of the training folds: candidates of one event stay together
+            ev = data['evt_event'].to_numpy()[idx_tr].astype(np.uint64)
+            val = (ev // np.uint64(k)) % np.uint64(10) == np.uint64(0)
             idx_val, idx_tr = idx_tr[val], idx_tr[~val]
             p['early_stopping_rounds'] = early_stopping
             fit_kw['eval_set'] = [(data.loc[idx_val, features], data.loc[idx_val, 'label'])]
