@@ -82,7 +82,12 @@ vector<float> MuonMVAID::produce(const std::vector<const reco::Muon*>& InputMuon
       mu_cand.addUserFloat("staRelChi2",          muon.combinedQuality().staRelChi2);
       mu_cand.addUserFloat("mvaId",               0.);
       
-      if (muon.isGlobalMuon()){
+      // use a track only if its reference is set and its product is available (thinned inputs)
+      auto usable = [](const reco::TrackRef& t) { return t.isNonnull() && t.isAvailable(); };
+      const bool hasInner = usable(muon.innerTrack());
+      const bool hasGlobal = hasInner && usable(muon.globalTrack()) && usable(muon.outerTrack());
+
+      if (muon.isGlobalMuon() and hasGlobal){
 	mu_cand.addUserFloat("glbNormChi2", muon.globalTrack()->normalizedChi2());
 	mu_cand.addUserFloat("staNormChi2", muon.outerTrack()->normalizedChi2());
 	mu_cand.addUserInt( "staValidHits", muon.outerTrack()->hitPattern().muonStationsWithValidHits());
@@ -94,7 +99,7 @@ vector<float> MuonMVAID::produce(const std::vector<const reco::Muon*>& InputMuon
 	mu_cand.addUserInt("chargeProduct", 0);
       }
       
-      if (muon.isTrackerMuon() or muon.isGlobalMuon()){
+      if ((muon.isTrackerMuon() or muon.isGlobalMuon()) and hasInner){
 	mu_cand.addUserFloat("trkValidFrac",  muon.innerTrack()->validFraction());
 	mu_cand.addUserFloat("trkNormChi2",   muon.innerTrack()->normalizedChi2());
 	
@@ -166,18 +171,22 @@ float fdX(const MatchPair& match){
     return 9999.;
 }
 
+// pull with the 9999 missing-value convention when both uncertainties are zero
+float fpull(double diff, double err1, double err2){
+  const double den = sqrt(pow(err1, 2) + pow(err2, 2));   // as before, in double
+  return den > 0 ? diff / den : 9999.;
+}
+
 float fpullX(const MatchPair& match){
   if (match.first and match.second->hasPhi())
-    return fdX(match) /
-      sqrt(pow(match.first->xErr, 2) + pow(match.second->xErr, 2));
+    return fpull(fdX(match), match.first->xErr, match.second->xErr);
   else
     return 9999.;
 }
 
 float fpullDxDz(const MatchPair& match){
   if (match.first and match.second->hasPhi())
-    return (match.first->dXdZ - match.second->dXdZ) /
-           sqrt(pow(match.first->dXdZErr, 2) + pow(match.second->dXdZErr, 2));
+    return fpull((match.first->dXdZ - match.second->dXdZ), match.first->dXdZErr, match.second->dXdZErr);
   else
     return 9999.;
 }
@@ -191,16 +200,14 @@ float fdY(const MatchPair& match){
 
 float fpullY(const MatchPair& match){
   if (match.first and match.second->hasZed())
-    return fdY(match) /
-      sqrt(pow(match.first->yErr, 2) + pow(match.second->yErr, 2));
+    return fpull(fdY(match), match.first->yErr, match.second->yErr);
   else
     return 9999.;
 }
 
 float fpullDyDz(const MatchPair& match){
   if (match.first and match.second->hasZed())
-    return (match.first->dYdZ - match.second->dYdZ) /
-           sqrt(pow(match.first->dYdZErr, 2) + pow(match.second->dYdZErr, 2));
+    return fpull((match.first->dYdZ - match.second->dYdZ), match.first->dYdZErr, match.second->dYdZErr);
   else
     return 9999.;
 }

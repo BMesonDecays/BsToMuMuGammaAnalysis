@@ -139,6 +139,13 @@ Entries are newest first.
     - **Effect on the fit:** fitted μμγ candidates 394 → 379 (AOD) and 316 → 311 (MiniAOD). Most of those lost had vtxProb ≈ 0 or a mass far from the B. Gen-matched: 338 → 334 and 299 → 295, i.e. −1.2% of the signal, from photons whose covariance has zero variance in one direction.
     - The other branches are identical, except the known μμKK and μμγ(conversion) fit non-determinism.
   - **Option, not done:** keep these photons with a calibrated resolution floor, e.g. of the order of the crystal size / √12, instead of rejecting them. This would need a pull study.
+- **Fix 10, defensive fixes** (`MMGVertexFit::fit`, `run3mvaid`):
+  - **`MMGVertexFit::fit()`**, used only by `MMGVertexFitExample`: the muon TransientTracks were a local vector destroyed at return, while the returned particles point to them. They are now shared pointers owned by the results (`Result::ownedTracks`).
+  - **Muon MVA:**
+    - The inner, outer and global tracks are used only if their reference is set and available; otherwise the existing missing-value defaults apply.
+    - Pulls with zero uncertainties give the missing value 9999, not inf or NaN. They are still computed in double, as before.
+    - The `XGDMatrixCreateFromMat` status is checked (−999 on failure).
+  - **Validation:** 2000 events each of the 3 samples. All muon branches (including `mu_mva`) and all object branches are identical to the previous run. Differences are only in fits with χ² ≈ 3·10⁵ (known non-determinism).
 
 ---
 

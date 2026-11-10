@@ -61,6 +61,9 @@ class MMGVertexFit
             std::vector<std::shared_ptr<const reco::Photon>> fitPhotons;
             std::vector<std::shared_ptr<const TMatrixD>> fitPhotonCovariances;
             std::vector<std::shared_ptr<const reco::TransientTrack>> fitPhotonTracks;
+            // tracks the input particles point to, if the result owns them (set by fit(); empty when the
+            // caller keeps the TransientTracks alive, as with fitCandidate())
+            std::vector<std::shared_ptr<const reco::TransientTrack>> ownedTracks;
         };
 
         // scale factors for the photon measurement uncertainties (sigma, not variance):

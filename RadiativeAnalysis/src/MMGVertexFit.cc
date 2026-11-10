@@ -274,15 +274,16 @@ std::vector<MMGVertexFit::Result> MMGVertexFit::fit(const std::vector<const reco
 
         const GlobalPoint pv(primaryVertices[0].position().x(), primaryVertices[0].position().y(), primaryVertices[0].position().z());
 
-        // kinematic particles of the muons, built once; the TransientTracks must outlive the particles
-        std::vector<reco::TransientTrack> muonTracks;
-        muonTracks.reserve(muons.size());   // no reallocation: the particles point to the elements
+        // kinematic particles of the muons, built once. The particles keep raw pointers to their
+        // TransientTracks, so the tracks are shared with every result that uses them.
+        std::vector<std::shared_ptr<const reco::TransientTrack>> muonTracks(muons.size());
         std::vector<std::optional<RefCountedKinematicParticle>> muonKinematicParticles;
-        for (const reco::Muon* recoMu : muons)
+        for (size_t i = 0; i < muons.size(); ++i)
         {
+            const reco::Muon* recoMu = muons[i];
             if (recoMu->track().isNull()) { muonKinematicParticles.push_back(std::nullopt); continue; }
-            muonTracks.push_back(TTBuilder->build(recoMu->track()));
-            muonKinematicParticles.push_back(muonParticle(muonTracks.back()));
+            muonTracks[i] = std::make_shared<const reco::TransientTrack>(TTBuilder->build(recoMu->track()));
+            muonKinematicParticles.push_back(muonParticle(*muonTracks[i]));
         }
 
         for (unsigned int i = 0; i < muons.size(); i++)
@@ -298,6 +299,7 @@ std::vector<MMGVertexFit::Result> MMGVertexFit::fit(const std::vector<const reco
                     result->mu1Index = i;
                     result->mu2Index = j;
                     result->photonIndex = k;
+                    result->ownedTracks = {muonTracks[i], muonTracks[j]};
                     results.push_back(std::move(*result));
                 }
             }
