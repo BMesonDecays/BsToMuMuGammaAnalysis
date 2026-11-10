@@ -1,0 +1,23 @@
+# conda / mamba environment for the analysis of the bmmg ntuples (no CMSSW or ROOT needed)
+#   mamba env create -f environment.yml && conda activate bmmg
+# On lxplus the same packages are in the LCG view:
+#   source /cvmfs/sft.cern.ch/lcg/views/LCG_107/x86_64-el9-gcc13-opt/setup.sh
+name: bmmg
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - uproot>=5.3
+  - awkward>=2.6
+  - pyarrow>=15
+  - pandas>=2.2
+  - numpy>=1.26
+  - scipy
+  - scikit-learn
+  - xgboost>=2.0
+  - hist
+  - mplhep
+  - matplotlib
+  - pyyaml
+  - pytest
+  - jupyterlab

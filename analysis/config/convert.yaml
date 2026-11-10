@@ -1,0 +1,37 @@
+# Configuration of convert.py: CRAB output ntuples -> candidate-level Parquet tables.
+#
+#   python3 convert.py config/convert.yaml [--datasets NAME ...] [--workers 16]
+
+# output directory (on the fast local disk)
+output: ~/bmmg/parquet
+
+# channels to convert (mmg, mmcg, mmgg, mmkk); channels absent from a file are skipped
+channels: [mmg, mmgg, mmkk]
+
+# loose preselection, a pandas query on the table columns (candidate variables without prefix,
+# e.g. fitOK, vtxProb, mass; legs as mu1_pt, pho_mva, ...). Empty: keep every candidate.
+preselection: "fitOK == 1 and vtxProb > 1e-3"
+
+# columns not to store (glob patterns), e.g. ["*Err", "bs_*", "*_genDR"]. Event ids are always kept.
+drop_columns: []
+
+# maximal input files per output part (smaller chunks are used if needed to keep all workers busy),
+# parallel processes, Parquet compression (zstd; falls back to lz4/snappy if pyarrow lacks it)
+chunk_files: 200
+workers: 16
+compression: zstd
+
+# datasets: name -> glob pattern(s) of the ntuple files (** is recursive), isMC, label (free text)
+datasets:
+  Parking2022C_0:
+    files: ~/bmmg/ntuples/ParkingDoubleMuonLowMass0/**/bmmg_ntuple_*.root
+    isMC: false
+    label: "ParkingDoubleMuonLowMass0 2022C"
+  Parking2022C_1:
+    files: ~/bmmg/ntuples/ParkingDoubleMuonLowMass1/**/bmmg_ntuple_*.root
+    isMC: false
+    label: "ParkingDoubleMuonLowMass1 2022C"
+  BsToMuMuGamma_2022:
+    files: ~/bmmg/ntuples/BsTo2MuG_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/**/bmmg_ntuple_*.root
+    isMC: true
+    label: "Bs -> mu mu gamma, Run3Summer22"

@@ -11,6 +11,7 @@ CMSSW_14_1_1/src/
 ├── RecoVertex/KinematicFit, KinematicFitPrimitives   modified CMSSW (photon measured by its ECAL cluster)
 ├── RecoEcal/EgammaCoreTools                          modified CMSSW (cluster position covariance covariancesXYZ)
 └── BsToMuMuGammaAnalysis/
+    ├── analysis/                    Python analysis of the ntuples (Parquet conversion, plots, BDT, scan), see analysis/README.md
     ├── run3mvaid/                   Run-3 soft-muon MVA (XGBoost), library
     └── RadiativeAnalysis/
         ├── interface/ + src/        library BsToMuMuGammaAnalysisRadiativeAnalysis (namespace bmmg)

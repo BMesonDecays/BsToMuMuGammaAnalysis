@@ -62,6 +62,7 @@ python3 submitCrab.py tasks_example.yaml --command status   # also: resubmit, ki
 | `RadiativeAnalysis/test` | configs, `test_files.txt`, unit tests, `compareNtuples.py` (regression check), `validateMMGFit.py` (fit validation), `checkDecayModes.py` (consistency check per MC decay mode) |
 | `RadiativeAnalysis/devel` | not compiled: custom low-energy photon producer (work in progress), old debugging analyzers |
 | `run3mvaid` | Run-3 soft-muon MVA (XGBoost) |
+| `analysis` | Python analysis of the ntuples (no CMSSW needed): conversion of the CRAB output to candidate-level Parquet tables, plots, cut flows, k-fold BDT, working-point scan. See [analysis/README.md](analysis/README.md) |
 
 ## Documentation
 - [NTUPLE.md](NTUPLE.md): branches of the ntuple.

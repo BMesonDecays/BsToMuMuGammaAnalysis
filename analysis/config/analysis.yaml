@@ -1,0 +1,70 @@
+# Analysis configuration for scripts/plot_basic.py, train_bdt.py, scan_wp.py.
+# The mass windows, cuts and features below are starting points, not final analysis choices.
+
+parquet: ~/bmmg/parquet          # output of convert.py
+output: ~/bmmg/results/mmg       # plots, models, scan results
+channel: mmg                     # mmg, mmgg, mmkk, mmcg
+
+# integrated luminosity of the data datasets [pb^-1] (brilcalc). Used to normalise the signal MC;
+# if null the signal yield is the number of MC candidates (the Punzi figure of merit needs only efficiencies).
+lumi_pb: null
+
+samples:
+  data:
+    datasets: [Parking2022C_0, Parking2022C_1]
+  signal:
+    datasets: [BsToMuMuGamma_2022]
+    query: "genMatched == 1"     # truth-matched candidates only
+    xsec_pb: null                # override the generator cross section stored in the ntuple
+    filter_eff: null             # override the generator filter efficiency
+    br_scale: 1.0                # (assumed BR) / (BR used in the generation)
+
+# extra columns (pandas expressions on the table columns), usable in cuts, features and plots
+derived:
+  lxySig: "lxy / lxyErr"
+  l3dSig: "l3d / l3dErr"
+  ctSig: "ct3D / ct3DErr"
+
+# ordered named cuts, applied to every sample (also the cut-flow rows)
+preselection:
+  vertex: "vtxProb > 0.01"
+  soft muons: "mu1_isSoft == 1 and mu2_isSoft == 1"
+  muon pt: "mu1_pt > 4 and mu2_pt > 3"
+  photon: "pho_pt > 1"
+  # trigger: "mu1_trg_DoubleMu4_3_LowMass == 1 and mu2_trg_DoubleMu4_3_LowMass == 1"
+
+# null, or a column: keep one candidate per event, the one with the highest value
+best_candidate: null
+
+mass:
+  column: mass                   # fitted B mass
+  signal_window: [5.15, 5.60]
+  sidebands: [[4.50, 5.00], [5.75, 6.50]]
+  blind: [5.00, 5.75]            # data in this window is never shown
+
+bdt:
+  features: [vtxProb, cosAlpha3D, lxySig, l3dSig, isolation, maxTrackCompatibility, pt,
+             mu1_pt, mu2_pt, mu1_mva, mu2_mva, pho_pt, pho_mva, dimu_dca]
+  kfold: 5
+  early_stopping: 20
+  params: {n_estimators: 600, max_depth: 4, learning_rate: 0.05, subsample: 0.8, colsample_bytree: 0.8,
+           min_child_weight: 5}
+
+significance:
+  background_model: exp          # flat or exp (exponential fitted to the sidebands)
+  fom: punzi                     # figure of merit for the working point: punzi, asimov_z, s_over_sqrt_b
+  punzi_a: 3
+  min_sideband: 10               # thresholds with fewer sideband candidates are not considered
+
+plots:                           # variable: [bins, low, high]
+  mass: [80, 4.5, 6.5]
+  vtxProb: [50, 0, 1]
+  cosAlpha3D: [50, 0.9, 1]
+  lxySig: [60, 0, 60]
+  isolation: [50, 0, 1]
+  pt: [60, 0, 60]
+  mu1_pt: [50, 0, 30]
+  mu2_pt: [50, 0, 30]
+  pho_pt: [50, 0, 20]
+  pho_mva: [50, -1, 1]
+  mu1_mva: [50, 0, 1]

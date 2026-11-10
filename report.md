@@ -33,6 +33,34 @@ Entries are newest first.
 
 ---
 
+## 2026-11-10: Analysis framework for the ntuples (`analysis/`)
+- **Request:** plan and set up the analysis of the CRAB ntuples on a local PC (SSD, 32 GB, 16 cores): histograms, cuts, a BDT for the signal selection, and the BDT working point from the signal significance. The production is thousands of small files.
+- **Measured on the first production** (`/eos/user/s/sslawins/bmmg_ntuples`: 2 × ~515 2022C Parking files + 22 MC files):
+  - A file has about 600–1300 events in 287 branches, each one ZLIB-1 basket.
+  - Reading costs 85 ms per file from local disk for 11 branches (195–270 ms from EOS) and 570 ms for all branches. That is per-file overhead, not data volume.
+  - Size by block: `mmkk_` 42%, `mu_` 13%, `dimu_` 10%, `mmg_` 10%.
+- **Decision:** two stages in the scientific-Python stack (uproot, awkward, pyarrow, pandas, xgboost, hist, mplhep). Neither CMSSW nor ROOT is needed.
+  1. **`analysis/convert.py`:** converts once into candidate-level Parquet tables.
+     - One row per candidate. The leg objects are gathered through the index branches (`mu1_*`, `pho_*`, `dimu_*`, `trk1_*`, …); the event scalars are broadcast.
+     - Loose preselection, parallel over files, incremental (manifest), unreadable files retried; RunInfo sums in `meta.json`.
+  2. **`analysis/bmmg_ana`:** `io`, `selection`, `weights`, `bdt`, `significance`, `plotting`, `config`. Scripts `plot_basic.py`, `train_bdt.py`, `scan_wp.py`, configured by `config/analysis.yaml`; an example notebook.
+     - k-fold XGBoost: fold = `evt_event % k`, out-of-fold scores, train/test KS, importance.
+     - Vectorised scan over all thresholds: S/√B, Asimov Z, Punzi; background from the sidebands with a flat or exponential factor.
+- **Results on the first production** (lxplus, LCG_107 view, 16 processes, input from EOS):
+  - **Conversion:** 1051 files in 40 s → 1.5 GB of Parquet (lz4: the LCG pyarrow has no zstd; conda's has).
+  - **Cross-check:** the Parquet row counts equal the preselected candidates counted directly in the raw files, for every dataset and channel (`mmg` 57340 / 57740 / 131610, `mmgg`, `mmkk`). `meta.json` `nEvents` equals the RunInfo sums (49.8M + 49.8M data events, 1.17M MC).
+  - **Spot checks:** values gathered through the indices equal the raw values (MC and data, all channels).
+  - **Plots** (`plot_basic.py`, 6 s): cut flows for data (blinded) and signal; shapes of signal vs sidebands; blinded data mass.
+  - **BDT** (`train_bdt.py`, 4 s; 96k signal, 28k sideband candidates, 14 features): out-of-fold AUC 0.957, train/test KS p-values 0.01–0.93, `pho_mva` and the flight significance most important.
+  - **Scan** (`scan_wp.py`, 2 s): Punzi optimum at score 0.949 (signal efficiency 45%, sideband efficiency 1%).
+    - `lumi_pb` is not set, so S is a raw MC count, and S/√B and Z are not physical yet.
+  - **Tests:** `pytest analysis/tests`, 10 tests: gather/broadcast/missing legs, preselection, the converter end to end with a corrupt file and an incremental re-run, k-fold consistency of `predict` and save/load, the scan against hand values, the exponential sideband fit, cut flow and best candidate.
+- **Open (analysis choices, starting values in `config/analysis.yaml`):**
+  - mass windows and blinding, the preselection, the BDT features;
+  - `lumi_pb` and the signal normalisation (the generator σ in the ntuple is the SoftQCD σ: 5.7e8 pb × filter efficiency 1.7e-3);
+  - the background model.
+- `scram b` is unaffected: the analysis scripts are not executable, so SCRAM does not install them.
+
 ## 2026-11-09: CRAB submission for many datasets from a YAML task file
 - **Requests:**
   1. The data type (AOD/MiniAOD) must be a job parameter.
