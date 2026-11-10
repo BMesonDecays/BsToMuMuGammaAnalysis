@@ -10,10 +10,21 @@ import pandas as pd
 from scipy.optimize import minimize_scalar
 
 
+def _finite(name, x):
+    x = np.asarray(x, dtype=float)
+    bad = ~np.isfinite(x)
+    if bad.any():
+        raise ValueError('%s: %d of %d values are not finite (NaN scores sort above every threshold)'
+                         % (name, bad.sum(), len(x)))
+    return x
+
+
 def cumulative_above(scores, weights, thresholds):
-    """Sum of the weights with score >= t, for every t in thresholds."""
-    scores = np.asarray(scores, dtype=float)
-    weights = np.ones_like(scores) if weights is None else np.asarray(weights, dtype=float)
+    """Sum of the weights with score >= t, for every t in thresholds. Scores and weights must be finite."""
+    scores = _finite('scores', scores)
+    weights = np.ones_like(scores) if weights is None else _finite('weights', weights)
+    if len(weights) != len(scores):
+        raise ValueError('%d scores but %d weights' % (len(scores), len(weights)))
     order = np.argsort(scores, kind='stable')
     s, w = scores[order], weights[order]
     above = np.concatenate([np.cumsum(w[::-1])[::-1], [0.]])   # above[i] = sum of w[i:]
@@ -21,6 +32,9 @@ def cumulative_above(scores, weights, thresholds):
 
 
 def _window_width(windows):
+    for lo, hi in windows:
+        if not hi > lo:
+            raise ValueError('mass window [%s, %s]: hi must be above lo' % (lo, hi))
     return sum(hi - lo for lo, hi in windows)
 
 
@@ -76,7 +90,9 @@ def scan(sig_scores, sig_weights, bkg_scores, bkg_factor, thresholds=None, punzi
     min_sideband: thresholds with fewer sideband candidates get NaN figures of merit (B too uncertain).
     Returns a DataFrame with threshold, S, B, n_sideband, eff_sig, eff_bkg, s_over_sqrt_b, asimov_z, punzi.
     """
-    sig_scores, bkg_scores = np.asarray(sig_scores, dtype=float), np.asarray(bkg_scores, dtype=float)
+    sig_scores, bkg_scores = _finite('signal scores', sig_scores), _finite('background scores', bkg_scores)
+    if len(sig_scores) == 0 or len(bkg_scores) == 0:
+        raise ValueError('empty sample: %d signal and %d background candidates' % (len(sig_scores), len(bkg_scores)))
     if thresholds is None:
         q = np.linspace(0, 1, 1000)
         thresholds = np.unique(np.concatenate([np.quantile(sig_scores, q), np.quantile(bkg_scores, q)]))

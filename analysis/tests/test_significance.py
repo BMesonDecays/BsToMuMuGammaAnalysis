@@ -42,3 +42,14 @@ def test_sideband_factor():
     lam = 1.5
     expected = (np.exp(-lam * 5.2) - np.exp(-lam * 5.5)) / sum(np.exp(-lam * lo) - np.exp(-lam * hi) for lo, hi in sb)
     assert f == pytest.approx(expected, rel=0.02)
+
+
+def test_invalid_inputs_rejected():
+    with pytest.raises(ValueError, match='not finite'):
+        sg.cumulative_above([0.2, np.nan], None, [0.8])     # the NaN used to count as passing
+    with pytest.raises(ValueError, match='not finite'):
+        sg.scan([0.5], [np.inf], [0.1], 1.0)
+    with pytest.raises(ValueError, match='empty'):
+        sg.scan([], None, [0.1], 1.0)
+    with pytest.raises(ValueError, match='hi must be above lo'):
+        sg.sideband_factor([5.6, 5.15], [[4.5, 5.0]], 'flat')

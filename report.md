@@ -54,6 +54,12 @@ Entries are newest first.
     - The data cut flow loads with the blind query, so no row includes the window.
     - `load_config` checks that the sidebands don't overlap the blind window and that the signal window lies inside it.
   - **Tests:** a new `tests/test_config.py`; 13 tests pass. On the production the data cut flow now starts at 90531 candidates outside the window.
+- **Fix 3, input validation of the scan** (`bmmg_ana/significance.py`):
+  - **Problem:** NaN scores sorted above every threshold. The review's probe, scores `[0.2, NaN]` with threshold 0.8, counted one passing candidate.
+  - **Fix:**
+    - `cumulative_above` and `scan` raise on non-finite scores or weights, on a length mismatch, and on empty samples.
+    - The window widths require hi > lo.
+  - **Tests:** a new test; 14 pass.
 
 ---
 
