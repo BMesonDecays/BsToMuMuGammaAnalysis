@@ -54,11 +54,13 @@ def load_samples(cfg, columns=(), which=('signal', 'data')):
     'data': data candidates OUTSIDE the blind window. The best-candidate choice (if any) is made
             before the blinding, i.e. as it will be after unblinding; it must not use the mass.
     'background': data candidates in the mass sidebands.
-    'signal': signal MC candidates passing samples.signal.query; weight = MC normalisation to lumi_pb
+    'signal': signal MC candidates passing samples.signal.query (truth label, applied after the
+              best-candidate choice, as in data); weight = MC normalisation to lumi_pb
               (1 per candidate if lumi_pb is not set).
     """
     mcol = cfg['mass']['column']
-    cols = list(dict.fromkeys([mcol] + list(columns) + list(cfg.get('bdt', {}).get('features', []))))
+    cols = list(dict.fromkeys([mcol] + list(columns) + list(cfg.get('bdt', {}).get('features', []))
+                              + ([cfg['best_candidate']] if cfg['best_candidate'] else [])))
     # derived columns are computed in io.load; ask for their inputs, not for themselves
     cols = [c for c in cols if c not in cfg['derived']] + list(cfg['derived'])
     base_cols = [c for c in cols if c not in cfg['derived']]
@@ -77,12 +79,16 @@ def load_samples(cfg, columns=(), which=('signal', 'data')):
             out['background'] = data[selection.in_windows(data[mcol], cfg['mass']['sidebands'])].copy()
     if 'signal' in which:
         s = cfg['samples']['signal']
-        query = ' and '.join('(%s)' % q for q in (presel, s.get('query')) if q)
+        truth = s.get('query')
         frames = []
         for ds in s['datasets']:
-            df = io.load(cfg['parquet'], ds, cfg['channel'], base_cols, query=query or None, derived=cfg['derived'])
+            df = io.load(cfg['parquet'], ds, cfg['channel'], base_cols, query=presel, derived=cfg['derived'],
+                         exprs=[truth] if truth else ())
+            # same candidate policy as data: rank all preselected candidates, then apply the truth label
             if cfg['best_candidate']:
                 df = selection.best_candidate(df, cfg['best_candidate'])
+            if truth:
+                df = df.query(truth).copy()
             if cfg.get('lumi_pb'):
                 df['weight'] = weights.mc_scale(io.meta(cfg['parquet'], ds), cfg['lumi_pb'], s.get('xsec_pb'),
                                                 s.get('filter_eff'), s.get('br_scale', 1.0))

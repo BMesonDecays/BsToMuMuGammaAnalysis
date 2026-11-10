@@ -68,6 +68,12 @@ Entries are newest first.
     - Leg and candidate vectors of different lengths raise.
   - **Also fixed:** `convert.py` crashed writing the manifest when the first finished chunk of a dataset had no rows, because the dataset directory did not exist yet. The new test exposed this depending on the completion order.
   - **Validation:** on a data and an MC file the new tables equal the old ones in all channels, with the same dtypes. 15 tests pass, 3 repeated runs.
+- **Fix 5, same candidate policy for signal and data** (`bmmg_ana/config.py`):
+  - **Problem:**
+    - The signal truth query was applied before the best-candidate choice. A true candidate could therefore be kept even where a combinatorial candidate would win the ranking, as in data, which overestimates the signal efficiency.
+    - A `best_candidate` column that was neither a feature nor in `columns` was not loaded.
+  - **Fix:** signal MC is preselected and ranked first, then the truth query is applied. The ranking column is always loaded.
+  - **Tests:** a new test, which fails on the old code; 16 pass. No effect with the current config, where `best_candidate: null`.
 
 ---
 
