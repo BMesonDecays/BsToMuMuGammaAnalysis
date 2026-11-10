@@ -160,7 +160,8 @@ namespace bmmg {
                        "l3d", "l3dErr", "lxy", "lxyErr", "cosAlpha3D", "cosAlpha2D",
                        "ct3D", "ct3DErr", "ct2D", "ct2DErr",
                        "mu1FitPt", "mu1FitEta", "mu1FitPhi", "mu2FitPt", "mu2FitEta", "mu2FitPhi",
-                       "helicity", "coplanarity", "cosThetaL", "isolation", "maxTrackCompatibility"});
+                       "helicity", "coplanarity", "cosThetaL", "isolation", "maxTrackCompatibility",
+                       "pointingAngle", "vtxOnlyProb", "vtxOnlyChi2", "vtxOnlyNdof", "cosAlpha3DVtxOnly"});
     if (ch.legs.size() > 1) b_.bookVector<float>(p + "xMass");   // diphoton / KK mass (pre-fit)
     for (const auto& leg : ch.legs)
       for (const char* v : {"FitPt", "FitEta", "FitPhi"}) b_.bookVector<float>(p + leg + v);
@@ -483,9 +484,20 @@ namespace bmmg {
           F(daughterNames[k] + "FitPhi").push_back(dp.phi());
         }
         F("fitDimuonMass").push_back(dimu.M());
+        // pointing residual after the constraint, and the stage-1 (vertex-only) fit
+        const MMGVertexFit::Result& r = *c.fit;
+        F("pointingAngle").push_back(r.pointingAngle);
+        F("vtxOnlyChi2").push_back(r.vertexOnlyChi2);
+        F("vtxOnlyNdof").push_back(r.vertexOnlyNdof);
+        F("vtxOnlyProb").push_back(r.vertexOnlyNdof > 0 ? TMath::Prob(r.vertexOnlyChi2, static_cast<int>(std::lround(r.vertexOnlyNdof)))
+                                                        : -1.);
+        const GlobalVector d1 = r.vertexOnlyPosition - GlobalPoint(pv.x(), pv.y(), pv.z());
+        const double a1 = MMGVertexFit::pointingAngle(r.vertexOnlyMomentum, d1);
+        F("cosAlpha3DVtxOnly").push_back(a1 >= 0 ? std::cos(a1) : -2.);
       } else {
         for (const char* n : {"mass", "pt", "eta", "phi", "vtxChi2", "vtxNdof", "vtxProb", "svX", "svY", "svZ",
-                              "svXErr", "svYErr", "svZErr", "fitDimuonMass"})
+                              "svXErr", "svYErr", "svZErr", "fitDimuonMass",
+                              "pointingAngle", "vtxOnlyChi2", "vtxOnlyNdof", "vtxOnlyProb", "cosAlpha3DVtxOnly"})
           F(n).push_back(kNaN);
         for (const auto& d : daughterNames)
           for (const char* v : {"FitPt", "FitEta", "FitPhi"}) F(d + v).push_back(kNaN);

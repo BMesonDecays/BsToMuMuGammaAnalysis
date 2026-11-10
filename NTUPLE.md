@@ -129,6 +129,9 @@ Fits that fail, or that diverge (non-finite χ², mass > 100 GeV, |p| > 10 TeV),
 | `<p>mu1Fit*`, `<p>mu2Fit*`, `<p><leg>Fit*` (Pt, Eta, Phi) | fitted daughters |
 | `<p>l3d`, `<p>l3dErr`, `<p>lxy`, `<p>lxyErr` | PV–SV distance in 3D and transverse, with errors |
 | `<p>cosAlpha3D`, `<p>cosAlpha2D` | cos of the angle between (SV − PV) and the fitted momentum |
+| `<p>pointingAngle` | angle [rad] between the fitted momentum and SV − PV **after** the pointing constraint; ≈ 0 when the constraint is satisfied. Fits that did not converge can leave up to π (anti-parallel). Since `cosAlpha3D` is computed from the constrained fit, it mostly encodes this residual. Suggested cut: `pointingAngle < 1e-2`. NaN without a fit |
+| `<p>vtxOnlyChi2`, `<p>vtxOnlyNdof`, `<p>vtxOnlyProb` | stage 1 of the fit: the common-vertex fit of the daughters, before the pointing constraint |
+| `<p>cosAlpha3DVtxOnly` | cos of the angle between (SV − PV) and the B momentum of the stage-1 fit (unconstrained pointing, the geometric quantity to use as a BDT feature) |
 | `<p>ct3D`, `<p>ct2D` | ct = m (d·p)/\|p\|², and transverse m (d_T·p_T)/p_T², with d = SV − PV (signed) and m = m(B_s) PDG. For B_d multiply by m(B_d)/m(B_s). |
 | `<p>ct3DErr`, `<p>ct2DErr` | propagated from the full covariance of the fitted state (SV position, momentum and correlations) and the PV covariance |
 | `<p>helicity` | cos θ of the non-dimuon system (γ, γγ, KK) in the B rest frame w.r.t. the B direction |

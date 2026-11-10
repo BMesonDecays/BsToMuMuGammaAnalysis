@@ -42,6 +42,15 @@ class MMGVertexFit
             RefCountedKinematicVertex vertex;                   // B decay vertex
             std::vector<RefCountedKinematicParticle> daughters; // fitted mu1, mu2, photon (in this order)
 
+            // angle [rad] between the fitted B momentum and SV - PV after the pointing constraint:
+            // ~0 if the constraint is satisfied. The CMSSW parent fitter can return a tree that does not
+            // satisfy it (e.g. after the iteration cap), up to anti-parallel (pi).
+            double pointingAngle = -1.;
+            // stage 1, common-vertex fit before the pointing constraint (unconstrained geometry)
+            double vertexOnlyChi2 = -1., vertexOnlyNdof = -1.;
+            GlobalPoint vertexOnlyPosition;
+            GlobalVector vertexOnlyMomentum;
+
             // indices of the inputs in the vectors passed to fit(); -1 when fitCandidate() is called directly
             int mu1Index = -1;
             int mu2Index = -1;
@@ -107,6 +116,9 @@ class MMGVertexFit
         // Returns nothing if the fit fails or diverges (non-finite chi2 or mass).
         static std::optional<Result> fitParticles(const std::vector<RefCountedKinematicParticle>& particles,
             const GlobalPoint& pv);
+
+        // angle [rad] between p and d (atan2 of |p x d| and p.d); -1 if one of them is null
+        static double pointingAngle(const GlobalVector& p, const GlobalVector& d);
 
         // fit one mu mu gamma candidate; pv is the primary vertex used in the pointing constraint.
         // Returns nothing if the photon has no cluster hits or if the fit fails or diverges.

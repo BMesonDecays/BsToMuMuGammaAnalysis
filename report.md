@@ -97,6 +97,29 @@ Entries are newest first.
 
     MiniAOD now agrees with AOD. In AOD the weight cut changes the values slightly. The μμKK AOD count changes from 67 to 65, consistent with the known fit non-determinism; the isolation does not enter the fit.
   - **Consequence:** in the existing CRAB production (MiniAOD), isolation and track compatibility are wrong for 38% of the MC μμγ candidates and 37% of the data μμKK candidates (those with PV ≠ 0). **The production must be redone** before these features are used in the BDT.
+- **Fix 8, pointing constraint not satisfied after the fit** (`MMGVertexFit`, `NtupleWriter`, `NTUPLE.md`; CMSSW fork):
+  - **Measured on the production:** the angle between the fitted B momentum and SV − PV, which the constraint should make ≈ 0, exceeds 1 mrad for 8% of the signal MC and 30% of the data μμγ candidates. In the tail it reaches π. The float32 resolution of `cosAlpha3D` is about 0.3 mrad.
+  - **Cause 1 (fork, `src/RecoVertex`, branch `photonKinematicFit_v2`):**
+    - The convergence test of `LagrangeParentParticleFitter` loops `i < vl.num_row()` over a 1-based CLHEP vector. It skips the last equation, here the second pointing equation.
+    - Fixed to `<=` in both loops. Committed in the fork as `1a4776adc6b`, **not pushed**. The CRAB sandbox ships the local build.
+  - **New branches** (all channels):
+    - `<p>pointingAngle`: the residual after the constraint, computed with atan2, stable near 0 and π;
+    - `<p>vtxOnlyChi2/Ndof/Prob`: stage 1, the vertex-only fit;
+    - `<p>cosAlpha3DVtxOnly`: the unconstrained pointing.
+  - **Validation:** 2000 events each of MC AOD, MC MiniAOD and data MiniAOD, fitted candidates:
+
+    | sample, channel | angle > 1 mrad, before → after the fitter fix | > 10 mrad | > 1.5 rad |
+    |---|---|---|---|
+    | MC AOD μμγ, gen-matched | 10.6% → 3.8% | | |
+    | MC AOD μμγ, all | 12.9% → 5.3% | 4.1% → 3.6% | 0.5% → 1.0% |
+    | MC MiniAOD μμγ, gen-matched | 10.7% → 4.3% | | |
+    | MC MiniAOD μμγ, all | 11.7% → 5.1% | 2.8% → 2.5% | 0.6% → 0.9% |
+    | data MiniAOD μμKK | 49.6% → 36.2% | 35.2% → 31.3% | 10.0% → 10.4% |
+
+    - Gen-matched MC MiniAOD mass in [4.5, 6.5]: σ 0.184 → 0.179 GeV.
+    - Reading the stage-1 values does not change the fit: compared with the run before this change, all branches are identical except the μμKK fits of 1–5 events per 2000 and μμγ(conversion) in 42/2000, both from the known fit non-determinism.
+  - **Remaining:** about 3% of the μμγ fits (and many μμKK fits with χ² ≫ ndf) end at the iteration cap or at an anti-parallel solution. They are now visible through `pointingAngle`.
+  - **Recommendation for the analysis:** cut `pointingAngle < 1e-2`, and use `cosAlpha3DVtxOnly` instead of `cosAlpha3D` as a BDT feature. Both need the new production; the config is not changed yet.
 
 ---
 

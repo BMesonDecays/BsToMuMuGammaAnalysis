@@ -136,6 +136,13 @@ std::optional<MMGVertexFit::PhotonParticle> MMGVertexFit::photonParticle(const r
 //     with PointingKinematicConstraint): the B momentum must point from the primary vertex
 //     to the B decay vertex. The constraint uses the full covariance of the B candidate,
 //     including the correlations between the daughters from step 1.
+// angle between two vectors, numerically stable also near 0 and pi; -1 if one of them is null
+double MMGVertexFit::pointingAngle(const GlobalVector& p, const GlobalVector& d)
+    {
+        if (p.mag2() <= 0. || d.mag2() <= 0.) return -1.;
+        return std::atan2(p.cross(d).mag(), p.dot(d));
+    }
+
 std::optional<MMGVertexFit::Result> MMGVertexFit::fitParticles(const std::vector<RefCountedKinematicParticle>& particles,
     const GlobalPoint& pv)
     {
@@ -144,11 +151,22 @@ std::optional<MMGVertexFit::Result> MMGVertexFit::fitParticles(const std::vector
         PointingKinematicConstraint pointingConstraint(pv);
 
         RefCountedKinematicTree tree;
+        struct { double chi2 = -1., ndof = -1.; GlobalPoint position; GlobalVector momentum; } stage1;
         try
         {
             tree = vertexFitter.fit(particles);
             if (!tree->isValid()) return std::nullopt;
             tree->movePointerToTheTop();
+            {
+                // stage-1 values (copies; the constraint fit replaces the top particle and its vertex)
+                const KinematicState s1 = tree->currentParticle()->currentState();
+                const RefCountedKinematicVertex v1 = tree->currentDecayVertex();
+                if (!v1->vertexIsValid()) return std::nullopt;
+                stage1.chi2 = v1->chiSquared();
+                stage1.ndof = v1->degreesOfFreedom();
+                stage1.position = v1->position();
+                stage1.momentum = s1.globalMomentum();
+            }
             tree = constraintFitter.fit(&pointingConstraint, tree);
             if (!tree->isValid()) return std::nullopt;
         }
@@ -173,6 +191,12 @@ std::optional<MMGVertexFit::Result> MMGVertexFit::fitParticles(const std::vector
         if (!std::isfinite(result.vertex->chiSquared()) || !std::isfinite(fitMass) || fitMass <= 0. || fitMass > 100. ||
             !std::isfinite(fitP) || fitP > 1e4)
             return std::nullopt;
+        result.vertexOnlyChi2 = stage1.chi2;
+        result.vertexOnlyNdof = stage1.ndof;
+        result.vertexOnlyPosition = stage1.position;
+        result.vertexOnlyMomentum = stage1.momentum;
+        result.pointingAngle = pointingAngle(result.particle->currentState().globalMomentum(),
+                                             result.vertex->position() - pv);
         return result;
     }
 
