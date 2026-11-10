@@ -33,6 +33,23 @@ Entries are newest first.
 
 ---
 
+## 2026-11-11: `submitCrab.py`: one summary line per task, `--verbose` for the full output
+- **Default output:** one line per task. The CRAB call runs in the per-task child process as before, with
+  its stdout/stderr redirected (at file-descriptor level, so the CRAB loggers are included) to
+  `<workArea>/logs/<task>.<command>.log`. The child sends the outcome back to the parent through a pipe.
+  - `submit`: `submitted: <unique task name>`, or `skipped: ... exists`.
+  - `status`: task status and job states, e.g. `SUBMITTED  120 jobs: finished 100 (83%), running 18, failed 2`,
+    plus the task failure message if any; at the end, the job states summed over all tasks.
+  - `resubmit` / `kill`: `OK`.
+  - Failure: the error on one line (≤ 200 characters), the last 15 lines of the CRAB output and the log path.
+  - `--dry-run`: dataset, data type, splitting and cmsRun options per task.
+- **`-v` / `--verbose`:** the previous behaviour: banner per task, full CRAB output, full CRAB configurations with `--dry-run`.
+- **Failure detection improved:** `crab status` returning `commandStatus: FAILED`, and `crab resubmit`
+  returning nothing (e.g. status not yet available), now count as failures; before, only exceptions did.
+- **Tests:** dry run in both modes on `tasks_all.yaml`. No grid proxy was available, so the status /
+  resubmit paths were tested with a stub `CRABAPI` (success, exception, verbose); the real `crab status`
+  call reaches CRAB and reports the missing proxy on one line. The real submit path was not run.
+
 ## 2026-11-10: Fixes from the external review (`review.md`)
 - **Request:** read `review.md` (review of the code at `184dc8b`), apply the fixes where there is a possible improvement, one commit per fix.
 - **Triage:**

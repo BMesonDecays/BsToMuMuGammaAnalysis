@@ -11,6 +11,10 @@ Usage (from any directory):
     python3 submitCrab.py tasks.yaml --dry-run             # only print the CRAB configurations, nothing is submitted
     python3 submitCrab.py tasks.yaml --tasks 'Parking*'    # only the tasks whose name matches (glob, comma-separated)
     python3 submitCrab.py tasks.yaml --command status      # crab status of every task (also: resubmit, kill)
+    python3 submitCrab.py tasks.yaml -v ...                # full CRAB output instead of one line per task
+
+Without --verbose every task prints one summary line (submitted / job states / failure with the end
+of the CRAB output); the full CRAB output of each task is in <workArea>/logs/<task>.<command>.log.
 
 The task file format is documented in tasks_example.yaml. Every task becomes one CRAB task
 crab_<name> in the work area. A task whose project directory already exists is not submitted again.
@@ -25,7 +29,7 @@ import fnmatch
 import os
 import re
 import sys
-from multiprocessing import Process
+from multiprocessing import Pipe, Process
 
 import yaml
 
@@ -220,47 +224,135 @@ def projectDir(t):
     return os.path.join(t['workArea'], 'crab_' + t['requestName'])
 
 
-def _submit(config):
-    # runs in a child process (see the module docstring)
-    from CRABAPI.RawCommand import crabCommand
-    from CRABClient.ClientExceptions import ClientException
-    from http.client import HTTPException
-    try:
-        crabCommand('submit', config=config)
-    except HTTPException as e:
-        print('Failed submitting task %s: %s' % (config.General.requestName, e.headers))
-        sys.exit(1)
-    except ClientException as e:
-        print('Failed submitting task %s: %s' % (config.General.requestName, e))
-        sys.exit(1)
+# order of the job states in the short status summary
+JOB_STATES = ['finished', 'transferring', 'running', 'idle', 'unsubmitted', 'cooloff', 'toRetry', 'held', 'failed', 'killed']
 
 
-def _command(command, directory):
-    from CRABAPI.RawCommand import crabCommand
+def logPath(t, command):
+    """Log file with the full CRAB output of one command for one task (written when not --verbose)."""
+    return os.path.join(t['workArea'], 'logs', '%s.%s.log' % (t['requestName'], command))
+
+
+def _crab(command, kwargs, log, conn):
+    """Run one crab command; runs in a child process (see the module docstring).
+
+    Without a log file the CRAB output goes to the terminal. With one, stdout and stderr of the process
+    (file descriptors, so the CRAB loggers are included) go to the log. The outcome is sent back
+    to the parent as a dict: ok, error, result."""
+    if log:
+        os.makedirs(os.path.dirname(log), exist_ok=True)
+        fd = os.open(log, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o644)
+        sys.stdout.flush()
+        sys.stderr.flush()
+        os.dup2(fd, 1)
+        os.dup2(fd, 2)
+        os.close(fd)
+    out = {'ok': False, 'error': '', 'result': None}
     try:
-        result = crabCommand(command, dir=directory)
-    except Exception as e:   # noqa: BLE001 - report and go on with the next task
-        print('crab %s failed for %s: %s' % (command, directory, e))
-        sys.exit(1)
-    if command == 'status' and isinstance(result, dict):
-        jobs = result.get('jobsPerStatus', {})
-        total = sum(jobs.values())
-        summary = ', '.join('%s %d' % (k, v) for k, v in sorted(jobs.items()))
-        print('SUMMARY %s: task %s, %d jobs: %s' % (os.path.basename(directory), result.get('status'), total, summary))
+        from CRABAPI.RawCommand import crabCommand
+        from http.client import HTTPException
+        try:
+            result = crabCommand(command, **kwargs)
+        except HTTPException as e:
+            out['error'] = 'HTTP error: %s' % getattr(e, 'headers', e)
+        except Exception as e:   # noqa: BLE001 - report and go on with the next task
+            out['error'] = '%s: %s' % (type(e).__name__, e)
+        else:
+            out['result'] = result if isinstance(result, dict) else None
+            status = (result or {}).get('commandStatus') if isinstance(result, dict) else None
+            if result is None and command != 'submit':
+                out['error'] = 'crab %s did nothing (see the log)' % command
+            elif status == 'FAILED':
+                out['error'] = 'crab %s failed (see the log)' % command
+            else:
+                out['ok'] = True
+    finally:
+        sys.stdout.flush()
+        sys.stderr.flush()
+        conn.send(out)
+        conn.close()
+
+
+def runCrab(command, kwargs, log):
+    """Run a crab command in a child process; returns the dict sent by _crab."""
+    parent, child = Pipe(duplex=False)
+    p = Process(target=_crab, args=(command, kwargs, log, child))
+    p.start()
+    child.close()
+    try:
+        out = parent.recv()
+    except EOFError:   # the child died before sending anything
+        out = {'ok': False, 'error': 'the CRAB process exited with code %s' % p.exitcode, 'result': None}
+    p.join()
+    return out
+
+
+def jobsSummary(jobs):
+    """e.g. '120 jobs: finished 100 (83%), running 18, failed 2'."""
+    total = sum(jobs.values())
+    states = [s for s in JOB_STATES if s in jobs] + sorted(set(jobs) - set(JOB_STATES))
+    parts = ['%s %d' % (s, jobs[s]) + (' (%.0f%%)' % (100. * jobs[s] / total) if s == 'finished' else '')
+             for s in states]
+    return '%4d jobs' % total + (': ' + ', '.join(parts) if parts else '')
+
+
+def statusSummary(result):
+    """Short status of one task: task status, job states, task failure message."""
+    text = '%-10s %s' % (result.get('status') or '?', jobsSummary(result.get('jobsPerStatus') or {}))
+    msg = result.get('taskFailureMsg') or result.get('statusFailureMsg')
+    if msg:
+        text += '  [%s]' % ' '.join(str(msg).split())[:150]
+    return text
+
+
+def logTail(log, n=15):
+    try:
+        with open(log, errors='replace') as f:
+            return [line.rstrip() for line in f.readlines()[-n:]]
+    except OSError:
+        return []
 
 
 def banner(i, n, command, t):
-    """Separator printed before the output of each task."""
+    """Separator printed before the output of each task (--verbose)."""
     line = '#' * 100
     print('\n%s\n#  [%d/%d]  %s  %s\n#  %s\n%s' % (line, i, n, command.upper(), t['requestName'],
                                                 t.get('dataset') or 'file list ' + t.get('fileList', ''), line), flush=True)
 
 
-def runInProcess(target, *args):
-    p = Process(target=target, args=args)
-    p.start()
-    p.join()
-    return p.exitcode == 0
+class Reporter:
+    """Output of the task loop: the full output under a banner (verbose) or one line per task."""
+
+    def __init__(self, tasks, command, verbose):
+        self.n, self.command, self.verbose = len(tasks), command, verbose
+        self.width = max(len(t['requestName']) for t in tasks)
+
+    def start(self, i, t):
+        if self.verbose:
+            banner(i, self.n, self.command, t)
+        else:
+            w = len(str(self.n))
+            print('[%*d/%d] %-*s  ' % (w, i, self.n, self.width, t['requestName']), end='', flush=True)
+
+    def line(self, text):
+        """Outcome of the task (on the task's line when not verbose)."""
+        print(('  ' if self.verbose else '') + text, flush=True)
+
+    def failure(self, out, log):
+        error = ' '.join((out['error'] or 'unknown error').split())
+        self.line('FAILED: ' + (error if self.verbose else error[:200] + ('...' if len(error) > 200 else '')))
+        if not self.verbose:
+            for line in logTail(log):
+                print('      | ' + line)
+            print('      full output: %s' % log, flush=True)
+
+
+def taskInfo(t):
+    """One-line description of a task for the dry run."""
+    what = t.get('dataset') or 'file list ' + t['fileList']
+    return '%s  %s %s, %s %d%s, options: %s' % (
+        what, 'MC' if t['isMC'] else 'data', t['dataFormat'], t['splitting'], t['unitsPerJob'],
+        ', lumiMask' if t.get('lumiMask') else '', ' '.join(pyCfgParams(t)[3:]) or 'none')
 
 
 # ------------------------------------------------------------------ main
@@ -271,6 +363,9 @@ def main():
     ap.add_argument('--command', default='submit', choices=['submit', 'status', 'resubmit', 'kill'],
                     help='crab command to run for every task (default submit)')
     ap.add_argument('--dry-run', action='store_true', help='print the CRAB configurations; do not contact CRAB')
+    ap.add_argument('-v', '--verbose', action='store_true',
+                    help='print the full CRAB output (and the full configurations with --dry-run); by default only '
+                         'one summary line per task, the full output goes to <workArea>/logs/<task>.<command>.log')
     args = ap.parse_args()
 
     try:
@@ -284,17 +379,33 @@ def main():
     if not tasks:
         sys.exit('no task selected')
 
+    command = 'dry-run' if args.dry_run and args.command == 'submit' else args.command
+    rep = Reporter(tasks, command, args.verbose)
+    sep = '\n' + '#' * 100 if args.verbose else ''
+
     if args.command != 'submit':
-        missing, failed = [], []
+        missing, failed, totals = [], [], {}
         for i, t in enumerate(tasks, 1):
-            banner(i, len(tasks), args.command, t)
+            rep.start(i, t)
             if not os.path.isdir(projectDir(t)):
-                print('  no project directory %s: not submitted' % projectDir(t))
+                rep.line('no project directory %s: not submitted' % projectDir(t))
                 missing.append(t['requestName'])
-            elif not runInProcess(_command, args.command, projectDir(t)):
+                continue
+            log = None if args.verbose else logPath(t, args.command)
+            out = runCrab(args.command, {'dir': projectDir(t)}, log)
+            if not out['ok']:
+                rep.failure(out, log)
                 failed.append(t['requestName'])
-        print('\n' + '#' * 100)
-        print('\ncrab %s for %d task(s); failed: %s; not submitted (no project directory): %s'
+            elif args.command == 'status':
+                rep.line(statusSummary(out['result']))
+                for k, v in (out['result'].get('jobsPerStatus') or {}).items():
+                    totals[k] = totals.get(k, 0) + v
+            else:
+                rep.line('%s: OK' % args.command)
+        print(sep)
+        if totals:
+            print('all tasks: %s' % jobsSummary(totals).strip())
+        print('crab %s for %d task(s); failed: %s; not submitted (no project directory): %s'
               % (args.command, len(tasks) - len(missing), failed or 'none', missing or 'none'))
         sys.exit(1 if failed else 0)
 
@@ -306,18 +417,25 @@ def main():
     submitted, skipped, failed = [], [], []
     for i, t in enumerate(tasks, 1):
         config = crabConfig(t, user)
-        banner(i, len(tasks), 'dry-run' if args.dry_run else 'submit', t)
+        rep.start(i, t)
         if args.dry_run:
-            print(config)
+            print(config if args.verbose else taskInfo(t))
             continue
         if os.path.exists(projectDir(t)):
-            print('  %s exists: already submitted, skipped' % projectDir(t))
+            rep.line('skipped: %s exists (already submitted)' % projectDir(t))
             skipped.append(t['requestName'])
             continue
-        (submitted if runInProcess(_submit, config) else failed).append(t['requestName'])
+        log = None if args.verbose else logPath(t, 'submit')
+        out = runCrab('submit', {'config': config}, log)
+        if out['ok']:
+            rep.line('submitted: %s' % ((out['result'] or {}).get('uniquerequestname') or t['requestName']))
+            submitted.append(t['requestName'])
+        else:
+            rep.failure(out, log)
+            failed.append(t['requestName'])
 
     if not args.dry_run:
-        print('\n' + '#' * 100)
+        print(sep)
         print('submitted: %s\nskipped (existing project directory): %s\nfailed: %s'
               % (submitted or 'none', skipped or 'none', failed or 'none'))
         sys.exit(1 if failed else 0)

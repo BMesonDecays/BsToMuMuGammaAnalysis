@@ -48,7 +48,9 @@ python3 submitCrab.py tasks_example.yaml --dry-run          # print the generate
 python3 submitCrab.py tasks_example.yaml                    # submit every task (existing project directories are skipped)
 python3 submitCrab.py tasks_example.yaml --tasks 'Parking*' # only some tasks
 python3 submitCrab.py tasks_example.yaml --command status   # also: resubmit, kill
+python3 submitCrab.py tasks_example.yaml --command status -v # full CRAB output instead of one line per task
 ```
+- By default every task prints one line (submitted / job states / failure reason with the end of the CRAB output); the full CRAB output is kept in `crab_projects/logs/<task>.<command>.log`. `-v`/`--verbose` prints the full output (and the full configurations with `--dry-run`).
 - `tasks_example.yaml` documents the keys: dataset(s) or file list, `isMC`, `dataFormat`, lumi mask, splitting, output site, and the `runNtuplizer_cfg.py` options (`skim`, `globalTag`, `channels`, …).
 - `isMC` and `dataFormat` default to the dataset's data tier and must agree with it.
 - `makeFileList.py` writes the LFN list for private samples.
