@@ -179,7 +179,7 @@ The same ntuple is written; the inputs differ:
 |---|---|---|
 | muons, photons | `muons`, `gedPhotons` | `slimmedMuons`, `slimmedPhotons` (pat objects, through `edm::View`) |
 | primary vertices | `offlinePrimaryVertices` | `offlineSlimmedPrimaryVertices` |
-| PV tracks (isolation, track compatibility) | tracks of the PV fit (`vertex.tracks()`) | `packedPFCandidates` + `lostTracks` with track details and `fromPV == PVUsedInFit` |
+| PV tracks (isolation, track compatibility) | tracks of the fit of the candidate's PV with weight > 0.5 | `packedPFCandidates` + `lostTracks` with track details and `pvAssociationQuality() == UsedInFitTight` (weight > 0.5 in the fit of the associated PV) |
 | kaon tracks (`trk_*`, `trk_index`) | `generalTracks` (index in that collection) | pseudo-tracks of the charged `packedPFCandidates` + `lostTracks` (index in that list) |
 | conversions (`conv_*`) | `allConversions` | `reducedEgamma:reducedConversions` (only conversions associated to photons) |
 | ECAL rechits | `reducedEcalRecHitsEB/EE` | `reducedEgamma:reducedEB/EERecHits` (only around e/γ objects: `pho_hasClusterHits` can be 0) |

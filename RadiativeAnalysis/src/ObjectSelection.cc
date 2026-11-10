@@ -122,9 +122,10 @@ namespace bmmg {
 
   std::vector<PVTrack> pvTracksFromVertices(const std::vector<reco::Vertex>& pvs) {
     std::vector<PVTrack> result;
+    // tracks with weight > 0.5 in the fit of the PV: the same definition as PackedCandidate::UsedInFitTight
     for (size_t iv = 0; iv < pvs.size(); ++iv)
       for (auto it = pvs[iv].tracks_begin(); it != pvs[iv].tracks_end(); ++it)
-        result.push_back({**it, static_cast<int>(iv)});
+        if (pvs[iv].trackWeight(*it) > 0.5f) result.push_back({**it, static_cast<int>(iv)});
     return result;
   }
 
@@ -132,7 +133,9 @@ namespace bmmg {
     void addPacked(const std::vector<pat::PackedCandidate>& cands, std::vector<PVTrack>& out) {
       for (const auto& c : cands) {
         if (c.charge() == 0 || !c.hasTrackDetails() || c.vertexRef().isNull()) continue;
-        if (c.fromPV() != pat::PackedCandidate::PVUsedInFit) continue;   // used in the fit of its PV
+        // used in the fit of its associated PV with weight > 0.5. Note: fromPV() without argument tests PV 0
+        // only, which would drop the tracks of all other PVs.
+        if (c.pvAssociationQuality() != pat::PackedCandidate::UsedInFitTight) continue;
         out.push_back({c.pseudoTrack(), static_cast<int>(c.vertexRef().key())});
       }
     }

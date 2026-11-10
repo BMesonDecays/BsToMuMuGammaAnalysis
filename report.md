@@ -79,6 +79,24 @@ Entries are newest first.
   - **Fix:** the validation set is the events with `(evt_event // k) % 10 == 0`. It is deterministic and independent of the fold, which uses `evt_event % k`.
   - **Validation:** 17 tests pass. On the production the out-of-fold AUC is 0.957, unchanged, and the Punzi optimum is at 0.956 (before: 0.949).
   - **Note:** with all candidates kept, the row-based KS p-values still overstate the independent information. Use them as a qualitative check.
+- **Fix 7, PV tracks in MiniAOD** (`src/ObjectSelection.cc`, `NTUPLE.md`, `structure.md`):
+  - **Problem:**
+    - `PackedCandidate::fromPV()` without an argument tests PV 0 only. The track list therefore kept only the tracks of PV 0, while their stored key was the actual PV.
+    - A candidate assigned to another PV had isolation = 1 and `maxTrackCompatibility` = 0, exactly. Both are BDT features.
+  - **Fix:**
+    - MiniAOD: `pvAssociationQuality() == UsedInFitTight`, i.e. weight > 0.5 in the fit of the associated PV (`PATPackedCandidateProducer`).
+    - AOD, for the same definition: only tracks with `trackWeight > 0.5` (before: all tracks of the vertex).
+  - **Validation:** 2000 events each of MC AOD (sample 0), MC MiniAOD (1) and data MiniAOD (16), old vs new build. Fitted candidates:
+
+    | sample, channel, PV | n | iso = 1 old → new | maxTrkComp = 0 old → new |
+    |---|---|---|---|
+    | MC MiniAOD μμγ, PV > 0 | 121 | 1.000 → 0.496 | 1.000 → 0.380 |
+    | MC AOD μμγ, PV > 0 (reference) | 155 | 0.510 → 0.535 | 0.355 → 0.387 |
+    | data MiniAOD μμKK, PV > 0 | 134 | 1.000 → 0.463 | 1.000 → 0.157 |
+    | MC MiniAOD μμγ, PV = 0 | 195 | unchanged | unchanged |
+
+    MiniAOD now agrees with AOD. In AOD the weight cut changes the values slightly. The μμKK AOD count changes from 67 to 65, consistent with the known fit non-determinism; the isolation does not enter the fit.
+  - **Consequence:** in the existing CRAB production (MiniAOD), isolation and track compatibility are wrong for 38% of the MC μμγ candidates and 37% of the data μμKK candidates (those with PV ≠ 0). **The production must be redone** before these features are used in the BDT.
 
 ---
 

@@ -223,7 +223,7 @@ No cut is made on the fit χ² or probability. **Recommended offline:** `<p>vtxP
 |---|---|---|
 | muons / photons | `muons` / `gedPhotons` | `slimmedMuons` / `slimmedPhotons` |
 | primary vertices | `offlinePrimaryVertices` | `offlineSlimmedPrimaryVertices` |
-| PV tracks | tracks of the PV fit | packed candidates / lost tracks with `fromPV == PVUsedInFit` |
+| PV tracks | tracks of the PV fit with weight > 0.5 | packed candidates / lost tracks with `pvAssociationQuality() == UsedInFitTight` |
 | kaon tracks | `generalTracks` | pseudo-tracks of packed candidates + lost tracks |
 | conversions | `allConversions` | not available (tracks not stored): `mmcg` is switched off |
 | ECAL rechits | `reducedEcalRecHitsEB/EE` | `reducedEgamma:reducedEB/EERecHits` |
