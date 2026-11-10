@@ -14,7 +14,30 @@ def load_config(path):
     cfg.setdefault('derived', {})
     cfg.setdefault('preselection', {})
     cfg.setdefault('best_candidate', None)
+    check_windows(cfg['mass'])
     return cfg
+
+
+def check_windows(mass):
+    """The sidebands must lie outside the blind window, and the signal window inside it."""
+    blo, bhi = mass['blind']
+    if not blo < bhi:
+        raise ValueError('mass.blind must be [lo, hi] with lo < hi, not %s' % (mass['blind'],))
+    for lo, hi in mass['sidebands']:
+        if not lo < hi:
+            raise ValueError('sideband [%s, %s]: lo must be below hi' % (lo, hi))
+        if lo < bhi and hi > blo:
+            raise ValueError('sideband [%s, %s] overlaps the blind window %s' % (lo, hi, mass['blind']))
+    slo, shi = mass['signal_window']
+    if not (blo <= slo < shi <= bhi):
+        raise ValueError('signal window %s must lie inside the blind window %s' % (mass['signal_window'], mass['blind']))
+
+
+def blind_query(cfg):
+    """pandas query that keeps only data outside the blind window."""
+    lo, hi = cfg['mass']['blind']
+    m = cfg['mass']['column']
+    return '(%s < %r or %s >= %r)' % (m, lo, m, hi)
 
 
 def preselection_query(cfg):
@@ -28,8 +51,8 @@ def preselection_query(cfg):
 def load_samples(cfg, columns=(), which=('signal', 'data')):
     """DataFrames of the samples after the preselection (and best-candidate choice), with a 'weight' column.
 
-    'data': all data candidates (the blinded window is NOT removed here: plots and scans must use
-            'background' or apply the blinding themselves).
+    'data': data candidates OUTSIDE the blind window. The best-candidate choice (if any) is made
+            before the blinding, i.e. as it will be after unblinding; it must not use the mass.
     'background': data candidates in the mass sidebands.
     'signal': signal MC candidates passing samples.signal.query; weight = MC normalisation to lumi_pb
               (1 per candidate if lumi_pb is not set).
@@ -46,6 +69,7 @@ def load_samples(cfg, columns=(), which=('signal', 'data')):
                        query=presel, derived=cfg['derived'])
         if cfg['best_candidate']:
             data = selection.best_candidate(data, cfg['best_candidate'])
+        data = data.query(blind_query(cfg)).copy()   # nothing in the blind window leaves this function
         data['weight'] = 1.0
         if 'data' in which:
             out['data'] = data

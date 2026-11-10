@@ -25,20 +25,19 @@ def main():
     cols = list(plot_vars) + [mcol]
     cuts0 = dict(cfg['preselection']) if isinstance(cfg['preselection'], dict) else {'preselection': config.preselection_query(cfg)}
     for name, sample in (('data', cfg['samples']['data']), ('signal', cfg['samples']['signal'])):
+        # data: the blind window is removed at loading, so no count (not even the first row) includes it
+        query = config.blind_query(cfg) if name == 'data' else sample.get('query')
         df = io.load(cfg['parquet'], sample['datasets'], cfg['channel'],
                      [c for c in cols if c not in cfg['derived']], derived=cfg['derived'],
-                     query=sample.get('query'), exprs=list(cuts0.values()))
-        cuts = dict(cuts0)
-        if name == 'data':   # blinded: count only outside the blind window
-            lo, hi = cfg['mass']['blind']
-            cuts = {'outside blind window': '%s < %r or %s >= %r' % (mcol, lo, mcol, hi), **cuts}
-        cf = selection.cutflow(df, cuts)
+                     query=query, exprs=list(cuts0.values()))
+        cf = selection.cutflow(df, cuts0)
         print('\n=== cut flow, %s\n%s' % (name, cf.to_string(float_format=lambda x: '%.4g' % x)))
         cf.to_csv(os.path.join(out, 'cutflow_%s.csv' % name))
 
     samples = config.load_samples(cfg, columns=cols, which=('signal', 'data', 'background'))
     sig, bkg, data = samples['signal'], samples['background'], samples['data']
-    print('\nafter the preselection: signal %d, data %d candidates (%d in the sidebands)' % (len(sig), len(data), len(bkg)))
+    print('\nafter the preselection: signal %d, data outside the blind window %d candidates (%d in the sidebands)'
+          % (len(sig), len(data), len(bkg)))
 
     for var, (bins, lo, hi) in plot_vars.items():
         if var not in sig.columns:

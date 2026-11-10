@@ -47,6 +47,13 @@ Entries are newest first.
     - A stale part file with the number of a new empty part is removed.
   - **Tests:** a new test covers a file failing in the second channel (no rows, no nEvents), an orphan part, and changed settings. It fails on the old code. All 11 tests pass.
   - **Real production:** an incremental re-run on the scratch Parquet converted 3 new CRAB files. The rows loaded through `io.load` equal the `meta.json` rows for all 3 datasets.
+- **Fix 2, blinding at the analysis boundary** (`bmmg_ana/config.py`, `scripts/plot_basic.py`):
+  - **Problem:** the first row of the data cut flow counted all candidates, including the blind window. `plot_basic.py` also printed the total data count next to the sideband count, so their difference could give the blinded yield.
+  - **Fix:**
+    - `load_samples` returns data only outside the blind window. The best-candidate choice is made before the blinding, as it will be after unblinding, so the ranking variable must not be the mass.
+    - The data cut flow loads with the blind query, so no row includes the window.
+    - `load_config` checks that the sidebands don't overlap the blind window and that the signal window lies inside it.
+  - **Tests:** a new `tests/test_config.py`; 13 tests pass. On the production the data cut flow now starts at 90531 candidates outside the window.
 
 ---
 
