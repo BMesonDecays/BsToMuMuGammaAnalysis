@@ -60,6 +60,14 @@ Entries are newest first.
     - `cumulative_above` and `scan` raise on non-finite scores or weights, on a length mismatch, and on empty samples.
     - The window widths require hi > lo.
   - **Tests:** a new test; 14 pass.
+- **Fix 4, leg gather in `schema.build_table`:**
+  - **Problem:** a missing leg (index −1) was replaced by index 0, which raises IndexError when the object list of the event is empty (e.g. no photon). An index beyond the object list failed without saying where.
+  - **Fix:**
+    - Missing legs are masked (`ak.mask`) and filled with −999.
+    - An index beyond the list raises a ValueError naming the branch and the event number.
+    - Leg and candidate vectors of different lengths raise.
+  - **Also fixed:** `convert.py` crashed writing the manifest when the first finished chunk of a dataset had no rows, because the dataset directory did not exist yet. The new test exposed this depending on the completion order.
+  - **Validation:** on a data and an MC file the new tables equal the old ones in all channels, with the same dtypes. 15 tests pass, 3 repeated runs.
 
 ---
 

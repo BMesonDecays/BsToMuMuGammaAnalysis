@@ -72,15 +72,22 @@ def build_table(arrays, channel, preselection=None, drop=()):
     # objects through the leg indices
     for leg, coll in CHANNELS[channel].items():
         idx = arrays[p + leg]
-        valid = _flat(idx >= 0)
-        safe = ak.where(idx >= 0, idx, 0)
+        if not ak.all(ak.num(idx, axis=1) == ak.num(template, axis=1)):
+            raise ValueError('%s%s and %smass have different lengths' % (p, leg, p))
+        masked = ak.mask(idx, idx >= 0)   # missing leg (index < 0) -> None, also for an empty object list
         for f in collection_branches(fields, coll):
             obj = arrays[f]
             if obj.ndim != 2:   # only per-object vectors
                 continue
-            gathered = _flat(obj[safe])
+            bad = ak.fill_none(masked >= ak.num(obj, axis=1), False)
+            if ak.any(bad):
+                ev = np.flatnonzero(ak.to_numpy(ak.any(bad, axis=1)))[0]
+                evid = int(arrays['evt_event'][ev]) if 'evt_event' in fields else ev
+                raise ValueError('%s%s points beyond %s (%d objects) in event %s'
+                                 % (p, leg, f, len(obj[ev]), evid))
             # keep the branch type (int32 / float32); missing objects -> -999
-            cols['%s_%s' % (leg, f[len(coll) + 1:])] = np.where(valid, gathered, MISSING).astype(gathered.dtype)
+            dtype = ak.flatten(obj, axis=1).layout.dtype
+            cols['%s_%s' % (leg, f[len(coll) + 1:])] = _flat(ak.fill_none(obj[masked], MISSING)).astype(dtype)
     # event-level scalars
     for f in sorted(fields):
         if f.startswith(EVENT_PREFIXES) and arrays[f].ndim == 1:

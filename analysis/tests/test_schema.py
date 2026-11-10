@@ -51,3 +51,16 @@ def test_absent_channel_and_needed_branches():
     assert build_table(ev, 'mmkk') is None
     br = needed_branches(ev.fields, ['mmg', 'mmkk'])
     assert 'mmg_mass' in br and 'mu_pt' in br and 'pho_pt' in br and 'evt_event' in br
+
+
+def test_missing_leg_with_empty_collection_and_bad_index():
+    import pytest
+    ev = ak.Array({'evt_event': np.array([1, 2], dtype=np.uint64),
+                   'mu_pt': [[5.0, 4.0], [6.0, 3.0]], 'pho_pt': [[], [2.0]], 'dimu_mass': [[3.1], [3.0]],
+                   'mmg_mass': [[5.3], [5.4]], 'mmg_mu1': [[0], [0]], 'mmg_mu2': [[1], [1]],
+                   'mmg_pho': [[-1], [0]], 'mmg_dimu': [[0], [0]]})
+    df = build_table(ev, 'mmg')        # event 1: no photon at all, leg index -1
+    assert list(df['pho_pt']) == [MISSING, 2.0] and df['pho_pt'].dtype == np.float64
+    bad = ak.with_field(ev, ak.Array([[0], [3]]), 'mmg_mu1')
+    with pytest.raises(ValueError, match='points beyond mu_pt .* event 2'):
+        build_table(bad, 'mmg')

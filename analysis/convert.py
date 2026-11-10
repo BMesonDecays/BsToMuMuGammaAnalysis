@@ -124,6 +124,7 @@ def load_manifest(path):
 
 
 def save_json(obj, path):
+    os.makedirs(os.path.dirname(path), exist_ok=True)   # also when no chunk of the dataset had rows yet
     with open(path + '.tmp', 'w') as f:
         json.dump(obj, f, indent=1)
     os.replace(path + '.tmp', path)
