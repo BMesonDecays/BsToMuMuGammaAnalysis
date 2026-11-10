@@ -57,11 +57,11 @@ Preselection: `gedPhotons` with a supercluster, E_SC > `photonMinSCEnergy` (1 Ge
 | `pho_pt`, `pho_eta`, `pho_phi`, `pho_energy`, `pho_energyErr` | kinematics, energy uncertainty of the candidate |
 | `pho_fitEnergyErr` | energy uncertainty used in the kinematic fit (scaled, see `energyErrorScaleEB/EE`) |
 | `pho_mva` | photon MVA (`PhotonMVAEstimatorRunIIIWinter22v1`), −99 if not available |
-| `pho_tightId` | MVA ID working point 90% (`mvaPhoID-RunIIIWinter22-v1-wp90`), −1 if not available |
+| `pho_tightId` | MVA ID working point 90% (`mvaPhoID-RunIIIWinter22-v1-wp90`), −1 if not available. The 90% efficiency target holds for photons above 10 GeV; at lower pt it is not validated |
 | `pho_isEB`, `pho_isEE`, `pho_hasPixelSeed`, `pho_hasConversionTracks` | flags |
 | `pho_hasClusterHits` | the supercluster has rechits (needed for the fit and for `pho_seedTime`) |
 | `pho_scEnergy`, `pho_scRawEnergy`, `pho_scEta`, `pho_scPhi`, `pho_scEtaWidth`, `pho_scPhiWidth` | supercluster |
-| `pho_r9`, `pho_sigmaIetaIeta`, `pho_sigmaIetaIphi`, `pho_sigmaIphiIphi`, `pho_hOverE` | full5x5 shower shapes, H/E |
+| `pho_r9`, `pho_sigmaIetaIeta`, `pho_sigmaIetaIphi`, `pho_sigmaIphiIphi`, `pho_hOverE` | full5x5 shower shapes; H/E from `hadronicOverEm()` (not full5x5) |
 | `pho_seedTime` | time of the seed crystal [ns]; NaN if the seed or its rechit is not available |
 | `pho_fitInputStatus` | can the photon enter the kinematic fit: 0 yes; 1 no rechits; 2 energy not positive/finite; 3 energy uncertainty not positive/finite; 4 degenerate cluster covariance (no two independent position measurements perpendicular to the photon, e.g. a cluster one crystal wide). Candidates with a photon of status ≠ 0 are not fitted (`<p>fitOK = 0`) |
 | `pho_genPdgId`, `pho_genMotherPdgId`, `pho_genDR`, `pho_genFromSignalB` (MC) | closest final-state gen photon (ΔR < 0.1, \|Δpt/pt\| < 0.5) |
@@ -77,7 +77,7 @@ Every opposite-sign pair of selected muons that do not share muon segments.
 | `dimu_vtxValid`, `dimu_vtxProb`, `dimu_vtxChi2`, `dimu_vtxNdof`, `dimu_vtxX/Y/Z` | Kalman vertex of the two inner tracks |
 | `dimu_lxyBS`, `dimu_lxyBSErr` | transverse displacement of the vertex from the beam spot (beam slope included; the error includes the BS width) |
 | `dimu_cosAlphaBS` | cos of the transverse angle between the displacement and the dimuon momentum |
-| `dimu_dca` | transverse distance of closest approach of the two tracks |
+| `dimu_dca` | distance of closest approach of the two tracks [cm]: the two points are found by `ClosestApproachInRPhi` (closest in the transverse plane), and their **3D** separation is stored |
 | `dimu_isCowboy` | 1 if Δφ(μ⁺, μ⁻) > 0 |
 
 ## Conversions: `conv_*` (vectors, if `doMuMuConvGamma`)

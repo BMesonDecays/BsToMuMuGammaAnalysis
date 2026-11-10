@@ -146,6 +146,26 @@ Entries are newest first.
     - Pulls with zero uncertainties give the missing value 9999, not inf or NaN. They are still computed in double, as before.
     - The `XGDMatrixCreateFromMat` status is checked (−999 on failure).
   - **Validation:** 2000 events each of the 3 samples. All muon branches (including `mu_mva`) and all object branches are identical to the previous run. Differences are only in fits with χ² ≈ 3·10⁵ (known non-determinism).
+- **Fix 11, documentation** (`NTUPLE.md`):
+  - `dimu_dca` is the 3D separation of the points found by `ClosestApproachInRPhi`, not a transverse DCA.
+  - `pho_hOverE` is not full5x5.
+  - The wp90 efficiency target of `pho_tightId` holds above 10 GeV only.
+- **Open (not applied; physics choices or studies, see `review.md`):**
+  1. **New CRAB production needed:** fixes 7–9 change the ntuple. The isolation and track compatibility of the current MiniAOD production are wrong for candidates with PV ≠ 0.
+  2. **Strict truth label:** signed IDs, unique gen indices, photon origin. `genMatched` is the inclusive ancestry flag and is too loose for the training label and the efficiency.
+  3. **Gen classification:** deterministic B choice with opposite-sign muons; status-1 muon copies; photon origin labels (hard, FSR, from π0/η).
+  4. **Angles:** the B is from the pointing fit, the daughters from the vertex fit. The lepton axis and coplanarity are lab-frame. Also the J/ψ mass correction.
+  5. **Trigger matching:** distinct HLT objects per leg, menu-dependent filters, trigger availability and prescales.
+  6. **Working point:** sideband closure in BDT score slices, the low-sideband partially reconstructed component, the transfer-factor uncertainty, and a likelihood fit for the final sensitivity.
+  7. **Normalisation:**
+     - the luminosity of the effective trigger OR;
+     - the provenance of the cross section and filter efficiency;
+     - weighted MC;
+     - a J/ψφ normalisation channel.
+  8. **PV choice:** good-PV requirement, wrong-PV fraction, PV refit without the candidate tracks; the ct error ignores the PV dependence of the constrained fit.
+  9. **Muon selection:** the `mu1_pt > 4 and mu2_pt > 3` cut is charge-ordered (mu1 = μ⁺). To model the trigger thresholds, use leading and subleading pt. Not changed because `analysis/config/analysis.yaml` has your uncommitted edits.
+  10. **Fiducial region:** resonance vetoes and q² bins.
+  11. **Photon covariance:** a resolution floor instead of rejecting one-crystal-wide clusters (fix 9).
 
 ---
 

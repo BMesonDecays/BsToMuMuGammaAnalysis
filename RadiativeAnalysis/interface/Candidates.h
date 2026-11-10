@@ -45,7 +45,7 @@ namespace bmmg {
     GlobalPoint vtx;
     GlobalError vtxErr;
     float lxyBS = -1.f, lxyBSErr = -1.f, cosAlphaBS = -2.f;   // transverse w.r.t. the beam spot
-    float dca = -1.f;                   // transverse distance of closest approach of the two tracks
+    float dca = -1.f;                   // 3D distance of the points of closest approach in r-phi of the two tracks
     float deltaR = -1.f;
     int isCowboy = -1;
     int resonance = kNonResonant;       // DimuonResonance
