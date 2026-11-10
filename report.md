@@ -33,6 +33,23 @@ Entries are newest first.
 
 ---
 
+## 2026-11-10: Fixes from the external review (`review.md`)
+- **Request:** read `review.md` (review of the code at `184dc8b`), apply the fixes where there is a possible improvement, one commit per fix.
+- **Triage:**
+  - Applied: the source-level defects listed below.
+  - Not applied: findings that are physics choices or need studies on data and MC (strict truth label, exclusive gen classification, frame of the angles, trigger-leg matching, sideband closure in score slices, normalisation and luminosity, fiducial region and q² binning). These are listed under "Open" at the end of this entry.
+- **Fix 1, conversion bookkeeping** (`analysis/convert.py`, `bmmg_ana/io.py`):
+  - **Problem:** a file whose second channel failed had already contributed its RunInfo and its first channel's rows, but it was listed as bad and retried at the next run, so both were counted twice. The reader also used every `part-*.parquet` on disk, including parts of a chunk whose manifest update never happened.
+  - **Fix:**
+    - A file contributes all or nothing (`convert_file`).
+    - `io.parts` uses only the parts listed in the manifest (with rows for the channel).
+    - The manifest stores the conversion settings (channels, preselection, `drop_columns`) and a fingerprint. A re-run with different settings is refused. Manifests from before this change are accepted with a warning.
+    - A stale part file with the number of a new empty part is removed.
+  - **Tests:** a new test covers a file failing in the second channel (no rows, no nEvents), an orphan part, and changed settings. It fails on the old code. All 11 tests pass.
+  - **Real production:** an incremental re-run on the scratch Parquet converted 3 new CRAB files. The rows loaded through `io.load` equal the `meta.json` rows for all 3 datasets.
+
+---
+
 ## 2026-11-10: Analysis framework for the ntuples (`analysis/`)
 - **Request:** plan and set up the analysis of the CRAB ntuples on a local PC (SSD, 32 GB, 16 cores): histograms, cuts, a BDT for the signal selection, and the BDT working point from the signal significance. The production is thousands of small files.
 - **Measured on the first production** (`/eos/user/s/sslawins/bmmg_ntuples`: 2 × ~515 2022C Parking files + 22 MC files):

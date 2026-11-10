@@ -11,7 +11,19 @@ KEYS = ['evt_run', 'evt_lumi', 'evt_event']
 
 
 def parts(base, dataset, channel):
-    return sorted(glob.glob(os.path.join(os.path.expanduser(base), dataset, channel, 'part-*.parquet')))
+    """Parquet parts of a dataset/channel that are listed in the manifest of convert.py.
+
+    Parts not in the manifest (e.g. written by a conversion that was interrupted before its manifest
+    update) are ignored. Without a manifest, all part files are used.
+    """
+    ddir = os.path.join(os.path.expanduser(base), dataset)
+    found = sorted(glob.glob(os.path.join(ddir, channel, 'part-*.parquet')))
+    mpath = os.path.join(ddir, 'manifest.json')
+    if not os.path.exists(mpath):
+        return found
+    with open(mpath) as f:
+        listed = {int(k) for k, p in json.load(f)['parts'].items() if p['rows'].get(channel, 0) > 0}
+    return [p for p in found if int(re.search(r'part-(\d+)\.parquet$', p).group(1)) in listed]
 
 
 def meta(base, dataset):
