@@ -5,6 +5,7 @@
 // stored as vectors with a common prefix) and tree "RunInfo" (one entry per job).
 // Each block is booked and filled next to each other in NtupleWriter.cc; NTUPLE.md documents the branches.
 
+#include "DataFormats/EcalRecHit/interface/EcalRecHitCollections.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/BranchSet.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/Candidates.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/GenChain.h"
@@ -45,7 +46,9 @@ namespace bmmg {
     // gen may be nullptr (data); gen matches of the objects are filled from it
     void fillMuons(const std::vector<SelectedMuon>& muons, const reco::BeamSpot& bs,
                    const TriggerMatcher::Result& trigger, const GenDecayChain* gen);
+    // ebHits, eeHits: the ECAL rechits used by lazyTools (for the seed time)
     void fillPhotons(const std::vector<SelectedPhoton>& photons, EcalClusterLazyTools& lazyTools,
+                     const EcalRecHitCollection& ebHits, const EcalRecHitCollection& eeHits,
                      const MMGVertexFit& fitter, const GenDecayChain* gen);
     void fillDimuons(const std::vector<DimuonCandidate>& dimuons);
     void fillConversions(const std::vector<SelectedConversion>& conversions, const GenDecayChain* gen);

@@ -18,15 +18,12 @@
 #include <cmath>
 #include <memory>
 
-namespace
-{
-    // energy type used by the fit (ParticleKinematicLinearizedTrackState::computePhotonJacobians)
-    reco::Photon::P4type energyType(const reco::Photon& photon)
+reco::Photon::P4type MMGVertexFit::energyType(const reco::Photon& photon)
     {
+        // energy type used by ParticleKinematicLinearizedTrackState::computePhotonJacobians
         return photon.getCandidateP4type() == reco::Photon::undefined ? reco::Photon::ecal_photons
                                                                        : photon.getCandidateP4type();
     }
-}
 
 // covariancesXYZ gives the spatial spread of the shower, which overestimates the
 // uncertainty of the cluster position; it is rescaled with factors from the cluster pulls.
@@ -53,6 +50,35 @@ TMatrixD MMGVertexFit::clusterCovariance(const reco::Photon& photon, const EcalC
 bool MMGVertexFit::hasClusterHits(const reco::Photon& photon)
     {
         return !photon.superCluster()->hitsAndFractions().empty();
+    }
+
+MMGVertexFit::PhotonInputStatus MMGVertexFit::photonInputStatus(const reco::Photon& photon,
+    const EcalClusterLazyTools& lazyTools) const
+    {
+        if (!hasClusterHits(photon)) return kNoClusterHits;
+        const double energy = photon.getCorrectedEnergy(energyType(photon));
+        if (!std::isfinite(energy) || energy <= 0.) return kBadEnergy;
+        const double energyError = photonEnergyError(photon);
+        if (!std::isfinite(energyError) || energyError <= 0.) return kBadEnergyError;
+
+        // covariance projected on the two directions the fit measures (e_phi, e_theta)
+        const TMatrixD cov = clusterCovariance(photon, lazyTools);
+        for (int a = 0; a < 3; ++a)
+            for (int b = 0; b < 3; ++b)
+                if (!std::isfinite(cov(a, b))) return kBadCovariance;
+        const double phi = photon.phi(), theta = photon.theta();
+        const double e[2][3] = {{-std::sin(phi), std::cos(phi), 0.},
+                                {std::cos(theta) * std::cos(phi), std::cos(theta) * std::sin(phi), -std::sin(theta)}};
+        double P[2][2] = {{0., 0.}, {0., 0.}};
+        for (int i = 0; i < 2; ++i)
+            for (int j = 0; j < 2; ++j)
+                for (int a = 0; a < 3; ++a)
+                    for (int b = 0; b < 3; ++b)
+                        P[i][j] += e[i][a] * cov(a, b) * e[j][b];
+        // both variances positive and the correlation not (numerically) 1
+        if (!(P[0][0] > 0.) || !(P[1][1] > 0.) || P[0][0] * P[1][1] - P[0][1] * P[1][0] <= 1e-6 * P[0][0] * P[1][1])
+            return kBadCovariance;
+        return kPhotonOK;
     }
 
 // The energy uncertainty of the photon candidate does not match the spread of E_reco - E_gen;
@@ -101,7 +127,7 @@ std::optional<RefCountedKinematicParticle> MMGVertexFit::conversionParticle(cons
 std::optional<MMGVertexFit::PhotonParticle> MMGVertexFit::photonParticle(const reco::Photon& photon,
     const EcalClusterLazyTools& lazyTools, const TransientTrackBuilder* TTBuilder, const GlobalPoint& expansionPoint) const
     {
-        if (!hasClusterHits(photon)) return std::nullopt;
+        if (photonInputStatus(photon, lazyTools) != kPhotonOK) return std::nullopt;
 
         // copy of the photon with the rescaled energy uncertainty; the energy is unchanged.
         // clone() keeps the full type, e.g. pat::Photon with its embedded supercluster.

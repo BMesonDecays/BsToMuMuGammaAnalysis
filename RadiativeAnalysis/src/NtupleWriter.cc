@@ -10,7 +10,10 @@
 #include "TLorentzVector.h"
 #include "DataFormats/Candidate/interface/LeafCandidate.h"
 
+#include "DataFormats/EcalDetId/interface/EcalSubdetector.h"
+
 #include <cmath>
+#include <limits>
 #include <initializer_list>
 
 namespace bmmg {
@@ -82,7 +85,8 @@ namespace bmmg {
     }
 
     // ---- photons ----
-    bookInts(b_, "pho_", {"index", "isEB", "isEE", "tightId", "hasPixelSeed", "hasConversionTracks", "hasClusterHits"});
+    bookInts(b_, "pho_", {"index", "isEB", "isEE", "tightId", "hasPixelSeed", "hasConversionTracks", "hasClusterHits",
+                             "fitInputStatus"});
     bookFloats(b_, "pho_", {"pt", "eta", "phi", "energy", "energyErr", "mva", "scEnergy", "scRawEnergy", "scEta",
                             "scPhi", "scEtaWidth", "scPhiWidth", "r9", "sigmaIetaIeta", "sigmaIetaIphi",
                             "sigmaIphiIphi", "hOverE", "seedTime", "fitEnergyErr"});
@@ -268,7 +272,20 @@ namespace bmmg {
     }
   }
 
+  namespace {
+    // time of the seed crystal of the supercluster; NaN if the seed or its rechit is not available
+    // (EcalClusterLazyTools::SuperClusterSeedTime dereferences the lookup result without a check)
+    float seedTime(const reco::SuperCluster& sc, const EcalRecHitCollection& eb, const EcalRecHitCollection& ee) {
+      if (sc.seed().isNull() || !sc.seed().isAvailable()) return std::numeric_limits<float>::quiet_NaN();
+      const DetId id = sc.seed()->seed();
+      const EcalRecHitCollection& hits = id.subdetId() == EcalBarrel ? eb : ee;
+      const auto it = hits.find(id);
+      return it == hits.end() ? std::numeric_limits<float>::quiet_NaN() : it->time();
+    }
+  }  // namespace
+
   void NtupleWriter::fillPhotons(const std::vector<SelectedPhoton>& photons, EcalClusterLazyTools& lazyTools,
+                                 const EcalRecHitCollection& ebHits, const EcalRecHitCollection& eeHits,
                                  const MMGVertexFit& fitter, const GenDecayChain* gen) {
     for (const auto& sp : photons) {
       const reco::Photon& pho = *sp.photon;
@@ -281,11 +298,12 @@ namespace bmmg {
       b_.vec<int>("pho_hasPixelSeed").push_back(pho.hasPixelSeed());
       b_.vec<int>("pho_hasConversionTracks").push_back(pho.hasConversionTracks());
       b_.vec<int>("pho_hasClusterHits").push_back(clusterHits);
+      b_.vec<int>("pho_fitInputStatus").push_back(fitter.photonInputStatus(pho, lazyTools));
       b_.vec<float>("pho_pt").push_back(pho.pt());
       b_.vec<float>("pho_eta").push_back(pho.eta());
       b_.vec<float>("pho_phi").push_back(pho.phi());
       b_.vec<float>("pho_energy").push_back(pho.energy());
-      b_.vec<float>("pho_energyErr").push_back(pho.getCorrectedEnergyError(pho.getCandidateP4type()));
+      b_.vec<float>("pho_energyErr").push_back(pho.getCorrectedEnergyError(MMGVertexFit::energyType(pho)));
       b_.vec<float>("pho_mva").push_back(sp.mva);
       b_.vec<float>("pho_scEnergy").push_back(sc.energy());
       b_.vec<float>("pho_scRawEnergy").push_back(sc.rawEnergy());
@@ -298,7 +316,7 @@ namespace bmmg {
       b_.vec<float>("pho_sigmaIetaIphi").push_back(pho.full5x5_showerShapeVariables().sigmaIetaIphi);
       b_.vec<float>("pho_sigmaIphiIphi").push_back(pho.full5x5_showerShapeVariables().sigmaIphiIphi);
       b_.vec<float>("pho_hOverE").push_back(pho.hadronicOverEm());
-      b_.vec<float>("pho_seedTime").push_back(clusterHits ? lazyTools.SuperClusterSeedTime(sc) : kNaN);
+      b_.vec<float>("pho_seedTime").push_back(seedTime(sc, ebHits, eeHits));
       b_.vec<float>("pho_fitEnergyErr").push_back(fitter.photonEnergyError(pho));
       if (isMC_) {
         GenDecayChain::TruthMatchInfo m;

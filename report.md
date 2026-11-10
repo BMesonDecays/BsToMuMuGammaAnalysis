@@ -120,6 +120,25 @@ Entries are newest first.
     - Reading the stage-1 values does not change the fit: compared with the run before this change, all branches are identical except the μμKK fits of 1–5 events per 2000 and μμγ(conversion) in 42/2000, both from the known fit non-determinism.
   - **Remaining:** about 3% of the μμγ fits (and many μμKK fits with χ² ≫ ndf) end at the iteration cap or at an anti-parallel solution. They are now visible through `pointingAngle`.
   - **Recommendation for the analysis:** cut `pointingAngle < 1e-2`, and use `cosAlpha3DVtxOnly` instead of `cosAlpha3D` as a BDT feature. Both need the new production; the config is not changed yet.
+- **Fix 9, photon measurement checks** (`MMGVertexFit`, `NtupleWriter`, plugin, `NTUPLE.md`):
+  - **Problem:**
+    - `EcalClusterLazyTools::SuperClusterSeedTime` dereferences the rechit lookup without checking for a miss.
+    - `pho_energyErr` called `getCorrectedEnergyError` with the candidate P4 type, which throws if the type is undefined.
+    - The fit accepted any photon with rechits, even with a degenerate cluster covariance or a non-positive energy or energy uncertainty.
+  - **Fix:**
+    - The seed time is computed with an explicit seed and rechit check (NaN on a miss).
+    - `MMGVertexFit::energyType` (fallback `ecal_photons`) is public and also used for `pho_energyErr`.
+    - New `MMGVertexFit::photonInputStatus`: the energy and its uncertainty must be finite and positive, and the cluster covariance projected on (e_φ, e_θ) must be finite, with positive variances and |correlation| < 1 − 5·10⁻⁷. Photons that fail are not fitted.
+    - New branch `pho_fitInputStatus`.
+  - **Validation** (2000 events each):
+    - **Seed time:** 9 (MC MiniAOD) and 6 (data MiniAOD) photons had garbage seed times from the unchecked lookup; they are now NaN. All other values are unchanged.
+    - **Status counts** (0 / no hits / energy / energy error / covariance):
+      - MC AOD: 820 / 0 / 0 / 0 / 463. Mostly low-pt AOD photons: 64% below 2 GeV, 9% above 10 GeV.
+      - MC MiniAOD: 473 / 9 / 0 / 0 / 44.
+      - data MiniAOD: 165 / 6 / 0 / 0 / 5.
+    - **Effect on the fit:** fitted μμγ candidates 394 → 379 (AOD) and 316 → 311 (MiniAOD). Most of those lost had vtxProb ≈ 0 or a mass far from the B. Gen-matched: 338 → 334 and 299 → 295, i.e. −1.2% of the signal, from photons whose covariance has zero variance in one direction.
+    - The other branches are identical, except the known μμKK and μμγ(conversion) fit non-determinism.
+  - **Option, not done:** keep these photons with a calibrated resolution floor, e.g. of the order of the crystal size / √12, instead of rejecting them. This would need a pull study.
 
 ---
 

@@ -62,7 +62,8 @@ Preselection: `gedPhotons` with a supercluster, E_SC > `photonMinSCEnergy` (1 Ge
 | `pho_hasClusterHits` | the supercluster has rechits (needed for the fit and for `pho_seedTime`) |
 | `pho_scEnergy`, `pho_scRawEnergy`, `pho_scEta`, `pho_scPhi`, `pho_scEtaWidth`, `pho_scPhiWidth` | supercluster |
 | `pho_r9`, `pho_sigmaIetaIeta`, `pho_sigmaIetaIphi`, `pho_sigmaIphiIphi`, `pho_hOverE` | full5x5 shower shapes, H/E |
-| `pho_seedTime` | time of the seed crystal [ns] |
+| `pho_seedTime` | time of the seed crystal [ns]; NaN if the seed or its rechit is not available |
+| `pho_fitInputStatus` | can the photon enter the kinematic fit: 0 yes; 1 no rechits; 2 energy not positive/finite; 3 energy uncertainty not positive/finite; 4 degenerate cluster covariance (no two independent position measurements perpendicular to the photon, e.g. a cluster one crystal wide). Candidates with a photon of status ≠ 0 are not fitted (`<p>fitOK = 0`) |
 | `pho_genPdgId`, `pho_genMotherPdgId`, `pho_genDR`, `pho_genFromSignalB` (MC) | closest final-state gen photon (ΔR < 0.1, \|Δpt/pt\| < 0.5) |
 
 ## Dimuons: `dimu_*` (vectors)

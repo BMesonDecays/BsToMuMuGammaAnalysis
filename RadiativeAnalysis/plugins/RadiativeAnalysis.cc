@@ -312,7 +312,8 @@ void RadiativeAnalysis::analyze(const edm::Event& event, const edm::EventSetup& 
   };
   // the object collections are filled first: the candidate truth flags use their gen matches
   writer_->fillMuons(selMuons, beamSpot, trigger, gen.get());
-  writer_->fillPhotons(selPhotons, lazyTools, mmgVertexFit_, gen.get());
+  writer_->fillPhotons(selPhotons, lazyTools, event.get(ebRecHitsToken_), event.get(eeRecHitsToken_), mmgVertexFit_,
+                       gen.get());
   writer_->fillDimuons(dimuons);
 
   if (doMuMuGamma_)

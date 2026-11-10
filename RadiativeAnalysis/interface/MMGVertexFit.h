@@ -88,6 +88,17 @@ class MMGVertexFit
         // photon energy uncertainty used in the fit
         double photonEnergyError(const reco::Photon& photon) const;
 
+        // energy type used by the fit: the candidate P4 type, ecal_photons if it is undefined
+        // (getCorrectedEnergy(Error) throws for an undefined type)
+        static reco::Photon::P4type energyType(const reco::Photon& photon);
+
+        // can the photon be used as a measurement in the fit? The fit needs a positive finite energy and
+        // energy uncertainty, and a cluster covariance with two independent position measurements
+        // (perpendicular to the photon). A one-crystal cluster has zero spread, for example.
+        enum PhotonInputStatus { kPhotonOK = 0, kNoClusterHits = 1, kBadEnergy = 2, kBadEnergyError = 3,
+                                 kBadCovariance = 4 };
+        PhotonInputStatus photonInputStatus(const reco::Photon& photon, const EcalClusterLazyTools& lazyTools) const;
+
         // kinematic particle of a muon (from its inner track); empty if the muon has no inner track.
         // Build it once per muon and event and reuse it for all candidates.
         static RefCountedKinematicParticle muonParticle(const reco::TransientTrack& muonTrack);
