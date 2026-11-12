@@ -64,6 +64,7 @@ void OutputTree::createTree(const std::string filename)
     tree_->Branch("mu2IsSoft", &mu2IsSoft_, "mu2IsSoft/I");
     tree_->Branch("mu2IsTight", &mu2IsTight_, "mu2IsTight/I");
     tree_->Branch("DiMuon_KalmanVtxProb", &DiMuon_KalmanVtxProb_, "DiMuon_KalmanVtxProb/D");
+    tree_->Branch("maxMuonsVertexComp", &maxMuonsVertexComp_, "maxMuonsVertexComp/D");
     tree_->Branch("mu1GenDeltaR", &mu1GenDeltaR_, "mu1GenDeltaR/D");
     tree_->Branch("mu2GenDeltaR", &mu2GenDeltaR_, "mu2GenDeltaR/D");
     
@@ -129,6 +130,8 @@ void OutputTree::createTree(const std::string filename)
     tree_->Branch("PVndof", &PVndofPtr_);
     tree_->Branch("PVrho", &PVrhoPtr_);
     tree_->Branch("PVntracks", &PVntracksPtr_);
+    tree_->Branch("mu1IsTightSelPV", &mu1IsTightSelPVPtr_);
+    tree_->Branch("mu2IsTightSelPV", &mu2IsTightSelPVPtr_);
 
     tree_->Branch("BSx", &BSx_, "BSx/D");
     tree_->Branch("BSy", &BSy_, "BSy/D");
@@ -149,6 +152,7 @@ void OutputTree::createTree(const std::string filename)
     tree_->Branch("dimuonEta", &dimuonEta_, "dimuonEta/D");
     tree_->Branch("dimuonPhi", &dimuonPhi_, "dimuonPhi/D");
     tree_->Branch("dimuonPt", &dimuonPt_, "dimuonPt/D");
+    tree_->Branch("dimuonGenPhotonMass", &dimuonGenPhotonMass_, "dimuonGenPhotonMass/D");
     
     tree_->Branch("photonDeltaRs", &photonDeltaRsPtr_);
     tree_->Branch("photonPt", &photonPtPtr_);
@@ -270,6 +274,7 @@ void OutputTree::resetDecayEntries()
     dimuonEta_ = -9999.0;
     dimuonPhi_ = -9999.0;
     dimuonPt_ = -9999.0;
+    dimuonGenPhotonMass_ = -9999.0;
 
     // Muon kinematics and IDs
     mu1Pt_ = -9999.0;
@@ -288,6 +293,8 @@ void OutputTree::resetDecayEntries()
     mu2IsTracker_ = -999;
     mu2IsSoft_ = -999;
     mu2IsTight_ = -999;
+
+    maxMuonsVertexComp_ = -9999.0;
 
     // Muon gen matching
     mu1GenDeltaR_ = -9999.0;
@@ -327,6 +334,8 @@ void OutputTree::resetDecayEntries()
     PVndof_.clear();
     PVrho_.clear();
     PVntracks_.clear();
+    mu1IsTightSelPV_.clear();
+    mu2IsTightSelPV_.clear();
 
     // Bs branches
     bsVtxProb_.clear();
@@ -373,6 +382,7 @@ void OutputTree::addMmgFitResults(
     dimuonEta_ = results.dimuonEta;
     dimuonPhi_ = results.dimuonPhi;
     dimuonPt_ = results.dimuonPt;
+    dimuonGenPhotonMass_ = results.dimuonGenPhotonMass;
 
     // Vector branches
     photonDeltaRs_.insert(photonDeltaRs_.end(), results.photonDeltaRs.begin(), results.photonDeltaRs.end());
@@ -408,6 +418,8 @@ void OutputTree::addMmgFitResults(
     PVndof_.insert(PVndof_.end(), results.pvNdof.begin(), results.pvNdof.end());
     PVrho_.insert(PVrho_.end(), results.pvRho.begin(), results.pvRho.end());
     PVntracks_.insert(PVntracks_.end(), results.pvNTracks.begin(), results.pvNTracks.end());
+    mu1IsTightSelPV_.insert(mu1IsTightSelPV_.end(), results.mu1IsTightSelPV.begin(), results.mu1IsTightSelPV.end());
+    mu2IsTightSelPV_.insert(mu2IsTightSelPV_.end(), results.mu2IsTightSelPV.begin(), results.mu2IsTightSelPV.end());
 
     bsVtxProb_.insert(bsVtxProb_.end(), results.bsVtxProb.begin(), results.bsVtxProb.end());
     bsVtxX_.insert(bsVtxX_.end(), results.bsVtxX.begin(), results.bsVtxX.end());

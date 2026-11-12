@@ -1,4 +1,6 @@
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/TripleObjectVertexFit.h"
+#include "DataFormats/MuonReco/interface/MuonSelectors.h"
+#include "RecoVertex/VertexPrimitives/interface/VertexException.h"
 
 namespace {
     // transverse distance PV -> SV and its significance; the SV and PV covariances are added
@@ -59,7 +61,13 @@ TripleObjectVertexFit::MmgFitResults TripleObjectVertexFit::fitMmgVertices(
     std::vector<reco::TransientTrack> muonTTs = {muonTT1, muonTT2};
 
     // dimuon-mass constrained Kinematic Fit of two muons
-    bool dimuonFitSuccess = fitter.fitDimuon(muonTTs, nominalMuonMass, resonanceDetails);
+    // vertex fits can throw on numerically singular matrices: treat this as a failed fit
+    bool dimuonFitSuccess = false;
+    try {
+        dimuonFitSuccess = fitter.fitDimuon(muonTTs, nominalMuonMass, resonanceDetails);
+    } catch (const VertexException& e) {
+        edm::LogInfo("TripleObjectVertexFit") << "Dimuon fit threw VertexException: " << e.message();
+    }
     if (!dimuonFitSuccess)	return MmgFitResults();
 
     GlobalVector kinDimuonMomentum = fitter.getDimuon()->currentState().globalMomentum();
@@ -129,6 +137,8 @@ TripleObjectVertexFit::MmgFitResults TripleObjectVertexFit::fitMmgVertices(
         tripleVertexResults.pvNdof.at(i)    = PVlowestDCA.ndof();
         tripleVertexResults.pvRho.at(i)     = PVlowestDCA.position().Rho();
         tripleVertexResults.pvNTracks.at(i) = PVlowestDCA.nTracks();
+        tripleVertexResults.mu1IsTightSelPV.at(i) = muon::isTightMuon(muon1, PVlowestDCA);
+        tripleVertexResults.mu2IsTightSelPV.at(i) = muon::isTightMuon(muon2, PVlowestDCA);
 
         // mu mu gamma displacement and pointing w.r.t. this PV (photon assigned to the dimuon vertex)
         auto [photonDimuonLxy, photonDimuonLxySig] = lxyAndSignificance(SV_point, SV_error, PVlowestDCA);
@@ -162,8 +172,14 @@ TripleObjectVertexFit::MmgFitResults TripleObjectVertexFit::fitMmgVertices(
         std::vector<reco::TransientTrack> photonTTs = {photonTT};
 
         // perform the Bs kinematic fit
-        bool bsFitSuccess = fitter.TrippleObjectVertexFitRecoPhoton(
-            muonTTs, photonTTs, resonanceDetails, std::vector<reco::Photon>({photon}), covPtr.get(), PVlowestDCA, bField, transientTrackBuilder);
+        bool bsFitSuccess = false;
+        try {
+            bsFitSuccess = fitter.TrippleObjectVertexFitRecoPhoton(
+                muonTTs, photonTTs, resonanceDetails, std::vector<reco::Photon>({photon}), covPtr.get(), PVlowestDCA, bField, transientTrackBuilder);
+        } catch (const VertexException& e) {
+            // e.g. "BasicSingleVertexState::could not invert weight matrix" (seen in 2024C data)
+            edm::LogInfo("TripleObjectVertexFit") << "Bs fit threw VertexException: " << e.message();
+        }
         if ( !bsFitSuccess ) continue;
         RefCountedKinematicParticle bsMeson = fitter.getBhadron();
         if (!bsMeson)   continue;
@@ -205,7 +221,13 @@ TripleObjectVertexFit::MmgFitResults TripleObjectVertexFit::fitMmgVertices(
     tripleVertexResults.dimuonEta  = kinDimuonMomentum.eta();
     tripleVertexResults.dimuonPhi  = kinDimuonMomentum.phi();
     tripleVertexResults.dimuonPt   = kinDimuonMomentum.perp();
-    
+    if (genChain && genChain->info().isValid) {
+        // separates the photon energy resolution from the dimuon one
+        TLorentzVector dimuonLV;
+        dimuonLV.SetPxPyPzE( kinDimuonMomentum.x(), kinDimuonMomentum.y(), kinDimuonMomentum.z(), kinDimuonEnergy );
+        tripleVertexResults.dimuonGenPhotonMass = (dimuonLV + genChain->info().signalPhotonP4).M();
+    }
+
 
     return tripleVertexResults;
 

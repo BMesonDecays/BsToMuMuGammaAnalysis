@@ -4,7 +4,7 @@
 #   cd $CMSSW_BASE/src/BsToMuMuGammaAnalysis/RadiativeAnalysis/crab_mc
 #   cmsenv; voms-proxy-init --voms cms --valid 168:00
 #   crab submit -c crabConfig_MC_BsToJpsiGamma.py      (add --dryrun first to test one job)
-#   crab status -d crab_projects/crab_RadiativeAnalysis_MC_BsToJpsiGamma
+#   crab status -d crab_projects/crab_RadiativeAnalysis_MC_BsToJpsiGamma_v2
 import os
 from CRABClient.UserUtilities import config
 
@@ -14,7 +14,7 @@ outputFileName = 'RadiativeAnalysisMC.root'   # must match the analyzer's output
 
 config = config()
 
-config.General.requestName     = 'RadiativeAnalysis_MC_BsToJpsiGamma'
+config.General.requestName     = 'RadiativeAnalysis_MC_BsToJpsiGamma_v2'   # v1: 9 Nov 2026 (before maxMuonsVertexComp, tightSelPV, dimuonGenPhotonMass)
 config.General.workArea        = 'crab_projects'
 config.General.transferOutputs = True
 config.General.transferLogs    = True
@@ -34,7 +34,7 @@ config.Data.splitting            = 'FileBased'
 config.Data.unitsPerJob          = 20          # ~950 events/file, ~35 s/file locally -> ~15 min/job, 62 jobs
 config.Data.publication          = False
 config.Data.outputPrimaryDataset = 'BsToJpsiGamma_Run3_privateMC'
-config.Data.outputDatasetTag     = 'RadiativeAnalysis_MC_AOD'
+config.Data.outputDatasetTag     = 'RadiativeAnalysis_MC_AOD_v2'
 config.Data.outLFNDirBase        = '/store/user/psajdak/crab_out'   # CERNBox: /eos/user/p/psajdak/crab_out
 
 # user input files carry no location info -> run where the files are

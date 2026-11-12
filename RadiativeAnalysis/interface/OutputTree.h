@@ -66,6 +66,7 @@ public:
     int mu2IsSoft_ = -999;
     int mu2IsTight_ = -999;
     double DiMuon_KalmanVtxProb_ = -9999.0;
+    double maxMuonsVertexComp_ = -9999.0;   // max vertex probability of mu mu + any other track
     double mu1GenDeltaR_ = -9999.0;     // MC study only
     double mu2GenDeltaR_ = -9999.0;     // MC study only
 
@@ -145,6 +146,7 @@ public:
     double dimuonEta_ = -9999.0;
     double dimuonPhi_ = -9999.0;
     double dimuonPt_ = -9999.0;
+    double dimuonGenPhotonMass_ = -9999.0;  // MC study only
 
     // MmgFitResults: photon variables
     std::vector<double> photonDeltaRs_;
@@ -180,6 +182,8 @@ public:
     std::vector<double> PVndof_;
     std::vector<double> PVrho_;
     std::vector<int> PVntracks_;
+    std::vector<int> mu1IsTightSelPV_;
+    std::vector<int> mu2IsTightSelPV_;
 
     // MmgFitResults: Bs variables
     std::vector<double> bsVtxProb_;
@@ -230,6 +234,8 @@ private:
     std::vector<double>* PVndofPtr_ = &PVndof_;
     std::vector<double>* PVrhoPtr_ = &PVrho_;
     std::vector<int>* PVntracksPtr_ = &PVntracks_;
+    std::vector<int>* mu1IsTightSelPVPtr_ = &mu1IsTightSelPV_;
+    std::vector<int>* mu2IsTightSelPVPtr_ = &mu2IsTightSelPV_;
 
     std::vector<double>* bsVtxProbPtr_ = &bsVtxProb_;
     std::vector<double>* bsVtxXPtr_ = &bsVtxX_;

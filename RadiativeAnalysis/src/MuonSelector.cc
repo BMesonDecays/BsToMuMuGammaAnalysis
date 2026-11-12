@@ -2,6 +2,7 @@
 #include "TrackingTools/TransientTrack/interface/TransientTrack.h"
 #include "RecoVertex/VertexPrimitives/interface/TransientVertex.h"
 #include "RecoVertex/KalmanVertexFit/interface/KalmanVertexFitter.h"
+#include "RecoVertex/VertexPrimitives/interface/VertexException.h"
 #include "TMath.h"
 #include "DataFormats/MuonReco/interface/MuonSelectors.h"
 
@@ -33,8 +34,13 @@ std::tuple < std::vector<size_t>, std::vector<size_t>, std::vector<double> > Muo
             
             // Fit vertex
             KalmanVertexFitter fitter;
-            TransientVertex vertex = fitter.vertex(tts);
-            
+            TransientVertex vertex;     // invalid by default
+            try {
+                vertex = fitter.vertex(tts);
+            } catch (const VertexException&) {
+                continue;   // numerically singular fit: treat the pair as not compatible
+            }
+
             if (!vertex.isValid())   continue;
             double chi2 = vertex.totalChiSquared();
             double ndf = vertex.degreesOfFreedom();

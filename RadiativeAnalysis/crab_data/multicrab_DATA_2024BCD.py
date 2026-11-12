@@ -49,7 +49,7 @@ def makeConfig(dataset):
     config.General.transferLogs    = False
 
     config.JobType.pluginName  = 'Analysis'
-    config.JobType.psetName    = os.path.join(here, '../test/runRadiativeAnalysis_MINIAOD_test.py')
+    config.JobType.psetName    = os.path.join(here, '../test/runRadiativeAnalysis_MINIAOD.py')
     config.JobType.pyCfgParams = [f'outputFile={outputFileName}']   # no maxEvents: it would rename the output
     config.JobType.outputFiles = [outputFileName]                    # the analyzer writes its own TFile
     config.JobType.maxMemoryMB = 2500
@@ -70,6 +70,10 @@ def makeConfig(dataset):
 def submit(config, dryrun):
     try:
         if dryrun:
+            # CRAB does not allow --dryrun with Automatic splitting: use a fixed number of events per job instead
+            # (~34 ms per input event in a local 2024C test with the photon filter -> 200k events ~ 2 h)
+            config.Data.splitting   = 'EventAwareLumiBased'
+            config.Data.unitsPerJob = 200000
             crabCommand('submit', config=config, dryrun=True)
         else:
             crabCommand('submit', config=config)

@@ -61,6 +61,7 @@ public:
         double dimuonEta = -9999.0;
         double dimuonPhi = -9999.0;
         double dimuonPt = -9999.0;
+        double dimuonGenPhotonMass = -9999.0;   // MC study only: fitted dimuon + gen signal photon
 
         // Photon variables
         std::vector<double> photonDeltaRs;
@@ -96,6 +97,8 @@ public:
         std::vector<double> pvNdof;
         std::vector<double> pvRho;
         std::vector<int> pvNTracks;
+        std::vector<int> mu1IsTightSelPV;           // tight muon ID w.r.t. this PV
+        std::vector<int> mu2IsTightSelPV;
 
         // Bs meson variables
         std::vector<double> bsVtxProb;
@@ -145,6 +148,8 @@ public:
               pvNdof(size, -9999.0),
               pvRho(size, -9999.0),
               pvNTracks(size, -999),
+              mu1IsTightSelPV(size, -999),
+              mu2IsTightSelPV(size, -999),
               bsVtxProb(size, -9999.0),     // Bs variables stay at -9999 if the mass window or the fit fails
               bsVtxX(size, -9999.0),
               bsVtxY(size, -9999.0),

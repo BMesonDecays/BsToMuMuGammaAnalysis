@@ -6,6 +6,7 @@
 //============================================================
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/RadiativeAnalysis.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/BeamSpotAndVertex.h"
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/DimuonVertexCompatibility.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/GenChain.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/MuonSelector.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/TripleObjectVertexFit.h"
@@ -190,7 +191,6 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	}	
 	
 	const auto& theBField             = iSetup.getData(theBFieldTok);
-	const auto& lazyTools             = EcalClusterLazyTools(iEvent, iSetupGetTok->get(iSetup), ecalrechitEBTok, ecalrechitEETok);
 	const auto& trackBuilder          = iSetup.getData(trackBuilderTok);
 
 	edm::Handle<reco::BeamSpot> vertexBeamSpot ;
@@ -199,29 +199,37 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 		iEvent.getByToken(primaryvertexTok, recVtxs);
 	if (!vertexBeamSpot.isValid() || recVtxs->empty()) {return;}
 
+	edm::Handle<edm::View<reco::Photon>> photons;
+		iEvent.getByToken(PhotonTagTok, photons);
+	// data only: skip events without any reconstructed photon (before the track collection and the fits)
+	if (!isMCstudy_ && photons->empty()) {return;}
+
+	// ECAL rechit access for the photon shower covariance; built only for events that are analysed
+	const auto& lazyTools             = EcalClusterLazyTools(iEvent, iSetupGetTok->get(iSetup), ecalrechitEBTok, ecalrechitEETok);
+
 	edm::Handle<edm::View<reco::Muon>> muons;
         iEvent.getByToken(MuonTagTok, muons);
 
-	// MINIAOD: count the same tracks PATTrackAndVertexUnpacker would rebuild
+	// all tracks of the event as transient tracks (used for nTracks and the dimuon vertex compatibility)
+	// MINIAOD: the same tracks PATTrackAndVertexUnpacker would rebuild
 	// An alternative is to run the mentioned process before this analyzer, that would produce the tracks as a separate collection
-	size_t nTracks = 0;
+	std::vector<reco::TransientTrack> eventTrackTTs;
 	if(isMINIAOD_){
 		edm::Handle<edm::View<pat::PackedCandidate>> packedCands;
 			iEvent.getByToken(packedTrackTagTok, packedCands);
 		edm::Handle<edm::View<pat::PackedCandidate>> lostTracks;
 			iEvent.getByToken(lostTrackTagTok, lostTracks);
 		for (const auto& c : *packedCands)
-			if (c.hasTrackDetails() && c.charge() != 0 && c.numberOfHits() > 0) ++nTracks;
+			if (c.hasTrackDetails() && c.charge() != 0 && c.numberOfHits() > 0) eventTrackTTs.push_back(trackBuilder.build(c.pseudoTrack()));
 		for (const auto& c : *lostTracks)
-			if (c.hasTrackDetails()) ++nTracks;
+			if (c.hasTrackDetails()) eventTrackTTs.push_back(trackBuilder.build(c.pseudoTrack()));
 	}
 	else{
 		edm::Handle<std::vector<reco::Track>> tracks;
 			iEvent.getByToken(trackTagTok, tracks);
-		nTracks = tracks->size();
+		eventTrackTTs = trackBuilder.build(tracks);
 	}
-	edm::Handle<edm::View<reco::Photon>> photons;
-    	iEvent.getByToken(PhotonTagTok, photons);
+	const size_t nTracks = eventTrackTTs.size();
 	edm::Handle<edm::ValueMap<float>> mvaValuesMap;
 		iEvent.getByToken(valMapTok, mvaValuesMap);
 
@@ -336,6 +344,9 @@ void RadiativeAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
 		outputTree_->mu1MVAScore_ = muonMVAIDs.at(mu1Idx);
 		outputTree_->mu2MVAScore_ = muonMVAIDs.at(mu2Idx);
 		outputTree_->DiMuon_KalmanVtxProb_ = commonVtxProbs.at(iPair);
+		// dimuon "isolation": best vertex probability of the two muons with any other track of the event
+		outputTree_->maxMuonsVertexComp_ = DimuonVertexCompatibility::maxThirdTrackVtxProb(
+			trackBuilder.build(mu1.track()), trackBuilder.build(mu2.track()), eventTrackTTs );
 		if (genChain) {
 			outputTree_->mu1GenDeltaR_ = genMatchedMu1DeltaR;
 			outputTree_->mu2GenDeltaR_ = genMatchedMu2DeltaR;

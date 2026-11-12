@@ -1,11 +1,14 @@
 import FWCore.ParameterSet.Config as cms
 from FWCore.ParameterSet.VarParsing import VarParsing
 
-# cmsRun runRadiativeAnalysis_MINIAOD_test.py maxEvents=100 outputFile=test_MINIAOD.root
+# Official Run3 MC in MINIAODSIM, e.g.
+#   /BsToJPsiG-JPsiTo2Mu_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/Run3Summer22EEMiniAODv4-130X_mcRun3_2022_realistic_postEE_v6-v2/MINIAODSIM
+# MC counterpart of runRadiativeAnalysis_MINIAOD.py (data): isMCstudy = True, MC global tag, no photon filter
+# cmsRun runRadiativeAnalysis_MC_MINIAOD.py maxEvents=100 outputFile=test_MC_MINIAOD.root
 options = VarParsing("analysis")
 options.maxEvents  = -1
-options.outputFile = "BsToMMG_DATA_MINIAOD_test.root"
-options.inputFiles = ['root://xrootd-cms.infn.it//store/data/Run2023D/ParkingDoubleMuonLowMass0/MINIAOD/22Sep2023_v1-v1/2550000/0419eec5-0ae4-4732-8f06-6d72dd25a149.root']
+options.outputFile = "BsToMMG_MC_MINIAOD.root"
+options.inputFiles = ['/store/mc/Run3Summer22EEMiniAODv4/BsToJPsiG-JPsiTo2Mu_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/MINIAODSIM/130X_mcRun3_2022_realistic_postEE_v6-v2/2820000/0131d8dc-06a2-4144-975b-e3f5dede79c4.root']
 options.parseArguments()
 
 process = cms.Process("Analysis")
@@ -21,7 +24,8 @@ process.load("Configuration.Geometry.GeometryRecoDB_cff")
 process.load("TrackingTools.TransientTrack.TransientTrackBuilder_cfi")
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, "auto:run3_data", "")
+# 2022 post-EE MC conditions of this release (sample produced with 130X_mcRun3_2022_realistic_postEE_v6)
+process.GlobalTag = GlobalTag(process.GlobalTag, "auto:phase1_2022_realistic_postEE", "")
 
 # Run 3 GTs carry no CASTOR geometry; build CaloGeometry only from the subdetectors we need
 process.CaloGeometryBuilder = cms.ESProducer("CaloGeometryBuilder",
@@ -40,9 +44,8 @@ process.photonMVAValueMapProducer = photonMVAValueMapProducer.clone(
 )
 
 process.Analysis = cms.EDAnalyzer("RadiativeAnalysis",
-    isMCstudy               = cms.bool(False),
+    isMCstudy               = cms.bool(True),
     isMINIAOD               = cms.bool(True),
-    # required by the analyzer, but only read when isMCstudy = True
     genParticlesLabel       = cms.InputTag("prunedGenParticles"),
     PUInfo                  = cms.InputTag("slimmedAddPileupInfo"),
     MuonTag                 = cms.InputTag("slimmedMuons"),
@@ -54,11 +57,12 @@ process.Analysis = cms.EDAnalyzer("RadiativeAnalysis",
     LostTrackTag            = cms.InputTag("lostTracks"),
     ecalrechitEB            = cms.InputTag("reducedEgamma", "reducedEBRecHits"),
     ecalrechitEE            = cms.InputTag("reducedEgamma", "reducedEERecHits"),
-    mvaValuesMap           = cms.InputTag("photonMVAValueMapProducer", "PhotonMVAEstimatorRunIIIWinter22v1Values"),
+    mvaValuesMap            = cms.InputTag("photonMVAValueMapProducer", "PhotonMVAEstimatorRunIIIWinter22v1Values"),
     # muon MVA (MuonMVAID)
     xgboost_models          = cms.vstring("Run2022-20231030-1731-Event0"),
     xgboost_variable_names  = cms.vstring("run3muonmva"),
     outputFile              = cms.untracked.string(options.outputFile),
 )
 
+# MC: every event is analysed (no photon filter, unlike the data config)
 process.path = cms.Path(process.photonMVAValueMapProducer * process.Analysis)
