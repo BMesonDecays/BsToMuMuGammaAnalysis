@@ -135,6 +135,38 @@ Entries are newest first.
 - **Open:** the MLP hyperparameters are not tuned (only this one configuration was trained); an MLP/BDT score correlation and an average of the two are not studied.
 
 ---
+## 2026-11-13: PV choice with a signed DCA (study; not adopted)
+**Proposal:** the PV is the one with the lowest DCA to the B line, whether it lies behind or ahead of the
+SV. Sign the DCA (negative if the momentum points from the PV to the SV, i.e. t = (SV − PV)·p̂ > 0) and
+choose the lowest value.
+
+**Method:** temporary branches with all PV positions (not committed), cmsRun on 5000 events of samples 0
+(MC AOD), 1 (MC MiniAOD), 16 (data MiniAOD). The rules were evaluated offline on the same line
+(dimuon vertex + pre-fit momentum); the offline "lowest DCA" reproduces the stored `<p>pv` for 99.9–100%
+of the candidates. Truth: the reco PV closest in z to `gen_pvZ`, for gen-matched μμγ candidates with a
+reco PV within 500 µm of it (841 AOD, 698 MiniAOD).
+
+| rule | correct PV, AOD | MiniAOD | AOD, gen ct < 100 µm |
+|---|---|---|---|
+| lowest DCA (current) | **0.982** | **0.977** | **0.987** |
+| lowest signed DCA (literal proposal) | 0.024 | 0.014 | 0.051 |
+| behind first, then lowest DCA (tol 0) | 0.954 | 0.966 | 0.853 |
+| behind first, tolerance 100 µm | 0.966 | 0.970 | 0.917 |
+
+- **The literal rule fails:** among the PVs behind the SV, the most negative signed DCA is the one with
+  the *largest* distance, so it picks a far pile-up vertex.
+- **"Behind first" is also worse than the current rule:**
+  - The true PV is ahead of the SV (t < 0) for 2.9% (AOD) / 1.3% (MiniAOD) of the candidates. For most
+    of them it is ahead by more than 50 µm (median 140–160 µm); these are mainly short decays. The rule
+    then picks another PV, which is wrong.
+  - The current rule's 31 failures (15 AOD, 16 MiniAOD): in 30 of them the wrongly chosen PV is
+    **behind** the SV as well, a pile-up vertex next to the B line, a few 100 µm from the true one. So
+    the sign cannot fix them.
+  - μμKK and data: 2–8% (MC) and 11–32% (data) of the candidates would change PV.
+- **Decision:** the PV choice is unchanged. The signed DCA does not improve it; the remaining ~2% of wrong
+  PVs are pile-up vertices on the same side. Candidates for a better choice: DCA significance with the
+  PV covariance, or the PV that the muon tracks are associated with (MiniAOD `pvAssociationQuality`, AOD
+  track weights). The study script is not in the repository (it needs the temporary branches).
 
 ## 2026-11-11: `submitCrab.py`: one summary line per task, `--verbose` for the full output
 - **Default output:** one line per task. The CRAB call runs in the per-task child process as before, with
