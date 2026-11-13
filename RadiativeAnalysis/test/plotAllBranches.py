@@ -10,13 +10,13 @@ out = str(sys.argv[1])[:-5]+".pdf"
 
 # fixed binning (nbins, xmin, xmax) for the main branches [GeV, cm]
 # all others get an automatic range
-ranges = {}
-#     # masses
-#     "bsMass":                 (60, 4.5, 6.0),
-#     "photonDimuonMass":       (60, 4.5, 6.0),
-#     "dimuonGenPhotonMass":    (60, 4.5, 6.0),
-#     "dimuonMass":             (100, 0.0, 5.0),
-#     "dimuonFitMass":          (100, 0.0, 5.0),
+ranges = {
+    # masses
+    "bsMass":                 (60, 4.4, 6.1),
+    "photonDimuonMass":       (60, 4.4, 6.1),
+    "dimuonGenPhotonMass":    (60, 4.4, 6.1),
+    "dimuonMass":             (100, 0.0, 5.0),
+    "dimuonFitMass":          (100, 0.0, 5.0),}
 #     # kinematics
 #     "mu1Pt":                  (50, 0, 30),
 #     "mu2Pt":                  (50, 0, 30),
@@ -50,7 +50,7 @@ ranges = {}
 
 
 # selection applied to all histograms; it is also written on every page of the pdf
-selection = "bsFitSuccessful"
+selection = "bsFitSuccessful && bsLxySig>5 && bsLxy>0.5"
 
 # plain text (TText, not TLatex): "_" in branch names would otherwise become subscripts
 selectionLabel = ROOT.TText(0.01, 0.015, f"Selection: {selection}")
