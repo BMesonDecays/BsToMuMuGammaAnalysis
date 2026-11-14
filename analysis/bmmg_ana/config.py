@@ -60,6 +60,7 @@ def load_samples(cfg, columns=(), which=('signal', 'data')):
     """
     mcol = cfg['mass']['column']
     cols = list(dict.fromkeys([mcol] + list(columns) + list(cfg.get('bdt', {}).get('features', []))
+                              + list(cfg.get('mlp', {}).get('features', []))
                               + ([cfg['best_candidate']] if cfg['best_candidate'] else [])))
     # derived columns are computed in io.load; ask for their inputs, not for themselves
     cols = [c for c in cols if c not in cfg['derived']] + list(cfg['derived'])

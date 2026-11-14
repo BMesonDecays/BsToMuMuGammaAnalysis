@@ -1,4 +1,4 @@
-# Analysis configuration for scripts/plot_basic.py, train_bdt.py, scan_wp.py.
+# Analysis configuration for scripts/plot_basic.py, train_bdt.py, train_mlp.py, scan_wp.py.
 # The mass windows, cuts and features below are starting points, not final analysis choices.
 
 parquet: ~/bmmg/parquet          # output of convert.py
@@ -43,12 +43,36 @@ mass:
   blind: [5.00, 5.75]            # data in this window is never shown
 
 bdt:
-  features: [vtxProb, cosAlpha3D, lxySig, l3dSig, isolation, maxTrackCompatibility, pt,
+  features: &features [vtxProb, cosAlpha3D, lxySig, l3dSig, isolation, maxTrackCompatibility, pt,
              mu1_pt, mu2_pt, mu1_mva, mu2_mva, pho_pt, pho_mva, dimu_dca]
   kfold: 5
   early_stopping: 20
   params: {n_estimators: 600, max_depth: 4, learning_rate: 0.05, subsample: 0.8, colsample_bytree: 0.8,
            min_child_weight: 5}
+
+mlp:                             # multilayer perceptron (scripts/train_mlp.py, TensorFlow, GPU if available)
+  features: *features            # the same inputs as the BDT
+  kfold: 5                       # folds as for the BDT (evt_event % k)
+  early_stopping: 15             # patience [epochs] on the validation loss; the best epoch is kept
+  params:
+    hidden: [64, 64, 64]         # nodes per hidden layer
+    activation: swish
+    dropout: 0.1
+    l2: 1.0e-5
+    batch_norm: false
+    learning_rate: 1.0e-3        # Adam
+    lr_patience: 5               # halve the learning rate after this many epochs without improvement
+    batch_size: 1024
+    epochs: 200                  # maximum
+    clip: 5                      # standardised inputs are clipped to +-clip
+    log:                         # x -> log(x + offset) before the standardisation, for long tails
+      lxySig: 1
+      l3dSig: 1
+      mu1_pt: 0
+      mu2_pt: 0
+      pho_pt: 0
+      dimu_dca: 1.0e-4
+    seed: 1
 
 significance:
   background_model: exp          # flat or exp (exponential fitted to the sidebands)

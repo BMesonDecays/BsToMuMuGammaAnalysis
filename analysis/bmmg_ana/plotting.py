@@ -115,7 +115,7 @@ def roc(labels, scores, path, weights=None):
     return auc
 
 
-def overtraining(train, test, path, bins=40):
+def overtraining(train, test, path, bins=40, xlabel='BDT score'):
     """train/test: {'signal': scores, 'background': scores}; train as histograms, test as points."""
     fig, ax = plt.subplots()
     for (cls, color) in (('signal', 'tab:blue'), ('background', 'tab:red')):
@@ -123,24 +123,38 @@ def overtraining(train, test, path, bins=40):
         hep.histplot(h / max(h.sum().value, 1e-12), ax=ax, histtype='fill', alpha=0.3, color=color, label=cls + ' (train)')
         h = histogram(test[cls], bins, (0, 1))
         hep.histplot(h / max(h.sum().value, 1e-12), ax=ax, histtype='errorbar', color=color, label=cls + ' (test)')
-    ax.set_xlabel('BDT score')
+    ax.set_xlabel(xlabel)
     ax.set_ylabel('fraction / bin')
     ax.set_yscale('log')
     ax.legend()
     save(fig, path)
 
 
-def importance(series, path):
+def importance(series, path, xlabel='mean gain'):
     fig, ax = plt.subplots(figsize=(8, 0.4 * len(series) + 2))
     s = series[::-1]
     ax.barh(range(len(s)), s.values)
     ax.set_yticks(range(len(s)))
     ax.set_yticklabels(s.index, fontsize=14)
-    ax.set_xlabel('mean gain')
+    ax.set_xlabel(xlabel)
     save(fig, path)
 
 
-def scan(scan_df, foms, path, best_threshold=None):
+def history(histories, path):
+    """Training curves. histories: per fold {'loss': [...], 'val_loss': [...]} (val_loss may be empty)."""
+    fig, ax = plt.subplots()
+    for i, h in enumerate(histories):
+        color = 'C%d' % i
+        ax.plot(np.arange(1, len(h['loss']) + 1), h['loss'], color=color, label='fold %d train' % i)
+        if len(h.get('val_loss', [])):
+            ax.plot(np.arange(1, len(h['val_loss']) + 1), h['val_loss'], color=color, ls='--', label='fold %d validation' % i)
+    ax.set_xlabel('epoch')
+    ax.set_ylabel('weighted loss')
+    ax.legend(fontsize=12, ncol=2)
+    save(fig, path)
+
+
+def scan(scan_df, foms, path, best_threshold=None, xlabel='BDT score threshold'):
     fig, axes = plt.subplots(len(foms) + 1, 1, sharex=True, figsize=(9, 3 * (len(foms) + 1)))
     axes[0].plot(scan_df['threshold'], scan_df['S'], label='S')
     axes[0].plot(scan_df['threshold'], scan_df['B'], label='B')
@@ -152,5 +166,5 @@ def scan(scan_df, foms, path, best_threshold=None):
     for ax in axes:
         if best_threshold is not None:
             ax.axvline(best_threshold, color='grey', linestyle='--')
-    axes[-1].set_xlabel('BDT score threshold')
+    axes[-1].set_xlabel(xlabel)
     save(fig, path)
