@@ -33,6 +33,37 @@ Entries are newest first.
 
 ---
 
+## 2026-11-14: k-fold MLP (TensorFlow) as an alternative to the BDT
+- **Request:** a neural-network classifier (multilayer perceptron) analogous to the BDT, with the same features and code structure, configured in `analysis.yaml`, trained with TensorFlow on the GPU.
+- **New:**
+  - `analysis/bmmg_ana/mlp.py`: `train_kfold`, `predict`, `save`, `load` with the interface of `bdt.py`.
+    - Same folds (`evt_event % k`), equal class weights and event-grouped 10% early-stopping split as the BDT.
+    - Keras `Sequential`: Dense hidden layers (optional batch normalisation, dropout, L2), sigmoid output, Adam, weighted binary cross-entropy. Early stopping on the validation loss keeps the best epoch; the learning rate is halved on plateaus.
+    - **Input preprocessing** (`Preprocessor`), fitted on the training folds of each fold: log(x + offset) for the configured long-tailed features, −999 and non-finite values → training median, standardisation, clipping to ±5. Needed because `lxySig`/`l3dSig` contain NaN (XGBoost handles it, a network doesn't), and pt, flight significance and `dimu_dca` have tails over 2–3 orders of magnitude. The constants are saved in `mlp.json`, so the `.keras` models have no custom layers.
+    - **Importance:** permutation importance (AUC decrease on the test fold when a feature is shuffled).
+  - `analysis/scripts/train_mlp.py`: as `train_bdt.py`, plus a loss-curve plot; `--cpu` hides the GPU.
+  - `scan_wp.py --classifier mlp`: the scan with the MLP models; results in `<output>/mlp/`.
+  - `analysis.yaml`: `mlp` block; `features: *features` reuses the BDT list. `load_samples` also loads the MLP features.
+  - `plotting`: axis labels of the overtraining, importance and scan plots are parameters; new `history`.
+  - `environment.yml`: `tensorflow`.
+- **Result** (2022 Parking + B_s → μμγ MC, with the uncommitted working-tree `analysis.yaml` and `bdt.py` (`Parking2022`, resonance veto + trigger preselection, 5000-tree BDT on CUDA): 61k signal, 373k sideband candidates, 13 features, 3 folds; RTX A500 laptop GPU):
+
+  | | BDT (5000 trees, GPU) | MLP (3 × 64, GPU) |
+  |---|---|---|
+  | training time | 1.0 min | 2.7 min (59–70 epochs kept per fold) |
+  | out-of-fold AUC | 0.9858 | 0.9850 |
+  | train/test KS p-values (sig; bkg) | 0.000005–0.003; 0.009–0.14 | 0.21–0.54; 0.06–0.95 |
+  | Punzi optimum (threshold, ε_sig, ε_bkg) | 0.0287 (0.9911, 40%, 0.11%) | 0.0281 (0.9928, 41%, 0.12%) |
+  | S, B at the Punzi optimum | 3.03, 154 | 3.08, 168 |
+
+  - The two classifiers perform the same within these numbers; the MLP shows no sign of overtraining, while the BDT signal KS p-values are small.
+  - Most important MLP inputs: `pho_mva`, `lxySig`, `isolation`, `cosAlpha3DVtxOnly` (BDT gain: `lxySig`, `pho_mva`, `l3dSig`, `cosAlpha3DVtxOnly`).
+  - The validation loss is below the training loss because dropout is active only in training.
+- **Tests:** `tests/test_mlp.py` (3 tests, skipped without TensorFlow): AUC on Gaussian toys, out-of-fold scores equal `predict`, save/load round trip, permutation importance picks the separating variable, early stopping, preprocessing (median fill, log, clip, serialisation). `pytest analysis/tests`: 20 passed.
+- **Open:** the MLP hyperparameters are not tuned (only this one configuration was trained); an MLP/BDT score correlation and an average of the two are not studied.
+
+---
+
 ## 2026-11-11: `submitCrab.py`: one summary line per task, `--verbose` for the full output
 - **Default output:** one line per task. The CRAB call runs in the per-task child process as before, with
   its stdout/stderr redirected (at file-descriptor level, so the CRAB loggers are included) to
