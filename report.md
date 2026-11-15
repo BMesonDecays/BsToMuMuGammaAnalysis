@@ -33,6 +33,78 @@ Entries are newest first.
 
 ---
 
+## 2026-11-15: BDT tuning, new features, Run 3 projection (320 fb⁻¹)
+- **Request:** tune the BDT, add features if needed (e.g. ΔR between the dimuon and the photon); the goal is an expected significance of at least 3σ after the BDT cut, projected to the Run 3 luminosity of 320 fb⁻¹.
+- **Result:** the expected significance went from 0.6–0.9σ to **2.7–2.9σ**, close to the 3σ goal but not robustly above it. The 2.7–2.9σ is for a binned mass fit in 3 BDT-score categories; a cut-and-count window gives 1.9σ.
+  - **Assumptions:** B(B_s→μμγ) = 5×10⁻⁹ (`br_scale`); the MC normalised to 34.65 fb⁻¹ of 2022 data; 2022 conditions for all of Run 3.
+  - **No systematic uncertainties.** The background shape and normalisation are taken as known.
+- **Inputs:**
+  - **Data:** `Parking2022` = ParkingDoubleMuonLowMass0–7, 2022C–G, 18901 files, all of 2022. The working-tree config pointed to `Parking2022C`, which does not exist; changed to `Parking2022`.
+  - **Signal:** B_s→μμγ MC, `genMatched == 1`. 7.6 events in the signal window after the preselection at 34.65 fb⁻¹, 70 at 320 fb⁻¹.
+- **Preselection** (`analysis.yaml`):
+  - `vtxProb > 0.01`;
+  - `dimu_resonance == 0` (J/ψ, ψ(2S), φ);
+  - ρ/ω veto (0.70 < m_μμ < 0.85 GeV);
+  - **both candidate muons trigger-matched** to `DoubleMu4_3_LowMass`. This keeps the same signal as the event-level flag (69% of the signal) and removes 15% of the sideband background. The OR with the other dimuon paths (`LowMass_Displaced`, `Photon4_BsToMMG`, `Bs`) adds no signal: in the MC, `DoubleMu4_3_LowMass` contains them.
+  - Multiple candidates are negligible: 1.6% of the sideband events have more than one, and 0.01% of the signal events.
+- **Method:**
+  - k-fold out-of-fold scores (5 folds); S from the signal MC in [5.15, 5.60] GeV; B from the sideband candidates times the exponential sideband factor; both × 320/34.65.
+  - **Unbiased Z:** with the tight cuts the optimum sits at 10–20 sideband candidates, and choosing the best threshold among many on the same candidates biases Z up. So the threshold (or the category boundaries) is chosen on one half of the sideband events (`(evt_event // 7) % 2`) and Z is evaluated on the other half, and vice versa.
+  - **Ranking objective for the hyperparameters:** signal efficiency at a sideband efficiency of 2×10⁻⁴ (about 60 sideband candidates), which is less noisy than the best Z.
+- **Steps** (Z at 320 fb⁻¹, unbiased; the first rows use fixed default-like parameters):
+
+  | | features | eff_sig at eff_bkg 2e-4 | cut & count Z | binned fit, 3 categories Z |
+  |---|---|---|---|---|
+  | baseline: features of the config, default params | 13 | 0.13 | 0.63 | 1.25 |
+  | + `ctSig` (decay-time significance) | 14 | | 0.78* | |
+  | + muon IP significances, dimuon flight, pointing, `cosAlpha2D` | 20 | | 0.94* | |
+  | + photon shower shapes, `pho_energyErr` | 26 | | 0.94 | |
+  | + ΔR(μμ,γ), min ΔR(μ,γ), p_T(γ)/p_T(B), p_T(B), \|η(B)\| | 31 | | 1.30 | |
+  | + helicity, \|cos θ_ℓ\| | 33 | 0.30 | 1.50 | |
+  | + \|η_γ\|, p_T(μμ), σ_iφiφ, conversion flag (final set) | 37 | 0.31 | 1.70 | 2.66 |
+  | + tuned hyperparameters (final) | 37 | 0.33 | 1.86–1.89 | 2.68–2.89 |
+
+  \* best Z, not the unbiased one. The final row spans seeds and the repository run (`scan_wp.py`: cut & count 1.86; 3 categories 2.84, unbiased 2.68).
+- **Features:** 37, defined as `derived` expressions in `analysis.yaml`. The ΔR use the fitted photon direction (`phoFitEta/Phi`).
+  - Most important by gain: `ctSig`, `pho_mva`, `lxySig`, `l3dSig`, `cosAlpha3DVtxOnly`, `isolation`.
+  - Removing the two ΔR features from the final set costs a lot: signal efficiency 0.33 → 0.23, Z (3 categories) 2.87 → 2.0.
+  - Not used:
+    - `evt_nPV`: it separates only through the MC pileup profile;
+    - `massErr`/mass: correlated with the mass, and no gain;
+    - `pho_seedTime`: no separation, timing likely mis-modelled;
+    - the dimuon mass.
+- **Hyperparameters:** `scripts/tune_bdt.py`, 20 random trials (stopped at 20 of 40: the best trials agree within noise).
+  - Chosen: depth 6, learning rate 0.045, L2 λ = 31, γ = 1, subsample 0.92, colsample 0.79, min_child_weight 5.2, early stopping 50 rounds (about 1200 trees).
+  - The 5000-tree, learning-rate-0.003 configuration of the earlier working tree is no better than the 600-tree default.
+- **Mass sculpting** (`scripts/check_sculpting.py`): train without the inner 0.2 GeV of the sidebands; the BDT efficiency there is compared with the adjacent strips.
+  - Final BDT: ratio 0.99 ± 0.04, 0.93 ± 0.12, 0.96 ± 0.20 at sideband efficiencies 10⁻², 10⁻³, 3×10⁻⁴.
+  - **Rejected: training on wider sidebands** (4.0–5.0 and 5.75–7.0 GeV, 1.9× the background). It gave Z = 3.2–3.4, but the test shows sculpting: ratio 1.21 ± 0.04 at 10⁻², 1.3–1.4 at 10⁻³, and the far strips have half the efficiency. The BDT learnt the mass from the ΔR features: without them the sculpting disappears (ratio 0.84–0.88), but so does the gain.
+- **Background after the BDT:**
+  - Concentrated in the low sideband: low/high ratio 1.0 after the preselection, 5.5 at sideband efficiency 10⁻³.
+  - Flat in mass within each sideband, i.e. a steeper exponential: λ from 0.29 to 1.6 GeV⁻¹.
+  - A single exponential describes the sidebands (deviance 28–31 for 23 degrees of freedom at 10⁻² to 10⁻³). An exponential plus a constant converges to the same curve.
+- **Binned fit estimate** (`significance.binned_asimov`, `optimise_categories`; `scan_wp.py` with `significance.shape`):
+  - Asimov Z of a fit of the mass in [5.0, 5.75] GeV (25 MeV bins), in 1–3 BDT-score categories added in quadrature.
+  - Background per category: its sideband count × an exponential with the slope of the top 1% of sideband scores. At least 10 sideband candidates per category.
+  - It gains a factor 1.5 over the cut-and-count window because it uses the signal peak (σ ≈ 0.11 GeV).
+  - Not used: an EB/EE split of the photons (fewer sideband candidates per category, lower Z).
+- **Also tested:** averaging the scores of 4 models (2 parameter sets × 2 seeds) gave 2.76–2.99, within the seed spread; not used.
+- **New code:**
+  - `scripts/tune_bdt.py`, `scripts/check_sculpting.py`;
+  - `significance.binned_asimov`, `exp_fraction`, `optimise_categories` (+2 tests);
+  - `scan_wp.py`: `projection_lumi_pb` and the shape-fit section (`shape_categories.csv`).
+  - `pytest analysis/tests`: 22 passed.
+- **Caveats and open points:**
+  1. **3σ is not robustly reached.** The estimate's own statistical uncertainty is about ±0.2: half-samples 2.5–3.1, seeds 2.68–2.89. Also: S ∝ B(B_s→μμγ), and Z ≈ S/√B here, so Z scales linearly with the assumed BR (5×10⁻⁹); the generator σ × filter efficiency of the MC is not cross-checked.
+  2. **No systematics:** a real fit has the background-shape uncertainty, e.g. a partially reconstructed component below the B mass, which dominates the background after the BDT.
+  3. **MC modelling of the inputs:** the BDT is trained on signal MC against data. The photon shower shapes, `pho_mva`, the conversion flag and the isolation must be validated in data versus MC, e.g. with B→J/ψ X with radiative photons, or the J/ψγ control channel (`analysis_JpsiG.yaml`). The angular variables (`helicity`, `cos θ_ℓ`) make the efficiency depend on the B_s→μμγ form-factor model of the MC.
+  4. **Overtraining:** the train/test KS p-values of the signal are 10⁻¹³–10⁻²² (61k signal candidates; the background ones are 10⁻³–0.04). All estimates use out-of-fold scores, so they are unbiased, but more signal MC would help.
+  5. **The biggest acceptance limit is not the BDT:** the photons in this MiniAOD production start at p_T = 10 GeV (`slimmedPhotons`). Lower-p_T photons (AOD, or a custom low-p_T photon collection, Phase 9 of `plan.md`) would add signal.
+  6. The 2023–2025 trigger thresholds and pileup are assumed to be those of 2022.
+- **Config:** `analysis.yaml` now has the preselection, derived features, BDT features and parameters (`device: cuda`) and the shape-fit settings above. The MLP block uses the same 37 features through the YAML anchor; it was not retrained.
+
+---
+
 ## 2026-11-14: k-fold MLP (TensorFlow) as an alternative to the BDT
 - **Request:** a neural-network classifier (multilayer perceptron) analogous to the BDT, with the same features and code structure, configured in `analysis.yaml`, trained with TensorFlow on the GPU.
 - **New:**

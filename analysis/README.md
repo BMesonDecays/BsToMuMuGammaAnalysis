@@ -21,6 +21,7 @@ Measured on the first production (2022C ParkingDoubleMuonLowMass0/1 and the B_s 
 | `scan_wp.py` | 2 s |
 
 On the 2022 Parking production (local PC, RTX A500 laptop GPU, 61k signal and 373k sideband candidates, 3 folds): `train_bdt.py` 1 min (5000 trees, GPU), `train_mlp.py` 2.7 min (GPU, ~75 epochs per fold), `scan_wp.py` 9 s.
+With the tuned BDT (37 features, 5 folds, 61k signal and 318k sideband candidates): `train_bdt.py` 43 s, `scan_wp.py` with the shape fit 7 s, `check_sculpting.py` 40 s, `tune_bdt.py` 0.5–2 min per trial (GPU).
 
 ## Setup
 ```bash
@@ -43,6 +44,8 @@ python3 scripts/train_bdt.py  config/analysis.yaml        # k-fold BDT, ROC, ove
 python3 scripts/train_mlp.py  config/analysis.yaml        # k-fold MLP (TensorFlow, GPU): ROC, overtraining, importance, loss curves
 python3 scripts/scan_wp.py    config/analysis.yaml        # S, B and figures of merit vs BDT threshold
 python3 scripts/scan_wp.py    config/analysis.yaml --classifier mlp   # the same for the MLP
+python3 scripts/tune_bdt.py   config/analysis.yaml --trials 40        # random search of the BDT hyperparameters
+python3 scripts/check_sculpting.py config/analysis.yaml               # can the BDT find the mass? (run after feature changes)
 
 python3 -m pytest tests                                   # unit tests
 ```
@@ -72,7 +75,7 @@ For channel `mmg` (the other channels are analogous):
 | `weights.mc_scale(meta, lumi_pb, …)` | σ · ε_filter · L / N_processed (with overrides of σ, ε and the BR) |
 | `bdt` | `train_kfold` (fold = `evt_event % k`; out-of-fold scores; train/test KS; importance), `predict`, `save`, `load` |
 | `mlp` | the same interface for a Keras multilayer perceptron: same folds, class weights and early-stopping split; per-fold input preprocessing (`Preprocessor`); permutation importance; loss history. Models in `<output>/mlp/` (`model_fold<i>.keras` + `mlp.json` with the preprocessing) |
-| `significance` | `scan`: S, B, S/√B, Asimov Z and Punzi for all thresholds at once; `sideband_factor` (flat or exponential fit to the sidebands) |
+| `significance` | `scan`: S, B, S/√B, Asimov Z and Punzi for all thresholds at once; `sideband_factor` (flat or exponential fit to the sidebands); `binned_asimov`: expected Z of a binned mass fit in score categories; `optimise_categories`: category boundaries, with an unbiased half-sample estimate |
 | `plotting` | shape comparisons, data vs MC with ratio and blinding, ROC, overtraining, importance, scan (mplhep CMS style) |
 | `config` | reads `config/analysis.yaml` and builds the samples (signal MC, data, data sidebands) |
 
@@ -82,6 +85,12 @@ For channel `mmg` (the other channels are analogous):
 - **Background in the signal window:** the sideband yield above the BDT threshold times a flat or exponential factor. The exponential is fitted to the sideband mass after the preselection, before the BDT cut.
 - **Normalisation:** set `lumi_pb` (brilcalc) to normalise the signal MC. Without it, S is the number of MC candidates: S/√B and Z are then not meaningful, but Punzi is, since it needs only efficiencies.
 - **BDT inputs:** don't use the mass or variables strongly correlated with it, since the background is taken from the sidebands.
+  - `scripts/check_sculpting.py` trains without the inner 0.2 GeV of the sidebands and compares the BDT efficiency there with the adjacent strips. A ratio above 1 means the BDT has learnt the mass.
+  - `dR_mumu_pho` and `dR_mu_pho_min` are correlated with the mass (ρ ≈ 0.3 and 0.2 in the sidebands). With the standard sidebands the test passes. Trained on wider sidebands (4.0–5.0, 5.75–7.0 GeV), the BDT learnt the mass from them (ratio 1.2–1.4).
+- **Projection and significance:** `significance.projection_lumi_pb` scales S and B to another luminosity (320 fb⁻¹, Run 3). `significance.shape` adds the expected significance of a binned fit of the mass in the blind window, in up to 3 BDT-score categories:
+  - The background in each category is its sideband count times an exponential, whose slope is fitted to the top 1% of sideband scores.
+  - The category boundaries are chosen on a grid of sideband efficiencies. The 'unbiased' Z chooses them on one half of the sideband events and evaluates on the other.
+  - This is an Asimov estimate with a known background shape: no systematic uncertainties, and no uncertainty on the background shape or normalisation.
 - **MLP:** the `mlp` block uses the BDT features (YAML anchor `*features`). A neural network needs prepared inputs; per fold, from the training folds only:
   1. `log` features: x → log(x + offset), for the long tails of the flight significances, the pts and `dimu_dca`;
   2. −999 and non-finite values (e.g. `lxySig` = 0/0) → the training median;
