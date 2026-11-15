@@ -118,3 +118,90 @@ def best(scan_df, fom='punzi'):
     if scan_df[fom].notna().sum() == 0:
         raise ValueError('no threshold with a valid %s (too few sideband candidates?)' % fom)
     return scan_df.loc[scan_df[fom].idxmax()]
+
+
+def exp_fraction(lam, windows, ref_windows):
+    """Integral of exp(-lam m) over windows / over ref_windows."""
+    def integral(ws):
+        if abs(lam) < 1e-9:
+            return _window_width(ws)
+        return sum((np.exp(-lam * lo) - np.exp(-lam * hi)) / lam for lo, hi in ws)
+    return integral(windows) / integral(ref_windows)
+
+
+def binned_asimov(sig_mass, sig_weights, sig_scores, bkg_mass, bkg_scores, boundaries, sidebands, mass_bins,
+                  lumi_scale=1.0, slope_min_score=None):
+    """Expected significance of a binned fit of the mass in score categories (Asimov, background shape known).
+
+    Categories: boundaries [t0, t1, ..., tn] -> scores in [t_i, t_i+1) (the last one up to +inf).
+    Signal: weighted MC in mass_bins (bin edges, normally covering the blind window).
+    Background per category: its sideband candidates times the exponential shape exp(-lam m), normalised to
+    the sidebands. lam is fitted to the sideband candidates with score >= slope_min_score (default t0),
+    because the tight categories have too few candidates for their own fit.
+    Both yields are multiplied by lumi_scale (projection to another luminosity).
+    Z^2 = sum over categories and bins of 2((s+b) ln(1+s/b) - s); returns (Z, per-category DataFrame).
+    """
+    sig_mass, sig_weights, sig_scores = (np.asarray(x, dtype=float) for x in (sig_mass, sig_weights, sig_scores))
+    bkg_mass, bkg_scores = np.asarray(bkg_mass, dtype=float), np.asarray(bkg_scores, dtype=float)
+    edges = np.asarray(mass_bins, dtype=float)
+    bounds = list(boundaries) + [np.inf]
+    smin = bounds[0] if slope_min_score is None else slope_min_score
+    lam = exp_slope(bkg_mass[bkg_scores >= smin], sidebands)
+    bin_frac = np.array([exp_fraction(lam, [(lo, hi)], sidebands) for lo, hi in zip(edges[:-1], edges[1:])])
+    rows = []
+    for lo, hi in zip(bounds[:-1], bounds[1:]):
+        sel_s = (sig_scores >= lo) & (sig_scores < hi)
+        s, _ = np.histogram(sig_mass[sel_s], bins=edges, weights=sig_weights[sel_s])
+        n_sb = int(((bkg_scores >= lo) & (bkg_scores < hi)).sum())
+        b = n_sb * bin_frac
+        s, b = s * lumi_scale, b * lumi_scale
+        with np.errstate(divide='ignore', invalid='ignore'):
+            z2 = np.where(b > 0, 2 * ((s + b) * np.log1p(s / b) - s), 0.)
+        rows.append({'low': lo, 'high': hi, 'S': s.sum(), 'B': b.sum(), 'n_sideband': n_sb, 'Z': np.sqrt(z2.sum())})
+    cats = pd.DataFrame(rows)
+    return float(np.sqrt((cats['Z'] ** 2).sum())), cats
+
+
+def optimise_categories(sig_mass, sig_weights, sig_scores, bkg_mass, bkg_scores, bkg_event, sidebands, mass_bins,
+                        n_categories=3, eff_grid=(3e-3, 1e-3, 5e-4, 3e-4, 2e-4, 1e-4, 6e-5, 4e-5), min_sideband=10,
+                        lumi_scale=1.0, slope_min_score=None):
+    """Category boundaries for binned_asimov from a grid of background (sideband) efficiencies.
+
+    'full': the boundaries with the highest Z on all sideband candidates (every category needs at least
+            min_sideband of them). Choosing among many boundaries on the same sideband candidates biases Z up.
+    'honest': the sideband events are split in two halves ((evt_event // 7) % 2); the boundaries are chosen
+            on one half and Z is evaluated on the other (counts doubled), and vice versa; Z is the mean.
+    Returns {'full': (Z, effs, boundaries, categories), 'honest': (Z, [Z_half1, Z_half2])}.
+    """
+    import itertools
+    sig = [np.asarray(x, dtype=float) for x in (sig_mass, sig_weights, sig_scores)]
+    bkg_mass, bkg_scores = np.asarray(bkg_mass, dtype=float), np.asarray(bkg_scores, dtype=float)
+    combos = [sorted(c, reverse=True) for c in itertools.combinations(eff_grid, n_categories)]
+
+    def z(mask, bounds, dup, min_sb):
+        m, sc = bkg_mass[mask], bkg_scores[mask]
+        if dup:
+            m, sc = np.r_[m, m], np.r_[sc, sc]
+        zz, cats = binned_asimov(*sig, m, sc, bounds, sidebands, mass_bins, lumi_scale=lumi_scale,
+                                 slope_min_score=slope_min_score)
+        return (zz, cats) if (cats['n_sideband'] >= min_sb).all() else (np.nan, cats)
+
+    def best_on(mask, dup):
+        best = (-np.inf, None, None, None)
+        for c in combos:
+            bounds = [float(np.quantile(bkg_scores[mask], 1 - e)) for e in c]
+            zz, cats = z(mask, bounds, dup, min_sideband)
+            if np.isfinite(zz) and zz > best[0]:
+                best = (zz, c, bounds, cats)
+        if best[1] is None:
+            raise ValueError('no category boundaries with >= %d sideband candidates per category' % min_sideband)
+        return best
+
+    everything = np.ones(len(bkg_scores), bool)
+    full = best_on(everything, False)
+    half = ((np.asarray(bkg_event).astype(np.uint64) // np.uint64(7)) % np.uint64(2)).astype(bool)
+    zh = []
+    for a in (half, ~half):
+        _, _, bounds, _ = best_on(a, True)
+        zh.append(float(z(~a, bounds, True, 0)[0]))
+    return {'full': full, 'honest': (float(np.mean(zh)), zh)}

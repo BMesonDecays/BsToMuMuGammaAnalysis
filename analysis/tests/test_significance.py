@@ -53,3 +53,41 @@ def test_invalid_inputs_rejected():
         sg.scan([], None, [0.1], 1.0)
     with pytest.raises(ValueError, match='hi must be above lo'):
         sg.sideband_factor([5.6, 5.15], [[4.5, 5.0]], 'flat')
+
+
+def test_binned_asimov_hand_values():
+    # flat background (lambda -> 0 for uniform sideband masses), all signal in one bin, one category
+    rng = np.random.default_rng(3)
+    sb = [[4.0, 5.0], [6.0, 7.0]]
+    bkg_mass = np.r_[rng.uniform(4, 5, 5000), rng.uniform(6, 7, 5000)]
+    bkg_score = np.ones_like(bkg_mass)
+    edges = np.array([5.0, 5.5, 6.0])
+    z, cats = sg.binned_asimov([5.2, 5.3], [5., 5.], [1., 1.], bkg_mass, bkg_score, [0.5], sb, edges,
+                                         lumi_scale=2.0)
+    lam = sg.exp_slope(bkg_mass, sb)
+    b_bin = 10000 * sg.exp_fraction(lam, [(5.0, 5.5)], sb) * 2
+    assert abs(b_bin - 5000) < 100                       # 10000 candidates in 2 GeV of sidebands -> 2500 per 0.5 GeV, x2
+    assert np.isclose(z, sg.asimov_z(20., b_bin), rtol=1e-6)   # the empty-signal bin adds nothing
+    assert cats['S'].iloc[0] == 20. and cats['n_sideband'].iloc[0] == 10000
+    # two categories add in quadrature; signal and background below the lowest boundary are ignored
+    z2, cats2 = sg.binned_asimov([5.2, 5.3, 5.3], [5., 5., 7.], [1., 0.6, 0.1], bkg_mass,
+                                           np.r_[np.full(5000, 0.8), np.full(5000, 1.0)], [0.5, 0.9], sb, edges)
+    assert list(cats2['n_sideband']) == [5000, 5000] and np.allclose(cats2['S'], [5., 5.])
+    assert np.isclose(z2, np.hypot(*cats2['Z']))
+
+
+def test_optimise_categories_prefers_tight_category():
+    rng = np.random.default_rng(4)
+    sb = [[4.5, 5.0], [5.75, 6.5]]
+    n = 200000
+    bkg_mass = np.r_[rng.uniform(4.5, 5.0, n // 2), rng.uniform(5.75, 6.5, n // 2)]
+    bkg_score = rng.uniform(0, 1, n)
+    ev = np.arange(n)
+    sig_mass = rng.normal(5.37, 0.1, 5000)
+    sig_score = 1 - rng.uniform(0, 1, 5000) ** 3 * 0.01        # signal close to score 1
+    r = sg.optimise_categories(sig_mass, np.full(5000, 1e-3), sig_score, bkg_mass, bkg_score, ev, sb,
+                                         np.arange(5.0, 5.7501, 0.05), n_categories=1)
+    z, effs, bounds, cats = r['full']
+    assert effs[0] < 1e-3 and cats['n_sideband'].iloc[0] >= 10
+    zh, halves = r['honest']
+    assert len(halves) == 2 and 0.5 * z < zh < 1.5 * z

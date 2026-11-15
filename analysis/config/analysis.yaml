@@ -7,31 +7,49 @@ channel: mmg                     # mmg, mmgg, mmkk, mmcg
 
 # integrated luminosity of the data datasets [pb^-1] (brilcalc). Used to normalise the signal MC;
 # if null the signal yield is the number of MC candidates (the Punzi figure of merit needs only efficiencies).
-lumi_pb: null
+lumi_pb: 34650 # 2022 lumi
 
 samples:
   data:
-    datasets: [Parking2022C_0, Parking2022C_1]
+    datasets: [Parking2022]      # ParkingDoubleMuonLowMass0-7, 2022C-G
   signal:
     datasets: [BsToMuMuGamma_2022]
     query: "genMatched == 1"     # truth-matched candidates only
     xsec_pb: null                # override the generator cross section stored in the ntuple
     filter_eff: null             # override the generator filter efficiency
-    br_scale: 1.0                # (assumed BR) / (BR used in the generation)
+    br_scale: 5.0e-9                # (assumed BR) / (BR used in the generation)
 
 # extra columns (pandas expressions on the table columns), usable in cuts, features and plots
+# (evaluated in this order, so later expressions can use earlier ones)
 derived:
   lxySig: "lxy / lxyErr"
   l3dSig: "l3d / l3dErr"
   ctSig: "ct3D / ct3DErr"
+  # Delta R between the dimuon and the photon (fitted direction), and the smaller of the two muon-photon Delta R
+  dR_mumu_pho: "sqrt((dimu_eta - phoFitEta)**2 + arctan2(sin(dimu_phi - phoFitPhi), cos(dimu_phi - phoFitPhi))**2)"
+  dR_mu1_pho: "sqrt((mu1_eta - phoFitEta)**2 + arctan2(sin(mu1_phi - phoFitPhi), cos(mu1_phi - phoFitPhi))**2)"
+  dR_mu2_pho: "sqrt((mu2_eta - phoFitEta)**2 + arctan2(sin(mu2_phi - phoFitPhi), cos(mu2_phi - phoFitPhi))**2)"
+  dR_mu_pho_min: "(dR_mu1_pho + dR_mu2_pho - abs(dR_mu1_pho - dR_mu2_pho)) / 2"
+  pho_ptFrac: "pho_pt / pt"                  # photon share of the B pt
+  mu1_ipSig: "abs(mu1_dxyBS / mu1_dxyBSErr)"   # transverse impact parameter significance w.r.t. the beam spot
+  mu2_ipSig: "abs(mu2_dxyBS / mu2_dxyBSErr)"
+  mu_ipSig_min: "(mu1_ipSig + mu2_ipSig - abs(mu1_ipSig - mu2_ipSig)) / 2"
+  mu_ipSig_max: "(mu1_ipSig + mu2_ipSig + abs(mu1_ipSig - mu2_ipSig)) / 2"
+  dimu_lxySig: "dimu_lxyBS / dimu_lxyBSErr"
+  logPointing: "log10(pointingAngle + 1e-6)"
+  absEta: "abs(eta)"
+  pho_absEta: "abs(pho_eta)"
+  abs_cosThetaL: "abs(cosThetaL)"
 
 # ordered named cuts, applied to every sample (also the cut-flow rows)
 preselection:
   vertex: "vtxProb > 0.01"
-  soft muons: "mu1_isSoft == 1 and mu2_isSoft == 1"
-  muon pt: "mu1_pt > 4 and mu2_pt > 3"
-  photon: "pho_pt > 1"
-  # trigger: "mu1_trg_DoubleMu4_3_LowMass == 1 and mu2_trg_DoubleMu4_3_LowMass == 1"
+  resonance veto: "dimu_resonance == 0"                    # J/psi, psi(2S), phi
+  rho/omega veto: "dimu_mass < 0.70 or dimu_mass > 0.85"
+  # both candidate muons matched to the trigger: same signal as the event-level flag, 15% less background
+  trigger: "mu1_trg_DoubleMu4_3_LowMass == 1 and mu2_trg_DoubleMu4_3_LowMass == 1"
+  # soft muons: "mu1_isSoft == 1 and mu2_isSoft == 1"
+  # muon pt: "mu1_pt > 4 and mu2_pt > 3"
 
 # null, or a column: keep one candidate per event, the one with the highest value
 best_candidate: null
@@ -42,13 +60,27 @@ mass:
   sidebands: [[4.50, 5.00], [5.75, 6.50]]
   blind: [5.00, 5.75]            # data in this window is never shown
 
+# Features and parameters tuned on 2026-11-15 (report.md). Check mass sculpting with scripts/check_sculpting.py
+# after any change: dR_mumu_pho and dR_mu_pho_min are correlated with the mass (with wider training sidebands
+# the BDT learnt the mass from them).
 bdt:
-  features: &features [vtxProb, cosAlpha3D, lxySig, l3dSig, isolation, maxTrackCompatibility, pt,
-             mu1_pt, mu2_pt, mu1_mva, mu2_mva, pho_pt, pho_mva, dimu_dca]
+  features: &features [
+    # vertex, flight and pointing
+    vtxProb, cosAlpha3DVtxOnly, cosAlpha2D, logPointing, lxySig, l3dSig, ctSig, dimu_lxySig, dimu_cosAlphaBS, dimu_dca,
+    # isolation
+    isolation, maxTrackCompatibility,
+    # muons
+    mu1_pt, mu2_pt, mu1_mva, mu2_mva, mu_ipSig_min, mu_ipSig_max,
+    # photon
+    pho_pt, pho_mva, pho_r9, pho_sigmaIetaIeta, pho_sigmaIphiIphi, pho_hOverE, pho_scEtaWidth, pho_scPhiWidth,
+    pho_energyErr, pho_hasConversionTracks, pho_absEta,
+    # kinematics and angles of the decay
+    dR_mumu_pho, dR_mu_pho_min, pho_ptFrac, pt, dimu_pt, absEta, helicity, abs_cosThetaL]
   kfold: 5
-  early_stopping: 20
-  params: {n_estimators: 600, max_depth: 4, learning_rate: 0.05, subsample: 0.8, colsample_bytree: 0.8,
-           min_child_weight: 5}
+  early_stopping: 50
+  # scripts/tune_bdt.py, trial 8 of 20 (signal efficiency at sideband efficiency 2e-4: 0.33; default params: 0.25)
+  params: {n_estimators: 4000, max_depth: 6, learning_rate: 0.045, subsample: 0.92, colsample_bytree: 0.79,
+           min_child_weight: 5.2, reg_lambda: 31, gamma: 1.0, max_bin: 256, device: cuda}
 
 mlp:                             # multilayer perceptron (scripts/train_mlp.py, TensorFlow, GPU if available)
   features: *features            # the same inputs as the BDT
@@ -76,14 +108,25 @@ mlp:                             # multilayer perceptron (scripts/train_mlp.py, 
 
 significance:
   background_model: exp          # flat or exp (exponential fitted to the sidebands)
-  fom: punzi                     # figure of merit for the working point: punzi, asimov_z, s_over_sqrt_b
+  fom: asimov_z                  # figure of merit for the working point: punzi, asimov_z, s_over_sqrt_b
   punzi_a: 3
   min_sideband: 10               # thresholds with fewer sideband candidates are not considered
+  projection_lumi_pb: 320000     # S and B scaled to this luminosity (Run 3); null: the data luminosity
+  shape:                         # expected significance of a binned mass fit in score categories
+    mass_bins: [5.0, 5.75, 0.025]  # low, high, bin width (the blind window)
+    max_categories: 3            # 1..3 score categories, boundaries optimised on a grid of sideband efficiencies
+    min_sideband: 10             # sideband candidates per category
+    slope_bkg_eff: 0.01          # exponential slope fitted to the sideband candidates of the top 1% of scores
 
 plots:                           # variable: [bins, low, high]
   mass: [80, 4.5, 6.5]
   vtxProb: [50, 0, 1]
   cosAlpha3D: [50, 0.9, 1]
+  ctSig: [60, 0, 120]
+  dR_mumu_pho: [50, 0, 1.5]
+  dR_mu_pho_min: [50, 0, 1.5]
+  pho_ptFrac: [50, 0, 1]
+  helicity: [50, -1, 1]
   lxySig: [60, 0, 60]
   isolation: [50, 0, 1]
   pt: [60, 0, 60]
