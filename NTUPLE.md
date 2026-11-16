@@ -93,11 +93,16 @@ Every opposite-sign pair of selected muons that do not share muon segments.
 | `dimu_isCowboy` | 1 if Δφ(μ⁺, μ⁻) > 0 |
 
 ## Conversions: `conv_*` (vectors, if `doMuMuConvGamma`)
-From `allConversions`: two opposite-charge tracks, a valid vertex with probability > `conversionMinVertexProb` (1e-6), pair pt > `conversionMinPt` (0.5 GeV). The e⁺e⁻ pair is refitted with a zero-mass constraint.
+- **AOD:** `allConversions`: two opposite-charge tracks, a valid vertex with probability > `conversionMinVertexProb` (1e-6), pair pt > `conversionMinPt` (0.5 GeV).
+- **MiniAOD:** `oniaPhotonCandidates:conversions` (`pat::CompositeCandidate` of `OniaPhotonConversionProducer`, with full copies of the two tracks as userData `track0`/`track1`): pair pt > `conversionMinPt`. The producer has already selected `allConversions` with ρ(vertex) > 1.5 cm, quality `highPurity` and `generalTracksOnly`, compatible innermost hits of the two tracks, and no two conversions sharing a track (the one with the best vertex χ² is kept). The vertex χ² is not stored, so `conversionMinVertexProb` is not applied. On the same signal MC events it keeps about 60% of the events that have a signal-B conversion in `allConversions`. In the 2022 PromptReco MiniAOD the product is missing in about 10% of the events (`evt_convAvailable = 0`; these events have no conversions).
+- In both formats the e⁺e⁻ pair is refitted with a zero-mass constraint.
+
+- `evt_convAvailable` (int, per event): 1 if the input conversion collection exists in the event.
 - `conv_index`: index in the collection.
-- `conv_fitOK`: 1 if the zero-mass refit succeeded.
-- `conv_pt`, `conv_eta`, `conv_phi`: from the refitted photon, or from the pair momentum if the refit failed.
-- `conv_vtxX/Y/Z`, `conv_vtxRho`, `conv_vtxProb`: the conversion vertex.
+- `conv_fitOK`: 1 if the zero-mass refit succeeded; `conv_fitProb`: its χ² probability (−1 if it failed).
+- `conv_pt`, `conv_eta`, `conv_phi`: from the refitted photon, or from the pair momentum of the input collection if the refit failed.
+- `conv_vtxX/Y/Z`, `conv_vtxRho`: the conversion vertex of the input collection; `conv_vtxProb`: its χ² probability (AOD; −1 in MiniAOD).
+- `conv_flags` (MiniAOD; −1 in AOD): userInt `flags` of `oniaPhotonCandidates`. Bits: 1 track–PV compatibility, 2 compatible inner hits, 4 "high purity" (vertex probability > 5·10⁻⁴, track χ²/ndof < 10, ndof ≥ 3, positive signed impact parameters, −0.25 < distance of minimum approach < 1 cm), 8 π⁰ rejected (the pair with a PF photon in 130–140 MeV), 16 in the large π⁰ window (110–160 MeV); `flags / 32 % 8` is the conversion algorithm, `flags / 256` the enum value of the last set quality among generalTracksOnly … ecalMatched2Track.
 - `conv_trkPlusPt`, `conv_trkMinusPt`: the two tracks.
 - `conv_genPdgId`, `conv_genMotherPdgId`, `conv_genDR`, `conv_genFromSignalB` (MC): gen photon match (ΔR < 0.1, \|Δpt/pt\| < 0.5).
 
@@ -200,7 +205,7 @@ The same ntuple is written; the inputs differ:
 | primary vertices | `offlinePrimaryVertices` | `offlineSlimmedPrimaryVertices` |
 | PV tracks (isolation, track compatibility) | tracks of the fit of the candidate's PV with weight > 0.5 | `packedPFCandidates` + `lostTracks` with track details and `pvAssociationQuality() == UsedInFitTight` (weight > 0.5 in the fit of the associated PV) |
 | kaon tracks (`trk_*`, `trk_index`) | `generalTracks` (index in that collection) | pseudo-tracks of the charged `packedPFCandidates` + `lostTracks` (index in that list) |
-| conversions (`conv_*`) | `allConversions` | `reducedEgamma:reducedConversions` (only conversions associated to photons) |
+| conversions (`conv_*`) | `allConversions` | `oniaPhotonCandidates:conversions` (BPH low-energy conversions, preselected; see "Conversions") |
 | ECAL rechits | `reducedEcalRecHitsEB/EE` | `reducedEgamma:reducedEB/EERecHits` (only around e/γ objects: `pho_hasClusterHits` can be 0) |
 | trigger matching | `hltTriggerSummaryAOD`: muon objects of every terminal muon filter of the path | `slimmedPatTrigger`: HLT muon objects associated with the last filter of the path |
 | gen, pile-up | `genParticles`, `addPileupInfo` | `prunedGenParticles` + `packedGenParticles` (final state), `slimmedAddPileupInfo` |

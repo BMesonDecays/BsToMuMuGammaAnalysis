@@ -26,6 +26,7 @@
 #include "DataFormats/Common/interface/ValueMap.h"
 #include "DataFormats/EgammaCandidates/interface/Photon.h"
 #include "DataFormats/EgammaCandidates/interface/Conversion.h"
+#include "DataFormats/PatCandidates/interface/CompositeCandidate.h"
 #include "DataFormats/TrackReco/interface/Track.h"
 #include "DataFormats/PatCandidates/interface/PackedCandidate.h"
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
@@ -93,7 +94,8 @@ private:
   edm::EDGetTokenT<std::vector<reco::PFCandidate>> pfCandidatesToken_;                  // AOD (isolation)
   edm::EDGetTokenT<edm::ValueMap<std::vector<reco::PFCandidateRef>>> photonFootprintToken_;   // AOD
   double isolationMinNeutralPt_ = 0.5;
-  edm::EDGetTokenT<std::vector<reco::Conversion>> conversionsToken_;
+  edm::EDGetTokenT<std::vector<reco::Conversion>> conversionsToken_;                    // AOD
+  edm::EDGetTokenT<std::vector<pat::CompositeCandidate>> oniaConversionsToken_;        // MiniAOD (oniaPhotonCandidates)
   edm::EDGetTokenT<std::vector<reco::Track>> tracksToken_;
   edm::EDGetTokenT<std::vector<reco::GenParticle>> genParticlesToken_;
   edm::EDGetTokenT<std::vector<pat::PackedGenParticle>> packedGenParticlesToken_;   // MiniAOD
@@ -124,6 +126,7 @@ private:
   // job-level bookkeeping
   unsigned long long nEvents_ = 0;         // processed events
   unsigned long long nEventsStored_ = 0;   // events written to the tree
+  unsigned long long nEventsNoConversions_ = 0;   // MiniAOD: events without the oniaPhotonCandidates product
   double xsecSumW_ = 0., xsecSumWX_ = 0., xsec_ = -1., xsecErr_ = -1.;
   std::unique_ptr<GenFilterInfo> genFilterInfo_;
 };
@@ -157,7 +160,12 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& cfg)
       doMuMuKK_(cfg.getParameter<bool>("doMuMuKK")),
       onlyEventsWithCandidates_(cfg.getParameter<bool>("onlyEventsWithCandidates")),
       minCandidateVtxProb_(cfg.getParameter<double>("minCandidateVtxProb")) {
-    if (doMuMuConvGamma_) conversionsToken_ = consumes(cfg.getParameter<edm::InputTag>("conversions"));
+    if (doMuMuConvGamma_) {
+      if (isMiniAOD_)
+        oniaConversionsToken_ = consumes(cfg.getParameter<edm::InputTag>("conversions"));
+      else
+        conversionsToken_ = consumes(cfg.getParameter<edm::InputTag>("conversions"));
+    }
     if (isMiniAOD_) {
       triggerObjectsToken_ = consumes(cfg.getParameter<edm::InputTag>("triggerObjects"));
       packedToken_ = consumes(cfg.getParameter<edm::InputTag>("packedCandidates"));
@@ -347,9 +355,20 @@ void RadiativeAnalysis::analyze(const edm::Event& event, const edm::EventSetup& 
                                                             ttBuilder, mmgVertexFit_, candidateConfig_, diphotonConfig_)),
                             vertices);
   if (doMuMuConvGamma_) {
-    const std::vector<bmmg::SelectedConversion> conversions =
-        bmmg::selectConversions(event.get(conversionsToken_), ttBuilder, conversionCuts_);
-    writer_->fillConversions(conversions, gen.get());
+    // MiniAOD: oniaPhotonCandidates is missing in some events of the 2022 PromptReco (~10%): no conversions there
+    std::vector<bmmg::SelectedConversion> conversions;
+    bool convAvailable = true;
+    if (isMiniAOD_) {
+      const auto handle = event.getHandle(oniaConversionsToken_);
+      convAvailable = handle.isValid();
+      if (convAvailable)
+        conversions = bmmg::selectConversions(*handle, ttBuilder, conversionCuts_);
+      else
+        ++nEventsNoConversions_;
+    } else {
+      conversions = bmmg::selectConversions(event.get(conversionsToken_), ttBuilder, conversionCuts_);
+    }
+    writer_->fillConversions(conversions, gen.get(), convAvailable);
     writer_->fillCandidates(
         bmmg::NtupleWriter::kMuMuConvGamma,
         check(bmmg::buildMuMuConvGamma(selMuons, dimuons, conversions, vertices, pvTracks, neutrals, ttBuilder, candidateConfig_)),
@@ -381,6 +400,9 @@ bool RadiativeAnalysis::isValidCandidate(const bmmg::BCandidate& c) const {
 }
 
 void RadiativeAnalysis::endJob() {
+  if (nEventsNoConversions_ > 0)
+    edm::LogWarning("RadiativeAnalysis") << "conversion collection missing in " << nEventsNoConversions_ << " of "
+                                         << nEvents_ << " events (evt_convAvailable = 0)";
   bmmg::NtupleWriter::RunInfo info;
   info.nEvents = nEvents_;
   info.nEventsStored = nEventsStored_;
@@ -454,6 +476,7 @@ void RadiativeAnalysis::fillDescriptions(edm::ConfigurationDescriptions& descrip
   // probability is > minCandidateVtxProb (< 0: any successful fit). RunInfo.nEvents still counts all events.
   desc.add<bool>("onlyEventsWithCandidates", false);
   desc.add<double>("minCandidateVtxProb", -1.);
+  // AOD: reco::Conversion (allConversions); MiniAOD: pat::CompositeCandidate (oniaPhotonCandidates:conversions)
   desc.add<edm::InputTag>("conversions", edm::InputTag("allConversions"));
   desc.add<edm::InputTag>("tracks", edm::InputTag("generalTracks"));
   desc.add<double>("minPrefitMass", 4.0);   // pre-fit B mass window (photon channels)

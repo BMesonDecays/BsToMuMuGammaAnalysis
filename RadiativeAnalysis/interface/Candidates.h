@@ -65,12 +65,17 @@ namespace bmmg {
     float ct3D = -999.f, ct3DErr = -1.f, ct2D = -999.f, ct2DErr = -1.f;
   };
 
+  // photon conversion: AOD reco::Conversion (allConversions), MiniAOD pat::CompositeCandidate (oniaPhotonCandidates)
   struct SelectedConversion {
     int index = -1;                     // index in the conversion collection
-    const reco::Conversion* conversion = nullptr;
+    GlobalPoint vertex;                 // conversion vertex of the input collection
+    float vertexProb = -1.f;            // its chi2 probability (AOD; -1 in MiniAOD, not stored)
+    int flags = -1;                     // MiniAOD: userInt "flags" of oniaPhotonCandidates; -1 in AOD
+    reco::Candidate::LorentzVector pairP4;   // pair momentum of the input collection
     reco::TransientTrack track1, track2; // positive, negative track
     std::optional<RefCountedKinematicParticle> photon;   // e+ e- fit with zero-mass constraint
-    reco::Candidate::LorentzVector p4;  // from the fitted photon, else the pair momentum
+    float fitProb = -1.f;               // chi2 probability of that fit (-1 if it failed)
+    reco::Candidate::LorentzVector p4;  // from the fitted photon, else pairP4
   };
 
   struct SelectedTrack {

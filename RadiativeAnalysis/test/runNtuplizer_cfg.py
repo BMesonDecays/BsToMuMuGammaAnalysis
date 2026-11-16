@@ -82,7 +82,7 @@ collections = {
     'MINIAOD': dict(
         muons='slimmedMuons', photons='slimmedPhotons', primaryVertices='offlineSlimmedPrimaryVertices',
         ebRecHits='reducedEgamma:reducedEBRecHits', eeRecHits='reducedEgamma:reducedEERecHits',
-        conversions='reducedEgamma:reducedConversions', genParticles='prunedGenParticles',
+        conversions='oniaPhotonCandidates:conversions', genParticles='prunedGenParticles',
         pileup='slimmedAddPileupInfo',
     ),
 }[dataFormat]
@@ -114,10 +114,6 @@ process.GlobalTag = GlobalTag(process.GlobalTag, globalTag, '')
 # ---------------------------------------------------------------- ntuplizer
 from BsToMuMuGammaAnalysis.RadiativeAnalysis.radiativeAnalysis_cfi import radiativeAnalysis
 channels = options.channels.split(',')
-if dataFormat == 'MINIAOD' and 'mmcg' in channels:
-    # MiniAOD conversions (reducedEgamma) point to tracks that are not stored: no e+ e- refit possible
-    print('RadiativeAnalysis: the conversion channel (mmcg) is not available for MiniAOD and is switched off')
-    channels.remove('mmcg')
 process.bmmg = radiativeAnalysis.clone(
     isMC=isMC,
     verbose=bool(options.verbose),

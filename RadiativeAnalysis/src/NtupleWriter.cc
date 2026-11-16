@@ -106,9 +106,10 @@ namespace bmmg {
     // ---- conversions (if the mu mu gamma(conv) channel is enabled) and kaon tracks (mu mu K K) ----
     for (const auto& ch : channels_) {
       if (ch.legType == LegType::Conversion) {
-        bookInts(b_, "conv_", {"index", "fitOK"});
-        bookFloats(b_, "conv_", {"pt", "eta", "phi", "vtxX", "vtxY", "vtxZ", "vtxRho", "vtxProb", "trkPlusPt",
-                                 "trkMinusPt"});
+        b_.bookScalar<int>("evt_convAvailable", 0);
+        bookInts(b_, "conv_", {"index", "fitOK", "flags"});
+        bookFloats(b_, "conv_", {"pt", "eta", "phi", "vtxX", "vtxY", "vtxZ", "vtxRho", "vtxProb", "fitProb",
+                                 "trkPlusPt", "trkMinusPt"});
         if (isMC_) {
           bookInts(b_, "conv_", {"genPdgId", "genMotherPdgId", "genFromSignalB"});
           bookFloats(b_, "conv_", {"genDR"});
@@ -407,20 +408,23 @@ namespace bmmg {
     }
   }
 
-  void NtupleWriter::fillConversions(const std::vector<SelectedConversion>& conversions, const GenDecayChain* gen) {
+  void NtupleWriter::fillConversions(const std::vector<SelectedConversion>& conversions, const GenDecayChain* gen,
+                                     bool available) {
+    b_.scalar<int>("evt_convAvailable") = available;
     for (const auto& sc : conversions) {
-      const reco::Conversion& conv = *sc.conversion;
-      const auto& v = conv.conversionVertex();
+      const GlobalPoint& v = sc.vertex;
       b_.vec<int>("conv_index").push_back(sc.index);
       b_.vec<int>("conv_fitOK").push_back(sc.photon.has_value());
+      b_.vec<int>("conv_flags").push_back(sc.flags);
+      b_.vec<float>("conv_fitProb").push_back(sc.fitProb);
       b_.vec<float>("conv_pt").push_back(sc.p4.pt());
       b_.vec<float>("conv_eta").push_back(sc.p4.eta());
       b_.vec<float>("conv_phi").push_back(sc.p4.phi());
       b_.vec<float>("conv_vtxX").push_back(v.x());
       b_.vec<float>("conv_vtxY").push_back(v.y());
       b_.vec<float>("conv_vtxZ").push_back(v.z());
-      b_.vec<float>("conv_vtxRho").push_back(v.position().rho());
-      b_.vec<float>("conv_vtxProb").push_back(TMath::Prob(v.chi2(), static_cast<int>(v.ndof())));
+      b_.vec<float>("conv_vtxRho").push_back(v.perp());
+      b_.vec<float>("conv_vtxProb").push_back(sc.vertexProb);
       b_.vec<float>("conv_trkPlusPt").push_back(sc.track1.track().pt());
       b_.vec<float>("conv_trkMinusPt").push_back(sc.track2.track().pt());
       if (isMC_) {

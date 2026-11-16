@@ -57,6 +57,34 @@ namespace bmmg {
     return selected;
   }
 
+  namespace {
+    // sets the tracks (positive first) of a conversion with two opposite-charge tracks; false otherwise
+    bool setConversionTracks(SelectedConversion& sc, const reco::Track& t0, const reco::Track& t1,
+                             const TransientTrackBuilder& ttBuilder) {
+      if (t0.charge() * t1.charge() >= 0) return false;
+      const bool firstPositive = t0.charge() > 0;
+      sc.track1 = ttBuilder.build(firstPositive ? t0 : t1);
+      sc.track2 = ttBuilder.build(firstPositive ? t1 : t0);
+      return true;
+    }
+
+    // e+ e- refit once the vector is final (the particles point to the TransientTracks)
+    void refitConversions(std::vector<SelectedConversion>& selected) {
+      for (auto& sc : selected) {
+        sc.photon = MMGVertexFit::conversionParticle(sc.track1, sc.track2);
+        if (sc.photon) {
+          const KinematicState& s = (*sc.photon)->currentState();
+          const GlobalVector p = s.globalMomentum();
+          sc.p4.SetXYZT(p.x(), p.y(), p.z(), p.mag());
+          const float ndof = (*sc.photon)->degreesOfFreedom();
+          sc.fitProb = ndof > 0 ? TMath::Prob((*sc.photon)->chiSquared(), static_cast<int>(std::lround(ndof))) : -1.f;
+        } else {
+          sc.p4 = sc.pairP4;
+        }
+      }
+    }
+  }  // namespace
+
   std::vector<SelectedConversion> selectConversions(const std::vector<reco::Conversion>& conversions,
                                                     const TransientTrackBuilder& ttBuilder, const ConversionCuts& cuts) {
     std::vector<SelectedConversion> selected;
@@ -64,33 +92,43 @@ namespace bmmg {
       const reco::Conversion& conv = conversions[i];
       if (conv.nTracks() != 2) continue;
       const auto& trks = conv.tracks();
-      // the tracks must be available (in MiniAOD the conversion track references point to tracks not stored)
       if (!trks[0].isAvailable() || !trks[1].isAvailable()) continue;
-      if (trks[0]->charge() * trks[1]->charge() >= 0) continue;
-      if (!conv.conversionVertex().isValid()) continue;
+      const auto& vtx = conv.conversionVertex();
+      if (!vtx.isValid()) continue;
       if (conv.pairMomentum().perp2() < cuts.minPt * cuts.minPt) continue;
-      if (TMath::Prob(conv.conversionVertex().chi2(), static_cast<int>(conv.conversionVertex().ndof())) < cuts.minVertexProb)
-        continue;
+      const float prob = TMath::Prob(vtx.chi2(), static_cast<int>(vtx.ndof()));
+      if (prob < cuts.minVertexProb) continue;
       SelectedConversion sc;
+      if (!setConversionTracks(sc, *trks[0], *trks[1], ttBuilder)) continue;
       sc.index = i;
-      sc.conversion = &conv;
-      const bool firstPositive = trks[0]->charge() > 0;
-      sc.track1 = ttBuilder.build(*trks[firstPositive ? 0 : 1]);
-      sc.track2 = ttBuilder.build(*trks[firstPositive ? 1 : 0]);
+      sc.vertex = GlobalPoint(vtx.x(), vtx.y(), vtx.z());
+      sc.vertexProb = prob;
+      const auto& p = conv.pairMomentum();
+      sc.pairP4.SetXYZT(p.x(), p.y(), p.z(), std::sqrt(p.mag2()));
       selected.push_back(std::move(sc));
     }
-    // e+ e- refit once the vector is final: the particles point to the TransientTracks
-    for (auto& sc : selected) {
-      sc.photon = MMGVertexFit::conversionParticle(sc.track1, sc.track2);
-      if (sc.photon) {
-        const KinematicState& s = (*sc.photon)->currentState();
-        const GlobalVector p = s.globalMomentum();
-        sc.p4.SetXYZT(p.x(), p.y(), p.z(), p.mag());
-      } else {
-        const auto& p = sc.conversion->pairMomentum();
-        sc.p4.SetXYZT(p.x(), p.y(), p.z(), std::sqrt(p.mag2()));
-      }
+    refitConversions(selected);
+    return selected;
+  }
+
+  std::vector<SelectedConversion> selectConversions(const std::vector<pat::CompositeCandidate>& conversions,
+                                                    const TransientTrackBuilder& ttBuilder, const ConversionCuts& cuts) {
+    std::vector<SelectedConversion> selected;
+    for (size_t i = 0; i < conversions.size(); ++i) {
+      const pat::CompositeCandidate& conv = conversions[i];
+      const reco::Track* t0 = conv.userData<reco::Track>("track0");
+      const reco::Track* t1 = conv.userData<reco::Track>("track1");
+      if (!t0 || !t1) continue;
+      if (conv.pt() < cuts.minPt) continue;   // refitted pair momentum of the reco::Conversion
+      SelectedConversion sc;
+      if (!setConversionTracks(sc, *t0, *t1, ttBuilder)) continue;
+      sc.index = i;
+      sc.vertex = GlobalPoint(conv.vx(), conv.vy(), conv.vz());
+      sc.flags = conv.hasUserInt("flags") ? conv.userInt("flags") : -1;
+      sc.pairP4 = conv.p4();
+      selected.push_back(std::move(sc));
     }
+    refitConversions(selected);
     return selected;
   }
 

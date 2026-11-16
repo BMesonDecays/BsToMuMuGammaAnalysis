@@ -8,6 +8,7 @@
 #include "DataFormats/Common/interface/Handle.h"
 #include "DataFormats/Common/interface/ValueMap.h"
 #include "DataFormats/Common/interface/View.h"
+#include "DataFormats/PatCandidates/interface/CompositeCandidate.h"
 #include "DataFormats/PatCandidates/interface/PackedCandidate.h"
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
@@ -53,6 +54,11 @@ namespace bmmg {
   // conversions with two opposite-charge tracks and a valid vertex; the e+ e- pair is refitted with a
   // zero-mass constraint (SelectedConversion::photon, empty if that fit fails)
   std::vector<SelectedConversion> selectConversions(const std::vector<reco::Conversion>& conversions,
+                                                    const TransientTrackBuilder& ttBuilder, const ConversionCuts& cuts);
+  // MiniAOD: oniaPhotonCandidates:conversions (pat::CompositeCandidate with the two tracks as userData "track0",
+  // "track1"; already selected by OniaPhotonConversionProducer: rho > 1.5 cm, highPurity and generalTracksOnly,
+  // compatible inner hits, no shared tracks). The vertex chi2 is not stored: minVertexProb is not applied.
+  std::vector<SelectedConversion> selectConversions(const std::vector<pat::CompositeCandidate>& conversions,
                                                     const TransientTrackBuilder& ttBuilder, const ConversionCuts& cuts);
 
   // high-purity tracks for the kaon legs, excluding the inner tracks of the selected muons;

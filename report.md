@@ -33,6 +33,37 @@ Entries are newest first.
 
 ---
 
+## 2026-11-16: Conversions (μμγ, `mmcg`) in MiniAOD from `oniaPhotonCandidates`
+The conversion channel was switched off for MiniAOD, because the tracks of `reducedEgamma:reducedConversions` are not stored. It now reads `oniaPhotonCandidates:conversions` (`pat::CompositeCandidate` from `OniaPhotonConversionProducer`, kept in MiniAOD for BPH). These candidates carry full copies of the two tracks as userData `track0`/`track1`, so the same e⁺e⁻ zero-mass refit and B fit run as in AOD.
+
+**Changes:**
+- `SelectedConversion` no longer points to a `reco::Conversion`. It holds the vertex, its probability (AOD only), the pair momentum, the MiniAOD `flags`, and the refit χ² probability.
+- New overload `selectConversions(std::vector<pat::CompositeCandidate>, ...)`; the plugin picks the token by `dataFormat`.
+- In the 2022C PromptReco MiniAOD the product is **missing in about 11% of the events** (225/2000; 268/300 in a direct check of the file). This is now handled: no conversions in those events, a new event flag `evt_convAvailable`, and a warning with the count at the end of the job.
+- New branches: `conv_flags` (MiniAOD), `conv_fitProb` (both formats). `conv_vtxProb` is −1 in MiniAOD (the vertex χ² is not stored there).
+- `runNtuplizer_cfg.py`: MiniAOD `conversions = 'oniaPhotonCandidates:conversions'`; the MiniAOD switch-off of `mmcg` is removed.
+
+**Validation:**
+- **AOD regression (2000 events):** `conv_*` identical; differences only in the new branches and the known fit non-determinism.
+- **Same events, AOD file:** running `OniaPhotonConversionProducer` on the AOD signal file, 73 of the 122 events with a signal-B conversion in `allConversions` keep one in `oniaPhotonCandidates` (60%), and all 73 are a subset of the 122.
+
+| signal MC, μμγ (different files) | AOD (8888 events) | MiniAOD (20000 events) |
+|---|---|---|
+| conversions per event | 2.18 | 1.28 |
+| events with a signal-B conversion | 6.4% | 3.6% |
+| signal-B conversions per such event | 1.88 (duplicates sharing a track) | 1.00 |
+| zero-mass refit OK, per signal-B conversion | 43% | 29% |
+| events with a signal conversion: any refit OK | 48% | 29% |
+| events with a fitted, gen-matched `mmcg` candidate | 2.5% | 0.80% |
+| gen-matched fitted mass: median, 16–84% half-width | 5.289, 0.269 GeV | 5.309, 0.155 GeV |
+
+- **Data MiniAOD (2022C, 2000 events):** 0.78 conversions per event (with the collection present), refit OK 64%, 0.20 `mmcg` candidates per event.
+
+**Conclusions:**
+- The MiniAOD yield of signal `mmcg` candidates is about 1/3 of AOD. Roughly half of the loss comes from the producer's preselection (ρ > 1.5 cm, highPurity + generalTracksOnly, compatible inner hits, no duplicates). The other half comes from the zero-mass refit, which fails more often on these conversions, and AOD gets a second chance through the duplicates.
+- The MiniAOD candidates have a better mass resolution.
+- **The zero-mass refit fails for more than half of the signal conversions in both formats.** This is the main efficiency loss of the channel and is worth a separate study (vertex fit or mass constraint; starting point for nearly parallel tracks).
+
 ## 2026-11-16: Candidate-level isolation of the daughters with the B products removed
 **New branches** (all channels): `<p><d>IsoCh` and `<p><d>IsoNeu` for every daughter `<d>` = `mu1`, `mu2` and
 the legs (`pho`; `pho1`, `pho2`; `conv`; `trk1`, `trk2`). Cone ΔR < 0.3 around the daughter.

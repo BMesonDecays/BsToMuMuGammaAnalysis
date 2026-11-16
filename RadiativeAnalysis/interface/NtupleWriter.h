@@ -51,7 +51,9 @@ namespace bmmg {
                      const EcalRecHitCollection& ebHits, const EcalRecHitCollection& eeHits,
                      const MMGVertexFit& fitter, const GenDecayChain* gen);
     void fillDimuons(const std::vector<DimuonCandidate>& dimuons);
-    void fillConversions(const std::vector<SelectedConversion>& conversions, const GenDecayChain* gen);
+    // available: the input conversion collection exists in the event (MiniAOD oniaPhotonCandidates can be missing)
+    void fillConversions(const std::vector<SelectedConversion>& conversions, const GenDecayChain* gen,
+                         bool available = true);
     void fillTracks(const std::vector<SelectedTrack>& tracks, const reco::BeamSpot& bs, const GenDecayChain* gen);
     void fillCandidates(const Channel& channel, const std::vector<BCandidate>& candidates,
                         const std::vector<reco::Vertex>& pvs);
