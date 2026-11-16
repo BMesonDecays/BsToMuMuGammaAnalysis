@@ -5,6 +5,8 @@
 #include "RecoVertex/KinematicFitPrimitives/interface/KinematicParticle.h"
 #include "TMath.h"
 #include "DataFormats/Math/interface/deltaR.h"
+#include "DataFormats/PatCandidates/interface/Photon.h"
+#include <algorithm>
 
 #include <cmath>
 
@@ -159,6 +161,50 @@ namespace bmmg {
     addPackedTracks(packed, result);
     addPackedTracks(lost, result);
     return result;
+  }
+
+  // ---------------------------------------------------------------------------- isolation inputs
+  namespace {
+    bool isNeutralForIsolation(int pdgId) { return pdgId == 22 || pdgId == 130; }   // not the HF candidates (1, 2)
+  }
+
+  std::vector<NeutralParticle> neutralsFromPF(const std::vector<reco::PFCandidate>& pf, double minPt) {
+    std::vector<NeutralParticle> out;
+    for (size_t i = 0; i < pf.size(); ++i)
+      if (pf[i].charge() == 0 && isNeutralForIsolation(std::abs(pf[i].pdgId())) && pf[i].pt() > minPt)
+        out.push_back({float(pf[i].pt()), float(pf[i].eta()), float(pf[i].phi()), static_cast<int>(i)});
+    return out;
+  }
+
+  std::vector<NeutralParticle> neutralsFromPacked(const std::vector<pat::PackedCandidate>& packed, double minPt) {
+    std::vector<NeutralParticle> out;
+    for (size_t i = 0; i < packed.size(); ++i)
+      if (packed[i].charge() == 0 && isNeutralForIsolation(std::abs(packed[i].pdgId())) && packed[i].pt() > minPt)
+        out.push_back({float(packed[i].pt()), float(packed[i].eta()), float(packed[i].phi()), static_cast<int>(i)});
+    return out;
+  }
+
+  void setPhotonFootprints(std::vector<SelectedPhoton>& photons, const edm::Handle<edm::View<reco::Photon>>& handle,
+                           const edm::ValueMap<std::vector<reco::PFCandidateRef>>& footprints, edm::ProductID pfId) {
+    for (auto& sp : photons) {
+      sp.footprint.clear();
+      const edm::Ptr<reco::Photon> ptr = handle->ptrAt(sp.index);
+      if (!footprints.contains(ptr.id())) continue;
+      for (const auto& ref : footprints[ptr])
+        if (ref.id() == pfId) sp.footprint.push_back(static_cast<int>(ref.key()));
+      std::sort(sp.footprint.begin(), sp.footprint.end());
+    }
+  }
+
+  void setPhotonFootprints(std::vector<SelectedPhoton>& photons, edm::ProductID packedId) {
+    for (auto& sp : photons) {
+      sp.footprint.clear();
+      const auto* pat = dynamic_cast<const pat::Photon*>(sp.photon);
+      if (!pat) continue;
+      for (const auto& ref : pat->associatedPackedPFCandidates())
+        if (ref.id() == packedId) sp.footprint.push_back(static_cast<int>(ref.key()));
+      std::sort(sp.footprint.begin(), sp.footprint.end());
+    }
   }
 
 }  // namespace bmmg

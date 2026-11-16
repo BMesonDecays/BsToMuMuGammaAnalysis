@@ -25,6 +25,8 @@ namespace bmmg {
     double maxPrefitMass = 7.0;
     double massHypothesis = pdg::bsMass;   // used for ct
     bool computeTrackCompatibility = true;
+    double isolationCone = 0.3;          // daughter isolation (BCandidate::daughterIso)
+    double isolationMinChargedPt = 0.5;
   };
 
   struct DiphotonConfig {
@@ -49,6 +51,7 @@ namespace bmmg {
                                          const std::vector<SelectedPhoton>& photons,
                                          const std::vector<reco::Vertex>& pvs,
                                          const std::vector<PVTrack>& pvTracks,
+                                         const std::vector<NeutralParticle>& neutrals,
                                          const EcalClusterLazyTools& lazyTools,
                                          const TransientTrackBuilder& ttBuilder,
                                          const MMGVertexFit& fitter,
@@ -59,6 +62,7 @@ namespace bmmg {
                                              const std::vector<SelectedConversion>& conversions,
                                              const std::vector<reco::Vertex>& pvs,
                                              const std::vector<PVTrack>& pvTracks,
+                                             const std::vector<NeutralParticle>& neutrals,
                                              const TransientTrackBuilder& ttBuilder,
                                              const CandidateConfig& config);
 
@@ -67,6 +71,7 @@ namespace bmmg {
                                               const std::vector<SelectedPhoton>& photons,
                                               const std::vector<reco::Vertex>& pvs,
                                               const std::vector<PVTrack>& pvTracks,
+                                              const std::vector<NeutralParticle>& neutrals,
                                               const EcalClusterLazyTools& lazyTools,
                                               const TransientTrackBuilder& ttBuilder,
                                               const MMGVertexFit& fitter,
@@ -80,6 +85,7 @@ namespace bmmg {
                                       const std::vector<SelectedTrack>& tracks,
                                       const std::vector<reco::Vertex>& pvs,
                                       const std::vector<PVTrack>& pvTracks,
+                                      const std::vector<NeutralParticle>& neutrals,
                                       const TransientTrackBuilder& ttBuilder,
                                       const CandidateConfig& config,
                                       const KaonConfig& kaons,

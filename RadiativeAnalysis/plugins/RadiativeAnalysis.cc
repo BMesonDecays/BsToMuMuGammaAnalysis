@@ -28,6 +28,7 @@
 #include "DataFormats/EgammaCandidates/interface/Conversion.h"
 #include "DataFormats/TrackReco/interface/Track.h"
 #include "DataFormats/PatCandidates/interface/PackedCandidate.h"
+#include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
 #include "DataFormats/PatCandidates/interface/TriggerObjectStandAlone.h"
 #include "DataFormats/Common/interface/View.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
@@ -89,6 +90,9 @@ private:
   edm::EDGetTokenT<trigger::TriggerEvent> triggerEventToken_;                     // AOD
   edm::EDGetTokenT<std::vector<pat::TriggerObjectStandAlone>> triggerObjectsToken_;  // MiniAOD
   edm::EDGetTokenT<std::vector<pat::PackedCandidate>> packedToken_, lostTracksToken_;  // MiniAOD
+  edm::EDGetTokenT<std::vector<reco::PFCandidate>> pfCandidatesToken_;                  // AOD (isolation)
+  edm::EDGetTokenT<edm::ValueMap<std::vector<reco::PFCandidateRef>>> photonFootprintToken_;   // AOD
+  double isolationMinNeutralPt_ = 0.5;
   edm::EDGetTokenT<std::vector<reco::Conversion>> conversionsToken_;
   edm::EDGetTokenT<std::vector<reco::Track>> tracksToken_;
   edm::EDGetTokenT<std::vector<reco::GenParticle>> genParticlesToken_;
@@ -160,6 +164,8 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& cfg)
       lostTracksToken_ = consumes(cfg.getParameter<edm::InputTag>("lostTracks"));
     } else {
       triggerEventToken_ = consumes(cfg.getParameter<edm::InputTag>("triggerEvent"));
+      pfCandidatesToken_ = consumes(cfg.getParameter<edm::InputTag>("pfCandidates"));
+      photonFootprintToken_ = consumes(cfg.getParameter<edm::InputTag>("photonPFFootprint"));
       if (doMuMuKK_) tracksToken_ = consumes(cfg.getParameter<edm::InputTag>("tracks"));
     }
     if (isMC_) {
@@ -181,6 +187,9 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& cfg)
     candidateConfig_.minPrefitMass = cfg.getParameter<double>("minPrefitMass");
     candidateConfig_.maxPrefitMass = cfg.getParameter<double>("maxPrefitMass");
     candidateConfig_.computeTrackCompatibility = cfg.getParameter<bool>("computeTrackCompatibility");
+    candidateConfig_.isolationCone = cfg.getParameter<double>("isolationCone");
+    candidateConfig_.isolationMinChargedPt = cfg.getParameter<double>("isolationMinChargedPt");
+    isolationMinNeutralPt_ = cfg.getParameter<double>("isolationMinNeutralPt");
     diphotonConfig_.minMass = cfg.getParameter<double>("diphotonMinMass");
     diphotonConfig_.maxMass = cfg.getParameter<double>("diphotonMaxMass");
     kaonConfig_.minPt = trackCuts_.minPt;
@@ -252,13 +261,20 @@ void RadiativeAnalysis::analyze(const edm::Event& event, const edm::EventSetup& 
   // charged tracks associated to the primary vertices (isolation, track compatibility)
   std::vector<bmmg::PVTrack> pvTracks;
   std::vector<reco::Track> packedTracks;   // MiniAOD: pseudo-tracks (kaon candidates)
+  std::vector<bmmg::NeutralParticle> neutrals;   // PF photons and neutral hadrons (daughter isolation)
+  edm::ProductID pfId;                           // their collection (photon footprints refer to it)
   if (isMiniAOD_) {
-    const auto& packed = event.get(packedToken_);
+    const auto packedHandle = event.getHandle(packedToken_);
     const auto& lost = event.get(lostTracksToken_);
-    pvTracks = bmmg::pvTracksFromPacked(packed, lost);
-    if (doMuMuKK_) packedTracks = bmmg::tracksFromPacked(packed, lost);
+    pvTracks = bmmg::pvTracksFromPacked(*packedHandle, lost);
+    if (doMuMuKK_) packedTracks = bmmg::tracksFromPacked(*packedHandle, lost);
+    neutrals = bmmg::neutralsFromPacked(*packedHandle, isolationMinNeutralPt_);
+    pfId = packedHandle.id();
   } else {
     pvTracks = bmmg::pvTracksFromVertices(vertices);
+    const auto pfHandle = event.getHandle(pfCandidatesToken_);
+    neutrals = bmmg::neutralsFromPF(*pfHandle, isolationMinNeutralPt_);
+    pfId = pfHandle.id();
   }
   EcalClusterLazyTools lazyTools(event, lazyToolsTokens_.get(setup), ebRecHitsToken_, eeRecHitsToken_);
 
@@ -280,8 +296,12 @@ void RadiativeAnalysis::analyze(const edm::Event& event, const edm::EventSetup& 
   const auto photonMVA = event.getHandle(photonMvaToken_);
   const auto photonTightId = event.getHandle(photonTightIdToken_);
   const std::vector<bmmg::SelectedMuon> selMuons = bmmg::selectMuons(muons, muonMVA, ttBuilder, muonCuts_);
-  const std::vector<bmmg::SelectedPhoton> selPhotons =
+  std::vector<bmmg::SelectedPhoton> selPhotons =
       bmmg::selectPhotons(photonsHandle, photonMVA, photonTightId, photonCuts_);
+  if (isMiniAOD_)
+    bmmg::setPhotonFootprints(selPhotons, pfId);
+  else
+    bmmg::setPhotonFootprints(selPhotons, photonsHandle, event.get(photonFootprintToken_), pfId);
 
   // trigger
   std::vector<const reco::Muon*> muonPtrs;
@@ -318,12 +338,12 @@ void RadiativeAnalysis::analyze(const edm::Event& event, const edm::EventSetup& 
 
   if (doMuMuGamma_)
     writer_->fillCandidates(bmmg::NtupleWriter::kMuMuGamma,
-                            check(bmmg::buildMuMuGamma(selMuons, dimuons, selPhotons, vertices, pvTracks, lazyTools,
+                            check(bmmg::buildMuMuGamma(selMuons, dimuons, selPhotons, vertices, pvTracks, neutrals, lazyTools,
                                                        ttBuilder, mmgVertexFit_, candidateConfig_)),
                             vertices);
   if (doMuMuGammaGamma_)
     writer_->fillCandidates(bmmg::NtupleWriter::kMuMuGammaGamma,
-                            check(bmmg::buildMuMuGammaGamma(selMuons, dimuons, selPhotons, vertices, pvTracks, lazyTools,
+                            check(bmmg::buildMuMuGammaGamma(selMuons, dimuons, selPhotons, vertices, pvTracks, neutrals, lazyTools,
                                                             ttBuilder, mmgVertexFit_, candidateConfig_, diphotonConfig_)),
                             vertices);
   if (doMuMuConvGamma_) {
@@ -332,7 +352,7 @@ void RadiativeAnalysis::analyze(const edm::Event& event, const edm::EventSetup& 
     writer_->fillConversions(conversions, gen.get());
     writer_->fillCandidates(
         bmmg::NtupleWriter::kMuMuConvGamma,
-        check(bmmg::buildMuMuConvGamma(selMuons, dimuons, conversions, vertices, pvTracks, ttBuilder, candidateConfig_)),
+        check(bmmg::buildMuMuConvGamma(selMuons, dimuons, conversions, vertices, pvTracks, neutrals, ttBuilder, candidateConfig_)),
         vertices);
   }
   if (doMuMuKK_) {
@@ -343,7 +363,7 @@ void RadiativeAnalysis::analyze(const edm::Event& event, const edm::EventSetup& 
     kkConfig.minPrefitMass = kaonConfig_.minBMass;
     kkConfig.maxPrefitMass = kaonConfig_.maxBMass;
     const std::vector<bmmg::BCandidate> mmkk =
-        bmmg::buildMuMuKK(selMuons, dimuons, tracks, vertices, pvTracks, ttBuilder, kkConfig, kaonConfig_, usedTracks);
+        bmmg::buildMuMuKK(selMuons, dimuons, tracks, vertices, pvTracks, neutrals, ttBuilder, kkConfig, kaonConfig_, usedTracks);
     writer_->fillTracks(usedTracks, beamSpot, gen.get());   // before the candidates (truth flags)
     writer_->fillCandidates(bmmg::NtupleWriter::kMuMuKK, check(mmkk), vertices);
   }
@@ -439,6 +459,13 @@ void RadiativeAnalysis::fillDescriptions(edm::ConfigurationDescriptions& descrip
   desc.add<double>("minPrefitMass", 4.0);   // pre-fit B mass window (photon channels)
   desc.add<double>("maxPrefitMass", 7.0);
   desc.add<bool>("computeTrackCompatibility", true);
+  // isolation of the candidate daughters without the B products (<p>mu1IsoCh, ...): cone, minimal pt of the PV
+  // tracks and of the PF photons / neutral hadrons; AOD inputs (MiniAOD: packedCandidates, pat::Photon footprints)
+  desc.add<double>("isolationCone", 0.3);
+  desc.add<double>("isolationMinChargedPt", 0.5);
+  desc.add<double>("isolationMinNeutralPt", 0.5);
+  desc.add<edm::InputTag>("pfCandidates", edm::InputTag("particleFlow"));                       // AOD
+  desc.add<edm::InputTag>("photonPFFootprint", edm::InputTag("particleBasedIsolation", "gedPhotons"));   // AOD
   desc.add<double>("conversionMinPt", 0.5);
   desc.add<double>("conversionMinVertexProb", 1e-6);
   desc.add<double>("diphotonMinMass", 0.05);

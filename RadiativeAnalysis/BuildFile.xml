@@ -17,6 +17,7 @@
 <use name="DataFormats/Math"/>
 <use name="DataFormats/MuonReco"/>
 <use name="DataFormats/PatCandidates"/>
+<use name="DataFormats/ParticleFlowCandidate"/>
 <use name="DataFormats/TrackReco"/>
 <use name="DataFormats/VertexReco"/>
 <use name="Geometry/CaloGeometry"/>

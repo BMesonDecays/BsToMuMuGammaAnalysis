@@ -9,6 +9,7 @@
 #include "DataFormats/Common/interface/ValueMap.h"
 #include "DataFormats/Common/interface/View.h"
 #include "DataFormats/PatCandidates/interface/PackedCandidate.h"
+#include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
 
@@ -69,6 +70,16 @@ namespace bmmg {
   // MiniAOD: pseudo-tracks of all charged packed candidates and lost tracks with track details
   std::vector<reco::Track> tracksFromPacked(const std::vector<pat::PackedCandidate>& packed,
                                             const std::vector<pat::PackedCandidate>& lost);
+
+  // ---- isolation inputs ----
+  // PF photons and neutral hadrons with pt > minPt (AOD: particleFlow, MiniAOD: packedPFCandidates)
+  std::vector<NeutralParticle> neutralsFromPF(const std::vector<reco::PFCandidate>& pf, double minPt);
+  std::vector<NeutralParticle> neutralsFromPacked(const std::vector<pat::PackedCandidate>& packed, double minPt);
+  // photon footprints (SelectedPhoton::footprint): the PF candidates of each photon, as keys into the PF collection
+  // with product id pfId. AOD: the particleBasedIsolation value map; MiniAOD: pat::Photon::associatedPackedPFCandidates
+  void setPhotonFootprints(std::vector<SelectedPhoton>& photons, const edm::Handle<edm::View<reco::Photon>>& handle,
+                           const edm::ValueMap<std::vector<reco::PFCandidateRef>>& footprints, edm::ProductID pfId);
+  void setPhotonFootprints(std::vector<SelectedPhoton>& photons, edm::ProductID packedId);
 
 }  // namespace bmmg
 

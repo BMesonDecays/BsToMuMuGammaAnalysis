@@ -67,6 +67,7 @@ namespace bmmg {
 
   private:
     void fillMuonIsolation(const reco::Muon& mu);
+    static std::vector<std::string> isoDaughters(const Channel& ch);
     void book();
     void bookCandidates(const Channel& channel);
     const std::vector<int>& legFromB(LegType type) const;

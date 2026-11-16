@@ -33,6 +33,41 @@ Entries are newest first.
 
 ---
 
+## 2026-11-16: Candidate-level isolation of the daughters with the B products removed
+**New branches** (all channels): `<p><d>IsoCh` and `<p><d>IsoNeu` for every daughter `<d>` = `mu1`, `mu2` and
+the legs (`pho`; `pho1`, `pho2`; `conv`; `trk1`, `trk2`). Cone ΔR < 0.3 around the daughter.
+- **Charged:** Σ pt of the tracks of the candidate's PV with pt > 0.5 GeV (the same PV track list as
+  `<p>isolation` and `<p>pvSumPt`). All tracks of the candidate are removed: muons, conversion tracks, kaons.
+- **Neutral:** Σ pt of the PF photons and neutral hadrons with pt > 0.5 GeV. The footprints of all photons of
+  the candidate are removed (AOD: `particleBasedIsolation:gedPhotons` value map; MiniAOD:
+  `pat::Photon::associatedPackedPFCandidates`, i.e. the footprint used by the standard photon isolation).
+  Around muons and tracks, the Muon POG inner veto ΔR < 0.01 is applied.
+- No pile-up correction (no PU charged sum). Limitation: for `mmcg` the ECAL deposits of the conversion
+  electrons are not removed from the neutral sums.
+- **Code:** `bmmg::daughterIsolation` (`CandidateObservables`); `NeutralParticle`, `SelectedPhoton::footprint`,
+  `BCandidate::daughterIso` (`Candidates.h`); `neutralsFromPF`/`neutralsFromPacked` and `setPhotonFootprints`
+  (`ObjectSelection`). The builders take the neutral list; the `Finisher` computes the isolations.
+  New parameters, with defaults, so no configuration change: `isolationCone` (0.3), `isolationMinChargedPt` (0.5),
+  `isolationMinNeutralPt` (0.5), `pfCandidates` (`particleFlow`, AOD), `photonPFFootprint` (AOD).
+  Unit test "daughter isolation without the B products"; all 43 assertions pass.
+
+**Tests:** cmsRun on 2000 events of samples 0, 1 and 16. Compared with the previous commit, only the new
+branches are added; the other differences are the known fit non-determinism (PV choice, `<p>pvSumPt` etc.
+unchanged). For gen-matched μμγ:
+
+| | MC AOD | MC MiniAOD |
+|---|---|---|
+| μ: neutral, standard (PF nh+ph) − cleaned, photon inside the μ cone (median) | 13.1 GeV = 0.90 × pt(γ) | 13.2 GeV = 0.89 × pt(γ) |
+| μ: same, photon outside the cone | 0.00 | 0.00 |
+| μ1: `mu_trkIsoR03` − cleaned charged, other muon inside the cone (median / pt(μ2)) | 1.00 | 1.00 |
+| μ1 neutral, median / 90%: standard → cleaned | 6.1 / 23.2 → 0.9 / 4.4 GeV | 3.8 / 21.4 → 0.9 / 4.7 GeV |
+
+- The cleaned values remove exactly the B products: the photon's PF energy (~0.9 of the photon pt) and
+  the other muon's track. Elsewhere they equal the standard sums; for μμKK the neutral sums equal the
+  standard muon PF sums.
+- The cleaned charged sums are 0 for more than half of the signal daughters. The standard PF charged sum
+  has a median of 0.4–0.8 GeV; it has no pt threshold and uses PV 0.
+
 ## 2026-11-16: Muon and photon isolation; PV track sums and muon–PV association per candidate
 **New branches:**
 - **Muons:** `mu_pfIsoChargedR03`, `mu_pfIsoNeutralR03`, `mu_pfIsoPhotonR03`, `mu_pfIsoPUR03` (PF sums,

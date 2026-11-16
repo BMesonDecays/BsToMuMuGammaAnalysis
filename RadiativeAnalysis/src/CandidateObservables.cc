@@ -10,6 +10,7 @@
 #include "TrackingTools/TrajectoryState/interface/TrajectoryStateClosestToPoint.h"
 #include "TMath.h"
 
+#include <algorithm>
 #include <cmath>
 #include <limits>
 
@@ -170,6 +171,32 @@ namespace bmmg {
       maxProb = std::max(maxProb, prob);
     }
     return maxProb;
+  }
+
+  IsoSums daughterIsolation(double eta, double phi, const std::vector<PVTrack>& pvTracks, int pv,
+                            const std::vector<const reco::Track*>& candTracks,
+                            const std::vector<NeutralParticle>& neutrals, const std::vector<int>& vetoKeys,
+                            double innerVeto, double cone, double minChargedPt) {
+    const double cone2 = cone * cone, veto2 = innerVeto * innerVeto;
+    double charged = 0., neutral = 0.;
+    for (const PVTrack& t : pvTracks) {
+      if (t.pv != pv) continue;
+      const reco::Track& trk = t.track;
+      if (trk.pt() < minChargedPt) continue;
+      if (reco::deltaR2(eta, phi, trk.eta(), trk.phi()) > cone2) continue;
+      if (isExcluded(trk, candTracks)) continue;
+      charged += trk.pt();
+    }
+    for (const NeutralParticle& n : neutrals) {
+      const double dr2 = reco::deltaR2(eta, phi, n.eta, n.phi);
+      if (dr2 > cone2 || dr2 < veto2) continue;
+      if (std::binary_search(vetoKeys.begin(), vetoKeys.end(), n.key)) continue;
+      neutral += n.pt;
+    }
+    IsoSums s;
+    s.charged = charged;
+    s.neutral = neutral;
+    return s;
   }
 
   bool sameTrack(const reco::Track& a, const reco::Track& b) {

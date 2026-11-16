@@ -84,6 +84,36 @@ TEST_CASE("PV track sums and muon association", "[observables]") {
   CHECK((none.nTracks == 0 && none.sumPt == 0.f && none.mu1InPV == 0));
 }
 
+TEST_CASE("daughter isolation without the B products", "[observables]") {
+  auto track = [](double pt, double eta, double phi, int q) {
+    return reco::Track(1., 5., reco::Track::Point(0, 0, 0),
+                       reco::Track::Vector(pt * std::cos(phi), pt * std::sin(phi), pt * std::sinh(eta)), q,
+                       reco::Track::CovarianceMatrix());
+  };
+  // daughter direction (eta, phi) = (0, 0)
+  const reco::Track otherMuon = track(4., 0.1, 0.1, -1);     // in the cone, a B product
+  const std::vector<bmmg::PVTrack> pvTracks{
+      {otherMuon, 0},
+      {track(1.0, 0.2, 0.0, 1), 0},    // counted
+      {track(0.4, 0.1, 0.0, 1), 0},    // below minChargedPt
+      {track(2.0, 0.5, 0.0, 1), 0},    // outside the cone
+      {track(3.0, 0.1, 0.0, 1), 1}};   // other PV
+  const std::vector<bmmg::NeutralParticle> neutrals{
+      {2.0f, 0.05f, 0.0f, 10},         // footprint of a candidate photon (vetoed)
+      {1.5f, 0.0f, 0.2f, 11},          // counted
+      {0.7f, 0.005f, 0.0f, 12},        // inside the inner veto cone (0.01) only
+      {5.0f, 1.0f, 0.0f, 13}};         // outside the cone
+  const bmmg::IsoSums withVeto = bmmg::daughterIsolation(0., 0., pvTracks, 0, {&otherMuon}, neutrals, {10}, 0.01);
+  CHECK(withVeto.charged == Approx(1.0));
+  CHECK(withVeto.neutral == Approx(1.5));
+  const bmmg::IsoSums noVeto = bmmg::daughterIsolation(0., 0., pvTracks, 0, {}, neutrals, {}, 0.);
+  CHECK(noVeto.charged == Approx(5.0));
+  CHECK(noVeto.neutral == Approx(2.0 + 1.5 + 0.7));
+  const bmmg::IsoSums pv1 = bmmg::daughterIsolation(0., 0., pvTracks, 1, {}, {}, {}, 0.);
+  CHECK(pv1.charged == Approx(3.0));
+  CHECK(pv1.neutral == 0.f);
+}
+
 TEST_CASE("angles", "[observables]") {
   // daughter emitted along the parent direction in the parent rest frame
   TLorentzVector parent, daughter;

@@ -76,7 +76,7 @@ Preselection: `gedPhotons` with a supercluster, E_SC > `photonMinSCEnergy` (1 Ge
 remove the other products of the B. In signal MC (gen-matched μμγ) the two muons are within ΔR < 0.3 of each other in
 ~40% of the candidates, and the photon is within ΔR < 0.3 of a muon in ~75%. So `mu_trkIsoR03` often contains the other
 muon, `mu_pfIsoPhotonR03` the signal photon, and `pho_trkIsoR03` the muon tracks. The PF charged-hadron sums do not
-contain muons. Subtract the other products offline (ΔR from the stored kinematics) if a clean isolation is needed.
+contain muons. The candidate branches `<p><d>IsoCh` / `<p><d>IsoNeu` are the isolations with the B products removed.
 
 ## Dimuons: `dimu_*` (vectors)
 Every opposite-sign pair of selected muons that do not share muon segments.
@@ -153,6 +153,7 @@ Fits that fail, or that diverge (non-finite χ², mass > 100 GeV, |p| > 10 TeV),
 | `<p>isolation` | pt(B) / (pt(B) + Σ pt of charged PV tracks with pt > 0.9 GeV within ΔR < 0.7, excluding the tracks of the candidate) |
 | `<p>pvNTracks`, `<p>pvSumPt`, `<p>pvVecSumPt` | tracks of the candidate's PV (`<p>pv`; weight > 0.5 in its fit, see "PV tracks" below), **without the tracks of the candidate** (muons, conversion tracks, kaons): their number, the scalar sum Σ pt, and the magnitude of the vector sum \|Σ p⃗_T\| [GeV] |
 | `<p>mu1InPV`, `<p>mu2InPV` | 1 if the inner track of μ⁺ / μ⁻ is a track of the candidate's PV (weight > 0.5; MiniAOD: packed candidate associated to that PV with `UsedInFitTight`) |
+| `<p><d>IsoCh`, `<p><d>IsoNeu`, for the daughters `<d>` = `mu1`, `mu2` and the legs (`pho`; `pho1`, `pho2`; `conv`; `trk1`, `trk2`) | isolation of each daughter **with the B products removed**, cone ΔR < 0.3 around the daughter [GeV]. `IsoCh`: Σ pt of the tracks of the candidate's PV (as `<p>pvSumPt`) with pt > 0.5 GeV, without all tracks of the candidate. `IsoNeu`: Σ pt of the PF photons and neutral hadrons with pt > 0.5 GeV (AOD `particleFlow`, MiniAOD `packedPFCandidates`), without the PF candidates of the candidate's photons (their footprint: AOD `particleBasedIsolation:gedPhotons`, MiniAOD `pat::Photon::associatedPackedPFCandidates`) and, for muons and tracks, without those within ΔR < 0.01. No pile-up correction. For `mmcg`, the ECAL deposits of the conversion electrons are not removed from `IsoNeu`. Parameters `isolationCone`, `isolationMinChargedPt`, `isolationMinNeutralPt` |
 | `<p>maxTrackCompatibility` | highest Kalman vertex probability of the two muons plus one other PV track (pt > 0.9, not a track of the candidate) |
 | `<p>genMatched` (MC) | the muons and all legs match gen particles that descend from the signal B. Partially reconstructed decays also count (e.g. `mmg` with one photon of J/ψ η: its mass is below the B mass). A π⁰ whose two photons are merged in one cluster is usually not matched (photon energy ≫ gen photon) |
 

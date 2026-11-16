@@ -54,6 +54,15 @@ namespace bmmg {
   // and whether the muon inner tracks are tracks of that PV
   PVTrackSums pvTrackSums(const std::vector<PVTrack>& pvTracks, int pv, const reco::Track& mu1,
                           const reco::Track& mu2, const std::vector<const reco::Track*>& exclude = {});
+  // isolation of one daughter of a candidate (direction eta, phi) with the B products removed:
+  //   charged: sum pt of the tracks of PV "pv" with pt > minChargedPt within dR < cone, without the tracks in candTracks
+  //            (all tracks of the candidate);
+  //   neutral: sum pt of the PF photons / neutral hadrons in "neutrals" within dR < cone, without those whose key is in
+  //            vetoKeys (sorted; the footprints of the candidate's photons) and those within dR < innerVeto.
+  IsoSums daughterIsolation(double eta, double phi, const std::vector<PVTrack>& pvTracks, int pv,
+                            const std::vector<const reco::Track*>& candTracks,
+                            const std::vector<NeutralParticle>& neutrals, const std::vector<int>& vetoKeys,
+                            double innerVeto, double cone = 0.3, double minChargedPt = 0.5);
   // same track; the tolerances allow for the reduced precision of the MiniAOD pseudo-tracks
   bool sameTrack(const reco::Track& a, const reco::Track& b);
 

@@ -171,6 +171,8 @@ namespace bmmg {
                        "pointingAngle", "vtxOnlyProb", "vtxOnlyChi2", "vtxOnlyNdof", "cosAlpha3DVtxOnly",
                        "pvSumPt", "pvVecSumPt"});
     bookInts(b_, p, {"pvNTracks", "mu1InPV", "mu2InPV"});
+    for (const std::string& d : isoDaughters(ch))
+      for (const char* v : {"IsoCh", "IsoNeu"}) b_.bookVector<float>(p + d + v);
     if (ch.legs.size() > 1) b_.bookVector<float>(p + "xMass");   // diphoton / KK mass (pre-fit)
     for (const auto& leg : ch.legs)
       for (const char* v : {"FitPt", "FitEta", "FitPhi"}) b_.bookVector<float>(p + leg + v);
@@ -276,6 +278,13 @@ namespace bmmg {
         b_.vec<float>("mu_genDR").push_back(m.isMatched ? m.deltaR : -1.f);
       }
     }
+  }
+
+  // names of the candidate daughters with an isolation (BCandidate::daughterIso order): mu1, mu2, legs
+  std::vector<std::string> NtupleWriter::isoDaughters(const Channel& ch) {
+    std::vector<std::string> d{"mu1", "mu2"};
+    d.insert(d.end(), ch.legs.begin(), ch.legs.end());
+    return d;
   }
 
   void NtupleWriter::fillMuonIsolation(const reco::Muon& mu) {
@@ -496,6 +505,12 @@ namespace bmmg {
       I("pvNTracks").push_back(c.pvSums.nTracks);
       I("mu1InPV").push_back(c.pvSums.mu1InPV);
       I("mu2InPV").push_back(c.pvSums.mu2InPV);
+      const std::vector<std::string> daughters = isoDaughters(ch);
+      for (size_t k = 0; k < daughters.size(); ++k) {
+        const IsoSums iso = k < c.daughterIso.size() ? c.daughterIso[k] : IsoSums();
+        F(daughters[k] + "IsoCh").push_back(iso.charged);
+        F(daughters[k] + "IsoNeu").push_back(iso.neutral);
+      }
       F("l3d").push_back(c.flight.l3d);
       F("l3dErr").push_back(c.flight.l3dErr);
       F("lxy").push_back(c.flight.lxy);

@@ -35,6 +35,13 @@ namespace bmmg {
     const reco::Photon* photon = nullptr;
     float mva = -99.f;                  // photon MVA (ValueMap), -99 if not available
     int tightId = -1;                   // cut-based tight ID (ValueMap), -1 if not available
+    std::vector<int> footprint;         // keys of the PF candidates of the photon (sorted; see NeutralParticle::key)
+  };
+
+  // neutral PF candidate (photon or neutral hadron) for the isolation
+  struct NeutralParticle {
+    float pt = 0.f, eta = 0.f, phi = 0.f;
+    int key = -1;                       // index in the PF candidate collection (particleFlow / packedPFCandidates)
   };
 
   struct DimuonCandidate {
@@ -87,6 +94,11 @@ namespace bmmg {
     int mu1InPV = 0, mu2InPV = 0;       // the muon's inner track is one of the PV tracks
   };
 
+  // isolation sums of one daughter of a candidate [GeV]
+  struct IsoSums {
+    float charged = -1.f, neutral = -1.f;
+  };
+
   // B candidate: dimuon + other legs (photon / conversion / two photons / two kaon tracks)
   struct BCandidate {
     int dimuon = -1, mu1 = -1, mu2 = -1;
@@ -100,6 +112,7 @@ namespace bmmg {
     float helicity = -2.f, coplanarity = -1.f, cosThetaL = -2.f;
     float isolation = -1.f, maxTrackCompatibility = -1.f;
     PVTrackSums pvSums;
+    std::vector<IsoSums> daughterIso;   // isolation without the B products: mu1, mu2, legs...
   };
   using MMGCandidate = BCandidate;
 

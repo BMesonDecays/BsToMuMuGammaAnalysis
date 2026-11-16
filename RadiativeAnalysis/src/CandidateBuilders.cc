@@ -5,6 +5,7 @@
 #include "RecoVertex/KinematicFitPrimitives/interface/KinematicParticle.h"
 #include "RecoVertex/KinematicFitPrimitives/interface/KinematicVertex.h"
 
+#include <algorithm>
 #include <cmath>
 #include <map>
 #include <utility>
@@ -18,14 +19,21 @@ namespace bmmg {
       return TLorentzVector(m.x(), m.y(), m.z(), s.kinematicParameters().energy());
     }
 
+    // a leg of a candidate for the isolation: direction, and the PF footprint for photons (nullptr otherwise)
+    struct IsoLeg {
+      reco::Candidate::LorentzVector p4;
+      const std::vector<int>* footprint = nullptr;
+    };
+
     // Common part of all channels: PV choice, fit (by the channel-specific "fit" function),
     // observables. Returns false if the candidate has no PV.
     class Finisher {
     public:
       Finisher(const std::vector<SelectedMuon>& muons, const std::vector<reco::Vertex>& pvs,
                const std::vector<PVTrack>& pvTracks,
+               const std::vector<NeutralParticle>& neutrals,
                const TransientTrackBuilder& ttBuilder, const CandidateConfig& config)
-          : muons_(muons), pvs_(pvs), pvTracks_(pvTracks), ttBuilder_(ttBuilder), config_(config) {}
+          : muons_(muons), pvs_(pvs), pvTracks_(pvTracks), neutrals_(neutrals), ttBuilder_(ttBuilder), config_(config) {}
 
       // choose the PV for candidate c (prefitP4 must be set)
       bool choosePV(BCandidate& c, const DimuonCandidate& dimu) const {
@@ -38,8 +46,9 @@ namespace bmmg {
         return GlobalPoint(pv.x(), pv.y(), pv.z());
       }
 
-      // observables after the fit attempt; exclude: extra tracks of the candidate (kaons)
-      void observables(BCandidate& c, const std::vector<const reco::Track*>& exclude) {
+      // observables after the fit attempt; exclude: extra tracks of the candidate (conversion tracks, kaons);
+      // legs: the legs in the order of c.legs, for their isolation (photons with their PF footprint)
+      void observables(BCandidate& c, const std::vector<const reco::Track*>& exclude, const std::vector<IsoLeg>& legs) {
         const reco::Vertex& pv = pvs_[c.pv];
         const SelectedMuon& mu1 = muons_[c.mu1];
         const SelectedMuon& mu2 = muons_[c.mu2];
@@ -66,6 +75,7 @@ namespace bmmg {
         c.coplanarity = coplanarityAngle(m1, m2, x, bP4);
         c.cosThetaL = leptonAngle(m1, m2);   // m1 = mu+, m2 = mu-
         c.pvSums = pvTrackSums(pvTracks_, c.pv, mu1.track.track(), mu2.track.track(), exclude);
+        daughterIsolations(c, mu1, mu2, exclude, legs);
         c.isolation = candidateIsolation(reco::Candidate::LorentzVector(bP4.Px(), bP4.Py(), bP4.Pz(), bP4.E()),
                                          *mu1.muon, *mu2.muon, pvTracks_, c.pv, exclude);
         if (config_.computeTrackCompatibility) {
@@ -83,6 +93,27 @@ namespace bmmg {
         }
       }
 
+      // isolation of mu1, mu2 and the legs without the B products: all candidate tracks are removed from the charged
+      // sums, the footprints of all photons of the candidate from the neutral sums
+      void daughterIsolations(BCandidate& c, const SelectedMuon& mu1, const SelectedMuon& mu2,
+                              const std::vector<const reco::Track*>& exclude, const std::vector<IsoLeg>& legs) const {
+        std::vector<const reco::Track*> candTracks{&mu1.track.track(), &mu2.track.track()};
+        candTracks.insert(candTracks.end(), exclude.begin(), exclude.end());
+        std::vector<int> veto;
+        for (const IsoLeg& l : legs)
+          if (l.footprint) veto.insert(veto.end(), l.footprint->begin(), l.footprint->end());
+        std::sort(veto.begin(), veto.end());
+        auto iso = [&](const reco::Candidate::LorentzVector& p4, bool isPhoton) {
+          // non-photon daughters: Muon POG inner veto cone of 0.01 for the neutrals
+          return daughterIsolation(p4.eta(), p4.phi(), pvTracks_, c.pv, candTracks, neutrals_, veto,
+                                   isPhoton ? 0. : 0.01, config_.isolationCone, config_.isolationMinChargedPt);
+        };
+        c.daughterIso.clear();
+        c.daughterIso.push_back(iso(mu1.muon->p4(), false));
+        c.daughterIso.push_back(iso(mu2.muon->p4(), false));
+        for (const IsoLeg& l : legs) c.daughterIso.push_back(iso(l.p4, l.footprint != nullptr));
+      }
+
       bool inWindow(const BCandidate& c) const {
         const double m = c.prefitP4.mass();
         return m >= config_.minPrefitMass && m <= config_.maxPrefitMass;
@@ -92,6 +123,7 @@ namespace bmmg {
       const std::vector<SelectedMuon>& muons_;
       const std::vector<reco::Vertex>& pvs_;
       const std::vector<PVTrack>& pvTracks_;
+      const std::vector<NeutralParticle>& neutrals_;
       const TransientTrackBuilder& ttBuilder_;
       const CandidateConfig& config_;
       std::map<std::pair<int, int>, float> compatibilityCache_;   // (dimuon, pv) -> max track compatibility
@@ -116,12 +148,13 @@ namespace bmmg {
                                          const std::vector<SelectedPhoton>& photons,
                                          const std::vector<reco::Vertex>& pvs,
                                          const std::vector<PVTrack>& pvTracks,
+                                         const std::vector<NeutralParticle>& neutrals,
                                          const EcalClusterLazyTools& lazyTools,
                                          const TransientTrackBuilder& ttBuilder,
                                          const MMGVertexFit& fitter,
                                          const CandidateConfig& config) {
     std::vector<BCandidate> candidates;
-    Finisher finisher(muons, pvs, pvTracks, ttBuilder, config);
+    Finisher finisher(muons, pvs, pvTracks, neutrals, ttBuilder, config);
     for (size_t id = 0; id < dimuons.size(); ++id) {
       const DimuonCandidate& dimu = dimuons[id];
       if (!dimu.vtxValid) continue;
@@ -135,7 +168,7 @@ namespace bmmg {
         if (muonParticles(muons, dimu))
           c.fit = fitter.fitCandidate(*muons[dimu.mu1].kinParticle, *muons[dimu.mu2].kinParticle, pho, lazyTools,
                                       &ttBuilder, finisher.pvPoint(c));
-        finisher.observables(c, {});
+        finisher.observables(c, {}, {{pho.p4(), &photons[ip].footprint}});
         candidates.push_back(std::move(c));
       }
     }
@@ -148,10 +181,11 @@ namespace bmmg {
                                              const std::vector<SelectedConversion>& conversions,
                                              const std::vector<reco::Vertex>& pvs,
                                              const std::vector<PVTrack>& pvTracks,
+                                             const std::vector<NeutralParticle>& neutrals,
                                              const TransientTrackBuilder& ttBuilder,
                                              const CandidateConfig& config) {
     std::vector<BCandidate> candidates;
-    Finisher finisher(muons, pvs, pvTracks, ttBuilder, config);
+    Finisher finisher(muons, pvs, pvTracks, neutrals, ttBuilder, config);
     for (size_t id = 0; id < dimuons.size(); ++id) {
       const DimuonCandidate& dimu = dimuons[id];
       if (!dimu.vtxValid) continue;
@@ -165,7 +199,7 @@ namespace bmmg {
         if (muonParticles(muons, dimu) && conv.photon)
           c.fit = MMGVertexFit::fitParticles(
               {*muons[dimu.mu1].kinParticle, *muons[dimu.mu2].kinParticle, *conv.photon}, finisher.pvPoint(c));
-        finisher.observables(c, {&conv.track1.track(), &conv.track2.track()});
+        finisher.observables(c, {&conv.track1.track(), &conv.track2.track()}, {{conv.p4, nullptr}});
         candidates.push_back(std::move(c));
       }
     }
@@ -178,13 +212,14 @@ namespace bmmg {
                                               const std::vector<SelectedPhoton>& photons,
                                               const std::vector<reco::Vertex>& pvs,
                                               const std::vector<PVTrack>& pvTracks,
+                                              const std::vector<NeutralParticle>& neutrals,
                                               const EcalClusterLazyTools& lazyTools,
                                               const TransientTrackBuilder& ttBuilder,
                                               const MMGVertexFit& fitter,
                                               const CandidateConfig& config,
                                               const DiphotonConfig& diphoton) {
     std::vector<BCandidate> candidates;
-    Finisher finisher(muons, pvs, pvTracks, ttBuilder, config);
+    Finisher finisher(muons, pvs, pvTracks, neutrals, ttBuilder, config);
     for (size_t id = 0; id < dimuons.size(); ++id) {
       const DimuonCandidate& dimu = dimuons[id];
       if (!dimu.vtxValid) continue;
@@ -201,7 +236,7 @@ namespace bmmg {
           if (muonParticles(muons, dimu))
             c.fit = fitter.fitCandidate(*muons[dimu.mu1].kinParticle, *muons[dimu.mu2].kinParticle, {&p1, &p2},
                                         lazyTools, &ttBuilder, finisher.pvPoint(c));
-          finisher.observables(c, {});
+          finisher.observables(c, {}, {{p1.p4(), &photons[i1].footprint}, {p2.p4(), &photons[i2].footprint}});
           candidates.push_back(std::move(c));
         }
       }
@@ -215,6 +250,7 @@ namespace bmmg {
                                       const std::vector<SelectedTrack>& tracks,
                                       const std::vector<reco::Vertex>& pvs,
                                       const std::vector<PVTrack>& pvTracks,
+                                      const std::vector<NeutralParticle>& neutrals,
                                       const TransientTrackBuilder& ttBuilder,
                                       const CandidateConfig& config,
                                       const KaonConfig& kaons,
@@ -229,7 +265,7 @@ namespace bmmg {
       return usedIndex[i] = static_cast<int>(usedTracks.size()) - 1;
     };
 
-    Finisher finisher(muons, pvs, pvTracks, ttBuilder, config);
+    Finisher finisher(muons, pvs, pvTracks, neutrals, ttBuilder, config);
     const double mK = pdg::kaonMass;
     for (size_t id = 0; id < dimuons.size(); ++id) {
       const DimuonCandidate& dimu = dimuons[id];
@@ -269,7 +305,7 @@ namespace bmmg {
                                                 MMGVertexFit::trackParticle(tracks[iPlus].ttrack, mK),
                                                 MMGVertexFit::trackParticle(tracks[iMinus].ttrack, mK)},
                                                finisher.pvPoint(c));
-          finisher.observables(c, {&kPlus, &kMinus});
+          finisher.observables(c, {&kPlus, &kMinus}, {{pk1, nullptr}, {pk2, nullptr}});
           candidates.push_back(std::move(c));
         }
       }
