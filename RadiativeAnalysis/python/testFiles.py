@@ -53,6 +53,13 @@ def testFiles(sample=0, listPath=None, maxFiles=-1):
     return ["file:" + f if f.startswith("/") else f for f in files]
 
 
+def datasetFiles(dataset):
+    """Return the files of a dataset, prefixed with 'file:'."""
+    from subprocess import check_output
+    cmd = ["dasgoclient", "-query", "file dataset=%s" % dataset]
+    output = check_output(cmd, universal_newlines=True)
+    return ["root://cms-xrd-global.cern.ch/" + f for f in output.splitlines() if f.strip()]
+
 if __name__ == "__main__":
     for i, (desc, patterns) in enumerate(testSamples()):
         print(i, desc, patterns)

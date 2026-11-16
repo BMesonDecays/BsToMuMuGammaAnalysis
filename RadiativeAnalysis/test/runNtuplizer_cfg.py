@@ -8,6 +8,7 @@
 #
 # Options:
 #   inputFiles   input files; if empty, sample "testSample" of test/test_files.txt is used
+#   dataset      dataset name, the files are found using the DAS client
 #   testSample   index of the sample in test/test_files.txt (default 0, the MC AOD test file);
 #                python3 ../python/testFiles.py lists the samples with their indices
 #   testMaxFiles maximal number of files taken from the test sample (-1: all)
@@ -28,6 +29,8 @@ from FWCore.ParameterSet.VarParsing import VarParsing
 options = VarParsing('analysis')
 options.register('testSample', 0, VarParsing.multiplicity.singleton, VarParsing.varType.int,
                  'index of the sample in test/test_files.txt (used if inputFiles is empty)')
+options.register('dataset', '', VarParsing.multiplicity.singleton, VarParsing.varType.string,
+                 'dataset name, the files are found using the DAS client')
 options.register('testMaxFiles', -1, VarParsing.multiplicity.singleton, VarParsing.varType.int,
                  'maximal number of files taken from the test sample')
 options.register('isMC', -1, VarParsing.multiplicity.singleton, VarParsing.varType.int,
@@ -54,10 +57,12 @@ options._tagOrder = []   # no automatic '_numEventN' suffix in the output file n
 options.parseArguments()
 
 # ---------------------------------------------------------------- input
-from BsToMuMuGammaAnalysis.RadiativeAnalysis.testFiles import testSamples, testFiles
+from BsToMuMuGammaAnalysis.RadiativeAnalysis.testFiles import testSamples, testFiles, datasetFiles
 if options.inputFiles:
     inputFiles = options.inputFiles
     sampleName = ''
+elif options.dataset:
+    inputFiles = datasetFiles(options.dataset)
 else:
     inputFiles = testFiles(options.testSample, maxFiles=options.testMaxFiles)
     sampleName = testSamples()[options.testSample][0]
