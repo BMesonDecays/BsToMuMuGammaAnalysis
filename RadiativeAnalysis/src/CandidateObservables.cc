@@ -172,6 +172,36 @@ namespace bmmg {
     return maxProb;
   }
 
+  bool sameTrack(const reco::Track& a, const reco::Track& b) {
+    return a.charge() == b.charge() && reco::deltaR(a, b) < 5e-3 && std::abs(a.pt() - b.pt()) < 1e-2 * b.pt();
+  }
+
+  PVTrackSums pvTrackSums(const std::vector<PVTrack>& pvTracks, int pv, const reco::Track& mu1,
+                          const reco::Track& mu2, const std::vector<const reco::Track*>& exclude) {
+    PVTrackSums s;
+    double px = 0., py = 0., sumPt = 0.;
+    for (const PVTrack& t : pvTracks) {
+      if (t.pv != pv) continue;
+      const reco::Track& trk = t.track;
+      if (sameTrack(trk, mu1)) {
+        s.mu1InPV = 1;
+        continue;
+      }
+      if (sameTrack(trk, mu2)) {
+        s.mu2InPV = 1;
+        continue;
+      }
+      if (isExcluded(trk, exclude)) continue;
+      ++s.nTracks;
+      sumPt += trk.pt();
+      px += trk.px();
+      py += trk.py();
+    }
+    s.sumPt = sumPt;
+    s.vecSumPt = std::hypot(px, py);
+    return s;
+  }
+
   float trackDCA(const reco::TransientTrack& t1, const reco::TransientTrack& t2) {
     const TrajectoryStateClosestToPoint s1 = t1.impactPointTSCP();
     const TrajectoryStateClosestToPoint s2 = t2.impactPointTSCP();

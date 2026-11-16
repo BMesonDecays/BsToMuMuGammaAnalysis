@@ -77,7 +77,9 @@ namespace bmmg {
     // ---- muons ----
     bookInts(b_, "mu_", {"index", "charge", "isGlobal", "isTracker", "isPF", "isLoose", "isMedium", "isSoft",
                          "isGoodTMOneStationTight", "highPurity", "trkLayers", "pixLayers", "validHits"});
-    bookFloats(b_, "mu_", {"pt", "eta", "phi", "mva", "dxyBS", "dxyBSErr", "dzBS", "trkNormChi2", "validFraction"});
+    bookFloats(b_, "mu_", {"pt", "eta", "phi", "mva", "dxyBS", "dxyBSErr", "dzBS", "trkNormChi2", "validFraction",
+                           "pfIsoChargedR03", "pfIsoNeutralR03", "pfIsoPhotonR03", "pfIsoPUR03", "pfRelIsoR03",
+                           "pfRelIsoR04", "trkIsoR03"});
     for (const auto& p : triggerPaths_) b_.bookVector<int>("mu_trg_" + triggerBranch(p));
     if (isMC_) {
       bookInts(b_, "mu_", {"genPdgId", "genMotherPdgId", "genFromSignalB"});
@@ -89,7 +91,8 @@ namespace bmmg {
                              "fitInputStatus"});
     bookFloats(b_, "pho_", {"pt", "eta", "phi", "energy", "energyErr", "mva", "scEnergy", "scRawEnergy", "scEta",
                             "scPhi", "scEtaWidth", "scPhiWidth", "r9", "sigmaIetaIeta", "sigmaIetaIphi",
-                            "sigmaIphiIphi", "hOverE", "seedTime", "fitEnergyErr"});
+                            "sigmaIphiIphi", "hOverE", "seedTime", "fitEnergyErr", "pfIsoCharged", "pfIsoNeutral",
+                            "pfIsoPhoton", "trkIsoR03", "ecalPFClusterIso", "hcalPFClusterIso"});
     if (isMC_) {
       bookInts(b_, "pho_", {"genPdgId", "genMotherPdgId", "genFromSignalB"});
       bookFloats(b_, "pho_", {"genDR"});
@@ -165,7 +168,9 @@ namespace bmmg {
                        "ct3D", "ct3DErr", "ct2D", "ct2DErr",
                        "mu1FitPt", "mu1FitEta", "mu1FitPhi", "mu2FitPt", "mu2FitEta", "mu2FitPhi",
                        "helicity", "coplanarity", "cosThetaL", "isolation", "maxTrackCompatibility",
-                       "pointingAngle", "vtxOnlyProb", "vtxOnlyChi2", "vtxOnlyNdof", "cosAlpha3DVtxOnly"});
+                       "pointingAngle", "vtxOnlyProb", "vtxOnlyChi2", "vtxOnlyNdof", "cosAlpha3DVtxOnly",
+                       "pvSumPt", "pvVecSumPt"});
+    bookInts(b_, p, {"pvNTracks", "mu1InPV", "mu2InPV"});
     if (ch.legs.size() > 1) b_.bookVector<float>(p + "xMass");   // diphoton / KK mass (pre-fit)
     for (const auto& leg : ch.legs)
       for (const char* v : {"FitPt", "FitEta", "FitPhi"}) b_.bookVector<float>(p + leg + v);
@@ -257,6 +262,7 @@ namespace bmmg {
       b_.vec<float>("mu_dzBS").push_back(trk.dz(bs.position()));
       b_.vec<float>("mu_trkNormChi2").push_back(trk.normalizedChi2());
       b_.vec<float>("mu_validFraction").push_back(trk.validFraction());
+      fillMuonIsolation(mu);
       for (size_t p = 0; p < triggerPaths_.size(); ++p)
         b_.vec<int>("mu_trg_" + triggerBranch(triggerPaths_[p])).push_back(trigger.muonMatched.at(p).at(i));
       if (isMC_) {
@@ -270,6 +276,24 @@ namespace bmmg {
         b_.vec<float>("mu_genDR").push_back(m.isMatched ? m.deltaR : -1.f);
       }
     }
+  }
+
+  void NtupleWriter::fillMuonIsolation(const reco::Muon& mu) {
+    constexpr float nan = std::numeric_limits<float>::quiet_NaN();
+    // relative PF isolation with the delta-beta pile-up correction (Muon POG definition)
+    auto relIso = [&mu](const reco::MuonPFIsolation& iso) {
+      return (iso.sumChargedHadronPt +
+              std::max(0.f, iso.sumNeutralHadronEt + iso.sumPhotonEt - 0.5f * iso.sumPUPt)) / mu.pt();
+    };
+    const bool pf = mu.isPFIsolationValid();
+    const reco::MuonPFIsolation& r03 = mu.pfIsolationR03();
+    b_.vec<float>("mu_pfIsoChargedR03").push_back(pf ? r03.sumChargedHadronPt : nan);
+    b_.vec<float>("mu_pfIsoNeutralR03").push_back(pf ? r03.sumNeutralHadronEt : nan);
+    b_.vec<float>("mu_pfIsoPhotonR03").push_back(pf ? r03.sumPhotonEt : nan);
+    b_.vec<float>("mu_pfIsoPUR03").push_back(pf ? r03.sumPUPt : nan);
+    b_.vec<float>("mu_pfRelIsoR03").push_back(pf ? relIso(r03) : nan);
+    b_.vec<float>("mu_pfRelIsoR04").push_back(pf ? relIso(mu.pfIsolationR04()) : nan);
+    b_.vec<float>("mu_trkIsoR03").push_back(mu.isIsolationValid() ? mu.isolationR03().sumPt : nan);
   }
 
   namespace {
@@ -318,6 +342,13 @@ namespace bmmg {
       b_.vec<float>("pho_hOverE").push_back(pho.hadronicOverEm());
       b_.vec<float>("pho_seedTime").push_back(seedTime(sc, ebHits, eeHits));
       b_.vec<float>("pho_fitEnergyErr").push_back(fitter.photonEnergyError(pho));
+      // PF isolation (cone 0.3, charged hadrons from PV 0 of the collection) and detector isolation
+      b_.vec<float>("pho_pfIsoCharged").push_back(pho.chargedHadronIso());
+      b_.vec<float>("pho_pfIsoNeutral").push_back(pho.neutralHadronIso());
+      b_.vec<float>("pho_pfIsoPhoton").push_back(pho.photonIso());
+      b_.vec<float>("pho_trkIsoR03").push_back(pho.trkSumPtHollowConeDR03());
+      b_.vec<float>("pho_ecalPFClusterIso").push_back(pho.ecalPFClusterIso());
+      b_.vec<float>("pho_hcalPFClusterIso").push_back(pho.hcalPFClusterIso());
       if (isMC_) {
         GenDecayChain::TruthMatchInfo m;
         if (gen) m = gen->matchPhotonToGen(pho);
@@ -460,6 +491,11 @@ namespace bmmg {
       F("cosThetaL").push_back(c.cosThetaL);
       F("isolation").push_back(c.isolation);
       F("maxTrackCompatibility").push_back(c.maxTrackCompatibility);
+      F("pvSumPt").push_back(c.pvSums.sumPt);
+      F("pvVecSumPt").push_back(c.pvSums.vecSumPt);
+      I("pvNTracks").push_back(c.pvSums.nTracks);
+      I("mu1InPV").push_back(c.pvSums.mu1InPV);
+      I("mu2InPV").push_back(c.pvSums.mu2InPV);
       F("l3d").push_back(c.flight.l3d);
       F("l3dErr").push_back(c.flight.l3dErr);
       F("lxy").push_back(c.flight.lxy);

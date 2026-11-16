@@ -79,6 +79,14 @@ namespace bmmg {
     int pv = -1;                        // index in the primary vertex collection
   };
 
+  // tracks of the candidate's PV (weight > 0.5 in its fit), without the tracks of the candidate
+  struct PVTrackSums {
+    int nTracks = 0;                    // number of tracks
+    float sumPt = 0.f;                  // scalar sum of their pt
+    float vecSumPt = 0.f;               // magnitude of the vector sum of their transverse momenta
+    int mu1InPV = 0, mu2InPV = 0;       // the muon's inner track is one of the PV tracks
+  };
+
   // B candidate: dimuon + other legs (photon / conversion / two photons / two kaon tracks)
   struct BCandidate {
     int dimuon = -1, mu1 = -1, mu2 = -1;
@@ -91,6 +99,7 @@ namespace bmmg {
     float massErr = -1.f;
     float helicity = -2.f, coplanarity = -1.f, cosThetaL = -2.f;
     float isolation = -1.f, maxTrackCompatibility = -1.f;
+    PVTrackSums pvSums;
   };
   using MMGCandidate = BCandidate;
 

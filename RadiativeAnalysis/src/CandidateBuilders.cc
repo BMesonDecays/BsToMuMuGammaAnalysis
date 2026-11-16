@@ -65,6 +65,7 @@ namespace bmmg {
         c.helicity = helicityAngle(x, bP4);
         c.coplanarity = coplanarityAngle(m1, m2, x, bP4);
         c.cosThetaL = leptonAngle(m1, m2);   // m1 = mu+, m2 = mu-
+        c.pvSums = pvTrackSums(pvTracks_, c.pv, mu1.track.track(), mu2.track.track(), exclude);
         c.isolation = candidateIsolation(reco::Candidate::LorentzVector(bP4.Px(), bP4.Py(), bP4.Pz(), bP4.E()),
                                          *mu1.muon, *mu2.muon, pvTracks_, c.pv, exclude);
         if (config_.computeTrackCompatibility) {

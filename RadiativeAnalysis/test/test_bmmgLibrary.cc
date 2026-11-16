@@ -59,6 +59,31 @@ TEST_CASE("primary vertex closest to the B line", "[observables]") {
   CHECK(bmmg::lowestDCAVertex({}, GlobalPoint(0., 0., 0.), GlobalVector(0., 0., 1.)) == -1);
 }
 
+TEST_CASE("PV track sums and muon association", "[observables]") {
+  auto track = [](double px, double py, double pz, int q) {
+    return reco::Track(1., 5., reco::Track::Point(0, 0, 0), reco::Track::Vector(px, py, pz), q,
+                       reco::Track::CovarianceMatrix());
+  };
+  const reco::Track mu1 = track(3, 0, 1, 1), mu2 = track(0, 4, 1, -1), kaon = track(-1, -1, 0.5, 1);
+  const std::vector<bmmg::PVTrack> pvTracks{
+      {mu1, 0}, {track(1, 0, 0, 1), 0}, {track(-2, 0, 0, -1), 0}, {kaon, 0},   // PV 0: mu1, two tracks, kaon
+      {mu2, 1}, {track(0, 5, 0, 1), 1}};                                      // PV 1: mu2, one track
+  const bmmg::PVTrackSums s0 = bmmg::pvTrackSums(pvTracks, 0, mu1, mu2, {&kaon});
+  CHECK(s0.mu1InPV == 1);
+  CHECK(s0.mu2InPV == 0);
+  CHECK(s0.nTracks == 2);                    // muon and kaon excluded
+  CHECK(s0.sumPt == Approx(3.));
+  CHECK(s0.vecSumPt == Approx(1.));
+  const bmmg::PVTrackSums s0k = bmmg::pvTrackSums(pvTracks, 0, mu1, mu2);
+  CHECK(s0k.nTracks == 3);
+  CHECK(s0k.vecSumPt == Approx(std::hypot(-2., -1.)));
+  const bmmg::PVTrackSums s1 = bmmg::pvTrackSums(pvTracks, 1, mu1, mu2);
+  CHECK((s1.mu1InPV == 0 && s1.mu2InPV == 1 && s1.nTracks == 1));
+  CHECK(s1.sumPt == Approx(5.));
+  const bmmg::PVTrackSums none = bmmg::pvTrackSums(pvTracks, 7, mu1, mu2);
+  CHECK((none.nTracks == 0 && none.sumPt == 0.f && none.mu1InPV == 0));
+}
+
 TEST_CASE("angles", "[observables]") {
   // daughter emitted along the parent direction in the parent rest frame
   TLorentzVector parent, daughter;

@@ -66,6 +66,7 @@ namespace bmmg {
     void fillRunInfo(const RunInfo& info);
 
   private:
+    void fillMuonIsolation(const reco::Muon& mu);
     void book();
     void bookCandidates(const Channel& channel);
     const std::vector<int>& legFromB(LegType type) const;

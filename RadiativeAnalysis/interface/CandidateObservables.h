@@ -50,6 +50,13 @@ namespace bmmg {
                               const std::vector<PVTrack>& pvTracks, int pv, const TransientTrackBuilder& ttBuilder,
                               const std::vector<const reco::Track*>& exclude = {}, double ptMin = 0.9);
 
+  // tracks of PV "pv" without the muon tracks and the tracks in "exclude" (count, scalar and vector pt sum),
+  // and whether the muon inner tracks are tracks of that PV
+  PVTrackSums pvTrackSums(const std::vector<PVTrack>& pvTracks, int pv, const reco::Track& mu1,
+                          const reco::Track& mu2, const std::vector<const reco::Track*>& exclude = {});
+  // same track; the tolerances allow for the reduced precision of the MiniAOD pseudo-tracks
+  bool sameTrack(const reco::Track& a, const reco::Track& b);
+
   // transverse distance of closest approach of two tracks (-1 if not computable)
   float trackDCA(const reco::TransientTrack& t1, const reco::TransientTrack& t2);
 

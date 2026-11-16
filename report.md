@@ -33,6 +33,42 @@ Entries are newest first.
 
 ---
 
+## 2026-11-16: Muon and photon isolation; PV track sums and muon–PV association per candidate
+**New branches:**
+- **Muons:** `mu_pfIsoChargedR03`, `mu_pfIsoNeutralR03`, `mu_pfIsoPhotonR03`, `mu_pfIsoPUR03` (PF sums,
+  ΔR < 0.3), `mu_pfRelIsoR03`, `mu_pfRelIsoR04` (Δβ-corrected relative isolation, Muon POG formula),
+  `mu_trkIsoR03` (tracker isolation). From `reco::Muon`, so identical in AOD and MiniAOD; NaN if not valid.
+- **Photons:** `pho_pfIsoCharged`, `pho_pfIsoNeutral`, `pho_pfIsoPhoton` (PF, ΔR < 0.3), `pho_trkIsoR03`
+  (hollow cone), `pho_ecalPFClusterIso`, `pho_hcalPFClusterIso`. From `reco::Photon`.
+- **Candidates** (all channels), from the tracks of the candidate's PV (the same list as `<p>isolation`:
+  weight > 0.5 in the PV fit; MiniAOD `UsedInFitTight`):
+  - `<p>pvNTracks`, `<p>pvSumPt` (Σ pt), `<p>pvVecSumPt` (\|Σ p⃗_T\|). **The candidate's own tracks are
+    excluded** (muons, conversion tracks, kaons), so the sums describe the rest of the PV and do not
+    depend on whether the B muons were fitted into it.
+  - `<p>mu1InPV`, `<p>mu2InPV`: the muon's inner track is a track of that PV. Matching: same charge,
+    ΔR < 5·10⁻³, \|Δpt\| < 1% (tolerances for the MiniAOD pseudo-tracks).
+- Code: `bmmg::pvTrackSums` and `bmmg::sameTrack` (`CandidateObservables`), `PVTrackSums` in `BCandidate`,
+  `NtupleWriter::fillMuonIsolation`. Unit test "PV track sums and muon association" (37 assertions pass).
+
+**Tests:** cmsRun on 2000 events of samples 0 (MC AOD), 1 (MC MiniAOD), 16 (data MiniAOD). Compared with
+the previous build, only the new branches are added. The other differences are the known fit
+non-determinism (μμγ-conversion 16/2000 events, μμKK, 1–2 μμγ events).
+
+| | MC AOD | MC MiniAOD | data MiniAOD |
+|---|---|---|---|
+| gen-matched μμγ: `mu1InPV` / `mu2InPV` | 0.14 / 0.13 | 0.13 / 0.17 | – |
+| μμKK, all: `mu1InPV` / `mu2InPV` | 0.17 / 0.13 | 0.18 / 0.14 | 0.55 / 0.55 |
+| gen-matched μμγ: median `pvNTracks` / `pvSumPt` / `pvVecSumPt` | 52 / 47 / 9.4 GeV | 52 / 49 / 9.6 GeV | – |
+| signal muons: median `mu_pfRelIsoR03` | 0.19 | 0.19 | (all μ) 0.25 |
+
+- **Behaviour:** displaced signal muons are rarely in the PV fit (~14%); the mostly prompt μμKK data
+  candidates are in it 55% of the time. AOD and MiniAOD agree; no NaN; \|Σ p⃗_T\| ≤ Σ pt always.
+- **Caveat (documented in NTUPLE.md):** the object isolations include the other B products. For
+  gen-matched μμγ, ΔR(μ, μ) < 0.3 in ~40% of the candidates and the photon is within 0.3 of a muon in
+  ~75%, so `mu_trkIsoR03`, `mu_pfIsoPhotonR03` and `pho_trkIsoR03` contain them; e.g. the median
+  `pho_trkIsoR03` of signal photons is 3.0 GeV against 1.2 GeV for all photons (AOD). PF charged-hadron
+  sums contain no muons. A candidate-level isolation with the B products removed is not implemented yet.
+
 ## 2026-11-15: BDT tuning, new features, Run 3 projection (320 fb⁻¹)
 - **Request:** tune the BDT, add features if needed (e.g. ΔR between the dimuon and the photon); the goal is an expected significance of at least 3σ after the BDT cut, projected to the Run 3 luminosity of 320 fb⁻¹.
 - **Result:** the expected significance went from 0.6–0.9σ to **2.7–2.9σ**, close to the 3σ goal but not robustly above it. The 2.7–2.9σ is for a binned mass fit in 3 BDT-score categories; a cut-and-count window gives 1.9σ.

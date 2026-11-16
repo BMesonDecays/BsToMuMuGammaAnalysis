@@ -45,6 +45,9 @@ Preselection: global or tracker muon with an inner track, pt > `muonMinPt` (2 Ge
 | `mu_isGlobal`, `mu_isTracker`, `mu_isPF`, `mu_isLoose`, `mu_isMedium`, `mu_isSoft`, `mu_isGoodTMOneStationTight` | ID flags |
 | `mu_highPurity`, `mu_trkLayers`, `mu_pixLayers`, `mu_validHits`, `mu_trkNormChi2`, `mu_validFraction` | inner track quality |
 | `mu_dxyBS`, `mu_dxyBSErr`, `mu_dzBS` | inner-track impact parameters w.r.t. the beam spot |
+| `mu_pfIsoChargedR03`, `mu_pfIsoNeutralR03`, `mu_pfIsoPhotonR03`, `mu_pfIsoPUR03` | PF isolation sums in a cone ΔR < 0.3 (`pfIsolationR03()`): charged hadrons from the PV, neutral hadrons, photons, charged hadrons from pile-up [GeV]; NaN if not available |
+| `mu_pfRelIsoR03`, `mu_pfRelIsoR04` | relative PF isolation with the Δβ correction, (ch + max(0, nh + ph − 0.5 PU)) / pt, cones 0.3 and 0.4 |
+| `mu_trkIsoR03` | tracker isolation: Σ pt of the tracks within ΔR < 0.3 (`isolationR03().sumPt`, the muon's own track excluded) |
 | `mu_genPdgId`, `mu_genMotherPdgId`, `mu_genDR` (MC) | closest final-state gen muon (ΔR < 0.05, \|Δpt/pt\| < 0.5) |
 | `mu_genFromSignalB` (MC) | the matched gen muon descends from the signal B of the event |
 
@@ -62,9 +65,18 @@ Preselection: `gedPhotons` with a supercluster, E_SC > `photonMinSCEnergy` (1 Ge
 | `pho_hasClusterHits` | the supercluster has rechits (needed for the fit and for `pho_seedTime`) |
 | `pho_scEnergy`, `pho_scRawEnergy`, `pho_scEta`, `pho_scPhi`, `pho_scEtaWidth`, `pho_scPhiWidth` | supercluster |
 | `pho_r9`, `pho_sigmaIetaIeta`, `pho_sigmaIetaIphi`, `pho_sigmaIphiIphi`, `pho_hOverE` | full5x5 shower shapes; H/E from `hadronicOverEm()` (not full5x5) |
+| `pho_pfIsoCharged`, `pho_pfIsoNeutral`, `pho_pfIsoPhoton` | PF isolation in a cone ΔR < 0.3 (`chargedHadronIso()`, `neutralHadronIso()`, `photonIso()`): charged hadrons (from the first PV of the collection), neutral hadrons, photons; the photon's own footprint excluded [GeV] |
+| `pho_trkIsoR03` | Σ pt of the tracks in a hollow cone 0.04 < ΔR < 0.3 (`trkSumPtHollowConeDR03()`) |
+| `pho_ecalPFClusterIso`, `pho_hcalPFClusterIso` | ECAL / HCAL PF-cluster isolation (ΔR < 0.3) |
 | `pho_seedTime` | time of the seed crystal [ns]; NaN if the seed or its rechit is not available |
 | `pho_fitInputStatus` | can the photon enter the kinematic fit: 0 yes; 1 no rechits; 2 energy not positive/finite; 3 energy uncertainty not positive/finite; 4 degenerate cluster covariance (no two independent position measurements perpendicular to the photon, e.g. a cluster one crystal wide). Candidates with a photon of status ≠ 0 are not fitted (`<p>fitOK = 0`) |
 | `pho_genPdgId`, `pho_genMotherPdgId`, `pho_genDR`, `pho_genFromSignalB` (MC) | closest final-state gen photon (ΔR < 0.1, \|Δpt/pt\| < 0.5) |
+
+**Isolation of the B products (`mu_*Iso*`, `pho_*Iso*`):** these are the standard object isolations; they do not
+remove the other products of the B. In signal MC (gen-matched μμγ) the two muons are within ΔR < 0.3 of each other in
+~40% of the candidates, and the photon is within ΔR < 0.3 of a muon in ~75%. So `mu_trkIsoR03` often contains the other
+muon, `mu_pfIsoPhotonR03` the signal photon, and `pho_trkIsoR03` the muon tracks. The PF charged-hadron sums do not
+contain muons. Subtract the other products offline (ΔR from the stored kinematics) if a clean isolation is needed.
 
 ## Dimuons: `dimu_*` (vectors)
 Every opposite-sign pair of selected muons that do not share muon segments.
@@ -139,6 +151,8 @@ Fits that fail, or that diverge (non-finite χ², mass > 100 GeV, |p| > 10 TeV),
 | `<p>coplanarity` | angle between the (μ⁺, μ⁻) plane and the (X, B) plane |
 | `<p>cosThetaL` | cos θ of μ⁺ in the dimuon rest frame w.r.t. the dimuon direction |
 | `<p>isolation` | pt(B) / (pt(B) + Σ pt of charged PV tracks with pt > 0.9 GeV within ΔR < 0.7, excluding the tracks of the candidate) |
+| `<p>pvNTracks`, `<p>pvSumPt`, `<p>pvVecSumPt` | tracks of the candidate's PV (`<p>pv`; weight > 0.5 in its fit, see "PV tracks" below), **without the tracks of the candidate** (muons, conversion tracks, kaons): their number, the scalar sum Σ pt, and the magnitude of the vector sum \|Σ p⃗_T\| [GeV] |
+| `<p>mu1InPV`, `<p>mu2InPV` | 1 if the inner track of μ⁺ / μ⁻ is a track of the candidate's PV (weight > 0.5; MiniAOD: packed candidate associated to that PV with `UsedInFitTight`) |
 | `<p>maxTrackCompatibility` | highest Kalman vertex probability of the two muons plus one other PV track (pt > 0.9, not a track of the candidate) |
 | `<p>genMatched` (MC) | the muons and all legs match gen particles that descend from the signal B. Partially reconstructed decays also count (e.g. `mmg` with one photon of J/ψ η: its mass is below the B mass). A π⁰ whose two photons are merged in one cluster is usually not matched (photon energy ≫ gen photon) |
 
