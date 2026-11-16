@@ -33,6 +33,35 @@ Entries are newest first.
 
 ---
 
+## 2026-11-17: Why the e⁺e⁻ zero-mass refit of the conversions fails (study; no code change)
+`MMGVertexFit::conversionParticle` does a `KinematicParticleVertexFitter` vertex fit of the two electrons, then a `MassKinematicConstraint(0)` on the parent. It fails for 57% (AOD) and 71% (MiniAOD) of the signal-B conversions.
+
+**Method:** a scratch analyzer (`src/ConvFitStudy/Study`, not part of this repo) refits every conversion of the signal MC with several methods. Conversions are matched to a gen photon from the B (ΔR < 0.1, |Δpt|/pt < 0.5). It also replicates the loop of `SequentialVertexFitter<6>` with diagnostics; the replica agrees with the real fitter for 100% of the conversions.
+
+**Cause:** the **vertex fit**, not the mass constraint (the constraint never fails), and not the starting state (starting the electrons at their PCA to the conversion vertex changes nothing).
+- 99% of the failures stop at the maximum of 100 iterations without converging. The convergence criterion is a transverse shift of the vertex below 100 µm between iterations.
+- Out of tracker bounds: 1%. Kalman update failure, NaN, propagation failure: 0.
+- For the non-converging fits the vertex keeps jumping by a median of 3–5 cm (signal) per iteration. The smallest jump over all iterations is still ~2 mm. The last position stays close to the reconstructed conversion vertex (median 0.3–0.9 cm in ρ).
+- The two electron tracks are nearly parallel at the conversion point (median Δcotθ ≈ 0.01), so the vertex is not constrained along their direction; the relinearised fit oscillates along it. The effect is stronger for harder conversions, so signal (pt ≈ 6 GeV) fails more often than the average conversion (pt ≈ 1 GeV).
+
+**Alternatives** (signal-B conversions, 10k events; momentum resolution = half-width of the 16–84% range of pt/pt_gen − 1):
+
+| method | OK AOD | OK MiniAOD | pt bias / resolution AOD | pt bias / resolution MiniAOD | χ² prob < 10⁻³ AOD / MiniAOD |
+|---|---|---|---|---|---|
+| input pair momentum (no fit) | – | – | −7.7% / 18% | −7.5% / 12% | – |
+| current: vertex fit + zero mass | 42% | 26% | −10.8% / 22% | −2.6% / 7.8% | 23% / 11% |
+| vertex fit only | 42% | 26% | +0.6% / 17% | −1.9% / 7.6% | 10% / 0% |
+| `KinematicConstrainedVertexFitter` + `TwoTrackMassKinematicConstraint(0)` | 25% | 41% | −4.6% / 14% | −5.0% / 10% | 16% / 10% |
+| **`KinematicConstrainedVertexFitter` + `ColinearityKinematicConstraint(PhiTheta)`** | **97%** | **100%** | −6.5% / 21% | −7.5% / 12% | 37% / 11% |
+| colinearity fit, then `MassKinematicConstraint(0)` | 97% | 100% | −24% / 85% | −49% / 49% | 100% / 100% |
+
+- **Colinearity fit:** the colinearity constraint (Δφ = Δθ = 0 at the vertex) is what the standard conversion reconstruction (`ConversionVertexFinder`) uses. It converges for 97–100% of the signal conversions. Its momentum resolution is that of the input pair, and on the conversions where the current fit works it is the same as the current fit. The fitted mass is ≈ 1.1 MeV (≈ 2 mₑ), negligible for the B mass.
+- **Zero mass on top:** adding the zero-mass constraint after the colinearity fit is wrong. The parent mass is then known to ~10⁻⁸, so forcing it to 0 drags the momentum (χ² probability ≈ 0).
+- **Current fit, AOD:** the zero-mass constraint biases pt by −11%. The vertex-only parent mass is large there (median 73 MeV), because `allConversions` contains many fake or badly measured pairs.
+- **Momentum bias:** the −7% pt bias of the input pair (and of the colinearity fit) is the electrons' bremsstrahlung energy loss; the fit cannot recover it.
+
+**Recommendation:** in `conversionParticle`, replace the vertex fit + zero-mass constraint with `KinematicConstrainedVertexFitter` + `ColinearityKinematicConstraint(PhiTheta)` and use the top particle (mass ≈ 2 mₑ) as the photon. Expected effect: signal conversion refit OK 42% → 97% (AOD), 26% → 100% (MiniAOD), i.e. ×2.3 / ×3.8 more fitted signal `mmcg` candidates. The B-fit mass resolution with these photons is still to be checked.
+
 ## 2026-11-16: Conversions (μμγ, `mmcg`) in MiniAOD from `oniaPhotonCandidates`
 The conversion channel was switched off for MiniAOD, because the tracks of `reducedEgamma:reducedConversions` are not stored. It now reads `oniaPhotonCandidates:conversions` (`pat::CompositeCandidate` from `OniaPhotonConversionProducer`, kept in MiniAOD for BPH). These candidates carry full copies of the two tracks as userData `track0`/`track1`, so the same e⁺e⁻ zero-mass refit and B fit run as in AOD.
 
