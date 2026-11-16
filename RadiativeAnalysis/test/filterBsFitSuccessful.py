@@ -5,16 +5,23 @@
 #     (all vector branches of "tree" are indexed per photon candidate, like bsFitSuccessful)
 #   - scalar branches are copied unchanged; the "summary" tree is copied as is
 #
-#   python3 filterBsFitSuccessful.py output.root input1.root [input2.root ...]
+#   python3 filterBsFitSuccessful.py [-j N] output.root input1.root [input2.root ...]
+#   -j N: run the event loop on N threads (the order of the output entries then differs from the input)
 import sys
+import argparse
 import ROOT
 ROOT.gROOT.SetBatch(True)
 
-if len(sys.argv) < 3:
-    sys.exit(f'usage: {sys.argv[0]} output.root input1.root [input2.root ...]')
-outName, inNames = sys.argv[1], sys.argv[2:]
+parser = argparse.ArgumentParser()
+parser.add_argument('-j', type=int, default=1, help='number of threads (default: 1, single-threaded)')
+parser.add_argument('output')
+parser.add_argument('inputs', nargs='+')
+args = parser.parse_args()
+outName, inNames = args.output, args.inputs
 if outName in inNames:
     sys.exit('output file must differ from the input files')
+if args.j > 1:
+    ROOT.EnableImplicitMT(args.j)
 
 chain = ROOT.TChain('tree')
 for f in inNames:

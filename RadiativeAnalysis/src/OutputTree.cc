@@ -67,7 +67,19 @@ void OutputTree::createTree(const std::string filename)
     tree_->Branch("maxMuonsVertexComp", &maxMuonsVertexComp_, "maxMuonsVertexComp/D");
     tree_->Branch("mu1GenDeltaR", &mu1GenDeltaR_, "mu1GenDeltaR/D");
     tree_->Branch("mu2GenDeltaR", &mu2GenDeltaR_, "mu2GenDeltaR/D");
-    
+
+    // HLT path decisions (event level): 1 = path accepted, 0 = rejected or not in the menu
+    tree_->Branch("triggerbit_HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG", &triggerbit_HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG_, "triggerbit_HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG/I");
+    tree_->Branch("triggerbit_HLT_DoubleMu4_3_Photon4_BsToMMG", &triggerbit_HLT_DoubleMu4_3_Photon4_BsToMMG_, "triggerbit_HLT_DoubleMu4_3_Photon4_BsToMMG/I");
+    tree_->Branch("triggerbit_HLT_DoubleMu4_LowMass_Displaced", &triggerbit_HLT_DoubleMu4_LowMass_Displaced_, "triggerbit_HLT_DoubleMu4_LowMass_Displaced/I");
+    tree_->Branch("triggerbit_HLT_DoubleMu4_3_LowMass", &triggerbit_HLT_DoubleMu4_3_LowMass_, "triggerbit_HLT_DoubleMu4_3_LowMass/I");
+    tree_->Branch("triggerbit_HLT_DoubleMu4_3_Bs", &triggerbit_HLT_DoubleMu4_3_Bs_, "triggerbit_HLT_DoubleMu4_3_Bs/I");
+    tree_->Branch("triggerbit_HLT_DoubleMu4_JpsiTrkTrk_Displaced", &triggerbit_HLT_DoubleMu4_JpsiTrkTrk_Displaced_, "triggerbit_HLT_DoubleMu4_JpsiTrkTrk_Displaced/I");
+    tree_->Branch("triggerbit_HLT_DoubleMu4_Jpsi_Displaced", &triggerbit_HLT_DoubleMu4_Jpsi_Displaced_, "triggerbit_HLT_DoubleMu4_Jpsi_Displaced/I");
+    tree_->Branch("triggerbit_HLT_DoubleMu4_Jpsi_NoVertexing", &triggerbit_HLT_DoubleMu4_Jpsi_NoVertexing_, "triggerbit_HLT_DoubleMu4_Jpsi_NoVertexing/I");
+    tree_->Branch("triggerbit_HLT_DoubleMu2_Jpsi_LowPt", &triggerbit_HLT_DoubleMu2_Jpsi_LowPt_, "triggerbit_HLT_DoubleMu2_Jpsi_LowPt/I");
+    tree_->Branch("triggerbit_HLT_DoubleMu4_3_Jpsi", &triggerbit_HLT_DoubleMu4_3_Jpsi_, "triggerbit_HLT_DoubleMu4_3_Jpsi/I");
+
     // Generator summary: filled once per job in a separate tree
     summaryTree_ = new TTree("summary","Generator summary");
     summaryTree_->Branch("GenXsec", &GenXsec_, "GenXsec/D");
@@ -205,7 +217,19 @@ void OutputTree::resetAllEntries()
     mu1MVAScore_ = -9999.0;
     mu2MVAScore_ = -9999.0;
     DiMuon_KalmanVtxProb_ = -9999.0;
-    
+
+    // 0 if the path is absent from this event's HLT menu
+    triggerbit_HLT_DoubleMu4_3_Displaced_Photon4_BsToMMG_ = 0;
+    triggerbit_HLT_DoubleMu4_3_Photon4_BsToMMG_ = 0;
+    triggerbit_HLT_DoubleMu4_LowMass_Displaced_ = 0;
+    triggerbit_HLT_DoubleMu4_3_LowMass_ = 0;
+    triggerbit_HLT_DoubleMu4_3_Bs_ = 0;
+    triggerbit_HLT_DoubleMu4_JpsiTrkTrk_Displaced_ = 0;
+    triggerbit_HLT_DoubleMu4_Jpsi_Displaced_ = 0;
+    triggerbit_HLT_DoubleMu4_Jpsi_NoVertexing_ = 0;
+    triggerbit_HLT_DoubleMu2_Jpsi_LowPt_ = 0;
+    triggerbit_HLT_DoubleMu4_3_Jpsi_ = 0;
+
     GenXsec_ = -9999.0;
     GenXsecErr_ = -9999.0;
     FilterEff_ = -9999.0;
