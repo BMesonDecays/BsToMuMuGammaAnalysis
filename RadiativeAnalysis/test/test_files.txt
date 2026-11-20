@@ -48,3 +48,6 @@ data aod:
 
 data miniaod:
 /eos/user/s/sslawins/data/Run2022C_ParkingDoubleMuonLowMass0_PromptReco-v1_miniaod.root
+
+Bd to Jpsi pi0 MC MINIAOD:
+/eos/user/a/akalinow/Data/BdToJpsiPi0/BdToJpsiPi0_PURun3_Run2024_14_0_21_PURun3_17_11_2026_v2/14_0_21_PURun3_17_11_2026_v2_MINIAODSIM/261118_084959/0000/*.root
