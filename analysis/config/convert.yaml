@@ -23,15 +23,42 @@ compression: zstd
 
 # datasets: name -> glob pattern(s) of the ntuple files (** is recursive), isMC, label (free text)
 datasets:
-  Parking2022C_0:
-    files: ~/bmmg/ntuples/ParkingDoubleMuonLowMass0/**/bmmg_ntuple_*.root
+  Parking2022:
+    files: ~/bmmg/ntuples/ParkingDoubleMuonLowMass*/**/bmmg_ntuple_*.root
     isMC: false
-    label: "ParkingDoubleMuonLowMass0 2022C"
-  Parking2022C_1:
-    files: ~/bmmg/ntuples/ParkingDoubleMuonLowMass1/**/bmmg_ntuple_*.root
-    isMC: false
-    label: "ParkingDoubleMuonLowMass1 2022C"
+    label: "2022 data"
+
   BsToMuMuGamma_2022:
     files: ~/bmmg/ntuples/BsTo2MuG_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/**/bmmg_ntuple_*.root
     isMC: true
     label: "Bs -> mu mu gamma, Run3Summer22"
+
+  BdToMuMuGamma_2022:
+    files: ~/bmmg/ntuples/BdTo2MuG_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/**/bmmg_ntuple_*.root
+    isMC: true
+    label: "Bd -> mu mu gamma, Run3Summer22"
+
+  BsToJPsiGamma_2022:
+    files: ~/bmmg/ntuples/BsToJPsiG-JPsiTo2Mu_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/**/bmmg_ntuple_*.root
+    isMC: true
+    label: "Bs -> J/psi gamma, Run3Summer22"
+
+  BsToPhiGamma_2022:
+    files: ~/bmmg/ntuples/BsToPhiG-PhiTo2Mu_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/**/bmmg_ntuple_*.root
+    isMC: true
+    label: "Bs -> phi gamma, Run3Summer22"
+
+  BsToJPsiPi0_2022:
+    files: ~/bmmg/ntuples/BsToJPsiPi0-JPsiTo2Mu-Pi0To2G_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/**/bmmg_ntuple_*.root
+    isMC: true
+    label: "Bs -> J/psi pi0, Run3Summer22"
+
+  BsToJPsiEta_2022:
+    files: ~/bmmg/ntuples/BsToJPsiEta-JPsiTo2Mu-EtaTo2G_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/**/bmmg_ntuple_*.root
+    isMC: true
+    label: "Bs -> J/psi eta, Run3Summer22"
+
+  BsToJPsiEtaPrime_2022:
+    files: ~/bmmg/ntuples/BsToJPsiEtaPrime-JPsiTo2Mu-EtaPrimeTo2G_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/**/bmmg_ntuple_*.root
+    isMC: true
+    label: "Bs -> J/psi eta prime, Run3Summer22"
