@@ -1,0 +1,23 @@
+# Analysis configuration for scripts/plot_basic.py, train_bdt.py, train_mlp.py, scan_wp.py.
+# The mass windows, cuts and features below are starting points, not final analysis choices.
+
+parquet: ~/bmmg/parquet_test          # output of convert.py
+output: ~/bmmg/results/photon       # plots, models, scan results
+channel: mmg                     # mmg, mmgg, mmkk, mmcg
+
+samples:
+  signal:
+    datasets: [BsToMuMuGamma_2022]
+    query: "genMatched == 1"     # truth-matched candidates only
+
+# ordered named cuts, applied to every sample (also the cut-flow rows)
+preselection:
+  # both candidate muons matched to the trigger: same signal as the event-level flag, 15% less background
+  trigger: "trg_DoubleMu4_3_LowMass == 1"
+
+
+mass:
+  column: mass                   # fitted B mass
+  signal_window: [5.15, 5.60]
+  sidebands: [[4.50, 5.00], [5.75, 6.50]]
+  blind: [5.00, 5.75]            # data in this window is never shown
