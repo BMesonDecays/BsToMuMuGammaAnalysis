@@ -92,6 +92,17 @@ def build_table(arrays, channel, preselection=None, drop=()):
     for f in sorted(fields):
         if f.startswith(EVENT_PREFIXES) and arrays[f].ndim == 1:
             cols[f] = _flat(ak.broadcast_arrays(arrays[f], template)[0])
+        # jagged branches with these prefixes (e.g. gen_pho_*) are added here
+        # to keep the table rectangular, 2 are added every time, even if there's only one
+        elif f.startswith(EVENT_PREFIXES) and arrays[f].ndim == 2:
+            for i in range(2):
+                masked = ak.mask(arrays[f], ak.num(arrays[f], axis=1) > i)
+                prefix = f.split('_')[:-1]
+                suffix = f.split('_')[-1]
+                prefix[-1] += str(i + 1)
+                name = '_'.join(prefix + [suffix])
+                cols[name] = _flat(ak.broadcast_arrays(ak.fill_none(masked[:, i], MISSING), template)[0])
+
     df = pd.DataFrame(cols)
     if preselection:
         df = df.query(preselection).copy()
