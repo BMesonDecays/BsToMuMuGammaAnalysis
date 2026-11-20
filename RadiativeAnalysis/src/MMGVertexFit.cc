@@ -1,6 +1,7 @@
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/MMGVertexFit.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/Constants.h"
-#include "RecoVertex/KinematicFit/interface/MassKinematicConstraint.h"
+#include "RecoVertex/KinematicFit/interface/KinematicConstrainedVertexFitter.h"
+#include "RecoVertex/KinematicFit/interface/ColinearityKinematicConstraint.h"
 
 #include "RecoVertex/KinematicFitPrimitives/interface/KinematicParticle.h"
 #include "RecoVertex/KinematicFitPrimitives/interface/KinematicParticleFactoryFromTransientTrack.h"
@@ -102,6 +103,11 @@ RefCountedKinematicParticle MMGVertexFit::trackParticle(const reco::TransientTra
         return pFactory.particle(track, ParticleMass(mass), chi, ndf, sigma);
     }
 
+// The e+ e- tracks are fitted to a common vertex with a colinearity constraint (equal phi and theta
+// at the vertex), as in the reco ConversionVertexFinder. No zero-mass constraint: the plain vertex fit
+// often does not converge for the nearly parallel tracks, and a zero mass is unreachable for two
+// colinear electrons (m >= 2 m_e), so constraining it moves the momentum by many sigma (report.md,
+// 2026-11-17 and 2026-11-20). The photon keeps the fitted mass (~1 MeV).
 // The photon is returned as a new particle without a tree. The top particle of the fit tree only
 // keeps a raw pointer to its tree, and the B vertex fit treats a particle with a tree as a composite:
 // FinalTreeBuilder modifies that tree and grafts it into the B tree. With one conversion photon reused
@@ -114,12 +120,9 @@ std::optional<RefCountedKinematicParticle> MMGVertexFit::conversionParticle(cons
                                                                  trackParticle(e2, bmmg::pdg::electronMass)};
         try
         {
-            KinematicParticleVertexFitter vertexFitter;
-            RefCountedKinematicTree tree = vertexFitter.fit(electrons);
-            if (!tree->isValid()) return std::nullopt;
-            MassKinematicConstraint zeroMass(ParticleMass(0.), float(1E-4));
-            KinematicParticleFitter constraintFitter;
-            tree = constraintFitter.fit(&zeroMass, tree);
+            KinematicConstrainedVertexFitter fitter;
+            ColinearityKinematicConstraint colinearity(ColinearityKinematicConstraint::PhiTheta);
+            RefCountedKinematicTree tree = fitter.fit(electrons, &colinearity);
             if (!tree->isValid()) return std::nullopt;
             tree->movePointerToTheTop();
             const RefCountedKinematicParticle top = tree->currentParticle();

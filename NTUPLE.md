@@ -95,11 +95,11 @@ Every opposite-sign pair of selected muons that do not share muon segments.
 ## Conversions: `conv_*` (vectors, if `doMuMuConvGamma`)
 - **AOD:** `allConversions`: two opposite-charge tracks, a valid vertex with probability > `conversionMinVertexProb` (1e-6), pair pt > `conversionMinPt` (0.5 GeV).
 - **MiniAOD:** `oniaPhotonCandidates:conversions` (`pat::CompositeCandidate` of `OniaPhotonConversionProducer`, with full copies of the two tracks as userData `track0`/`track1`): pair pt > `conversionMinPt`. The producer has already selected `allConversions` with ρ(vertex) > 1.5 cm, quality `highPurity` and `generalTracksOnly`, compatible innermost hits of the two tracks, and no two conversions sharing a track (the one with the best vertex χ² is kept). The vertex χ² is not stored, so `conversionMinVertexProb` is not applied. On the same signal MC events it keeps about 60% of the events that have a signal-B conversion in `allConversions`. In the 2022 PromptReco MiniAOD the product is missing in about 10% of the events (`evt_convAvailable = 0`; these events have no conversions).
-- In both formats the e⁺e⁻ pair is refitted with a zero-mass constraint.
+- In both formats the e⁺e⁻ pair is refitted to a common vertex with a colinearity constraint (equal φ and θ at the vertex, `ColinearityKinematicConstraint`, as in the reco `ConversionVertexFinder`). There is no zero-mass constraint; the fitted photon mass is ≈ 1 MeV (2mₑ for colinear tracks).
 
 - `evt_convAvailable` (int, per event): 1 if the input conversion collection exists in the event.
 - `conv_index`: index in the collection.
-- `conv_fitOK`: 1 if the zero-mass refit succeeded; `conv_fitProb`: its χ² probability (−1 if it failed).
+- `conv_fitOK`: 1 if the refit succeeded; `conv_fitProb`: its χ² probability (−1 if it failed).
 - `conv_pt`, `conv_eta`, `conv_phi`: from the refitted photon, or from the pair momentum of the input collection if the refit failed.
 - `conv_vtxX/Y/Z`, `conv_vtxRho`: the conversion vertex of the input collection; `conv_vtxProb`: its χ² probability (AOD; −1 in MiniAOD).
 - `conv_flags` (MiniAOD; −1 in AOD): userInt `flags` of `oniaPhotonCandidates`. Bits: 1 track–PV compatibility, 2 compatible inner hits, 4 "high purity" (vertex probability > 5·10⁻⁴, track χ²/ndof < 10, ndof ≥ 3, positive signed impact parameters, −0.25 < distance of minimum approach < 1 cm), 8 π⁰ rejected (the pair with a PF photon in 130–140 MeV), 16 in the large π⁰ window (110–160 MeV); `flags / 32 % 8` is the conversion algorithm, `flags / 256` the enum value of the last set quality among generalTracksOnly … ecalMatched2Track.
@@ -192,7 +192,7 @@ From `GenDecayChain`, using the B (B_s or B_d) with two muons among its descenda
   - The leading-two photon and PF-candidate blocks and the supercluster/rechit dump are not stored; `pho_*` covers the selected photons.
   - Channels: the legacy suffixes `_mmconvg_`, `_mmrecogg_` and `_mmkk_` are now `mmcg_`, `mmgg_` and `mmkk_`.
   - μμKK uses only J/ψ dimuons.
-  - The conversion fit uses the e⁺e⁻ pair refitted with a zero-mass constraint as one photon particle. There is no J/ψ mass constraint (use `fitDimuonMass`).
+  - The conversion fit uses the e⁺e⁻ pair refitted with a colinearity constraint as one photon particle. There is no J/ψ mass constraint (use `fitDimuonMass`).
 - **Event PV:** `pv_*` is the first vertex (highest Σpt²); the legacy ntuple used the highest scalar Σpt.
 - **ct:** the legacy `BsCt3D` was m·|SV−PV|/|p| (unsigned, not projected), with an error that ignored the momentum uncertainty. The pull 68% width on signal MC goes from about 1.7 to 1.27.
 

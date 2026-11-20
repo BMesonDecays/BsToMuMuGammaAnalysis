@@ -73,7 +73,7 @@ namespace bmmg {
     int flags = -1;                     // MiniAOD: userInt "flags" of oniaPhotonCandidates; -1 in AOD
     reco::Candidate::LorentzVector pairP4;   // pair momentum of the input collection
     reco::TransientTrack track1, track2; // positive, negative track
-    std::optional<RefCountedKinematicParticle> photon;   // e+ e- fit with zero-mass constraint
+    std::optional<RefCountedKinematicParticle> photon;   // e+ e- vertex fit with colinearity constraint
     float fitProb = -1.f;               // chi2 probability of that fit (-1 if it failed)
     reco::Candidate::LorentzVector p4;  // from the fitted photon, else pairP4
   };

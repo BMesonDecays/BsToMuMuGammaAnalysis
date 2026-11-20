@@ -33,6 +33,29 @@ Entries are newest first.
 
 ---
 
+## 2026-11-21: Conversions refitted with a colinearity constraint; B mass resolution of `mmcg`
+
+- **Change:** `MMGVertexFit::conversionParticle` fits the e⁺e⁻ tracks with `KinematicConstrainedVertexFitter` + `ColinearityKinematicConstraint(PhiTheta)` (as the reco `ConversionVertexFinder`), without the zero-mass constraint; the photon keeps the fitted mass (≈ 1 MeV). Reasons: the plain vertex fit does not converge for 58–74% of the signal conversions (2026-11-17), and the zero-mass constraint after a colinearity fit moves the momentum by many σ (2026-11-20). `conv_fitProb` is now the χ² probability of the colinearity fit.
+- **Bug found on the way (separate commit):** the photon was the top particle of a local `KinematicTree` that was freed on return, and the B fit read that tree (`InputSort`, `FinalTreeBuilder`): ~1% of the `mmcg` fits changed (old fit with the fix vs without: 87/8888 AOD, 196/32884 MiniAOD events; resolution unchanged), and with the new fit cmsRun crashed. Keeping the tree alive is not enough: the B fit treats a particle with a tree as a composite and grafts the (modified) tree into the B tree, which loops forever when the photon is used for a second dimuon. The photon is now a standalone `VirtualKinematicParticle` with the fitted state, χ² and ndof.
+- **Validation:** `bsmmg_aod` (8888 events) and `bsmmg_miniaod` (32884 events), `channels=mmcg`, old fit (with the bug fix) vs new. Signal-B conversions refitted: AOD 42.7% → 98.0%, MiniAOD 28.9% → 99.9%. Events with a fitted gen-matched candidate: AOD 2.5% → 5.2%, MiniAOD 0.78% → 2.8%.
+- **B mass of the gen-matched candidates** (fitted mass − m(B_s); median, (q84 − q16)/2, IQR/1.349, fraction within ±100 MeV):
+
+  | | AOD | MiniAOD |
+  |---|---|---|
+  | same candidates, fitted by both (350 / 252): old | −77 MeV, 266, 197, 0.46 | −86 MeV, 165, 147, 0.51 |
+  | same candidates: new | −66 MeV, 242, 182, 0.51 | −84 MeV, 164, 162, 0.51 |
+  | same, both vtxProb > 10⁻³ (207 / 168): old | −60 MeV, 129, 94, 0.59 | −55 MeV, 118, 98, 0.62 |
+  | same, both vtxProb > 10⁻³: new | −47 MeV, 120, 88, 0.64 | −50 MeV, 123, 100, 0.62 |
+  | fitted only by the new fit (486 / 657) | −156 MeV, 331, 287, 0.33 | −150 MeV, 234, 238, 0.36 |
+  | ... with vtxProb > 10⁻³ (235 / 426) | −81 MeV, 191, 174, 0.49 | −113 MeV, 185, 183, 0.44 |
+  | all usable (fitOK, vtxProb > 10⁻³): old | 237: −68 MeV, 155, 122, 0.55 | 177: −57 MeV, 135, 102, 0.60 |
+  | all usable: new | 459: −62 MeV, 164, 144, 0.56 | 599: −88 MeV, 171, 158, 0.49 |
+
+  - On the same candidates the resolution is equal (MiniAOD) or slightly better (AOD, where the zero-mass constraint biased the photon by −11%).
+  - The recovered candidates are the harder conversions with more bremsstrahlung (lower and wider mass, as their input pair momentum); they widen the overall distribution, but the number of usable candidates within ±100 MeV grows ×2.0 (AOD, 130 → 257) and ×2.8 (MiniAOD, 106 → 293).
+  - The mass pull (m − m(B_s))/σ_m has (q84 − q16)/2 ≈ 4–5 (old: 3.1): `mmcg_massErr` underestimates the error, more so with the new fit (median σ_m 56 MeV AOD, 47 MeV MiniAOD).
+- **Non-determinism:** two identical AOD runs still differ in 101/8888 events for `mmcg` (and 2/3000 for `mmg`), all in the B fit (`conv_*` identical). This is the known run-to-run non-determinism of non-converging fits, not from the conversion photon.
+
 ## 2026-11-20: Conversion refit with a loose fallback vertex fit (`sergey` variant of `Study/ConvFitStudy`)
 
 - **Why the zero-mass constraint degrades the fit:** the photon after the vertex fit is one 7-parameter state; `MassKinematicConstraint` moves the momentum only through its correlation with the mass, Δp ≈ −ρ σ_p (m/σ_m). After the vertex-only fit m ≈ 10 MeV with σ_m ≈ 9.5 MeV (pull ≈ 1), so the shift is small (median −0.2%). After the colinearity fit the mass is at the e⁺e⁻ minimum 2mₑ (1.06 MeV) with σ_m ≈ 6 keV (pull 70–500): m = 0 is unreachable for two massive electrons and the momentum is moved by many σ_p (median |Δp_T|/p_T = 57%). Hence no mass constraint after the colinearity fit.

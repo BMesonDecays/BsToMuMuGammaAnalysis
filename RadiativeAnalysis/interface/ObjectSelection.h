@@ -52,7 +52,7 @@ namespace bmmg {
                                             const PhotonCuts& cuts);
 
   // conversions with two opposite-charge tracks and a valid vertex; the e+ e- pair is refitted with a
-  // zero-mass constraint (SelectedConversion::photon, empty if that fit fails)
+  // colinearity-constrained vertex fit (SelectedConversion::photon, empty if that fit fails)
   std::vector<SelectedConversion> selectConversions(const std::vector<reco::Conversion>& conversions,
                                                     const TransientTrackBuilder& ttBuilder, const ConversionCuts& cuts);
   // MiniAOD: oniaPhotonCandidates:conversions (pat::CompositeCandidate with the two tracks as userData "track0",
