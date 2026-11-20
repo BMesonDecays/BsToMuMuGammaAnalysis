@@ -33,6 +33,24 @@ Entries are newest first.
 
 ---
 
+## 2026-11-20: Conversion refit with a loose fallback vertex fit (`sergey` variant of `Study/ConvFitStudy`)
+
+- **Why the zero-mass constraint degrades the fit:** the photon after the vertex fit is one 7-parameter state; `MassKinematicConstraint` moves the momentum only through its correlation with the mass, Δp ≈ −ρ σ_p (m/σ_m). After the vertex-only fit m ≈ 10 MeV with σ_m ≈ 9.5 MeV (pull ≈ 1), so the shift is small (median −0.2%). After the colinearity fit the mass is at the e⁺e⁻ minimum 2mₑ (1.06 MeV) with σ_m ≈ 6 keV (pull 70–500): m = 0 is unreachable for two massive electrons and the momentum is moved by many σ_p (median |Δp_T|/p_T = 57%). Hence no mass constraint after the colinearity fit.
+- **Bug fixed:** the `sergey` variant went through the shared default vertex fit first and returned on its failure, so its fallback (`maxDistance` 3 cm, 10000 iterations) never ran and the variant was identical to `cur`. It now runs on its own (default fit, fallback on failure or exception, then the zero-mass constraint with σ = 10⁻⁶, constraint on the stack); new branches `sergey_fallback`, `sergey_vtxPt`.
+- **Results** (10k events each of `bsmmg_aod` / `bsmmg_miniaod`):
+
+  | | AOD all | AOD signal B | MiniAOD all | MiniAOD signal B |
+  |---|---|---|---|---|
+  | OK `cur` | 47% | 42% | 59% | 26% |
+  | OK `sergey` | 94% | 89% | 98.5% | 90% |
+  | OK `colin` | 98% | 97% | 99.9% | 100% |
+  | fallback used / fallback OK | 53% / 88% | 58% / 82% | 41% / 96% | 74% / 86% |
+
+  - Failures of `sergey` are all in the fallback vertex fit; the colinearity fit succeeds for 187 of the 191 signal conversions where `sergey` fails.
+  - Fallback vertices: |ρ − ρ_reco| median 0.2–0.5 cm, but 84% quantile 0.75–1.4 cm (vs 0.2–0.7 cm with the default fit); χ² probability < 10⁻³ for 13–37%.
+  - Signal p_T/p_T,gen − 1 on the conversions where both succeed: AOD `sergey` −8.8% / 20% (median / half-width), `colin` −5.7% / 20%, input pair −6.6% / 18%; MiniAOD −8.4% / 12.7%, −8.0% / 12.7%, −8.7% / 12.5%. On the fallback the mass constraint shifts p_T by a median 0 (84% within 10% AOD, 1% MiniAOD).
+- **Conclusion:** the loose fallback recovers most fits (×2.1 AOD, ×3.4 MiniAOD on signal) without spoiling the momentum, but the colinearity fit is still better: ~8–10% more signal conversions, better vertex, and no extra AOD bias (−5.7% vs −8.8%). The recommendation stays the colinearity fit without mass constraint.
+
 ## 2026-11-20: Test samples in YAML, selected by name
 
 - **What:** `RadiativeAnalysis/test/test_files.txt` is replaced by `test_files.yaml`. Each sample has a short name (the key) and the attributes `isMC`, `dataFormat` (AOD / MINIAOD), `files` (globs allowed) and an optional `description`. All 18 samples of the text file are converted, in the same order.

@@ -77,6 +77,8 @@ public:
     t_->Branch("dg_lastRho", &dgLastRho_);
     t_->Branch("dg_minShift", &dgMinShift_);
     t_->Branch("vtxOnlyMassErr", &vtxMassErr_);
+    t_->Branch("sergey_fallback", &sergeyFallback_);
+    t_->Branch("sergey_vtxPt", &sergeyVtxPt_);
     for (int i = 0; i < kN; ++i) {
       const std::string n = names_[i];
       t_->Branch((n + "_status").c_str(), &out_[i].status);
@@ -124,6 +126,7 @@ public:
       dPhi_ = reco::deltaPhi(t0->phi(), t1->phi());
       const reco::TransientTrack tt0 = ttb.build(*t0), tt1 = ttb.build(*t1);
       vtxMass_ = vtxMassErr_ = -1;
+      sergeyFallback_ = 0; sergeyVtxPt_ = -1;
       for (int i = 0; i < kN; ++i) out_[i] = Out();
       for (int i = 0; i < kN; ++i) run(i, tt0, tt1, vtx);
       t_->Fill();
@@ -149,6 +152,34 @@ private:
           parts.push_back(f.particle(*t, me, chi, ndf, sigma));
       }
     } catch (const std::exception&) { o.status = 5; return; }
+    if (i == kSergey) {
+      // vertex fit with a loose fallback if the default one fails, then a hard zero-mass constraint
+      try {
+        RefCountedKinematicTree tree;
+        try {
+          KinematicParticleVertexFitter photonfitter;
+          tree = photonfitter.fit(parts);
+        } catch (const std::exception&) {}
+        if (!tree || !tree->isValid()) {
+          edm::ParameterSet pSet;
+          pSet.addParameter<double>("maxDistance", 3);
+          pSet.addParameter<int>("maxNbrOfIterations", 10000);
+          KinematicParticleVertexFitter photonfitter2(pSet);
+          tree = photonfitter2.fit(parts);
+          sergeyFallback_ = 1;
+        }
+        if (!tree->isValid()) { o.status = 1; return; }
+        if (sergeyFallback_) { tree->movePointerToTheTop(); sergeyVtxPt_ = tree->currentParticle()->currentState().globalMomentum().perp(); }
+        MassKinematicConstraint zero(ParticleMass(0.), float(1e-6));
+        KinematicParticleFitter cf;
+        tree->movePointerToTheTop();
+        tree = cf.fit(&zero, tree);
+        if (!tree->isValid()) { o.status = 3; return; }
+        fillTop(o, tree);
+        o.status = 0;
+      } catch (const std::exception&) { o.status = 4; }
+      return;
+    }
     if (i == kColinMass0) {
       try {
         KinematicConstrainedVertexFitter kcv;
@@ -204,31 +235,6 @@ private:
       fillTop(o, tree);
       o.status = 0;
     } catch (const std::exception&) { o.status = 4; }
-    if (i == kSergey) {
-      try {
-        const ParticleMass zero_mass(0);
-        float zero_sigma = 1E-6;
-        KinematicParticleVertexFitter photonfitter;
-        RefCountedKinematicTree photonVertexFitTree = photonfitter.fit(parts);
-        if (!photonVertexFitTree->isValid())
-        {
-          edm::ParameterSet pSet;
-          pSet.addParameter<double>("maxDistance", 3);
-          pSet.addParameter<int>("maxNbrOfIterations", 10000);
-          KinematicParticleVertexFitter photonfitter2(pSet);
-          photonVertexFitTree = photonfitter2.fit(parts);
-        }
-        if (!photonVertexFitTree->isValid()) {o.status = 1; return;}
-        KinematicParticleFitter csFitterPhoton;
-        KinematicConstraint * pho_c = new MassKinematicConstraint(zero_mass, zero_sigma);
-        // add mass constraint to the photon fit to do a constrained fit:
-        photonVertexFitTree->movePointerToTheTop();
-        photonVertexFitTree = csFitterPhoton.fit(pho_c, photonVertexFitTree);
-        if (!photonVertexFitTree->isValid()) {o.status = 3; return;}
-        fillTop(o, photonVertexFitTree);
-        o.status = 0;
-      } catch (const std::exception&) { o.status = 4; }
-    }
   }
 
   // replica of KinematicParticleVertexFitter + SequentialVertexFitter<6>::fit with diagnostics
@@ -291,7 +297,8 @@ private:
   edm::EDGetTokenT<std::vector<pat::CompositeCandidate>> onia_;
   edm::EDGetTokenT<std::vector<reco::GenParticle>> gen_;
   TTree* t_;
-  int fromB_;
+  int fromB_, sergeyFallback_;
+  float sergeyVtxPt_;
   float genPt_;
   float recoRho_, recoProb_, pairPt_, dCot_, dPhi_, vtxMass_, vtxMassErr_;
   Out out_[kN];
