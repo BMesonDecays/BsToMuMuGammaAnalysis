@@ -1,0 +1,137 @@
+# Test input samples of the ntuplizer configs (runNtuplizer_cfg.py testSample=<name>).
+#
+# Each sample is keyed by a short name and has:
+#   description  free text
+#   isMC         true / false
+#   dataFormat   AOD / MINIAOD
+#   files        list of paths; glob patterns are allowed
+#
+# python3 RadiativeAnalysis/python/testFiles.py lists the samples.
+
+bsmmg_aod:
+  description: Bs to mu mu gamma MC AOD
+  isMC: true
+  dataFormat: AOD
+  files:
+    - /eos/user/s/sslawins/testing_mc/BsTo2MuG_aod.root
+
+bsmmg_miniaod:
+  description: Bs to mu mu gamma MC MINIAOD
+  isMC: true
+  dataFormat: MINIAOD
+  files:
+    - /eos/user/s/sslawins/testing_mc/BsTo2MuG_miniaod.root
+
+bsmmg_aod_filtered:
+  description: >-
+    Bs to mu mu gamma MC AOD files, every event contains at least 2 reconstructed muons and
+    a reconstructed photon, large sample to test if distributions are correct
+  isMC: true
+  dataFormat: AOD
+  files:
+    - /eos/user/s/sslawins/filtered_BsToMuMuGamma_official/BsTo2MuG_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/BsToMuMuGamma_official/261102_143603/0000/*.root
+
+bsjpsig_aod:
+  description: Bs to J/psi gamma, J/psi to mu mu MC AOD
+  isMC: true
+  dataFormat: AOD
+  files:
+    - /eos/user/s/sslawins/testing_mc/BsToJpsiG_aod.root
+
+bsjpsig_miniaod:
+  description: Bs to J/psi gamma, J/psi to mu mu MC MINIAOD
+  isMC: true
+  dataFormat: MINIAOD
+  files:
+    - /eos/user/s/sslawins/testing_mc/BsToJpsiG_miniaod.root
+
+bsphig_aod:
+  description: Bs to Phi gamma, Phi to mu mu MC AOD
+  isMC: true
+  dataFormat: AOD
+  files:
+    - /eos/user/s/sslawins/testing_mc/BsToPhiG_aod.root
+
+bsphig_miniaod:
+  description: Bs to Phi gamma, Phi to mu mu MC MINIAOD
+  isMC: true
+  dataFormat: MINIAOD
+  files:
+    - /eos/user/s/sslawins/testing_mc/BsToPhiG_miniaod.root
+
+bsjpsipi0_aod:
+  description: Bs to J/psi pi0, J/psi to mu mu, pi0 to gamma gamma MC AOD
+  isMC: true
+  dataFormat: AOD
+  files:
+    - /eos/user/s/sslawins/testing_mc/BsToJpsiPi0_aod.root
+
+bsjpsipi0_miniaod:
+  description: Bs to J/psi pi0, J/psi to mu mu, pi0 to gamma gamma MC MINIAOD
+  isMC: true
+  dataFormat: MINIAOD
+  files:
+    - /eos/user/s/sslawins/testing_mc/BsToJpsiPi0_miniaod.root
+
+bsjpsieta_aod:
+  description: Bs to J/psi eta, J/psi to mu mu, eta to gamma gamma MC AOD
+  isMC: true
+  dataFormat: AOD
+  files:
+    - /eos/user/s/sslawins/testing_mc/BsToJpsiEta_aod.root
+
+bsjpsieta_miniaod:
+  description: Bs to J/psi eta, J/psi to mu mu, eta to gamma gamma MC MINIAOD
+  isMC: true
+  dataFormat: MINIAOD
+  files:
+    - /eos/user/s/sslawins/testing_mc/BsToJpsiEta_miniaod.root
+
+bsjpsietap_aod:
+  description: Bs to J/psi eta prime, J/psi to mu mu, eta prime to gamma gamma MC AOD
+  isMC: true
+  dataFormat: AOD
+  files:
+    - /eos/user/s/sslawins/testing_mc/BsToJpsiEtaPrime_aod.root
+
+bsjpsietap_miniaod:
+  description: Bs to J/psi eta prime, J/psi to mu mu, eta prime to gamma gamma MC MINIAOD
+  isMC: true
+  dataFormat: MINIAOD
+  files:
+    - /eos/user/s/sslawins/testing_mc/BsToJpsiEtaPrime_miniaod.root
+
+bdmmg_aod:
+  description: Bd to mu mu gamma MC AOD
+  isMC: true
+  dataFormat: AOD
+  files:
+    - /eos/user/s/sslawins/testing_mc/BdTo2MuG_aod.root
+
+bdmmg_miniaod:
+  description: Bd to mu mu gamma MC MINIAOD
+  isMC: true
+  dataFormat: MINIAOD
+  files:
+    - /eos/user/s/sslawins/testing_mc/BdTo2MuG_miniaod.root
+
+data_aod:
+  description: data 2022C ParkingDoubleMuonLowMass0 PromptReco AOD
+  isMC: false
+  dataFormat: AOD
+  files:
+    - /eos/user/s/sslawins/data/ParkingDoubleMuonLowMass0_Run2022C-PromptReco-v1_aod.root
+
+data_miniaod:
+  description: data 2022C ParkingDoubleMuonLowMass0 PromptReco MINIAOD
+  isMC: false
+  dataFormat: MINIAOD
+  files:
+    - /eos/user/s/sslawins/data/Run2022C_ParkingDoubleMuonLowMass0_PromptReco-v1_miniaod.root
+
+bdjpsipi0_miniaod:
+  description: Bd to J/psi pi0 MC MINIAOD
+  isMC: true
+  dataFormat: MINIAOD
+  files:
+    - /eos/user/a/akalinow/Data/BdToJpsiPi0/BdToJpsiPi0_PURun3_Run2024_14_0_21_PURun3_17_11_2026_v2/14_0_21_PURun3_17_11_2026_v2_MINIAODSIM/261118_084959/0000/*.root

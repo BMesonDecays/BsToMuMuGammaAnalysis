@@ -33,6 +33,16 @@ Entries are newest first.
 
 ---
 
+## 2026-11-20: Test samples in YAML, selected by name
+
+- **What:** `RadiativeAnalysis/test/test_files.txt` is replaced by `test_files.yaml`. Each sample has a short name (the key) and the attributes `isMC`, `dataFormat` (AOD / MINIAOD), `files` (globs allowed) and an optional `description`. All 18 samples of the text file are converted, in the same order.
+- **Selection:** `testSample` is now the sample name (string; default `bsmmg_aod`) instead of the index, e.g. `cmsRun runNtuplizer_cfg.py testSample=data_miniaod`. An unknown name raises an error listing the available names.
+- **isMC / dataFormat:** taken from the sample attributes instead of being guessed from the description (`data…` / `…miniaod…`); the command-line `isMC` / `dataFormat` still override them. For `inputFiles` / `dataset` the default stays MC, AOD.
+- **Fix:** `dataset=` used to fail with a NameError (`sampleName` undefined); it now uses the same defaults as `inputFiles`.
+- **`python/testFiles.py`:** `testSamples()` → `{name: sample}` with validation (required/unknown keys, bool `isMC`, allowed `dataFormat`); `testSample(name)`; `testFiles(name, maxFiles)`. `python3 RadiativeAnalysis/python/testFiles.py` lists the samples. PyYAML is imported lazily (only when a test sample is used).
+- **Other users:** `customPhotons_cfg.py` (`testSample`, default `bsmmg_aod`) and `MMGVertexFitExample.py` (default `bsmmg_aod` / `bsmmg_miniaod` from `dataFormat`) take names too. README and structure.md are updated.
+- **Validation:** the config resolves the right files, isMC and format for `bsmmg_aod`, `data_miniaod`, `bdjpsipi0_miniaod` (glob, `testMaxFiles=3`) and explicit `inputFiles`; `cmsRun runNtuplizer_cfg.py testSample=data_miniaod maxEvents=20` runs.
+
 ## 2026-11-17: Why the e⁺e⁻ zero-mass refit of the conversions fails (study; no code change)
 `MMGVertexFit::conversionParticle` does a `KinematicParticleVertexFitter` vertex fit of the two electrons, then a `MassKinematicConstraint(0)` on the parent. It fails for 57% (AOD) and 71% (MiniAOD) of the signal-B conversions.
 

@@ -2,18 +2,18 @@
 #
 # Examples:
 #   cmsRun runNtuplizer_cfg.py                                   # MC AOD test file, all events
-#   cmsRun runNtuplizer_cfg.py testSample=15 maxEvents=1000      # data AOD test file (isMC from the sample name)
-#   cmsRun runNtuplizer_cfg.py testSample=1 maxEvents=1000       # MC MiniAOD test file (format from the sample name)
+#   cmsRun runNtuplizer_cfg.py testSample=data_aod maxEvents=1000        # data AOD test file (isMC from the sample)
+#   cmsRun runNtuplizer_cfg.py testSample=bsmmg_miniaod maxEvents=1000   # MC MiniAOD test file (format from the sample)
 #   cmsRun runNtuplizer_cfg.py inputFiles=file:a.root isMC=0 lumiMask=Cert.json outputFile=out.root
 #
 # Options:
-#   inputFiles   input files; if empty, sample "testSample" of test/test_files.txt is used
+#   inputFiles   input files; if empty (and no dataset), the test sample "testSample" is used
 #   dataset      dataset name, the files are found using the DAS client
-#   testSample   index of the sample in test/test_files.txt (default 0, the MC AOD test file);
-#                python3 ../python/testFiles.py lists the samples with their indices
+#   testSample   name of the sample in test/test_files.yaml (default bsmmg_aod, the MC AOD test file);
+#                python3 ../python/testFiles.py lists the samples
 #   testMaxFiles maximal number of files taken from the test sample (-1: all)
-#   isMC         1 / 0; default (-1): data if the test sample name starts with "data", MC otherwise
-#   dataFormat   AOD / MINIAOD; default: MINIAOD if the test sample name contains "miniaod", AOD otherwise
+#   isMC         1 / 0; default (-1): the isMC attribute of the test sample (MC for inputFiles / dataset)
+#   dataFormat   AOD / MINIAOD; default: the dataFormat attribute of the test sample (AOD for inputFiles / dataset)
 #   globalTag    default auto:run3_mc_FULL (MC) / auto:run3_data_prompt (data)
 #   lumiMask     JSON file with the certified luminosity sections (data)
 #   skim         1: write only the events with >= 1 B candidate (any enabled channel) whose fit succeeded and,
@@ -27,16 +27,16 @@ import FWCore.ParameterSet.Config as cms
 from FWCore.ParameterSet.VarParsing import VarParsing
 
 options = VarParsing('analysis')
-options.register('testSample', 0, VarParsing.multiplicity.singleton, VarParsing.varType.int,
-                 'index of the sample in test/test_files.txt (used if inputFiles is empty)')
+options.register('testSample', 'bsmmg_aod', VarParsing.multiplicity.singleton, VarParsing.varType.string,
+                 'name of the sample in test/test_files.yaml (used if inputFiles and dataset are empty)')
 options.register('dataset', '', VarParsing.multiplicity.singleton, VarParsing.varType.string,
                  'dataset name, the files are found using the DAS client')
 options.register('testMaxFiles', -1, VarParsing.multiplicity.singleton, VarParsing.varType.int,
                  'maximal number of files taken from the test sample')
 options.register('isMC', -1, VarParsing.multiplicity.singleton, VarParsing.varType.int,
-                 '1: MC, 0: data, -1: from the test sample name')
+                 '1: MC, 0: data, -1: from the test sample')
 options.register('dataFormat', '', VarParsing.multiplicity.singleton, VarParsing.varType.string,
-                 "'AOD' or 'MINIAOD' (default: from the test sample name)")
+                 "'AOD' or 'MINIAOD' (default: from the test sample)")
 options.register('globalTag', '', VarParsing.multiplicity.singleton, VarParsing.varType.string, 'global tag')
 options.register('lumiMask', '', VarParsing.multiplicity.singleton, VarParsing.varType.string,
                  'JSON file with the certified luminosity sections')
@@ -57,17 +57,17 @@ options._tagOrder = []   # no automatic '_numEventN' suffix in the output file n
 options.parseArguments()
 
 # ---------------------------------------------------------------- input
-from BsToMuMuGammaAnalysis.RadiativeAnalysis.testFiles import testSamples, testFiles, datasetFiles
+from BsToMuMuGammaAnalysis.RadiativeAnalysis.testFiles import testSample, testFiles, datasetFiles
+sample = dict(isMC=True, dataFormat='AOD')   # defaults for inputFiles / dataset
 if options.inputFiles:
     inputFiles = options.inputFiles
-    sampleName = ''
 elif options.dataset:
     inputFiles = datasetFiles(options.dataset)
 else:
+    sample = testSample(options.testSample)
     inputFiles = testFiles(options.testSample, maxFiles=options.testMaxFiles)
-    sampleName = testSamples()[options.testSample][0]
-isMC = bool(options.isMC) if options.isMC >= 0 else not sampleName.lower().startswith('data')
-dataFormat = options.dataFormat.upper() or ('MINIAOD' if 'miniaod' in sampleName.lower() else 'AOD')
+isMC = bool(options.isMC) if options.isMC >= 0 else sample['isMC']
+dataFormat = options.dataFormat.upper() or sample['dataFormat']
 if dataFormat not in ('AOD', 'MINIAOD'):
     raise ValueError('dataFormat must be AOD or MINIAOD, got ' + options.dataFormat)
 print('RadiativeAnalysis: %d input file(s), %s, %s' % (len(inputFiles), 'MC' if isMC else 'data', dataFormat))

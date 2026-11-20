@@ -28,14 +28,14 @@ scram b runtests     # unit tests of the analysis library
 ## Running
 ```bash
 cd BsToMuMuGammaAnalysis/RadiativeAnalysis/test
-cmsRun runNtuplizer_cfg.py maxEvents=1000                  # MC AOD test file (test_files.txt, sample 0)
-cmsRun runNtuplizer_cfg.py testSample=15 maxEvents=1000    # data AOD test file
-cmsRun runNtuplizer_cfg.py testSample=1 maxEvents=1000     # MC MiniAOD test file (dataFormat from the sample name)
+cmsRun runNtuplizer_cfg.py maxEvents=1000                  # MC AOD test file (test_files.yaml, sample bsmmg_aod)
+cmsRun runNtuplizer_cfg.py testSample=data_aod maxEvents=1000    # data AOD test file
+cmsRun runNtuplizer_cfg.py testSample=bsmmg_miniaod maxEvents=1000   # MC MiniAOD test file (isMC, dataFormat from the sample)
 cmsRun runNtuplizer_cfg.py inputFiles=file:in.root isMC=0 lumiMask=Cert.json outputFile=out.root
-cmsRun runNtuplizer_cfg.py testSample=15 skim=1             # store only events with a valid B candidate (smaller ntuples)
+cmsRun runNtuplizer_cfg.py testSample=data_aod skim=1             # store only events with a valid B candidate (smaller ntuples)
 ```
 - The options are described at the top of `runNtuplizer_cfg.py`.
-- The test input files are listed in `RadiativeAnalysis/test/test_files.txt`; `python3 RadiativeAnalysis/python/testFiles.py` prints them with their `testSample` index. Besides B_s → μμγ and data there are MC samples (AOD and MiniAOD) of B_s → J/ψγ, φγ, J/ψπ⁰, J/ψη, J/ψη′ and B_d → μμγ.
+- The test input samples are listed in `RadiativeAnalysis/test/test_files.yaml`: each has a short name (the `testSample` value) and the attributes `isMC`, `dataFormat` (AOD / MINIAOD), `files` (globs allowed) and `description`; `python3 RadiativeAnalysis/python/testFiles.py` prints them. Besides B_s → μμγ and data there are MC samples (AOD and MiniAOD) of B_s → J/ψγ, φγ, J/ψπ⁰, J/ψη, J/ψη′ and B_d → μμγ.
 - The ntuple content is documented in **[NTUPLE.md](NTUPLE.md)**.
 
 ### Grid submission (CRAB)
@@ -61,7 +61,7 @@ python3 submitCrab.py tasks_example.yaml --command status -v # full CRAB output 
 | `RadiativeAnalysis/plugins/RadiativeAnalysis.cc` | the ntuplizer (EDAnalyzer), which orchestrates the library components. Channels: μμγ (ECAL photon), μμγ (conversion), μμγγ, μμKK (normalisation) |
 | `RadiativeAnalysis/interface`, `src` | library (namespace `bmmg`): `MMGVertexFit` (μμγ kinematic fit), object selection, `DimuonBuilder`, `CandidateBuilders`, `CandidateObservables`, `TriggerMatcher`, `GenChain` (gen truth), `BranchSet`/`NtupleWriter` |
 | `RadiativeAnalysis/plugins/MMGVertexFitExample.cc`, `test/MMGVertexFitExample.py` | standalone validation of the photon kinematic fit (pulls, resolution) |
-| `RadiativeAnalysis/test` | configs, `test_files.txt`, unit tests, `compareNtuples.py` (regression check), `validateMMGFit.py` (fit validation), `checkDecayModes.py` (consistency check per MC decay mode) |
+| `RadiativeAnalysis/test` | configs, `test_files.yaml`, unit tests, `compareNtuples.py` (regression check), `validateMMGFit.py` (fit validation), `checkDecayModes.py` (consistency check per MC decay mode) |
 | `RadiativeAnalysis/devel` | not compiled: custom low-energy photon producer (work in progress), old debugging analyzers |
 | `run3mvaid` | Run-3 soft-muon MVA (XGBoost) |
 | `analysis` | Python analysis of the ntuples (no CMSSW needed): conversion of the CRAB output to candidate-level Parquet tables, plots, cut flows, k-fold BDT and MLP (TensorFlow), BDT tuning and mass-sculpting check, working-point scan with a Run 3 projection and a binned-fit significance. See [analysis/README.md](analysis/README.md) |

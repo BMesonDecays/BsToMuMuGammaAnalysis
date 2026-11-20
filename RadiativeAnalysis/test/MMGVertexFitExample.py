@@ -9,7 +9,7 @@ from FWCore.ParameterSet.VarParsing import VarParsing
 
 options = VarParsing('analysis')
 options.register('dataFormat', 'AOD', VarParsing.multiplicity.singleton, VarParsing.varType.string, "'AOD' or 'MINIAOD'")
-options.register('testSample', -1, VarParsing.multiplicity.singleton, VarParsing.varType.int, 'index in test/test_files.txt (-1: AOD/MINIAOD test file)')
+options.register('testSample', '', VarParsing.multiplicity.singleton, VarParsing.varType.string, 'name of the sample in test/test_files.yaml (default: bsmmg_aod / bsmmg_miniaod, from dataFormat)')
 options.register('testMaxFiles', -1, VarParsing.multiplicity.singleton, VarParsing.varType.int, 'max number of files from the test sample')
 options.setDefault('maxEvents', 20000)
 options.setDefault('outputFile', 'histosMMGVertexFitExample.root')
@@ -54,13 +54,13 @@ collections = {
     ),
 }[dataFormat]
 
-# input: explicit inputFiles=..., otherwise sample testSample from test/test_files.txt
+# input: explicit inputFiles=..., otherwise sample testSample from test/test_files.yaml
 # (default: the AOD or MINIAOD test file, depending on dataFormat)
 from BsToMuMuGammaAnalysis.RadiativeAnalysis.testFiles import testFiles
 if options.inputFiles:
     files = options.inputFiles
 else:
-    sample = options.testSample if options.testSample >= 0 else (0 if dataFormat == 'AOD' else 1)
+    sample = options.testSample or ('bsmmg_aod' if dataFormat == 'AOD' else 'bsmmg_miniaod')
     files = testFiles(sample, maxFiles=options.testMaxFiles)
 print('Number of files: ', len(files))
 process.source = cms.Source('PoolSource', fileNames = cms.untracked.vstring(files))

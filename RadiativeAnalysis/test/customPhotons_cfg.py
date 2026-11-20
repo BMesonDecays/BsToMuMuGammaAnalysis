@@ -8,7 +8,8 @@ from FWCore.ParameterSet.VarParsing import VarParsing
 options = VarParsing('analysis')
 options.register('minSCEt', 1.0, VarParsing.multiplicity.singleton, VarParsing.varType.float,
                  'minimal supercluster Et of the custom photons [GeV] (standard photons: 10)')
-options.register('testSample', 0, VarParsing.multiplicity.singleton, VarParsing.varType.int, 'test_files.txt sample')
+options.register('testSample', 'bsmmg_aod', VarParsing.multiplicity.singleton, VarParsing.varType.string,
+                 'name of the AOD sample in test/test_files.yaml')
 options.setDefault('outputFile', 'bmmg_customPhotons.root')
 options._tagOrder = []
 options.parseArguments()

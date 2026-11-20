@@ -16,8 +16,8 @@ CMSSW_14_1_1/src/
     └── RadiativeAnalysis/
         ├── interface/ + src/        library BsToMuMuGammaAnalysisRadiativeAnalysis (namespace bmmg)
         ├── plugins/                 EDM modules: RadiativeAnalysis, MMGVertexFitExample, BMMGCustomPhotonProducer
-        ├── python/                  testFiles.py (reads test/test_files.txt)
-        ├── test/                    configs, unit tests, validation and regression scripts, test_files.txt
+        ├── python/                  testFiles.py (reads test/test_files.yaml)
+        ├── test/                    configs, unit tests, validation and regression scripts, test_files.yaml
         ├── crab/                    submitCrab.py + tasks_example.yaml (CRAB API, many datasets), makeFileList.py
         └── devel/                   not compiled: old debugging analyzers
 ```
@@ -49,7 +49,7 @@ CMSSW_14_1_1/src/
 | `runNtuplizer_cfg.py` | driver config: MC/data, AOD/MiniAOD (collection names per format), photon ID (VID), channel selection |
 | `MMGVertexFitExample.py` | config of the fit validation module |
 | `customPhotons_cfg.py` | custom photon producer + ntuplizer on its photons |
-| `test_files.txt` | test input samples (used by the configs through `python/testFiles.py`) |
+| `test_files.yaml` | test input samples: short name → `isMC`, `dataFormat`, `files` (used by the configs through `python/testFiles.py`) |
 | `test_bmmgLibrary.cc` | catch2 unit tests (`scram b runtests`) |
 | `compareNtuples.py`, `validateMMGFit.py`, `checkDecayModes.py` | regression check between two ntuples; fit validation (mass and ct resolution, pulls); per-decay-mode consistency check (gen classification, candidates) |
 
