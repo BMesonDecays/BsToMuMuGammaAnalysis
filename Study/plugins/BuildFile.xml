@@ -1,0 +1,21 @@
+<library name="ConvFitStudyPlugins" file="*.cc">
+  <use name="FWCore/Framework"/>
+  <use name="FWCore/ParameterSet"/>
+  <use name="FWCore/ServiceRegistry"/>
+  <use name="CommonTools/UtilAlgos"/>
+  <use name="DataFormats/EgammaCandidates"/>
+  <use name="DataFormats/HepMCCandidate"/>
+  <use name="DataFormats/PatCandidates"/>
+  <use name="DataFormats/TrackReco"/>
+  <use name="DataFormats/Math"/>
+  <use name="RecoVertex/KinematicFit"/>
+  <use name="RecoVertex/KinematicFitPrimitives"/>
+  <use name="RecoVertex/VertexPrimitives"/>
+  <use name="RecoVertex/VertexTools"/>
+  <use name="RecoVertex/KalmanVertexFit"/>
+  <use name="RecoVertex/LinearizationPointFinders"/>
+  <use name="TrackingTools/TransientTrack"/>
+  <use name="TrackingTools/Records"/>
+  <use name="root"/>
+  <flags EDM_PLUGIN="1"/>
+</library>
