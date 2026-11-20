@@ -109,8 +109,9 @@ class MMGVertexFit
         // kinematic particle of a charged track with the given mass hypothesis (e.g. a kaon)
         static RefCountedKinematicParticle trackParticle(const reco::TransientTrack& track, double mass);
 
-        // photon from a conversion: vertex fit of the e+ e- tracks with a zero-mass constraint;
-        // returns the photon particle at the conversion vertex (empty if the fit fails)
+        // photon from a conversion: vertex fit of the e+ e- tracks with a zero-mass constraint; the photon
+        // at the conversion vertex as a standalone particle, not attached to the fit tree (empty if the
+        // fit fails)
         static std::optional<RefCountedKinematicParticle> conversionParticle(const reco::TransientTrack& e1,
             const reco::TransientTrack& e2);
 

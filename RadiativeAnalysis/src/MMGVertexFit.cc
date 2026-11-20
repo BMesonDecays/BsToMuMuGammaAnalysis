@@ -4,6 +4,7 @@
 
 #include "RecoVertex/KinematicFitPrimitives/interface/KinematicParticle.h"
 #include "RecoVertex/KinematicFitPrimitives/interface/KinematicParticleFactoryFromTransientTrack.h"
+#include "RecoVertex/KinematicFitPrimitives/interface/VirtualKinematicParticleFactory.h"
 #include "TrackingTools/TransientTrack/interface/TransientTrack.h"
 #include "RecoVertex/KinematicFitPrimitives/interface/ParticleMass.h"
 #include "TrackingTools/TrajectoryState/interface/FreeTrajectoryState.h"
@@ -101,6 +102,11 @@ RefCountedKinematicParticle MMGVertexFit::trackParticle(const reco::TransientTra
         return pFactory.particle(track, ParticleMass(mass), chi, ndf, sigma);
     }
 
+// The photon is returned as a new particle without a tree. The top particle of the fit tree only
+// keeps a raw pointer to its tree, and the B vertex fit treats a particle with a tree as a composite:
+// FinalTreeBuilder modifies that tree and grafts it into the B tree. With one conversion photon reused
+// for several B candidates this read a freed tree (crashes, ~1% of mmcg fits changed) or, with the
+// tree kept alive, looped forever in KinematicTree::addTree.
 std::optional<RefCountedKinematicParticle> MMGVertexFit::conversionParticle(const reco::TransientTrack& e1,
     const reco::TransientTrack& e2)
     {
@@ -116,7 +122,10 @@ std::optional<RefCountedKinematicParticle> MMGVertexFit::conversionParticle(cons
             tree = constraintFitter.fit(&zeroMass, tree);
             if (!tree->isValid()) return std::nullopt;
             tree->movePointerToTheTop();
-            return tree->currentParticle();
+            const RefCountedKinematicParticle top = tree->currentParticle();
+            float chi2 = top->chiSquared(), ndof = top->degreesOfFreedom();
+            return VirtualKinematicParticleFactory().particle(top->currentState(), chi2, ndof,
+                                                              RefCountedKinematicParticle());
         }
         catch (const VertexException&)
         {
