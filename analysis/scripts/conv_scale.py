@@ -270,7 +270,11 @@ def main():
                          'status': 0 if vinc['valid'] else 1, 's': vinc['s'], 's_err': vinc['s_err'],
                          'sigmaRel': vinc['values']['sigmaRel'], 'n_sig': vinc['n_sig'], 'chi2': vinc['chi2'],
                          'ndf': vinc['ndf']})
-            vrefs, vdims, _, vbm = reference_fits(df, y, cfg, vm, vinc)
+            try:
+                vrefs, vdims, _, vbm = reference_fits(df, y, cfg, vm, vinc)
+            except RuntimeError as e:   # one failed variation does not stop the map
+                print('WARNING: variation %s skipped: %s' % (name, e))
+                continue
             if r21_factor != 1.:
                 vbm = dict(vbm, fixed=dict(vbm['fixed'], r21=vbm['fixed']['r21'] * r21_factor))
             vrows, vscale, _, vstatus, _ = run_map(df, y, cfg, vm if 'r21' not in (vbm.get('fixed') or {}) else vbm,
@@ -309,7 +313,9 @@ def main():
     inmap = np.all(cs.bin_index(df, cfg['binning']) >= 0, axis=1)
     df, y = df[inmap], y[inmap]
     yc = y / smap.lookup_df(df, interpolate=interpolate)
-    clo = cs.fit(yc, bmodel)
+    # start at the inclusive shape with s = 1: from the generic start values the fit of 10^6-10^7 candidates
+    # can end in a false minimum (alpha at its limit)
+    clo = cs.fit(yc, bmodel, start=dict(inc['values'], s=1.0, ntot=inc['ntot']))
     rows.append({'fit': 'closure_inclusive', 'bin': [], 'n_range': clo['n'], 'status': 0 if clo['valid'] else 1,
                  's': clo['s'], 's_err': clo['s_err'], 'sigmaRel': clo['values']['sigmaRel'], 'n_sig': clo['n_sig'],
                  'chi2': clo['chi2'], 'ndf': clo['ndf']})
