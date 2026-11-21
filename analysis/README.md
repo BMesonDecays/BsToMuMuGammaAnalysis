@@ -116,7 +116,7 @@ python3 scripts/conv_scale_mc.py config/conv_scale_mc.yaml   # MC map from E_rec
   - The map starts at `pt_est` = 1 GeV: below that, the threshold cuts into the fit range.
 - **Shape parameters:**
   - The tail α comes from one reference fit per |η| slice (`shape_from`); it is 0.9–1.0 in the barrel and smaller forward.
-  - N(χ_c2)/N(χ_c1) comes from the barrel (`r21_from`) and is fixed everywhere. In the endcaps the two peaks merge and a free ratio is degenerate with s.
+  - N(χ_c2)/N(χ_c1) comes from the barrel (`r21_from`) per pt_est bin (`r21_per`) and is fixed in the bins of the same pt_est. In the endcaps the two peaks merge and a free ratio is degenerate with s; the ratio falls with pt (0.49 → 0.31 in 2022 data), so a pt-inclusive value biases the endcap scale.
 - **Systematics:** the model variations in the config (background order, χ_c0, fit range, n, ±20% on the ratio). Per bin, the largest deviation is the systematic error.
 - **Output:**
   - `conv_scale.json`: the `ScaleMap`, with variables, edges, `scale`, `error` (stat), `syst` and `status` (0 ok, 1 fit not valid, 2 too few candidates; bins with status ≠ 0 hold the scale of their |η| slice).

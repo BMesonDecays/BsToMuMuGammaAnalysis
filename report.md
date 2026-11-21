@@ -33,6 +33,39 @@ Entries are newest first.
 
 ---
 
+## 2026-11-22: Converted-photon scale: N(χ_c2)/N(χ_c1) per pt bin, |η| bin 1.5–2.0 split at 1.8 (full 2022 data)
+
+Follows the previous entry (model problems 1 and the closure in |η| 1.8–2.0).
+
+**Changes:**
+- **N2/N1 per pt bin** (commit 974f6cc). New option `r21_per: [pt]`: one fit of the barrel (`r21_from`) with a free ratio per pt_est bin. Each map bin fixes the ratio of its pt_est bin.
+  - The cross-check bins along pt_est take the value at their bin centre; the other cross-checks keep the whole-barrel value.
+  - The r21_low/high variations scale the per-bin values.
+  - The per-bin values are stored in `info.r21_bins` of `conv_scale.json`.
+- **|η| binning** (commit a5b9bf1): [0, 0.8, 1.5, 1.8, 2.0, 2.5].
+
+**N2/N1 in the barrel, per pt_est bin** (1–1.5 / 1.5–2 / 2–3 / > 3 GeV): 0.485 / 0.445 / 0.383 / 0.309 (± 0.003–0.008). The pt-inclusive value was 0.429.
+
+**Map** (s ± stat ± syst; all bins status 0):
+
+| pt_est [GeV] | \|η\| 0–0.8 | 0.8–1.5 | 1.5–1.8 | 1.8–2.0 | 2.0–2.5 |
+|---|---|---|---|---|---|
+| 1.0–1.5 | 0.9899 ± 0.0002 ± 0.0009 | 0.9849 ± 0.0005 ± 0.0008 | 0.973 ± 0.002 ± 0.006 | 0.962 ± 0.003 ± 0.026 | 0.975 ± 0.004 ± 0.016 |
+| 1.5–2.0 | 0.9875 ± 0.0002 ± 0.0009 | 0.9820 ± 0.0003 ± 0.0007 | 0.964 ± 0.001 ± 0.009 | 0.960 ± 0.002 ± 0.021 | 0.959 ± 0.003 ± 0.014 |
+| 2.0–3.0 | 0.9850 ± 0.0001 ± 0.0009 | 0.9786 ± 0.0002 ± 0.0007 | 0.956 ± 0.001 ± 0.008 | 0.948 ± 0.002 ± 0.025 | 0.945 ± 0.002 ± 0.019 |
+| > 3.0 | 0.9824 ± 0.0001 ± 0.0010 | 0.9738 ± 0.0003 ± 0.0008 | 0.940 ± 0.002 ± 0.002 | 0.934 ± 0.002 ± 0.040 | 0.921 ± 0.003 ± 0.040 |
+
+- **Barrel:** changes ≤ 0.0013 with respect to the fixed ratio. In pt > 3 GeV, |η| < 0.8 the χ² falls from 1534 to 719 / 84; the remainder is the single-CB core shape.
+- **Endcap pt > 3 GeV:** +0.4% (2.0–2.5: 0.917 → 0.921) and +0.9% (1.5–2.0: 0.931 → 0.940 / 0.934 after the split).
+- **Closure:** inclusive 0.9988 ± 0.0001; pt_est bins 0.997–0.999; conversion radius 0.991–1.001.
+  - |η| 1.8–2.0: 0.991 ± 0.002 (was 0.988).
+  - The remaining deviation comes from the closure fit itself: free α and the whole-barrel ratio, against the fixed α and per-pt ratio of the map. It is well within the systematic of that bin.
+- **Endcap systematic (|η| > 1.8: 1.4–4%)** is almost entirely the `range_wide` variation (y up to 6.0 GeV²): −1.4% to −4.0%. `bkg3` and `range_narrow` give about −1%.
+  - In |η| 1.5–1.8 all variations stay below 0.9%.
+  - **Open:** the background shape under the merged peaks in |η| > 1.8. Options: a better background model, or a cleaner forward sample (conversion quality, `phoDCA`) to reduce the background.
+
+---
+
 ## 2026-11-22: Converted-photon scale on the full 2022 χ_c sample: fit convergence fixed; first full map; χ_c2/χ_c1 ratio depends on pt
 
 **Run:** user's tables `/eos/user/s/sslawins/bmmg/parquet_chic` (30 files, 8.6 GB). After the selection: 13.0M candidates, 55× the development sample. Full run with variations and plots: 56 s, 8 GB RSS.
