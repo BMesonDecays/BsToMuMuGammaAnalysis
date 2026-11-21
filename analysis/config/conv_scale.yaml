@@ -8,9 +8,16 @@ datasets: [Parking2022]
 output: ~/bmmg/results/conv_scale
 
 # candidate selection (pandas query on the chic table)
+# Forward (|eta| > 1.5) a tighter selection: the chi_c peaks merge there and, with the background of the loose
+# selection (S/B ~ 0.6 under the peak at |eta| > 1.8), the CB tail and the background shape are degenerate
+# (alpha at its limit; s moved by 1.4-4% with the fit range / background order). phoDCA < 0.1 cm (photon line
+# from the J/psi vertex) and no pi0 partner in the wide window (conv_flags bit 16, MiniAOD) give S/B ~ 1 with
+# ~70% of the signal; forward systematic 0.3-0.9%. Applied everywhere the same cuts move the barrel scale
+# by <= 0.001 (2022 data), so they do not select on the photon energy (report.md, 2026-11-22).
 selection: >-
   conv_fitOK == 1 and phoDCA < 0.5
   and abs(dimu_mass - 3.0969) < 0.1 and dimu_vtxProb > 0.01
+  and (abs(conv_eta) < 1.5 or (phoDCA < 0.1 and conv_flags % 32 < 16))
 
 # fit model (bmmg_ana/convscale.py): y = m^2 - m(mumu)^2 [GeV^2]
 model:
