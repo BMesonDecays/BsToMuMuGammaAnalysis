@@ -188,6 +188,11 @@ namespace bmmg {
     if (ch.legs.size() > 1) b_.bookVector<float>(p + "xMass");   // diphoton / KK mass (pre-fit)
     for (const auto& leg : ch.legs)
       for (const char* v : {"FitPt", "FitEta", "FitPhi"}) b_.bookVector<float>(p + leg + v);
+    if (ch.legType == LegType::Photon)
+      for (const auto& leg : ch.legs) {
+        b_.bookVector<float>(p + leg + "MvaNoMu");
+        b_.bookVector<int>(p + leg + "TightIdNoMu");
+      }
     if (isMC_) b_.bookVector<int>(p + "genMatched");
   }
 
@@ -520,6 +525,12 @@ namespace bmmg {
       I("pvNTracks").push_back(c.pvSums.nTracks);
       I("mu1InPV").push_back(c.pvSums.mu1InPV);
       I("mu2InPV").push_back(c.pvSums.mu2InPV);
+      if (ch.legType == LegType::Photon)
+        for (size_t k = 0; k < ch.legs.size(); ++k) {
+          const bool has = k < c.legPhotonMvaNoMu.size();
+          F(ch.legs[k] + "MvaNoMu").push_back(has ? c.legPhotonMvaNoMu[k] : -99.f);
+          I(ch.legs[k] + "TightIdNoMu").push_back(has ? c.legPhotonTightIdNoMu[k] : -1);
+        }
       const std::vector<std::string> daughters = isoDaughters(ch);
       for (size_t k = 0; k < daughters.size(); ++k) {
         const IsoSums iso = k < c.daughterIso.size() ? c.daughterIso[k] : IsoSums();

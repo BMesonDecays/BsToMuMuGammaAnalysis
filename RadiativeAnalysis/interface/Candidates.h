@@ -130,6 +130,9 @@ namespace bmmg {
     float isolation = -1.f, maxTrackCompatibility = -1.f;
     PVTrackSums pvSums;
     std::vector<IsoSums> daughterIso;   // isolation without the B products: mu1, mu2, legs...
+    // photon legs: Winter22 photon MVA without the contributions of mu1 and mu2 (PhotonMVANoMuons), per leg
+    std::vector<float> legPhotonMvaNoMu;
+    std::vector<int> legPhotonTightIdNoMu;
   };
   using MMGCandidate = BCandidate;
 

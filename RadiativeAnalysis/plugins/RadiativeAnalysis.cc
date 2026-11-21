@@ -17,6 +17,7 @@
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/CandidateBuilders.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/NtupleWriter.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/ObjectSelection.h"
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/PhotonMVANoMuons.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/TriggerMatcher.h"
 #include "BsToMuMuGammaAnalysis/run3mvaid/interface/MuonMVAID.h"
 
@@ -84,6 +85,7 @@ private:
   const edm::EDGetTokenT<edm::ValueMap<float>> photonMvaToken_;
   const edm::EDGetTokenT<edm::ValueMap<bool>> photonTightIdToken_;
   const edm::EDGetTokenT<reco::BeamSpot> beamSpotToken_;
+  const edm::EDGetTokenT<double> rhoToken_;   // photon MVA input (PhotonMVANoMuons)
   const edm::EDGetTokenT<std::vector<reco::Vertex>> verticesToken_;
   const edm::EDGetTokenT<EcalRecHitCollection> ebRecHitsToken_;
   const edm::EDGetTokenT<EcalRecHitCollection> eeRecHitsToken_;
@@ -108,6 +110,7 @@ private:
   // components
   bmmg::MuonCuts muonCuts_;
   bmmg::PhotonCuts photonCuts_;
+  std::unique_ptr<bmmg::PhotonMVANoMuons> photonMVANoMuons_;   // null if disabled
   bmmg::ConversionCuts conversionCuts_;
   bmmg::TrackCuts trackCuts_;
   bmmg::CandidateConfig candidateConfig_;
@@ -142,6 +145,7 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& cfg)
       photonMvaToken_(consumes(cfg.getParameter<edm::InputTag>("photonMVA"))),
       photonTightIdToken_(consumes(cfg.getParameter<edm::InputTag>("photonTightId"))),
       beamSpotToken_(consumes(cfg.getParameter<edm::InputTag>("beamSpot"))),
+      rhoToken_(consumes(cfg.getParameter<edm::InputTag>("rho"))),
       verticesToken_(consumes(cfg.getParameter<edm::InputTag>("primaryVertices"))),
       ebRecHitsToken_(consumes(cfg.getParameter<edm::InputTag>("ebRecHits"))),
       eeRecHitsToken_(consumes(cfg.getParameter<edm::InputTag>("eeRecHits"))),
@@ -192,6 +196,14 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& cfg)
     photonCuts_.minSCEnergy = cfg.getParameter<double>("photonMinSCEnergy");
     photonCuts_.maxAbsSCEta = cfg.getParameter<double>("photonMaxAbsSCEta");
     photonCuts_.minMVA = cfg.getParameter<double>("photonMinMVA");
+    if (cfg.getParameter<bool>("photonMVANoMuons")) {
+      bmmg::PhotonMVANoMuons::Config c;
+      c.weightsEB = cfg.getParameter<edm::FileInPath>("photonMVANoMuonsWeightsEB");
+      c.weightsEE = cfg.getParameter<edm::FileInPath>("photonMVANoMuonsWeightsEE");
+      c.cutEB = cfg.getParameter<double>("photonMVANoMuonsCutEB");
+      c.cutEE = cfg.getParameter<double>("photonMVANoMuonsCutEE");
+      photonMVANoMuons_ = std::make_unique<bmmg::PhotonMVANoMuons>(c);
+    }
     conversionCuts_.minPt = cfg.getParameter<double>("conversionMinPt");
     conversionCuts_.minVertexProb = cfg.getParameter<double>("conversionMinVertexProb");
     conversionCuts_.momentumError = cfg.getParameter<double>("conversionMomentumError");
@@ -351,16 +363,22 @@ void RadiativeAnalysis::analyze(const edm::Event& event, const edm::EventSetup& 
                        gen.get());
   writer_->fillDimuons(dimuons);
 
-  if (doMuMuGamma_)
-    writer_->fillCandidates(bmmg::NtupleWriter::kMuMuGamma,
-                            check(bmmg::buildMuMuGamma(selMuons, dimuons, selPhotons, vertices, pvTracks, neutrals, lazyTools,
-                                                       ttBuilder, mmgVertexFit_, candidateConfig_)),
-                            vertices);
-  if (doMuMuGammaGamma_)
-    writer_->fillCandidates(bmmg::NtupleWriter::kMuMuGammaGamma,
-                            check(bmmg::buildMuMuGammaGamma(selMuons, dimuons, selPhotons, vertices, pvTracks, neutrals, lazyTools,
-                                                            ttBuilder, mmgVertexFit_, candidateConfig_, diphotonConfig_)),
-                            vertices);
+  // photon MVA without the candidate's muons (photon channels)
+  const double rho = photonMVANoMuons_ ? event.get(rhoToken_) : 0.;
+  auto photonMVANoMu = [&](std::vector<bmmg::BCandidate>& cands) -> std::vector<bmmg::BCandidate>& {
+    if (photonMVANoMuons_) photonMVANoMuons_->fillCandidates(cands, selMuons, selPhotons, rho, beamSpot);
+    return cands;
+  };
+  if (doMuMuGamma_) {
+    auto cands = bmmg::buildMuMuGamma(selMuons, dimuons, selPhotons, vertices, pvTracks, neutrals, lazyTools, ttBuilder,
+                                      mmgVertexFit_, candidateConfig_);
+    writer_->fillCandidates(bmmg::NtupleWriter::kMuMuGamma, check(photonMVANoMu(cands)), vertices);
+  }
+  if (doMuMuGammaGamma_) {
+    auto cands = bmmg::buildMuMuGammaGamma(selMuons, dimuons, selPhotons, vertices, pvTracks, neutrals, lazyTools,
+                                           ttBuilder, mmgVertexFit_, candidateConfig_, diphotonConfig_);
+    writer_->fillCandidates(bmmg::NtupleWriter::kMuMuGammaGamma, check(photonMVANoMu(cands)), vertices);
+  }
   if (doMuMuConvGamma_ || doChiC_) {
     // MiniAOD: oniaPhotonCandidates is missing in some events of the 2022 PromptReco (~10%): no conversions there
     std::vector<bmmg::SelectedConversion> conversions;
@@ -480,6 +498,16 @@ void RadiativeAnalysis::fillDescriptions(edm::ConfigurationDescriptions& descrip
   desc.add<double>("photonMinSCEnergy", 1.0);
   desc.add<double>("photonMaxAbsSCEta", 2.5);
   desc.add<double>("photonMinMVA", -99.);
+  // photon MVA (Winter22 V1) recomputed per candidate without the contributions of its two muons
+  // (<p><leg>MvaNoMu, <p><leg>TightIdNoMu; photon channels); same weights and wp90 cuts as photonMVA / photonTightId
+  desc.add<bool>("photonMVANoMuons", true);
+  desc.add<edm::FileInPath>("photonMVANoMuonsWeightsEB",
+                            edm::FileInPath("RecoEgamma/PhotonIdentification/data/MVA/RunIII_Winter22/PhoMVA_ID_EB_V1.weights.root"));
+  desc.add<edm::FileInPath>("photonMVANoMuonsWeightsEE",
+                            edm::FileInPath("RecoEgamma/PhotonIdentification/data/MVA/RunIII_Winter22/PhoMVA_ID_EE_V1.weights.root"));
+  desc.add<double>("photonMVANoMuonsCutEB", 0.0439603);
+  desc.add<double>("photonMVANoMuonsCutEE", -0.249526);
+  desc.add<edm::InputTag>("rho", edm::InputTag("fixedGridRhoAll"));
   // channels
   desc.add<bool>("doMuMuGamma", true);
   desc.add<bool>("doMuMuConvGamma", true);

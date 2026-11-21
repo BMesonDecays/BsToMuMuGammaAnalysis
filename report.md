@@ -33,6 +33,43 @@ Entries are newest first.
 
 ---
 
+## 2026-11-21: Ntuplizer: photon MVA without the candidate's muons (`<p><leg>MvaNoMu`, `<p><leg>TightIdNoMu`)
+
+Implementation of the study below.
+
+**Code:**
+- New class `PhotonMVANoMuons` (`interface/PhotonMVANoMuons.h`, `src/PhotonMVANoMuons.cc`):
+  - Loads the official weight files `RunIII_Winter22/PhoMVA_ID_{EB,EE}_V1.weights.root` with `createGBRForest`.
+    The variable names are read from the files; an unknown name throws.
+  - Rebuilds the inputs from the `reco::Photon`, removes the terms of the given muons, and returns `tanh(response)`.
+  - Muon terms: inner-track pt in the two track isolations, with the official `PhotonTkIsolation` selection (exact);
+    HCAL deposit at the muon's HCAL impact point in `hcalPFClusterIso` and `hcalOverEcal` (approximate).
+- The plugin calls it after building the `mmg` and `mmgg` candidates, with the candidate's μ1 and μ2. New inputs:
+  - `rho` (`fixedGridRhoAll`);
+  - `photonMVANoMuons` (default true);
+  - the two weight files and the two wp90 cuts.
+- **Branches:**
+  - `mmg_phoMvaNoMu`, `mmg_phoTightIdNoMu`;
+  - `mmgg_pho1MvaNoMu`, `mmgg_pho1TightIdNoMu`, `mmgg_pho2MvaNoMu`, `mmgg_pho2TightIdNoMu`.
+
+**Validation:** 5000 events each of the test files `bsmmg_miniaod`, `bsmmg_aod` and `data_miniaod`, no skim.
+- **Closure:**
+  - AOD: for photons with ΔR > 0.7 to both muons (119 candidates), `MvaNoMu` equals `pho_mva` to 6e-8.
+  - Candidates with nothing to remove are bit-identical to `pho_mva`: 30% (MiniAOD MC), 42% (AOD), 45% (data).
+- **Direction of the change:** for about 4% of the candidates the value decreases slightly (median −0.015). The
+  MVA is not monotonic in its isolation inputs.
+- **Gen-matched `mmg` candidates, wp90 efficiency:**
+
+  | sample | official | `MvaNoMu` |
+  |---|---|---|
+  | MiniAOD | 0.590 | 0.759 |
+  | AOD | 0.588 | 0.788 |
+
+  - By ΔR(γ, μ), MiniAOD: < 0.2: 0.445 → 0.684; 0.2–0.3: 0.595 → 0.784; 0.3–0.4: 0.797 → 0.835; > 0.4 unchanged.
+  - Non-matched candidates in MC are unchanged.
+- **Data:** the data test file has only 20 `mmg` candidates, none passing either version. The effect on the
+  background has to be measured on the B-mass sidebands of a production with the new branches.
+
 ## 2026-11-21: Photon MVA re-evaluated with the muons removed from its inputs: signal wp90 efficiency 0.60 → 0.77 (study; no code change)
 
 Follow-up of the entry below.

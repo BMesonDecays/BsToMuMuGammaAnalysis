@@ -37,6 +37,8 @@
 <use name="TrackingTools/TransientTrack"/>
 <use name="CommonTools/Utils"/>
 <use name="CommonTools/UtilAlgos"/>
+<use name="CommonTools/MVAUtils"/>
+<use name="CondFormats/GBRForest"/>
 <use name="DataFormats/Provenance"/>
 <use name="DataFormats/GeometryCommonDetAlgo"/>
 <use name="SimDataFormats/PileupSummaryInfo"/>
