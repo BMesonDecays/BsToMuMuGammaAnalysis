@@ -113,7 +113,13 @@ process.GlobalTag = GlobalTag(process.GlobalTag, globalTag, '')
 
 # ---------------------------------------------------------------- ntuplizer
 from BsToMuMuGammaAnalysis.RadiativeAnalysis.radiativeAnalysis_cfi import radiativeAnalysis
-channels = options.channels.split(',')
+channels = [c.strip() for c in options.channels.split(',') if c.strip()]
+knownChannels = ('mmg', 'mmcg', 'mmgg', 'mmkk', 'chic')
+unknownChannels = [c for c in channels if c not in knownChannels]
+if unknownChannels or not channels:
+    # an unknown name would silently disable the channel; with skim=1 that empties the output
+    raise ValueError('channels=%s: unknown channel(s) %s; expected a comma-separated subset of %s'
+                     % (options.channels, unknownChannels, ','.join(knownChannels)))
 process.bmmg = radiativeAnalysis.clone(
     isMC=isMC,
     verbose=bool(options.verbose),

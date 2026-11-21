@@ -33,6 +33,25 @@ Entries are newest first.
 
 ---
 
+## 2026-11-21: 2022 data production `v2` is empty: `channels` list passed as `str(list)` (fixed)
+
+The production from `crab/tasks_2022.yaml` (48 tasks, 2022C–G, `bmmg_ntuples_v2`) has
+`nEventsStored = 0` in every file checked. In a sample of 40 of 1689 files, 58.9 M events were
+processed and none were stored. The files are 12 kB and contain only the 125 event-level branches.
+
+- **Cause:** the task file gives `channels: [mmg, mmcg, mmgg, chic]` as a YAML list.
+  `submitCrab.pyCfgParams` formatted it with `%s`, which produced `channels=['mmg', 'mmcg', 'mmgg', 'chic']`.
+  `runNtuplizer_cfg.py` split this on commas into `['mmg'`, ` 'mmcg'`, … . None of these matched a channel
+  name, so every channel was off and `skim=1` dropped every event. Nothing failed.
+- **Fix:**
+  - `submitCrab.py` joins list values with commas, e.g. `channels=mmg,mmcg,mmgg,chic`.
+  - `runNtuplizer_cfg.py` raises an error for an unknown or empty channel list instead of silently
+    disabling channels.
+- **Check:** `edmConfigDump` with `channels=mmg,mmcg,mmgg,chic` enables exactly those four channels.
+  The old string now raises a `ValueError`.
+- **Action:** the `v2` tasks must be killed and resubmitted. The output and the CRAB project directories
+  `crab_*_v2` must first be removed, or a new `tag` used.
+
 ## 2026-11-21: χ_c → J/ψ γ(conversion) calibration channel (`chic_`)
 
 - **Purpose:** data sample for the energy scale of the converted photons (plan step 3 of the entry below), with photons closer to the signal p_T than the π⁰.

@@ -165,6 +165,10 @@ def pyCfgParams(t):
     for k, v in sorted(t['options'].items()):
         if isinstance(v, bool):
             v = int(v)
+        elif isinstance(v, (list, tuple)):
+            # VarParsing singletons take comma-separated strings (e.g. channels=mmg,mmcg); str(list) would
+            # give "['mmg', 'mmcg']", which the configuration does not understand
+            v = ','.join(str(x) for x in v)
         params.append('%s=%s' % (k, v))
     return params
 
