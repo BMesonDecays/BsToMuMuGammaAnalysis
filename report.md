@@ -33,6 +33,45 @@ Entries are newest first.
 
 ---
 
+## 2026-11-22: Converted-photon scale on the full 2022 χ_c sample: fit convergence fixed; first full map; χ_c2/χ_c1 ratio depends on pt
+
+**Run:** user's tables `/eos/user/s/sslawins/bmmg/parquet_chic` (30 files, 8.6 GB). After the selection: 13.0M candidates, 55× the development sample. Full run with variations and plots: 56 s, 8 GB RSS.
+
+**Fixes** (commits 16bd9ca, a64cf73):
+- **Crash:** `RuntimeError: the r21_from fit (abs(conv_eta) < 1.5) is not valid` in the variation `bkg3`. The nominal inclusive fit, range_narrow and n15 were also invalid.
+  - **Cause:** every failing fit had Migrad stop above its EDM target (edm 0.003–0.015, target 2·10⁻⁴). No parameter was at a limit; the covariance was accurate. With −2 ln L ≈ 10⁸ in absolute value the numerical derivatives lose precision.
+  - **Fix:** the likelihood is now −2 ln(L/L_sat) (Baker–Cousins: same minimum and errors, of the order of χ²), and Migrad is called again when it stops above the target. All 18 inclusive and barrel fits (nominal and 8 variations) are now valid, with the same values.
+  - A variation whose r21 reference fit fails now prints a warning and is skipped instead of stopping the run.
+- **Closure fit:** from the generic start values (s = 0.97, α = 1) it fell into a false minimum (α = 10 at its limit, Hesse failed). It now starts from the inclusive fit with s = 1.
+
+**Map** (s ± stat ± syst; all bins status 0):
+
+| pt_est [GeV] | \|η\| 0–0.8 | 0.8–1.5 | 1.5–2.0 | 2.0–2.5 |
+|---|---|---|---|---|
+| 1.0–1.5 | 0.9900 ± 0.0002 ± 0.0010 | 0.9852 ± 0.0005 ± 0.0009 | 0.968 ± 0.002 ± 0.012 | 0.976 ± 0.004 ± 0.017 |
+| 1.5–2.0 | 0.9876 ± 0.0002 ± 0.0009 | 0.9821 ± 0.0003 ± 0.0008 | 0.961 ± 0.001 ± 0.008 | 0.960 ± 0.003 ± 0.015 |
+| 2.0–3.0 | 0.9849 ± 0.0001 ± 0.0009 | 0.9783 ± 0.0002 ± 0.0007 | 0.950 ± 0.001 ± 0.011 | 0.944 ± 0.002 ± 0.021 |
+| > 3.0 | 0.9820 ± 0.0002 ± 0.0010 | 0.9725 ± 0.0003 ± 0.0009 | 0.931 ± 0.001 ± 0.021 | 0.917 ± 0.003 ± 0.044 |
+
+- **Inclusive:** s = 0.9835 ± 0.0002, consistent with the development value 0.9830 ± 0.0011.
+- **Barrel:** stable across all variations (systematic ≤ 0.1%).
+- **Endcaps:** the systematic is dominated by `range_wide` and `bkg3` (1–4%). The χ_c peaks merge (σ/y = 4–7%), so s is degenerate with the background shape under the peak.
+- **Closure:** after the bin-value correction, inclusive s = 0.9990 ± 0.0001.
+  - pt_est bins: 0.996–1.000.
+  - Fine |η| bins: 0.988–1.002. The worst is |η| 1.8–2.0 at 0.988: the 1.5–2.0 map bin averages over s = 0.957 (1.5–1.8) and 0.941 (1.8–2.0), so finer |η| bins are needed.
+  - Conversion radius: 0.991–1.001.
+
+**Model problems that appear only at this statistics:**
+1. **N(χ_c2)/N(χ_c1) depends on pt.** Free in the barrel fits it is 0.49 / 0.46 / 0.39 / 0.31 in the four pt_est bins (|η| < 0.8; similar in 0.8–1.5). The fit fixes it everywhere to the pt-inclusive barrel value of 0.43, which is outside the ±20% variation at both ends.
+   - The likely reasons are the production ratio σ(χ_c2)/σ(χ_c1) changing with pt, and pt_est = 0.895·pt_true for χ_c2.
+   - **Barrel:** freeing it changes s by ≤ 0.0014.
+   - **Endcaps:** the merged peak moves with the ratio. 0.43 instead of 0.31 lowers s by about 0.7% at pt > 3 GeV.
+   - **Proposed:** take N2/N1 from the barrel per pt_est bin (`r21_from` per bin of the pt variable).
+2. **The barrel peak shape is not a single Crystal Ball** at this statistics. In pt > 3 GeV, |η| < 0.8 the χ² is 1534/84, with ±10σ pulls at the χ_c1 top and on the χ_c2 peak. Part of this is the fixed N2/N1: freeing it gives χ²/ndf = 701/82. The rest is a core that is narrower with wider tails (the resolution varies within the bin). The effect on s is ≤ 0.1% (the variation spread).
+3. **Cross-check bins below the map** (pt_est 0.6–0.85 GeV): fits invalid, as expected from the conversion threshold. They are not part of the map.
+
+---
+
 ## 2026-11-21: Converted-photon energy scale from χ_c → J/ψ γ(conv) on the Parquet tables (`analysis/`); development on 100 files
 
 Implements plan steps 2–3 of the 2026-11-21 χ_c / π⁰ entries. The map is meant to go into the ntuplizer later.
