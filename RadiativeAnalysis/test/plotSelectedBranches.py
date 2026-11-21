@@ -23,7 +23,7 @@ for f in sys.argv[2:]:
 
 #######################
 # selection applied to all histograms; it is also written on every page of the pdf
-selection = "bsFitSuccessful && resonanceFlag==1 && bsLxySig>5 && dimuonVtxProb>0.1 && bsVtxProb>0.1 && photonMVA>-0.2"
+selection = "bsFitSuccessful && resonanceFlag==1 && bsLxySig>5 && dimuonVtxProb>0.1 && bsVtxProb>0.1 && photonMVA>0.6"
 #######################
 
 # branches that hold only generator-level information; skipped for data
@@ -143,3 +143,14 @@ for name, hptr in hists.items():
     canvas.Print(out, f"Title:{pageTitle}")
 canvas.Print(out + "]")
 print(f"Written {out}")
+
+
+# Another option: without RDataFrame
+'''
+# speed-up: evaluate the selection once over the whole chain and keep only the entries with at least one passing
+# candidate; each Draw below then reads only those entries (the selection is still applied there per candidate)
+chain.Draw(">>selectedEntries", selection, "entrylist")
+selectedEntries = ROOT.gDirectory.Get("selectedEntries")
+chain.SetEntryList(selectedEntries)
+print(f"{selectedEntries.GetN()} of {chain.GetEntries()} entries pass the selection")
+'''
