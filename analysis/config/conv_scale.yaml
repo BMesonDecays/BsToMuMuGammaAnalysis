@@ -1,0 +1,83 @@
+# Configuration of scripts/conv_scale.py: energy scale of the converted photons from chi_c -> J/psi gamma(conv).
+#
+#   python3 convert.py config/convert_chic.yaml        # chic tables
+#   python3 scripts/conv_scale.py config/conv_scale.yaml
+
+parquet: ~/bmmg/parquet_chic           # output of convert.py with config/convert_chic.yaml
+datasets: [Parking2022]
+output: ~/bmmg/results/conv_scale
+
+# candidate selection (pandas query on the chic table)
+selection: >-
+  conv_fitOK == 1 and phoDCA < 0.5
+  and abs(dimu_mass - 3.0969) < 0.1 and dimu_vtxProb > 0.01
+
+# fit model (bmmg_ana/convscale.py): y = m^2 - m(mumu)^2 [GeV^2]
+model:
+  range: [1.6, 5.2]          # Q ~ 0.25 - 0.75 GeV
+  bins: 90
+  chic0: false
+  bkg_order: 2
+  fixed: {n: 2.0}            # CB tail exponent: degenerate with the background if free (variations n15, n5)
+
+# parameters of the inclusive fit kept fixed in the per-bin fits. r21 = N(chi_c2)/N(chi_c1): where the
+# resolution is poor (|eta| > 1.5) the two peaks merge and a free ratio is degenerate with s.
+fix_in_bins: [alpha, r21]
+# the fixed parameters come from a reference fit per bin of these map variables (the other variables merged);
+# the tail alpha depends on |eta| (0.9-1.0 in the barrel, ~0.6 inclusive): fixing it to the inclusive value
+# biases the barrel scale by +0.5%. Empty: the inclusive fit.
+shape_from: [abseta]
+# N(chi_c2)/N(chi_c1) from the barrel, where the two peaks are resolved, fixed everywhere (a production
+# property, not one of the photon): in the endcaps (sigma/y 5-10%) the peaks merge and a free ratio trades
+# chi_c2 for chi_c1 (s = 0.885 with mostly chi_c2 ~ s = 0.99 with chi_c1). Variations r21_low/high: +-20%.
+r21_from: abs(conv_eta) < 1.5
+# bins with fewer selected candidates in the fit range are not fitted (status 2: inclusive scale filled in)
+min_candidates: 3000
+
+# map binning: N variables, each {name, expr (pandas expression on the table), edges}.
+# Besides the table columns, the expressions can use y (the fit variable) and pt_est = conv_pt * Y1 / y,
+# with Y1 = m_chic1^2 - m_J/psi^2: for a chi_c1 candidate pt_est is the TRUE photon pt (y and conv_pt
+# scale together with the photon energy response), so binning in pt_est does not select on the response.
+# Binning in the reconstructed conv_pt does: migration across the edges and the conversion pt threshold
+# (0.5 GeV) bias s upwards at low pt. For chi_c2 candidates pt_est = 0.895 * true pt.
+# Below pt_est ~ 1 GeV the conversion threshold conv_pt > 0.5 GeV cuts into the fit range
+# (y > 0.5 GeV * Y1 / pt_est), which the background model cannot describe.
+# The last pt edge is open-ended in practice: the lookup is clamped beyond the outer bin centres.
+binning:
+  - name: pt
+    expr: pt_est
+    edges: [1.0, 1.5, 2.0, 3.0, 100.]
+  - name: abseta
+    expr: abs(conv_eta)
+    edges: [0.0, 0.8, 1.5, 2.0, 2.5]
+
+# correction of a candidate: the value of its bin (false) or multilinear between the bin centres (true).
+# With the strong |eta| dependence and coarse bins the interpolation between centres is not faithful.
+interpolate: false
+
+# one-dimensional cross-checks of the inclusive sample (not part of the map)
+cross_checks:
+  - name: rho
+    expr: conv_vtxRho
+    edges: [1.5, 4., 7., 12., 25., 100.]
+  - name: pt
+    expr: pt_est
+    edges: [0.5, 0.6, 0.7, 0.85, 1.0, 1.25, 1.5, 2.0, 2.5, 3.5, 100.]
+  - name: pt_reco
+    expr: conv_pt
+    edges: [0.5, 0.6, 0.7, 0.85, 1.0, 1.25, 1.5, 2.0, 2.5, 3.5, 100.]
+  - name: abseta
+    expr: abs(conv_eta)
+    edges: [0.0, 0.4, 0.8, 1.2, 1.5, 1.8, 2.0, 2.2, 2.5]
+
+# model variations for the systematic uncertainty (overrides of `model`): per bin, the largest |s_var - s|
+# is the systematic error (each variation repeats the inclusive fit and the per-bin fits)
+variations:
+  bkg3: {bkg_order: 3}
+  chic0: {chic0: true}
+  range_narrow: {range: [2.0, 4.6], bins: 65}
+  range_wide: {range: [1.4, 6.0], bins: 115}
+  n15: {fixed: {n: 1.5}}
+  n5: {fixed: {n: 5.0}}
+  r21_low: {r21_factor: 0.8}       # N(chi_c2)/N(chi_c1) of the bins 20% below / above the inclusive value
+  r21_high: {r21_factor: 1.2}

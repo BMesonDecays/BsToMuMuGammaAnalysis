@@ -13,6 +13,7 @@ dependencies:
   - pandas>=2.2
   - numpy>=1.26
   - scipy
+  - iminuit>=2.20              # conv_scale.py fits
   - scikit-learn
   - xgboost>=2.0
   - tensorflow>=2.16             # MLP; conda-forge builds with CUDA are picked on a machine with a GPU
