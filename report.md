@@ -33,6 +33,22 @@ Entries are newest first.
 
 ---
 
+## 2026-11-21: Inflated conversion photon momentum error in the B fit (`conversionMomentumError`, default 0)
+
+- **Change:** new parameter `conversionMomentumError` (`ConversionCuts::momentumError`, passed to `MMGVertexFit::conversionParticle`): σ(p)/p added along the refitted photon momentum (C_p += s² p pᵀ, direction unchanged) before the photon enters the B fit. Default 0 (no change to the ntuple).
+- **Scan** (B_s → μμγ gen-matched `mmcg`, `bsmmg_aod` 8888 / `bsmmg_miniaod` 32884 events; mass − m_gen(B) median / (q84 − q16)/2 [MeV], candidates within ±100 MeV, pull median / (q84 − q16)/2, median σ_m):
+
+  | s | AOD all fitted | AOD vtxProb > 10⁻³ | MiniAOD all fitted | MiniAOD vtxProb > 10⁻³ |
+  |---|---|---|---|---|
+  | 0 | −96 / 292, 337; pull −1.85 / 5.11; σ_m 56 | −61 / 164, 259; pull −1.04 / 2.63 | −130 / 218, 367; pull −2.80 / 4.37; σ_m 47 | −88 / 171, 293; pull −2.13 / 3.34 |
+  | 0.10 | −97 / 298, 293; pull −0.68 / 2.22; σ_m 146 | −64 / 181, 233; pull −0.43 / 1.22 | −117 / 232, 319; pull −0.80 / 1.68; σ_m 142 | −99 / 188, 260; pull −0.63 / 1.31 |
+  | 0.15 | −107 / 328, 250; pull −0.59 / 1.99; σ_m 182 | −65 / 212, 200; pull −0.35 / 1.18 | −110 / 257, 313; pull −0.59 / 1.48; σ_m 182 | −94 / 204, 254; pull −0.49 / 1.16 |
+  | 0.20 | −101 / 364, 232; pull −0.53 / 1.82; σ_m 208 | −70 / 253, 174; pull −0.37 / 1.22 | −103 / 307, 274; pull −0.49 / 1.44; σ_m 216 | −89 / 237, 232; pull −0.43 / 1.09 |
+
+  The pull becomes calibrated (≈ 1.1–1.3 with vtxProb > 10⁻³ for s ≥ 0.10), but the resolution gets **worse** with s: candidates within ±100 MeV drop by 10–30%.
+- **Why:** the fitted daughters do not change: the photon response after the B fit is −6.7% / −7.0% for every s (the fit does not correct the brem loss), the muons move by 0.2%, and the B mass computed from the fitted daughters is the same for all s (AOD −106 / 302 MeV, MiniAOD −129 / 218 MeV). Only the top particle changes: the pointing constraint (stage 2) acts on the 7-parameter B state and moves its mass through the mass–momentum correlation (as the zero-mass constraint did for the photon, 2026-11-20). The larger photon error increases that correlation, and the PV→SV direction is too poorly measured to determine the photon energy, so the mass picks up noise. (The fit hardly improves on the pre-fit mass for `mmcg` anyway: vtxProb > 10⁻³, AOD 164 vs 182 MeV, MiniAOD 171 vs 175 MeV.)
+- **Conclusion:** keep `conversionMomentumError = 0` in the fit. To get a calibrated mass error without degrading the mass, add the photon term after the fit: σ_m'² = σ_m² + ((m² − m_μμ²)/2m)² s², with s ≈ 0.15–0.20 (estimate on the s = 0 ntuples: pull width ≈ 1.0–1.3); this can be done in the analysis from `mmcg_mass`, `mmcg_massErr`, `mmcg_fitDimuonMass`. The mass bias (median −60 to −130 MeV) and the low tail are the brem loss itself and need an energy correction or a calorimeter energy.
+
 ## 2026-11-21: Why `mmcg_massErr` is underestimated (study; no code change)
 
 - **Symptom:** the `mmcg` mass pull (m − m_gen(B))/σ_m has median −1.9 / −2.8 and (q84 − q16)/2 = 5.1 / 4.4 (AOD / MiniAOD, B_s → μμγ, gen-matched, fitted). The `mmg` mass pull is fine (core 1.08, 2026-11-06), so the problem is the conversion photon.

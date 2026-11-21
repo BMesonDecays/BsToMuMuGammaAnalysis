@@ -111,9 +111,10 @@ class MMGVertexFit
 
         // photon from a conversion: vertex fit of the e+ e- tracks with a colinearity constraint (no mass
         // constraint; the fitted mass is ~1 MeV); the photon at the conversion vertex as a standalone
-        // particle, not attached to the fit tree (empty if the fit fails)
+        // particle, not attached to the fit tree (empty if the fit fails). momentumError: relative error
+        // added in quadrature along the photon momentum (the track errors do not include bremsstrahlung).
         static std::optional<RefCountedKinematicParticle> conversionParticle(const reco::TransientTrack& e1,
-            const reco::TransientTrack& e2);
+            const reco::TransientTrack& e2, double momentumError = 0.);
 
         // photon measured by its ECAL cluster; the photon copy and the covariance the particle points to
         // are returned together with it and must be kept alive (see Result::fitPhotons)

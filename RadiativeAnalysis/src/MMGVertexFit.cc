@@ -114,7 +114,7 @@ RefCountedKinematicParticle MMGVertexFit::trackParticle(const reco::TransientTra
 // for several B candidates this read a freed tree (crashes, ~1% of mmcg fits changed) or, with the
 // tree kept alive, looped forever in KinematicTree::addTree.
 std::optional<RefCountedKinematicParticle> MMGVertexFit::conversionParticle(const reco::TransientTrack& e1,
-    const reco::TransientTrack& e2)
+    const reco::TransientTrack& e2, double momentumError)
     {
         const std::vector<RefCountedKinematicParticle> electrons{trackParticle(e1, bmmg::pdg::electronMass),
                                                                  trackParticle(e2, bmmg::pdg::electronMass)};
@@ -127,8 +127,21 @@ std::optional<RefCountedKinematicParticle> MMGVertexFit::conversionParticle(cons
             tree->movePointerToTheTop();
             const RefCountedKinematicParticle top = tree->currentParticle();
             float chi2 = top->chiSquared(), ndof = top->degreesOfFreedom();
-            return VirtualKinematicParticleFactory().particle(top->currentState(), chi2, ndof,
-                                                              RefCountedKinematicParticle());
+            KinematicState state = top->currentState();
+            if (momentumError > 0.)
+            {
+                // the electrons lose energy by bremsstrahlung, which the (pion-hypothesis) track fit does not
+                // model: the momentum is biased low with a spread far above the track errors (report.md,
+                // 2026-11-21). Add sigma(p)/p = momentumError along p, leaving the direction unchanged.
+                AlgebraicSymMatrix77 cov = state.kinematicParametersError().matrix();
+                const AlgebraicVector7& par = state.kinematicParameters().vector();
+                const double s2 = momentumError * momentumError;
+                for (int i = 3; i < 6; ++i)
+                    for (int j = i; j < 6; ++j) cov(i, j) += s2 * par(i) * par(j);
+                state = KinematicState(state.kinematicParameters(), KinematicParametersError(cov),
+                                       state.particleCharge(), state.magneticField());
+            }
+            return VirtualKinematicParticleFactory().particle(state, chi2, ndof, RefCountedKinematicParticle());
         }
         catch (const VertexException&)
         {

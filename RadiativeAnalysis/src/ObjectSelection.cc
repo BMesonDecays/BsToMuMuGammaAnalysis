@@ -69,9 +69,9 @@ namespace bmmg {
     }
 
     // e+ e- refit once the vector is final (the particles point to the TransientTracks)
-    void refitConversions(std::vector<SelectedConversion>& selected) {
+    void refitConversions(std::vector<SelectedConversion>& selected, double momentumError) {
       for (auto& sc : selected) {
-        sc.photon = MMGVertexFit::conversionParticle(sc.track1, sc.track2);
+        sc.photon = MMGVertexFit::conversionParticle(sc.track1, sc.track2, momentumError);
         if (sc.photon) {
           const KinematicState& s = (*sc.photon)->currentState();
           const GlobalVector p = s.globalMomentum();
@@ -107,7 +107,7 @@ namespace bmmg {
       sc.pairP4.SetXYZT(p.x(), p.y(), p.z(), std::sqrt(p.mag2()));
       selected.push_back(std::move(sc));
     }
-    refitConversions(selected);
+    refitConversions(selected, cuts.momentumError);
     return selected;
   }
 
@@ -128,7 +128,7 @@ namespace bmmg {
       sc.pairP4 = conv.p4();
       selected.push_back(std::move(sc));
     }
-    refitConversions(selected);
+    refitConversions(selected, cuts.momentumError);
     return selected;
   }
 

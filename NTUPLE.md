@@ -99,6 +99,7 @@ Every opposite-sign pair of selected muons that do not share muon segments.
 
 - `evt_convAvailable` (int, per event): 1 if the input conversion collection exists in the event.
 - `conv_index`: index in the collection.
+- Parameter `conversionMomentumError` (default 0): relative momentum error added along the refitted photon momentum before the B fit (the track errors do not include bremsstrahlung). Not used by default: it calibrates the `mmcg` mass pull but degrades the mass resolution (report.md, 2026-11-21).
 - `conv_fitOK`: 1 if the refit succeeded; `conv_fitProb`: its χ² probability (−1 if it failed).
 - `conv_pt`, `conv_eta`, `conv_phi`: from the refitted photon, or from the pair momentum of the input collection if the refit failed.
 - `conv_vtxX/Y/Z`, `conv_vtxRho`: the conversion vertex of the input collection; `conv_vtxProb`: its χ² probability (AOD; −1 in MiniAOD).

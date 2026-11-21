@@ -191,6 +191,7 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& cfg)
     photonCuts_.minMVA = cfg.getParameter<double>("photonMinMVA");
     conversionCuts_.minPt = cfg.getParameter<double>("conversionMinPt");
     conversionCuts_.minVertexProb = cfg.getParameter<double>("conversionMinVertexProb");
+    conversionCuts_.momentumError = cfg.getParameter<double>("conversionMomentumError");
     trackCuts_.minPt = cfg.getParameter<double>("kaonMinPt");
     candidateConfig_.minPrefitMass = cfg.getParameter<double>("minPrefitMass");
     candidateConfig_.maxPrefitMass = cfg.getParameter<double>("maxPrefitMass");
@@ -491,6 +492,8 @@ void RadiativeAnalysis::fillDescriptions(edm::ConfigurationDescriptions& descrip
   desc.add<edm::InputTag>("photonPFFootprint", edm::InputTag("particleBasedIsolation", "gedPhotons"));   // AOD
   desc.add<double>("conversionMinPt", 0.5);
   desc.add<double>("conversionMinVertexProb", 1e-6);
+  // relative momentum error added to the refitted conversion photon (electron bremsstrahlung, not in the track errors)
+  desc.add<double>("conversionMomentumError", 0.);
   desc.add<double>("diphotonMinMass", 0.05);
   desc.add<double>("diphotonMaxMass", 1.1);
   desc.add<double>("kaonMinPt", 0.7);

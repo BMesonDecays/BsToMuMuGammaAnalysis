@@ -33,6 +33,7 @@ namespace bmmg {
   struct ConversionCuts {
     double minPt = 0.5;              // pair momentum
     double minVertexProb = 1e-6;
+    double momentumError = 0.;       // relative momentum error added to the refitted photon (bremsstrahlung)
   };
 
   struct TrackCuts {
