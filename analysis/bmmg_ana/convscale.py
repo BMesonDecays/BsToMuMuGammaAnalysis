@@ -275,3 +275,67 @@ class ScaleMap:
     def lookup_df(self, df, interpolate=True):
         return self.lookup(*[np.asarray(df.eval(v['expr']), dtype=float) for v in self.variables],
                            interpolate=interpolate)
+
+
+# ------------------------------------------------------------------------------------------ MC truth
+
+M_BS = 5.36693
+Y_BS = M_BS ** 2 - M_JPSI ** 2   # B_s -> J/psi gamma: peak of m(mu mu gamma)^2 - m(mu mu)^2
+
+
+def y_from_vectors(dimu_pt, dimu_eta, dimu_phi, dimu_mass, pho_pt, pho_eta, pho_phi):
+    """m(mu mu gamma)^2 - m(mu mu)^2 = 2 p(mu mu).p(gamma) for a massless photon [GeV^2]."""
+    a = [np.asarray(v, dtype=float) for v in (dimu_pt, dimu_eta, dimu_phi, dimu_mass, pho_pt, pho_eta, pho_phi)]
+    dpt, deta, dphi, dm, gpt, geta, gphi = a
+    dpx, dpy, dpz = dpt * np.cos(dphi), dpt * np.sin(dphi), dpt * np.sinh(deta)
+    de = np.sqrt(dpx ** 2 + dpy ** 2 + dpz ** 2 + dm ** 2)
+    gpx, gpy, gpz = gpt * np.cos(gphi), gpt * np.sin(gphi), gpt * np.sinh(geta)
+    ge = gpt * np.cosh(geta)
+    return 2 * (de * ge - dpx * gpx - dpy * gpy - dpz * gpz)
+
+
+def fit_peak(x, rng=(0.6, 1.3), bins=140, fixed=None):
+    """Crystal Ball fit (no background) of a response-like distribution, e.g. E_reco/E_true or y/Y_true.
+
+    The peak position 'mean' has the same definition as s of fit() (CB mean, tail parameters as in `fixed`,
+    default n = 2 as DEFAULT_MODEL). Returns dict with values, errors, valid, chi2, ndf.
+    """
+    from iminuit import Minuit
+
+    fixed = {'n': 2.0} if fixed is None else fixed
+    x = np.asarray(x, dtype=float)
+    counts, edges = np.histogram(x, bins=bins, range=rng)
+    k = 8
+    w = np.diff(edges)
+    grid = edges[:-1, None] + w[:, None] * (np.arange(k) + 0.5) / k
+    dx = (w / k)[:, None]
+    ntot = counts.sum()
+    med = np.median(x[(x > rng[0]) & (x < rng[1])]) if ntot else 1.
+    names = ['mean', 'sigma', 'alpha', 'n', 'N']
+
+    def expected(p):
+        d = crystal_ball(grid, p[0], p[1], p[2], p[3])
+        t = (d * dx).sum()
+        return p[4] * (d * dx).sum(axis=1) / t if t > 0 else np.zeros(len(counts))
+
+    def nll(*p):
+        mu = np.maximum(expected(p), 1e-12)
+        return 2 * float(np.sum(mu - counts * np.log(mu)))
+
+    p0 = {'mean': med, 'sigma': 0.03, 'alpha': 1.0, 'n': 2.0, 'N': float(ntot)}
+    p0.update(fixed)
+    m = Minuit(nll, *[p0[k] for k in names], name=names)
+    m.errordef = Minuit.LEAST_SQUARES
+    for k, v in {'mean': rng, 'sigma': (1e-3, 0.5), 'alpha': (0.2, 10.), 'n': (1.01, 50.), 'N': (0, None)}.items():
+        m.limits[k] = v
+    for k in fixed:
+        m.fixed[k] = True
+    m.migrad()
+    m.hesse()
+    vals = {k: float(m.values[k]) for k in names}
+    mu = expected([vals[k] for k in names])
+    ok = mu > 0
+    return {'values': vals, 'errors': {k: float(m.errors[k]) for k in names}, 'n': int(ntot),
+            'valid': bool(m.valid and m.fmin.has_accurate_covar),
+            'chi2': float(np.sum((counts[ok] - mu[ok]) ** 2 / mu[ok])), 'ndf': int(ok.sum() - (5 - len(fixed))),
+            'counts': counts, 'edges': edges, 'expected': mu}

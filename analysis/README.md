@@ -78,6 +78,7 @@ For channel `mmg` (the other channels are analogous):
 | `significance` | `scan`: S, B, S/√B, Asimov Z and Punzi for all thresholds at once; `sideband_factor` (flat or exponential fit to the sidebands); `binned_asimov`: expected Z of a binned mass fit in score categories; `optimise_categories`: category boundaries, with an unbiased half-sample estimate |
 | `plotting` | shape comparisons, data vs MC with ratio and blinding, ROC, overtraining, importance, scan (mplhep CMS style) |
 | `config` | reads `config/analysis.yaml` and builds the samples (signal MC, data, data sidebands) |
+| `convscale` | converted-photon energy scale: χ_c fit model and `fit` (iminuit), `pt_est`, `bin_index`, `ScaleMap` (JSON map, lookup), `corrected_mass`; MC truth: `y_from_vectors`, `fit_peak` |
 
 ## Analysis choices in `config/analysis.yaml` (starting values, to be decided)
 - **Blinding:** data with `mass` in `blind` is never shown.
@@ -98,3 +99,28 @@ For channel `mmg` (the other channels are analogous):
 
   Hidden layers, activation, dropout, L2, batch normalisation, learning rate, batch size and the early-stopping patience (epochs) are in `params`. TensorFlow uses the GPU if it sees one (`--cpu` hides it). The importance is the AUC decrease on the test fold when a feature is shuffled, not the XGBoost gain, so the two importance plots are not directly comparable.
 - **Best candidate:** `best_candidate` (e.g. `vtxProb`) keeps one candidate per event. By default all candidates are kept.
+
+## Converted-photon energy scale (χ_c → J/ψ γ)
+The energy of the converted photons (`conv_*`, the e⁺e⁻ pair refitted with the colinearity constraint, used by `mmcg`) is low by 1–5% at the peak. The bremsstrahlung tail is not part of this correction. The scale is measured in data with χ_c1,2 → J/ψ γ (the ntuple block `chic_`).
+```bash
+python3 convert.py config/convert_chic.yaml                  # chic tables -> ~/bmmg/parquet_chic
+python3 scripts/conv_scale.py config/conv_scale.yaml         # data map -> ~/bmmg/results/conv_scale/conv_scale.json
+python3 convert.py config/convert_convmc.yaml                # MC truth check: gen-matched mmcg of B_s -> J/psi gamma
+python3 scripts/conv_scale_mc.py config/conv_scale_mc.yaml   # MC map from E_reco/E_true, y-method check, data/MC
+```
+- **Fit variable:** y = m(μμγ)² − m(μμ)² = 2 p_μμ·p_γ. It is linear in the photon energy, so the χ_c1/χ_c2 peaks sit at s·(m_χc² − m_J/ψ²).
+- **Model:** Crystal Ball peaks (tail on the low side; n fixed to 2) plus a Chebyshev background, in a binned likelihood fit. The scale s is the CB mean, i.e. the peak. The correction is p_γ → p_γ / s.
+- **Binning:**
+  - The map is binned in `pt_est` = conv_pt · Y₁ / y and |η|. For a χ_c1 candidate `pt_est` is the true photon pt, so the binning does not select on the response.
+  - Binning in the reconstructed pt biases s upwards at low pt, through migration and the 0.5 GeV conversion threshold.
+  - The map starts at `pt_est` = 1 GeV: below that, the threshold cuts into the fit range.
+- **Shape parameters:**
+  - The tail α comes from one reference fit per |η| slice (`shape_from`); it is 0.9–1.0 in the barrel and smaller forward.
+  - N(χ_c2)/N(χ_c1) comes from the barrel (`r21_from`) and is fixed everywhere. In the endcaps the two peaks merge and a free ratio is degenerate with s.
+- **Systematics:** the model variations in the config (background order, χ_c0, fit range, n, ±20% on the ratio). Per bin, the largest deviation is the systematic error.
+- **Output:**
+  - `conv_scale.json`: the `ScaleMap`, with variables, edges, `scale`, `error` (stat), `syst` and `status` (0 ok, 1 fit not valid, 2 too few candidates; bins with status ≠ 0 hold the scale of their |η| slice).
+  - Fit plots per bin, the summary plot, a CSV of all fits.
+  - The closure: the map applied to every candidate, then refits in the finer cross-check bins (pt, reconstructed pt, |η|, conversion radius).
+- **Applying the map:** the correction uses the value of the candidate's bin (`interpolate: false`). For `mmcg`, `corrected_mass(m, m_μμ, s)` gives √(m_μμ² + (m² − m_μμ²)/s). It is exact for the unfitted mass and approximate for the fitted one; the ntuplizer will apply 1/s to the photon before the fit.
+- **Range:** the χ_c photons cover about 1–5 GeV, the signal photons 3–40 GeV. Above the last edge the lookup returns the last bin. The MC (`conv_scale_mc.py`) gives the pt dependence beyond the data range.

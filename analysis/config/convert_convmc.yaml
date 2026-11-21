@@ -1,0 +1,23 @@
+# Configuration of convert.py for the MC truth check of the converted-photon energy scale
+# (scripts/conv_scale_mc.py): gen-matched mmcg candidates of the B_s -> J/psi gamma MC.
+#
+#   python3 convert.py config/convert_convmc.yaml
+
+output: ~/bmmg/parquet_convmc
+
+channels: [mmcg]
+
+# truth-matched candidates only; no fit requirement (the check uses the unfitted conversion momentum)
+preselection: "genMatched == 1"
+
+drop_columns: ["trg_*", "bs_*"]
+
+chunk_files: 200
+workers: 16
+compression: zstd
+
+datasets:
+  BsToJPsiGamma_2022:
+    files: ~/bmmg/ntuples/BsToJPsiG-JPsiTo2Mu_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/**/bmmg_ntuple_*.root
+    isMC: true
+    label: "Bs -> J/psi gamma, Run3Summer22"

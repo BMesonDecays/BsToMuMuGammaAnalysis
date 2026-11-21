@@ -1,0 +1,30 @@
+# Configuration of scripts/conv_scale_mc.py: converted-photon energy scale in MC from the truth
+# (B_s -> J/psi gamma, gen-matched mmcg candidates), with the peak definition of scripts/conv_scale.py.
+#
+#   python3 convert.py config/convert_convmc.yaml
+#   python3 scripts/conv_scale_mc.py config/conv_scale_mc.yaml
+
+parquet: ~/bmmg/parquet_convmc
+datasets: [BsToJPsiGamma_2022]
+output: ~/bmmg/results/conv_scale_mc
+
+# the data map of scripts/conv_scale.py, overlaid on the MC scale (empty: no comparison)
+data_map: ~/bmmg/results/conv_scale/conv_scale.json
+
+# candidate selection on top of the truth match (conversion from the signal B, the leading gen photon
+# within dR < 0.05)
+selection: "dimu_resonance == 1"
+
+# response fit: E_reco/E_true in this range (the gen matching of the ntuple requires |dpt/pt| < 0.5)
+fit_range: [0.6, 1.3]
+fit_bins: 140
+min_candidates: 200
+
+# binning in the TRUE photon pt and |eta| (map variables named as in the data map; exprs on the MC table)
+binning:
+  - name: pt
+    expr: gen_pho1_pt
+    edges: [1., 2., 3., 5., 8., 12., 20., 100.]
+  - name: abseta
+    expr: abs(gen_pho1_eta)
+    edges: [0.0, 0.8, 1.5, 2.0, 2.5]
