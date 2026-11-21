@@ -148,11 +148,14 @@ def fit(y, cfg=None, start=None, fixed=(), limits=None):
     p0.update(model.cfg.get('fixed') or {})
     fixed = set(fixed) | set(model.cfg.get('fixed') or {})
     names = model.par_names
+    nlogn = np.where(counts > 0, counts * np.log(np.maximum(counts, 1)), 0.)
 
     def nll(*vals):
         mu = model.expected(dict(zip(names, vals)))
         mu = np.maximum(mu, 1e-12)
-        return 2 * float(np.sum(mu - counts * np.log(mu)))   # -2 ln L (up to a constant)
+        # -2 ln(L / L_saturated) (Baker-Cousins): same minimum and errors as -2 ln L, but of the order of the chi2
+        # instead of ~N ln N, which keeps the numerical derivatives precise for samples of 10^7 candidates
+        return 2 * float(np.sum(mu - counts + nlogn - counts * np.log(mu)))
 
     m = Minuit(nll, *[p0[k] for k in names], name=names)
     m.errordef = Minuit.LEAST_SQUARES   # nll is -2 ln L: errordef 1
@@ -168,6 +171,10 @@ def fit(y, cfg=None, start=None, fixed=(), limits=None):
         m.fixed[k] = True
     m.strategy = 1
     m.migrad()
+    for _ in range(3):   # Migrad can stop above the EDM target in large samples: continue from where it stopped
+        if m.valid:
+            break
+        m.migrad()
     m.hesse()
     vals = {k: float(m.values[k]) for k in names}
     errs = {k: float(m.errors[k]) for k in names}
@@ -331,6 +338,10 @@ def fit_peak(x, rng=(0.6, 1.3), bins=140, fixed=None):
     for k in fixed:
         m.fixed[k] = True
     m.migrad()
+    for _ in range(3):   # Migrad can stop above the EDM target in large samples: continue from where it stopped
+        if m.valid:
+            break
+        m.migrad()
     m.hesse()
     vals = {k: float(m.values[k]) for k in names}
     mu = expected([vals[k] for k in names])
