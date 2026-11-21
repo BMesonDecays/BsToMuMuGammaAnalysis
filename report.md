@@ -33,6 +33,22 @@ Entries are newest first.
 
 ---
 
+## 2026-11-21: Converted photon energy scale: the π⁰ → γγ calibration of AN-2023/035 (B* → Bγ); plan
+
+- **AN-2023/035 v13, App. B** (`src/AN2023_035_v13.pdf`): the converted-photon energy scale (PES) is calibrated in data with π⁰ → γγ, both photons converted.
+  - **Reconstruction:** each e⁺e⁻ pair refitted to a common vertex with zero mass; the two photons fitted to a common vertex, probability > 1%; PV = smallest sum of squared distances to the extrapolated photon trajectories; photons refitted to the PV.
+  - **Fit:** unbinned fits of m(γγ), double Crystal Ball (common mean, n and α; f = 0.75, n = 20, σ₂/σ₁ = 2.5 fixed unless the yield is large) + 2nd-order polynomial.
+  - **Binning:** 31 × 17 = 527 bins of the average p_T (0.3–17.2 GeV) and |η| (0–2.2) of the two photons. About 3.2M π⁰ in all 2018 AOD data sets, Σχ²/ndf = 56686/57105.
+  - **Correction:** s = 134.977 MeV / m_fit per bin (m ∝ √(E₁E₂), so m/m_PDG is the scale). It is interpolated per photon in (p_T, |η|) with `TGraph2DErrors::Interpolate` and applied only in invariant masses, (P_B + s·P_γ).M(); the stored photon p_T is not changed.
+  - **Size (2018):** m/m_PDG for |η| < 0.2 goes from 0.998 (0.3 GeV) through 0.992 (1.2 GeV), 0.981 (5 GeV) and 0.976 (10 GeV) to 0.971 (17 GeV); for |η| = 0.8–1.0 from 0.993 to 0.958; for |η| > 1.5 from 0.97 to 0.86. No φ dependence.
+  - **Validation:** corrected π⁰ mass within 1% for |η| < 1.4 (worse at 1.4–1.6). The data correction was applied to MC (too little MC for its own calibration); afterwards E_reco/E_gen in MC is consistent with 1.
+- **Comparison with our signal photons** (colinearity fit, `Study/ConvFitStudy`, B_s → μμγ MC): the core of E_reco/E_gen (Gaussian fit around the mode) is 0.983 (AOD) / 0.981 (MiniAOD), width 3–4%, about 0.98–0.99 in each p_T bin from 3 to 40 GeV. This agrees with the size of the AN's π⁰ scale at these p_T. The median (0.93) and the mean (0.89–0.92) are lower because of the bremsstrahlung tail, which a scale calibration (the π⁰ peak position) does not correct.
+- **Plan (not started):**
+  1. A calibration channel in the ntuplizer: pairs of conversions (both from the conversion collection of the format), common-vertex fit, m(γγ) < 0.3 GeV (π⁰, and η up to 0.6 GeV as a cross-check), storing m, the p_T/η of both photons, the vertex probability and the PV. Run on the full 2022 ParkingDoubleMuonLowMass data (the AN needed O(10⁶) π⁰; our 6k-event test files are far too small: no visible peak with a naive pairing).
+  2. Fits in (p_T, |η|) bins as in the AN; the scale map as a ROOT/JSON file; per-photon interpolation, applied to the `mmcg` mass, e.g. as `mmcg_massCorr`. The same map is used in MC, after checking it against E_reco/E_gen in MC.
+  3. A second candle closer to our photon p_T (3–10 GeV, where the π⁰ statistics are smaller): χ_c1,2 → J/ψγ with a converted photon (`mmcg` with a J/ψ dimuon and a lower pre-fit mass window). Q = m(μμγ) − m(μμ) peaks at 414 / 459 MeV. Both are abundant in the low-mass parking data.
+  4. The remaining low tail stays a resolution effect, handled by the mass error (σ_m correction) and the signal model.
+
 ## 2026-11-21: ECAL energy for the conversions from PF candidates (study; no change to the ntuplizer)
 
 - **Goal:** recover the bremsstrahlung loss of the conversion electrons (track energy −7%, long low tail) with the calorimeter.
