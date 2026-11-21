@@ -33,6 +33,26 @@ Entries are newest first.
 
 ---
 
+## 2026-11-21: Why `mmcg_massErr` is underestimated (study; no code change)
+
+- **Symptom:** the `mmcg` mass pull (m − m_gen(B))/σ_m has median −1.9 / −2.8 and (q84 − q16)/2 = 5.1 / 4.4 (AOD / MiniAOD, B_s → μμγ, gen-matched, fitted). The `mmg` mass pull is fine (core 1.08, 2026-11-06), so the problem is the conversion photon.
+- **It is all in the photon energy:** with the photon momentum rescaled to the generated one (m² − m_μμ² ∝ E_γ), the residual drops from 292 / 218 MeV to 70 / 44 MeV and the pull width to 1.13 / 0.99. Binned in the photon response r = p_T/p_T,gen − 1, the pull is −0.3 / −0.7 with width 1.2 / 1.4 for |r| < 5%, −3.3 / −4.3 for −20% < r < −5%, and −11 / −12 for r < −20%. Muons: response 0.2% / 0.1%, width 1.4–1.5%, not the cause.
+- **Photon p_T error vs actual spread** (`Study/ConvFitStudy`, new branches `<variant>_ptErr` from the 7×7 covariance, `trkPt/PtErr/NHits/Chi2n` of the two tracks; 10k events each, signal-B conversions):
+
+  | | AOD | MiniAOD |
+  |---|---|---|
+  | photon response, colinearity fit (median / (q84 − q16)/2) | −6.5% / 20.5% | −7.5% / 12.3% |
+  | fraction with response < −20% | 21–35% (by ρ) | 9–26% |
+  | assigned σ(p_T)/p_T, colinearity fit (median) | 3.0% | 1.8% |
+  | assigned σ(p_T)/p_T of each track | 3.1% | 2.4% |
+  | photon p_T pull, colinearity fit: median / width | −2.1 / 10.6 | −4.6 / 7.0 |
+  | old vertex fit + zero mass (`cur`, only its converged 40%): assigned / pull width | 6.7% / 5.6 | 1.6% / 4.8 |
+
+- **Cause: electron bremsstrahlung, not modelled in the track fit.** The conversion electrons radiate in the tracker material after the conversion point. `generalTracks` are Kalman-fitted with the pion hypothesis: their material effects are multiple scattering and mean ionisation loss, without bremsstrahlung. The fitted momentum is therefore biased low (≈ −7%) with a long Bethe–Heitler tail, while the error only reflects hit resolution and multiple scattering (2–3%). The observed spread is about 7× the assigned error in the core, plus the non-Gaussian low tail. Bias and width hardly depend on the conversion radius or the photon p_T.
+- **Why the new fit made the pull worse (3.1 → 4–5):** the colinearity constraint combines the two tracks and reduces the photon error below the single-track error. The old fit converged only for 30–40% of the conversions, and its non-converged vertex left larger errors (AOD `vtxOnly`: 11.8% assigned). Its pull looked better because its errors were inflated by accident, not because it described the brem.
+- **Effect of a realistic photon error** (estimate: σ_m² + (∂m/∂ln E_γ)²(s² − a²), with ∂m/∂ln E_γ = (m² − m_μμ²)/2m ≈ 1.8 GeV and a the assigned error): a relative photon error s = 15% (AOD 20%) gives a pull width ≈ 1.0–1.3 and σ_m ≈ 270–370 MeV; 10% gives 1.4–1.9. The low tail (|pull| > 3: 8–14% at s = 15%) stays, since the brem loss is not Gaussian.
+- **Options, not implemented:** (1) inflate the photon momentum error in `conversionParticle` (a relative energy error of ~12–20% added in quadrature, like the ECAL error scale of `mmg`); with the pointing constraint the B fit can then partly correct the photon energy instead of pulling the muons and vertex, so the resolution may improve, not only the pull; (2) correct the −7% mean bias; (3) use a calorimeter energy for the conversion (supercluster or PF cluster matched to the pair), which contains the brem photons; (4) GSF refit of the electron tracks (needs RECO, not available in AOD/MiniAOD).
+
 ## 2026-11-21: Conversions refitted with a colinearity constraint; B mass resolution of `mmcg`
 
 - **Change:** `MMGVertexFit::conversionParticle` fits the e⁺e⁻ tracks with `KinematicConstrainedVertexFitter` + `ColinearityKinematicConstraint(PhiTheta)` (as the reco `ConversionVertexFinder`), without the zero-mass constraint; the photon keeps the fitted mass (≈ 1 MeV). Reasons: the plain vertex fit does not converge for 58–74% of the signal conversions (2026-11-17), and the zero-mass constraint after a colinearity fit moves the momentum by many σ (2026-11-20). `conv_fitProb` is now the χ² probability of the colinearity fit.

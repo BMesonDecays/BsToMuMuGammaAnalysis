@@ -31,7 +31,7 @@
 
 namespace {
   constexpr double me = 0.00051099895;
-  struct Out { int status = -9; float mass = -1, massErr = -1, prob = -1, rho = -1, pt = -1; };
+  struct Out { int status = -9; float mass = -1, massErr = -1, prob = -1, rho = -1, pt = -1, ptErr = -1; };
   // status: 0 ok, 1 vertex fit invalid, 2 vertex fit exception, 3 constraint invalid, 4 constraint exception, 5 particle build exception
   float probOf(const RefCountedKinematicParticle& p) {
     const float n = p->degreesOfFreedom();
@@ -46,6 +46,11 @@ namespace {
     o.prob = probOf(p);
     o.rho = tree->currentDecayVertex()->position().perp();
     o.pt = s.globalMomentum().perp();
+    // pt error from the (px, py) block of the 7x7 covariance (x, y, z, px, py, pz, m)
+    const auto& c = s.kinematicParametersError().matrix();
+    const double px = s.globalMomentum().x(), py = s.globalMomentum().y();
+    const double v = (px * px * c(3, 3) + py * py * c(4, 4) + 2 * px * py * c(3, 4)) / (px * px + py * py);
+    o.ptErr = v > 0 ? std::sqrt(v) : -1.f;
   }
 }
 
@@ -65,6 +70,14 @@ public:
     t_->Branch("recoRho", &recoRho_);
     t_->Branch("recoProb", &recoProb_);
     t_->Branch("pairPt", &pairPt_);
+    t_->Branch("trkPt1", &trkPt_[0]);
+    t_->Branch("trkPt2", &trkPt_[1]);
+    t_->Branch("trkPtErr1", &trkPtErr_[0]);
+    t_->Branch("trkPtErr2", &trkPtErr_[1]);
+    t_->Branch("trkNHits1", &trkNHits_[0]);
+    t_->Branch("trkNHits2", &trkNHits_[1]);
+    t_->Branch("trkChi2n1", &trkChi2n_[0]);
+    t_->Branch("trkChi2n2", &trkChi2n_[1]);
     t_->Branch("dCotTheta", &dCot_);
     t_->Branch("dPhi", &dPhi_);
     t_->Branch("vtxOnlyMass", &vtxMass_);
@@ -87,6 +100,7 @@ public:
       t_->Branch((n + "_prob").c_str(), &out_[i].prob);
       t_->Branch((n + "_rho").c_str(), &out_[i].rho);
       t_->Branch((n + "_pt").c_str(), &out_[i].pt);
+      t_->Branch((n + "_ptErr").c_str(), &out_[i].ptErr);
     }
   }
 
@@ -122,6 +136,10 @@ public:
       recoRho_ = vtx.perp();
       recoProb_ = prob;
       pairPt_ = p4.pt();
+      for (int k = 0; k < 2; ++k) {
+        const reco::Track* t = k == 0 ? t0 : t1;
+        trkPt_[k] = t->pt(); trkPtErr_[k] = t->ptError(); trkNHits_[k] = t->numberOfValidHits(); trkChi2n_[k] = t->normalizedChi2();
+      }
       dCot_ = 1. / std::tan(t0->theta()) - 1. / std::tan(t1->theta());
       dPhi_ = reco::deltaPhi(t0->phi(), t1->phi());
       const reco::TransientTrack tt0 = ttb.build(*t0), tt1 = ttb.build(*t1);
@@ -298,6 +316,8 @@ private:
   edm::EDGetTokenT<std::vector<reco::GenParticle>> gen_;
   TTree* t_;
   int fromB_, sergeyFallback_;
+  float trkPt_[2], trkPtErr_[2], trkChi2n_[2];
+  int trkNHits_[2];
   float sergeyVtxPt_;
   float genPt_;
   float recoRho_, recoProb_, pairPt_, dCot_, dPhi_, vtxMass_, vtxMassErr_;
