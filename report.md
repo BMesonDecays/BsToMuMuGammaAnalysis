@@ -33,6 +33,58 @@ Entries are newest first.
 
 ---
 
+## 2026-11-22: Converted-photon scale: tighter forward selection reduces the endcap systematic from 1.4–4% to 0.3–0.9% (full 2022 data)
+
+Follows the previous entry (open item: the endcap systematic, dominated by `range_wide`).
+
+**Cause.** In the forward region the χ_c1/χ_c2 peaks merge and S/B under the peak is about 0.6 (|η| 1.8–2.5). The CB tail and the background shape are then degenerate: in the inclusive forward fit α runs to its lower limit 0.2, and s moves with the fit range and the background order.
+
+**Cut scan** on |η| 1.8–2.5, pt_est > 1 GeV (2.1M candidates). N2/N1 is fixed to 0.43 and α is free. Columns: signal kept, S/B in ±2σ of the merged peak, and the shift of s in three model variations.
+
+| cut (in addition) | signal | S/B | Δs range_wide | Δs bkg3 | Δs range_narrow |
+|---|---|---|---|---|---|
+| none | 1.00 | 0.62 | −0.021 (α at limit) | −0.019 | −0.016 |
+| `phoDCA < 0.2` | 0.78 | 0.79 | +0.008 | −0.005 | −0.003 |
+| `phoDCA < 0.1` | 0.71 | 0.98 | +0.008 | −0.002 | −0.002 |
+| wide π⁰ veto (`conv_flags` bit 16 unset) | 0.98 | 0.67 | −0.009 | −0.012 | −0.010 |
+| `phoDCAxy < 0.1` | 0.73 | 0.60 | −0.001 | −0.006 | −0.004 |
+| trk–PV compatible (bit 1) | 0.57 | 0.66 | +0.005 | −0.005 | −0.004 |
+| high purity (bit 4) / `conv_fitProb > 0.01` / `phoFlight > 0` / ρ cuts | 0.56–0.85 | 0.51–0.56 | −0.01 to −0.04 | ≈ −0.01 | ≈ −0.01 |
+
+- Bit 8 (narrow π⁰ window) removes 3% of the candidates with no effect.
+- One conversion per dimuon, and `evt_nPV < 30` (S/B 0.76, but only 46% of the signal), don't help enough.
+
+**Full maps** with four forward selections, applied only for |η| > 1.5, all on top of the previous selection:
+- B: `phoDCA < 0.2` + π⁰ veto.
+- C: `phoDCA < 0.1` + π⁰ veto.
+- D: `phoDCA < 0.1`.
+- E: C applied everywhere, as a check of the barrel.
+
+| \|η\| | pt_est | nominal (old) | B | **C (new default)** | D | E |
+|---|---|---|---|---|---|---|
+| 1.5–1.8 | 1–1.5 | 0.973 ± 0.006 | 0.967 ± 0.003 | **0.967 ± 0.003** | 0.969 ± 0.004 | 0.965 ± 0.004 |
+| | > 3 | 0.940 ± 0.003 | 0.937 ± 0.003 | **0.938 ± 0.003** | 0.940 ± 0.003 | 0.938 ± 0.003 |
+| 1.8–2.0 | 1–1.5 | 0.962 ± 0.026 | 0.953 ± 0.017 | **0.952 ± 0.006** | 0.955 ± 0.009 | 0.952 ± 0.007 |
+| | 2–3 | 0.948 ± 0.025 | 0.942 ± 0.016 | **0.939 ± 0.003** | 0.940 ± 0.006 | 0.939 ± 0.003 |
+| | > 3 | 0.934 ± 0.040 | 0.928 ± 0.023 | **0.924 ± 0.006** | 0.925 ± 0.008 | 0.924 ± 0.006 |
+| 2.0–2.5 | 1–1.5 | 0.975 ± 0.016 | 0.957 ± 0.009 | **0.949 ± 0.006** | 0.950 ± 0.007 | 0.947 ± 0.006 |
+| | 2–3 | 0.945 ± 0.019 | 0.942 ± 0.009 | **0.936 ± 0.007** | 0.936 ± 0.007 | 0.936 ± 0.007 |
+| | > 3 | 0.921 ± 0.040 | 0.921 ± 0.004 | **0.921 ± 0.009** | 0.920 ± 0.012 | 0.920 ± 0.010 |
+
+(stat ⊕ syst)
+
+- **Forward systematic:** with C it is 0.3–0.9% (was 1.4–4%). No single variation dominates: range_wide ≤ 0.9%, the ratio variations ±0.3%, n5 ≤ 0.4%.
+- **Convergence:** the forward values converge as the purity increases (C, D and E agree within 0.3%). The old values were too high by up to 2.6% (|η| 2.0–2.5, pt_est 1–1.5), more than their quoted systematic: the loose-selection fit was biased by the tail–background degeneracy.
+- **Bias check (E):** the same cuts in the barrel change s by ≤ 0.0011 (the barrel systematic is 0.0007–0.0010), so the cuts don't select on the photon energy.
+- **Closure with C:** inclusive 0.9991.
+  - Fine |η| bins above 1.5: 0.999 / 1.001 / 1.003 / 0.997 (was 0.997 / 0.991 / 0.995 / 0.996).
+  - Barrel and pt bins unchanged.
+- **Statistics:** 7.8M selected candidates (was 13.0M); forward reference fits 0.26–0.31M per |η| slice. Forward statistical errors are unchanged or smaller, because of the higher purity.
+
+**Committed:** C as the default selection in `config/conv_scale.yaml` (6d624ef). `conv_flags % 32 < 16` assumes MiniAOD flags (−1 in AOD).
+
+---
+
 ## 2026-11-22: Converted-photon scale: N(χ_c2)/N(χ_c1) per pt bin, |η| bin 1.5–2.0 split at 1.8 (full 2022 data)
 
 Follows the previous entry (model problems 1 and the closure in |η| 1.8–2.0).
