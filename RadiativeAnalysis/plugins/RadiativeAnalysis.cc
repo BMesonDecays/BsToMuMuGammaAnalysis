@@ -198,6 +198,7 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& cfg)
     candidateConfig_.computeTrackCompatibility = cfg.getParameter<bool>("computeTrackCompatibility");
     candidateConfig_.isolationCone = cfg.getParameter<double>("isolationCone");
     candidateConfig_.isolationMinChargedPt = cfg.getParameter<double>("isolationMinChargedPt");
+    candidateConfig_.mmcgPointingInVertexFit = cfg.getParameter<bool>("mmcgPointingInVertexFit");
     isolationMinNeutralPt_ = cfg.getParameter<double>("isolationMinNeutralPt");
     diphotonConfig_.minMass = cfg.getParameter<double>("diphotonMinMass");
     diphotonConfig_.maxMass = cfg.getParameter<double>("diphotonMaxMass");
@@ -494,6 +495,8 @@ void RadiativeAnalysis::fillDescriptions(edm::ConfigurationDescriptions& descrip
   desc.add<double>("conversionMinVertexProb", 1e-6);
   // relative momentum error added to the refitted conversion photon (electron bremsstrahlung, not in the track errors)
   desc.add<double>("conversionMomentumError", 0.);
+  // mmcg B fit with the pointing constraint inside the common-vertex fit (daughters refitted with it)
+  desc.add<bool>("mmcgPointingInVertexFit", false);
   desc.add<double>("diphotonMinMass", 0.05);
   desc.add<double>("diphotonMaxMass", 1.1);
   desc.add<double>("kaonMinPt", 0.7);

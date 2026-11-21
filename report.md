@@ -33,6 +33,24 @@ Entries are newest first.
 
 ---
 
+## 2026-11-21: `mmcg` fit with the pointing constraint inside the vertex fit (`mmcgPointingInVertexFit`, default false)
+
+- **Idea:** with `KinematicConstrainedVertexFitter` + `MultiTrackPointingKinematicConstraint(pv)` the muons, the photon and the vertex are refitted together with the pointing constraint, so with a realistic photon error (`conversionMomentumError`) the fit might correct the photon energy lost by bremsstrahlung.
+- **Change:** `MMGVertexFit::fitParticlesPointing` (stage 1, the plain vertex fit, still fills `vtxOnly*`); the common part of the two fits is `MMGVertexFit::resultFromTree`. Switch `mmcgPointingInVertexFit` (`CandidateConfig`), default false. Regression with the default: the same 44 `mmcg` fit branches differ in 116/8888 events, as between two identical runs (101/8888, known non-determinism); everything else identical.
+- **Scan** (B_s → μμγ gen-matched `mmcg`, vtxProb > 10⁻³; mass − m_gen median / (q84 − q16)/2 [MeV], candidates within ±100 MeV, pull (q84 − q16)/2):
+
+  | | AOD | MiniAOD |
+  |---|---|---|
+  | default fit, s = 0 | 459: −61 / 164, 259; 2.63 | 599: −88 / 171, 293; 3.34 |
+  | pointing in the fit, s = 0 | 431: −66 / 161, 236; 2.48 | 560: −85 / 170, 280; 3.38 |
+  | s = 0.10 | 445: −65 / 169, 216; 1.14 | 598: −101 / 178, 247; 1.28 |
+  | s = 0.15 | 452: −65 / 216, 189; 1.18 | 606: −93 / 201, 244; 1.14 |
+  | s = 0.20 | 456: −69 / 261, 166; 1.23 | 607: −90 / 228, 221; 1.14 |
+
+  Fewer fits succeed (all fitted: 732 vs 836 AOD, 822 vs 909 MiniAOD at s = 0). As with the sequential fit, a larger s calibrates the pull but worsens the mass. The photon response after the fit stays at −5% to −6%. With s = 0.20 the fit moves the photon by 12–14% (rms-like), but the shift is only weakly correlated with the needed correction (0.22 AOD, 0.36 MiniAOD) and brings the photon closer to the generated one in only 39–44% of the candidates. Large flight-length significance (lxy/σ > 10) does not help.
+- **Why: the pointing measures the photon energy poorly.** Per candidate, the photon scale k that makes μ⁺ + μ⁻ + kγ (reconstructed momenta) parallel to the flight direction gives the photon energy from pointing alone. With an unbiased decay vertex (the dimuon vertex) its spread is 34% (AOD) / 43% (MiniAOD), against 9% for the measured photon (after the vtxProb cut); with the true SV and the reconstructed PV 27%; only with both true vertices 2.5% (B mass 63–68 MeV). The flight length is short (median 2.6–2.8 mm) compared with the decay vertex resolution (~100 µm), and the photon is close to the B direction (median 0.1 rad): a 1% photon energy change turns the B direction by only ~0.4 mrad. (The fitted SV cannot be used for this test: the pointing constraint has already moved it along the biased momentum.) So the constraint adds noise rather than information about the brem loss.
+- **Conclusion:** keep the default sequential fit with `conversionMomentumError = 0`; correct the mass error after the fit (σ_m'² = σ_m² + ((m² − m_μμ²)/2m)² s², s ≈ 0.15–0.20). Recovering the brem loss needs a calorimeter energy for the conversion.
+
 ## 2026-11-21: Inflated conversion photon momentum error in the B fit (`conversionMomentumError`, default 0)
 
 - **Change:** new parameter `conversionMomentumError` (`ConversionCuts::momentumError`, passed to `MMGVertexFit::conversionParticle`): σ(p)/p added along the refitted photon momentum (C_p += s² p pᵀ, direction unchanged) before the photon enters the B fit. Default 0 (no change to the ntuple).

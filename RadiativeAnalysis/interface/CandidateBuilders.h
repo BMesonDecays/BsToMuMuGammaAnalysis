@@ -27,6 +27,7 @@ namespace bmmg {
     bool computeTrackCompatibility = true;
     double isolationCone = 0.3;          // daughter isolation (BCandidate::daughterIso)
     double isolationMinChargedPt = 0.5;
+    bool mmcgPointingInVertexFit = false;   // mmcg: MMGVertexFit::fitParticlesPointing instead of fitParticles
   };
 
   struct DiphotonConfig {

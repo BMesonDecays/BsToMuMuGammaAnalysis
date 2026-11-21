@@ -197,7 +197,7 @@ namespace bmmg {
         c.prefitP4 = dimu.p4 + c.xP4;
         if (!finisher.inWindow(c) || !finisher.choosePV(c, dimu)) continue;
         if (muonParticles(muons, dimu) && conv.photon)
-          c.fit = MMGVertexFit::fitParticles(
+          c.fit = (config.mmcgPointingInVertexFit ? MMGVertexFit::fitParticlesPointing : MMGVertexFit::fitParticles)(
               {*muons[dimu.mu1].kinParticle, *muons[dimu.mu2].kinParticle, *conv.photon}, finisher.pvPoint(c));
         finisher.observables(c, {&conv.track1.track(), &conv.track2.track()}, {{conv.p4, nullptr}});
         candidates.push_back(std::move(c));

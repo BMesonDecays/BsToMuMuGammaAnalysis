@@ -9,6 +9,7 @@
 #include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
 #include "RecoVertex/KinematicFitPrimitives/interface/RefCountedKinematicParticle.h"
 #include "RecoVertex/KinematicFitPrimitives/interface/RefCountedKinematicVertex.h"
+#include "RecoVertex/KinematicFitPrimitives/interface/RefCountedKinematicTree.h"
 #include "TMatrixD.h"
 
 #include <memory>
@@ -132,6 +133,14 @@ class MMGVertexFit
         // Returns nothing if the fit fails or diverges (non-finite chi2 or mass).
         static std::optional<Result> fitParticles(const std::vector<RefCountedKinematicParticle>& particles,
             const GlobalPoint& pv);
+        // alternative B fit: one common-vertex fit with the pointing constraint inside
+        // (KinematicConstrainedVertexFitter + MultiTrackPointingKinematicConstraint), which refits the
+        // daughters; the stage-1 vertex-only fit is still done for the vtxOnly quantities
+        static std::optional<Result> fitParticlesPointing(const std::vector<RefCountedKinematicParticle>& particles,
+            const GlobalPoint& pv);
+        // Result from the final tree of a fit, with the stage-1 values; empty if the fit diverged
+        static std::optional<Result> resultFromTree(RefCountedKinematicTree& tree, const GlobalPoint& pv,
+            double vtxOnlyChi2, double vtxOnlyNdof, const GlobalPoint& vtxOnlyPosition, const GlobalVector& vtxOnlyMomentum);
 
         // angle [rad] between p and d (atan2 of |p x d| and p.d); -1 if one of them is null
         static double pointingAngle(const GlobalVector& p, const GlobalVector& d);

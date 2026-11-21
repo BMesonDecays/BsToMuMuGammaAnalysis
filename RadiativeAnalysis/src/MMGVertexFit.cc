@@ -2,6 +2,7 @@
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/Constants.h"
 #include "RecoVertex/KinematicFit/interface/KinematicConstrainedVertexFitter.h"
 #include "RecoVertex/KinematicFit/interface/ColinearityKinematicConstraint.h"
+#include "RecoVertex/KinematicFit/interface/MultiTrackPointingKinematicConstraint.h"
 
 #include "RecoVertex/KinematicFitPrimitives/interface/KinematicParticle.h"
 #include "RecoVertex/KinematicFitPrimitives/interface/KinematicParticleFactoryFromTransientTrack.h"
@@ -194,41 +195,36 @@ double MMGVertexFit::pointingAngle(const GlobalVector& p, const GlobalVector& d)
         return std::atan2(p.cross(d).mag(), p.dot(d));
     }
 
-std::optional<MMGVertexFit::Result> MMGVertexFit::fitParticles(const std::vector<RefCountedKinematicParticle>& particles,
-    const GlobalPoint& pv)
-    {
-        KinematicParticleVertexFitter vertexFitter;
-        KinematicParticleFitter constraintFitter;
-        PointingKinematicConstraint pointingConstraint(pv);
+namespace
+{
+    struct Stage1 { double chi2 = -1., ndof = -1.; GlobalPoint position; GlobalVector momentum; };
 
-        RefCountedKinematicTree tree;
-        struct { double chi2 = -1., ndof = -1.; GlobalPoint position; GlobalVector momentum; } stage1;
-        try
+    // stage 1: common-vertex fit of the particles; false if it fails (VertexException propagates)
+    bool vertexOnlyFit(const std::vector<RefCountedKinematicParticle>& particles, RefCountedKinematicTree& tree,
+                       Stage1& stage1)
         {
+            KinematicParticleVertexFitter vertexFitter;
             tree = vertexFitter.fit(particles);
-            if (!tree->isValid()) return std::nullopt;
+            if (!tree->isValid()) return false;
             tree->movePointerToTheTop();
-            {
-                // stage-1 values (copies; the constraint fit replaces the top particle and its vertex)
-                const KinematicState s1 = tree->currentParticle()->currentState();
-                const RefCountedKinematicVertex v1 = tree->currentDecayVertex();
-                if (!v1->vertexIsValid()) return std::nullopt;
-                stage1.chi2 = v1->chiSquared();
-                stage1.ndof = v1->degreesOfFreedom();
-                stage1.position = v1->position();
-                stage1.momentum = s1.globalMomentum();
-            }
-            tree = constraintFitter.fit(&pointingConstraint, tree);
-            if (!tree->isValid()) return std::nullopt;
+            // copies: a later constraint fit replaces the top particle and its vertex
+            const KinematicState s1 = tree->currentParticle()->currentState();
+            const RefCountedKinematicVertex v1 = tree->currentDecayVertex();
+            if (!v1->vertexIsValid()) return false;
+            stage1.chi2 = v1->chiSquared();
+            stage1.ndof = v1->degreesOfFreedom();
+            stage1.position = v1->position();
+            stage1.momentum = s1.globalMomentum();
+            return true;
         }
-        catch (const VertexException&)
-        {
-            return std::nullopt;
-        }
+}
 
+// result from the final tree; the fitted daughters are read after the constraint fit: reading them
+// before changed the result of the constraint fit (see report.md P1.2)
+std::optional<MMGVertexFit::Result> MMGVertexFit::resultFromTree(RefCountedKinematicTree& tree, const GlobalPoint& pv,
+    double vtxOnlyChi2, double vtxOnlyNdof, const GlobalPoint& vtxOnlyPosition, const GlobalVector& vtxOnlyMomentum)
+    {
         Result result;
-        // fitted daughters (the pointing constraint only changes the top particle); read after the
-        // constraint fit: reading them before changed the result of the constraint fit (see report.md P1.2)
         result.daughters = tree->finalStateParticles();
         tree->movePointerToTheTop();
         result.particle = tree->currentParticle();
@@ -242,13 +238,57 @@ std::optional<MMGVertexFit::Result> MMGVertexFit::fitParticles(const std::vector
         if (!std::isfinite(result.vertex->chiSquared()) || !std::isfinite(fitMass) || fitMass <= 0. || fitMass > 100. ||
             !std::isfinite(fitP) || fitP > 1e4)
             return std::nullopt;
-        result.vertexOnlyChi2 = stage1.chi2;
-        result.vertexOnlyNdof = stage1.ndof;
-        result.vertexOnlyPosition = stage1.position;
-        result.vertexOnlyMomentum = stage1.momentum;
+        result.vertexOnlyChi2 = vtxOnlyChi2;
+        result.vertexOnlyNdof = vtxOnlyNdof;
+        result.vertexOnlyPosition = vtxOnlyPosition;
+        result.vertexOnlyMomentum = vtxOnlyMomentum;
         result.pointingAngle = pointingAngle(result.particle->currentState().globalMomentum(),
                                              result.vertex->position() - pv);
         return result;
+    }
+
+std::optional<MMGVertexFit::Result> MMGVertexFit::fitParticles(const std::vector<RefCountedKinematicParticle>& particles,
+    const GlobalPoint& pv)
+    {
+        KinematicParticleFitter constraintFitter;
+        PointingKinematicConstraint pointingConstraint(pv);
+        RefCountedKinematicTree tree;
+        Stage1 stage1;
+        try
+        {
+            if (!vertexOnlyFit(particles, tree, stage1)) return std::nullopt;
+            tree = constraintFitter.fit(&pointingConstraint, tree);
+            if (!tree->isValid()) return std::nullopt;
+        }
+        catch (const VertexException&)
+        {
+            return std::nullopt;
+        }
+        return resultFromTree(tree, pv, stage1.chi2, stage1.ndof, stage1.position, stage1.momentum);
+    }
+
+// Alternative: the pointing constraint inside the common-vertex fit (KinematicConstrainedVertexFitter
+// with MultiTrackPointingKinematicConstraint), so the daughters and the vertex are refitted with it.
+// The stage-1 fit is still done for the vtxOnly quantities.
+std::optional<MMGVertexFit::Result> MMGVertexFit::fitParticlesPointing(
+    const std::vector<RefCountedKinematicParticle>& particles, const GlobalPoint& pv)
+    {
+        RefCountedKinematicTree tree;
+        Stage1 stage1;
+        try
+        {
+            if (!vertexOnlyFit(particles, tree, stage1)) return std::nullopt;
+            GlobalPoint ref = pv;
+            MultiTrackPointingKinematicConstraint pointing(ref);
+            KinematicConstrainedVertexFitter fitter;
+            tree = fitter.fit(particles, &pointing);
+            if (!tree->isValid()) return std::nullopt;
+        }
+        catch (const VertexException&)
+        {
+            return std::nullopt;
+        }
+        return resultFromTree(tree, pv, stage1.chi2, stage1.ndof, stage1.position, stage1.momentum);
     }
 
 std::optional<MMGVertexFit::Result> MMGVertexFit::fitCandidate(const RefCountedKinematicParticle& mu1,
