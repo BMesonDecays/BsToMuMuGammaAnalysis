@@ -33,6 +33,98 @@ Entries are newest first.
 
 ---
 
+## 2026-11-21: Signal photon energy response E_reco/E_gen: the excess comes from the reconstruction threshold and from other particles in the supercluster; the muon ECAL deposits are a small effect (study; no code change)
+
+**Question:** reconstructed signal photon energies are on average above the generated ones, more in EE, also at high
+energy. Is the cause the energy that the muons leave in the ECAL?
+
+**Method:**
+- **Sample:** the filtered B_s→μμγ AOD MC (`bsmmg_aod_filtered`, 114 files, 242.7k events), read in FWLite.
+- **Gen photon:** the leading photon daughter of the B with two muon daughters.
+- **Matching:** the `gedPhotons` photon closest in ΔR, with ΔR < 0.1. There is no cut on the pt ratio, so the
+  matching does not bias the response. 146.7k photons are matched.
+- **Response:** R = `energy()` / E_gen. `energy()` is the regression-corrected energy, i.e. `pho_energy` in the ntuple.
+- **Muon deposit:** each gen muon is matched to a reco muon (ΔR < 0.05, same charge).
+  - The muon's crossed crystal `calEnergy().ecal_id` is looked up in the SC `hitsAndFractions()`.
+  - The deposit is estimated from that crystal's rechit energy × fraction, and from `calEnergy().em`.
+  - These estimates also contain the photon's own shower energy in that crystal, so they are upper bounds. A MIP
+    leaves about 0.25–0.3 GeV in one crystal.
+- **Other particles:** the gen energy of the other stable photons, electrons and neutral hadrons (n, K⁰_L) in a
+  window |Δη| < 0.05, |Δφ| < 0.3 around the gen photon (`othW`).
+  - These particles come from the same pp interaction: B fragmentation and underlying event.
+  - Pileup is not in `genParticles`.
+  - B daughters other than the leading photon: none in this sample (no FSR photons among the B daughters).
+
+**1. Reconstruction threshold (dominant at low pt).** The `gedPhotons` collection effectively starts at E_T ≈ 10 GeV.
+Near the threshold only the photons that fluctuated up are reconstructed:
+
+| gen pt [GeV] | reco efficiency | EB median R | EE median R | EE mean R |
+|---|---|---|---|---|
+| 8–10 | 0.48 | 1.032 | 1.081 | 1.112 |
+| 10–12 | 0.89 | 1.005 | 1.042 | 1.065 |
+| 12–15 | 0.96 | 0.999 | 1.021 | 1.032 |
+| 15–20 | 0.98 | 1.000 | 1.015 | 1.018 |
+| 20–30 | 0.98 | 1.001 | 1.013 | 1.018 |
+| > 30 | 0.98 | 1.007 | 1.015 | 1.031 |
+
+- The bias reaches higher pt in EE because the resolution there is about twice as wide (σ_eff 0.08–0.13 vs 0.04–0.05).
+- Removing the photons with muon deposits or other particles hardly changes the bias (EE at 8–10 GeV: 1.081 → 1.077).
+  It is a selection effect.
+
+**2. Above the threshold (gen pt > 15 GeV).** EB is unbiased: median 1.001, mean 1.000. EE is high: median 1.014,
+mean 1.020, with 5.7% of the photons at R > 1.2.
+
+| gen pt > 15 | EB median | EB mean | EE median | EE mean |
+|---|---|---|---|---|
+| all | 1.001 | 1.000 | 1.014 | 1.020 |
+| muon crystal in the SC (3.3% EB / 4.8% EE) | 1.021 | 1.059 | 1.036 | 1.069 |
+| other gen e/γ/n⁰ > 2 GeV in the window (9.6% / 21%) | 1.019 | 1.066 | 1.035 | 1.058 |
+| neither (other < 0.5 GeV, no muon crystal) | 0.999 | 0.990 | 1.009 | 1.009 |
+| E / (E_gen + other gen E in the window) | 0.991 | 0.978 | 1.000 | 0.999 |
+
+- **Muons:**
+  - Only 3–5% of the signal photons have a muon crystal in their SC.
+  - For those photons, with no other particles nearby, the median R rises by 1.2% (EB, 0.999 → 1.011) and
+    1.6% (EE, 1.009 → 1.024).
+  - Contribution to the mean R: **+0.2% (EB), +0.3% (EE)**.
+  - The rechit estimate of the deposit (median 0.6 GeV EB, 3.3 GeV EE) is dominated by the photon shower in the same
+    crystal. Subtracting it overcorrects (EE median of these photons: 0.979), so it is not usable as a correction.
+- **Other particles in the SC window:**
+  - 28% (EB) / 36% (EE) of the photons have more than 0.5 GeV of other gen energy in the window. This is mostly soft
+    photons from π⁰ of the B fragmentation and the underlying event.
+  - Contribution to the mean R: **+0.9% (EB), +1.0% (EE)**.
+  - With this energy added to E_gen, the EE response closes: median 1.000, mean 0.999.
+  - The forward region has more of it, because the same E_T means a larger E: on average 1.6 / 2.0 / 2.9 GeV at
+    |η| 1.5–2.0 / 2.0–2.2 / 2.2–2.5.
+- **Response vs muon distance:** R rises as the muon gets closer to the SC (EE median 1.008 at ΔR > 0.2, 1.032 at
+  ΔR < 0.05). Most of this rise is not the muon:
+  - Close muons mean a boosted B, with more fragmentation particles around the photon. The fraction with other gen
+    energy > 0.5 GeV goes from 0.15–0.30 to 0.42–0.48.
+  - Without other particles and muon crystals, the rise is +0.5% (EB) and +1.5% (EE) between ΔR 0.2–0.4 and < 0.05.
+    This residual includes muon deposits next to the crystal looked up, and charged particles, which the window does
+    not count.
+- **Residual in EE without muons and other particles:** median 0.998 / 1.013 / 1.035 at |η| 1.48–2.0 / 2.0–2.2 /
+  2.2–2.5.
+  - It grows slightly with pileup: 1.006 at nPU < 30, 1.011 at nPU > 40.
+  - It is probably pileup and charged hadrons (not in the window), plus possibly regression non-closure at |η| > 2.
+    This sample cannot separate them.
+  - EB shows no pileup dependence (0.9985–0.9992).
+- **Converted photons** (`hasConversionTracks`): EE median 0.996 vs 1.018 for unconverted.
+
+**Conclusions:**
+- The muon ECAL deposits are a small part of the excess (+0.2–0.3% on the mean).
+- The excess comes from:
+  1. the reconstruction threshold at E_T ≈ 10 GeV: +3–8% for gen pt < 12 GeV, mostly in EE;
+  2. overlap with other particles of the same collision: about +1%;
+  3. in EE at |η| > 2, a further +1–3.5%, probably pileup.
+- Points 2 and 3 are physical extra energy, not a bias in the regression for isolated photons. A correction would
+  have to be candidate-dependent, e.g. using the neutral isolation.
+- For the energy calibration and the kinematic fit:
+  - the response should be measured in bins of gen (not reco) energy, above ~15 GeV;
+  - the EE tails (R > 1.2: 5–6%) argue for |η| < 2.0 or a non-Gaussian error model.
+
+Scripts (not committed): `escale.py` (FWLite, AOD), `ana*.py` in the session scratchpad.
+
 ## 2026-11-21: Ntuplizer: photon MVA without the candidate's muons (`<p><leg>MvaNoMu`, `<p><leg>TightIdNoMu`)
 
 Implementation of the study below.
