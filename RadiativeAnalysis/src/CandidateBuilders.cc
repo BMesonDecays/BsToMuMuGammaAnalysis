@@ -313,4 +313,36 @@ namespace bmmg {
     return candidates;
   }
 
+  // ---------------------------------------------------------------------------- chi_c -> J/psi gamma(conv)
+  std::vector<ChiCCandidate> buildChiC(const std::vector<DimuonCandidate>& dimuons,
+                                       const std::vector<SelectedConversion>& conversions, const ChiCConfig& config) {
+    std::vector<ChiCCandidate> candidates;
+    for (size_t id = 0; id < dimuons.size(); ++id) {
+      const DimuonCandidate& dimu = dimuons[id];
+      if (!dimu.vtxValid || dimu.resonance != kJpsi) continue;
+      for (size_t ic = 0; ic < conversions.size(); ++ic) {
+        const SelectedConversion& conv = conversions[ic];
+        const reco::Candidate::LorentzVector p4 = dimu.p4 + conv.p4;
+        const double q = p4.mass() - dimu.p4.mass();
+        if (q > config.maxQ) continue;
+        ChiCCandidate c;
+        c.dimu = id;
+        c.conv = ic;
+        c.mass = p4.mass();
+        c.q = q;
+        c.pt = p4.pt();
+        c.eta = p4.eta();
+        // photon line: through the conversion vertex along the photon momentum
+        const GlobalVector pHat = GlobalVector(conv.p4.px(), conv.p4.py(), conv.p4.pz()).unit();
+        const GlobalVector d = conv.vertex - dimu.vtx;
+        c.phoFlight = d.dot(pHat);
+        c.phoDCA = d.cross(pHat).mag();
+        const GlobalVector dT(d.x(), d.y(), 0.), pT(pHat.x(), pHat.y(), 0.);
+        c.phoDCAxy = pT.mag() > 0 ? std::abs(dT.x() * pT.y() - dT.y() * pT.x()) / pT.mag() : -1.f;
+        candidates.push_back(c);
+      }
+    }
+    return candidates;
+  }
+
 }  // namespace bmmg

@@ -116,7 +116,9 @@ private:
   MMGVertexFit mmgVertexFit_;
   bmmg::TriggerMatcher triggerMatcher_;
   MuonMVAID muonMVA_;
-  const bool doMuMuGamma_, doMuMuConvGamma_, doMuMuGammaGamma_, doMuMuKK_;
+  const bool doMuMuGamma_, doMuMuConvGamma_, doMuMuGammaGamma_, doMuMuKK_, doChiC_;
+  bmmg::ChiCConfig chicConfig_;
+  bool chicInSkim_ = true;
   // write only the events with at least one valid candidate: fit OK and vertex probability > minCandidateVtxProb_
   const bool onlyEventsWithCandidates_;
   const double minCandidateVtxProb_;
@@ -158,9 +160,10 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& cfg)
       doMuMuConvGamma_(cfg.getParameter<bool>("doMuMuConvGamma")),
       doMuMuGammaGamma_(cfg.getParameter<bool>("doMuMuGammaGamma")),
       doMuMuKK_(cfg.getParameter<bool>("doMuMuKK")),
+      doChiC_(cfg.getParameter<bool>("doChiC")),
       onlyEventsWithCandidates_(cfg.getParameter<bool>("onlyEventsWithCandidates")),
       minCandidateVtxProb_(cfg.getParameter<double>("minCandidateVtxProb")) {
-    if (doMuMuConvGamma_) {
+    if (doMuMuConvGamma_ || doChiC_) {
       if (isMiniAOD_)
         oniaConversionsToken_ = consumes(cfg.getParameter<edm::InputTag>("conversions"));
       else
@@ -202,6 +205,8 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& cfg)
     isolationMinNeutralPt_ = cfg.getParameter<double>("isolationMinNeutralPt");
     diphotonConfig_.minMass = cfg.getParameter<double>("diphotonMinMass");
     diphotonConfig_.maxMass = cfg.getParameter<double>("diphotonMaxMass");
+    chicConfig_.maxQ = cfg.getParameter<double>("chicMaxQ");
+    chicInSkim_ = cfg.getParameter<bool>("chicInSkim");
     kaonConfig_.minPt = trackCuts_.minPt;
     kaonConfig_.minKKMass = cfg.getParameter<double>("kkMinMass");
     kaonConfig_.maxKKMass = cfg.getParameter<double>("kkMaxMass");
@@ -218,7 +223,7 @@ void RadiativeAnalysis::beginJob() {
   if (doMuMuConvGamma_) channels.push_back(bmmg::NtupleWriter::kMuMuConvGamma);
   if (doMuMuGammaGamma_) channels.push_back(bmmg::NtupleWriter::kMuMuGammaGamma);
   if (doMuMuKK_) channels.push_back(bmmg::NtupleWriter::kMuMuKK);
-  writer_ = std::make_unique<bmmg::NtupleWriter>(*fs, triggerMatcher_.paths(), isMC_, channels);
+  writer_ = std::make_unique<bmmg::NtupleWriter>(*fs, triggerMatcher_.paths(), isMC_, channels, doChiC_);
 }
 
 void RadiativeAnalysis::beginRun(const edm::Run& run, const edm::EventSetup& setup) {
@@ -356,7 +361,7 @@ void RadiativeAnalysis::analyze(const edm::Event& event, const edm::EventSetup& 
                             check(bmmg::buildMuMuGammaGamma(selMuons, dimuons, selPhotons, vertices, pvTracks, neutrals, lazyTools,
                                                             ttBuilder, mmgVertexFit_, candidateConfig_, diphotonConfig_)),
                             vertices);
-  if (doMuMuConvGamma_) {
+  if (doMuMuConvGamma_ || doChiC_) {
     // MiniAOD: oniaPhotonCandidates is missing in some events of the 2022 PromptReco (~10%): no conversions there
     std::vector<bmmg::SelectedConversion> conversions;
     bool convAvailable = true;
@@ -371,10 +376,16 @@ void RadiativeAnalysis::analyze(const edm::Event& event, const edm::EventSetup& 
       conversions = bmmg::selectConversions(event.get(conversionsToken_), ttBuilder, conversionCuts_);
     }
     writer_->fillConversions(conversions, gen.get(), convAvailable);
-    writer_->fillCandidates(
-        bmmg::NtupleWriter::kMuMuConvGamma,
-        check(bmmg::buildMuMuConvGamma(selMuons, dimuons, conversions, vertices, pvTracks, neutrals, ttBuilder, candidateConfig_)),
-        vertices);
+    if (doMuMuConvGamma_)
+      writer_->fillCandidates(
+          bmmg::NtupleWriter::kMuMuConvGamma,
+          check(bmmg::buildMuMuConvGamma(selMuons, dimuons, conversions, vertices, pvTracks, neutrals, ttBuilder, candidateConfig_)),
+          vertices);
+    if (doChiC_) {
+      const std::vector<bmmg::ChiCCandidate> chic = bmmg::buildChiC(dimuons, conversions, chicConfig_);
+      writer_->fillChiC(chic);
+      if (chicInSkim_ && !chic.empty()) hasValidCandidate = true;   // the skim keeps the calibration events
+    }
   }
   if (doMuMuKK_) {
     const std::vector<bmmg::SelectedTrack> tracks =
@@ -472,6 +483,10 @@ void RadiativeAnalysis::fillDescriptions(edm::ConfigurationDescriptions& descrip
   // channels
   desc.add<bool>("doMuMuGamma", true);
   desc.add<bool>("doMuMuConvGamma", true);
+  // chi_c -> J/psi gamma(conv): energy-scale calibration of the conversions (chic_ block, no kinematic fit)
+  desc.add<bool>("doChiC", false);
+  desc.add<double>("chicMaxQ", 1.0);       // m(mu mu gamma) - m(mu mu) < chicMaxQ [GeV]
+  desc.add<bool>("chicInSkim", true);      // with onlyEventsWithCandidates: keep the events with a chi_c candidate
   desc.add<bool>("doMuMuGammaGamma", true);
   desc.add<bool>("doMuMuKK", true);
   // skim: write only the events with >= 1 candidate (any enabled channel) whose fit succeeded and whose vertex

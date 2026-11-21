@@ -92,7 +92,7 @@ Every opposite-sign pair of selected muons that do not share muon segments.
 | `dimu_dca` | distance of closest approach of the two tracks [cm]: the two points are found by `ClosestApproachInRPhi` (closest in the transverse plane), and their **3D** separation is stored |
 | `dimu_isCowboy` | 1 if Δφ(μ⁺, μ⁻) > 0 |
 
-## Conversions: `conv_*` (vectors, if `doMuMuConvGamma`)
+## Conversions: `conv_*` (vectors, if `doMuMuConvGamma` or `doChiC`)
 - **AOD:** `allConversions`: two opposite-charge tracks, a valid vertex with probability > `conversionMinVertexProb` (1e-6), pair pt > `conversionMinPt` (0.5 GeV).
 - **MiniAOD:** `oniaPhotonCandidates:conversions` (`pat::CompositeCandidate` of `OniaPhotonConversionProducer`, with full copies of the two tracks as userData `track0`/`track1`): pair pt > `conversionMinPt`. The producer has already selected `allConversions` with ρ(vertex) > 1.5 cm, quality `highPurity` and `generalTracksOnly`, compatible innermost hits of the two tracks, and no two conversions sharing a track (the one with the best vertex χ² is kept). The vertex χ² is not stored, so `conversionMinVertexProb` is not applied. On the same signal MC events it keeps about 60% of the events that have a signal-B conversion in `allConversions`. In the 2022 PromptReco MiniAOD the product is missing in about 10% of the events (`evt_convAvailable = 0`; these events have no conversions).
 - In both formats the e⁺e⁻ pair is refitted to a common vertex with a colinearity constraint (equal φ and θ at the vertex, `ColinearityKinematicConstraint`, as in the reco `ConversionVertexFinder`). There is no zero-mass constraint; the fitted photon mass is ≈ 1 MeV (2mₑ for colinear tracks).
@@ -163,6 +163,15 @@ Fits that fail, or that diverge (non-finite χ², mass > 100 GeV, |p| > 10 TeV),
 | `<p><d>IsoCh`, `<p><d>IsoNeu`, for the daughters `<d>` = `mu1`, `mu2` and the legs (`pho`; `pho1`, `pho2`; `conv`; `trk1`, `trk2`) | isolation of each daughter **with the B products removed**, cone ΔR < 0.3 around the daughter [GeV]. `IsoCh`: Σ pt of the tracks of the candidate's PV (as `<p>pvSumPt`) with pt > 0.5 GeV, without all tracks of the candidate. `IsoNeu`: Σ pt of the PF photons and neutral hadrons with pt > 0.5 GeV (AOD `particleFlow`, MiniAOD `packedPFCandidates`), without the PF candidates of the candidate's photons (their footprint: AOD `particleBasedIsolation:gedPhotons`, MiniAOD `pat::Photon::associatedPackedPFCandidates`) and, for muons and tracks, without those within ΔR < 0.01. No pile-up correction. For `mmcg`, the ECAL deposits of the conversion electrons are not removed from `IsoNeu`. Parameters `isolationCone`, `isolationMinChargedPt`, `isolationMinNeutralPt` |
 | `<p>maxTrackCompatibility` | highest Kalman vertex probability of the two muons plus one other PV track (pt > 0.9, not a track of the candidate) |
 | `<p>genMatched` (MC) | the muons and all legs match gen particles that descend from the signal B. Partially reconstructed decays also count (e.g. `mmg` with one photon of J/ψ η: its mass is below the B mass). A π⁰ whose two photons are merged in one cluster is usually not matched (photon energy ≫ gen photon) |
+
+## χ_c → J/ψ γ(conversion): `chic_*` (vectors, if `doChiC`; `channels=...,chic`)
+
+Calibration sample for the energy scale of the converted photons (report.md, 2026-11-21). Every J/ψ dimuon (`dimu_resonance == 1`, valid vertex) is combined with every conversion of `conv_*`; candidates with Q = m(μμγ) − m(μμ) < `chicMaxQ` (1 GeV) are stored. There is no kinematic fit: the masses use the dimuon momentum (sum of the muon momenta) and the conversion momentum `conv_pt/eta/phi` (the refitted photon, massless), i.e. the photon energy that enters `mmcg`. The peaks are χ_c0 / χ_c1 / χ_c2 at Q = 318 / 414 / 459 MeV; a photon energy scale s moves the peaks to about s·Q.
+- `chic_dimu`, `chic_conv`: indices into `dimu_*` and `conv_*`.
+- `chic_mass` = m(μμγ), `chic_q` = Q, `chic_pt`, `chic_eta` of the μμγ system.
+- `chic_phoDCA`, `chic_phoDCAxy`: 3D / transverse distance of the photon line (through the conversion vertex along the photon momentum) from the dimuon vertex [cm]; small for a photon from the J/ψ vertex.
+- `chic_phoFlight`: (conversion vertex − dimuon vertex) · p̂_γ [cm], > 0 if the conversion is downstream of the dimuon vertex.
+- With `onlyEventsWithCandidates` (skim), events with a χ_c candidate are kept if `chicInSkim` (default true).
 
 ## Generator: `gen_*` (MC)
 From `GenDecayChain`, using the B (B_s or B_d) with two muons among its descendants (open-charm hadrons and τ are not followed). In MiniAOD the final-state particles, in particular the photons of π⁰/η/η′ decays that `prunedGenParticles` drops, come from `packedGenParticles`.

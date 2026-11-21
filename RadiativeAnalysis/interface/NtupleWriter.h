@@ -36,8 +36,9 @@ namespace bmmg {
     };
     static const Channel kMuMuGamma, kMuMuConvGamma, kMuMuGammaGamma, kMuMuKK;
 
+    // chic: book the chi_c -> J/psi gamma(conv) block (and the conversions)
     NtupleWriter(TFileService& fs, const std::vector<std::string>& triggerPaths, bool isMC,
-                 const std::vector<Channel>& channels);
+                 const std::vector<Channel>& channels, bool chic = false);
 
     void beginEvent(const edm::EventID& id, unsigned int lumi);
     void fillPileup(const std::vector<PileupSummaryInfo>& pu);
@@ -57,6 +58,7 @@ namespace bmmg {
     void fillTracks(const std::vector<SelectedTrack>& tracks, const reco::BeamSpot& bs, const GenDecayChain* gen);
     void fillCandidates(const Channel& channel, const std::vector<BCandidate>& candidates,
                         const std::vector<reco::Vertex>& pvs);
+    void fillChiC(const std::vector<ChiCCandidate>& candidates);
     void fillGen(const GenDecayChain& gen);
     void fill();
 
@@ -83,6 +85,7 @@ namespace bmmg {
     // per event: gen match result of the selected muons / photons (used for the candidate truth flag)
     std::vector<int> muonFromB_, photonFromB_, conversionFromB_, trackFromB_;
     std::vector<Channel> channels_;
+    bool chic_ = false;
   };
 
 }  // namespace bmmg

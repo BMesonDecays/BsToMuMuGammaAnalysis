@@ -6,6 +6,7 @@
 //   mu mu gamma(conv)  (photon conversion e+ e-)   buildMuMuConvGamma
 //   mu mu gamma gamma  (e.g. J/psi eta)            buildMuMuGammaGamma
 //   mu mu K K          (Bs -> J/psi phi, normalisation)  buildMuMuKK
+//   chi_c -> J/psi gamma(conv) (photon energy-scale calibration, no fit)  buildChiC
 // For every combination inside the pre-fit mass window: the PV with the lowest DCA to the line
 // through the dimuon vertex along the pre-fit momentum is chosen, the candidate is fitted with
 // MMGVertexFit (vertex fit + pointing constraint to that PV) and the observables are computed.
@@ -57,6 +58,14 @@ namespace bmmg {
                                          const TransientTrackBuilder& ttBuilder,
                                          const MMGVertexFit& fitter,
                                          const CandidateConfig& config);
+
+  // chi_c -> J/psi gamma(conv): every J/psi dimuon (DimuonResonance kJpsi, valid vertex) with every conversion,
+  // m(mu mu gamma) - m(mu mu) < maxQ
+  struct ChiCConfig {
+    double maxQ = 1.0;
+  };
+  std::vector<ChiCCandidate> buildChiC(const std::vector<DimuonCandidate>& dimuons,
+                                       const std::vector<SelectedConversion>& conversions, const ChiCConfig& config);
 
   std::vector<BCandidate> buildMuMuConvGamma(const std::vector<SelectedMuon>& muons,
                                              const std::vector<DimuonCandidate>& dimuons,

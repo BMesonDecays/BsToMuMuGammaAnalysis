@@ -8,6 +8,8 @@
 #include "RecoVertex/KinematicFitPrimitives/interface/KinematicVertex.h"
 #include "TMath.h"
 #include "TLorentzVector.h"
+
+#include <algorithm>
 #include "DataFormats/Candidate/interface/LeafCandidate.h"
 
 #include "DataFormats/EcalDetId/interface/EcalSubdetector.h"
@@ -38,14 +40,15 @@ namespace bmmg {
   const NtupleWriter::Channel NtupleWriter::kMuMuKK{"mmkk_", {"trk1", "trk2"}, NtupleWriter::LegType::Track};
 
   NtupleWriter::NtupleWriter(TFileService& fs, const std::vector<std::string>& triggerPaths, bool isMC,
-                             const std::vector<Channel>& channels)
+                             const std::vector<Channel>& channels, bool chic)
       : events_(fs.make<TTree>("Events", "B -> mu mu gamma ntuple")),
         runInfo_(fs.make<TTree>("RunInfo", "job-level information")),
         b_(events_),
         r_(runInfo_),
         triggerPaths_(triggerPaths),
         isMC_(isMC),
-        channels_(channels) {
+        channels_(channels),
+        chic_(chic) {
     book();
   }
 
@@ -103,18 +106,20 @@ namespace bmmg {
     bookFloats(b_, "dimu_", {"mass", "pt", "eta", "phi", "deltaR", "vtxProb", "vtxChi2", "vtxNdof", "vtxX", "vtxY",
                              "vtxZ", "lxyBS", "lxyBSErr", "cosAlphaBS", "dca"});
 
-    // ---- conversions (if the mu mu gamma(conv) channel is enabled) and kaon tracks (mu mu K K) ----
-    for (const auto& ch : channels_) {
-      if (ch.legType == LegType::Conversion) {
-        b_.bookScalar<int>("evt_convAvailable", 0);
-        bookInts(b_, "conv_", {"index", "fitOK", "flags"});
-        bookFloats(b_, "conv_", {"pt", "eta", "phi", "vtxX", "vtxY", "vtxZ", "vtxRho", "vtxProb", "fitProb",
-                                 "trkPlusPt", "trkMinusPt"});
-        if (isMC_) {
-          bookInts(b_, "conv_", {"genPdgId", "genMotherPdgId", "genFromSignalB"});
-          bookFloats(b_, "conv_", {"genDR"});
-        }
+    // ---- conversions (if the mu mu gamma(conv) or the chi_c channel is enabled) and kaon tracks (mu mu K K) ----
+    const bool conversions =
+        chic_ || std::any_of(channels_.begin(), channels_.end(), [](const Channel& c) { return c.legType == LegType::Conversion; });
+    if (conversions) {
+      b_.bookScalar<int>("evt_convAvailable", 0);
+      bookInts(b_, "conv_", {"index", "fitOK", "flags"});
+      bookFloats(b_, "conv_", {"pt", "eta", "phi", "vtxX", "vtxY", "vtxZ", "vtxRho", "vtxProb", "fitProb",
+                               "trkPlusPt", "trkMinusPt"});
+      if (isMC_) {
+        bookInts(b_, "conv_", {"genPdgId", "genMotherPdgId", "genFromSignalB"});
+        bookFloats(b_, "conv_", {"genDR"});
       }
+    }
+    for (const auto& ch : channels_) {
       if (ch.legType == LegType::Track) {
         bookInts(b_, "trk_", {"index", "charge", "validHits", "pixLayers"});
         bookFloats(b_, "trk_", {"pt", "eta", "phi", "dxyBS", "dzBS", "normChi2"});
@@ -127,6 +132,12 @@ namespace bmmg {
 
     // ---- B candidates of each channel ----
     for (const auto& ch : channels_) bookCandidates(ch);
+
+    // ---- chi_c -> J/psi gamma(conv) (conversion energy-scale calibration) ----
+    if (chic_) {
+      bookInts(b_, "chic_", {"dimu", "conv"});
+      bookFloats(b_, "chic_", {"mass", "q", "pt", "eta", "phoDCA", "phoDCAxy", "phoFlight"});
+    }
 
     // ---- generator ----
     if (isMC_) {
@@ -575,6 +586,20 @@ namespace bmmg {
         for (const auto& d : daughterNames)
           for (const char* v : {"FitPt", "FitEta", "FitPhi"}) F(d + v).push_back(kNaN);
       }
+    }
+  }
+
+  void NtupleWriter::fillChiC(const std::vector<ChiCCandidate>& candidates) {
+    for (const auto& c : candidates) {
+      b_.vec<int>("chic_dimu").push_back(c.dimu);
+      b_.vec<int>("chic_conv").push_back(c.conv);
+      b_.vec<float>("chic_mass").push_back(c.mass);
+      b_.vec<float>("chic_q").push_back(c.q);
+      b_.vec<float>("chic_pt").push_back(c.pt);
+      b_.vec<float>("chic_eta").push_back(c.eta);
+      b_.vec<float>("chic_phoDCA").push_back(c.phoDCA);
+      b_.vec<float>("chic_phoDCAxy").push_back(c.phoDCAxy);
+      b_.vec<float>("chic_phoFlight").push_back(c.phoFlight);
     }
   }
 

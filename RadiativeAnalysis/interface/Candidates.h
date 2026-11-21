@@ -78,6 +78,18 @@ namespace bmmg {
     reco::Candidate::LorentzVector p4;  // from the fitted photon, else pairP4
   };
 
+  // chi_c -> J/psi gamma with a converted photon: energy-scale calibration of the conversions.
+  // No kinematic fit: the masses use the dimuon momentum and the conversion momentum (SelectedConversion::p4).
+  struct ChiCCandidate {
+    int dimu = -1, conv = -1;           // indices into the dimuons and the conversions
+    float mass = -1.f;                  // m(mu mu gamma)
+    float q = -1.f;                     // m(mu mu gamma) - m(mu mu)
+    float pt = -1.f, eta = -999.f;      // of the mu mu gamma system
+    float phoDCA = -1.f;                // 3D distance of the photon line (conversion vertex, p) from the dimuon vertex [cm]
+    float phoDCAxy = -1.f;              // the same in the transverse plane
+    float phoFlight = -999.f;           // (conversion vertex - dimuon vertex) . p_hat [cm]; > 0 if the conversion is downstream
+  };
+
   struct SelectedTrack {
     int index = -1;                     // index in the track collection
     const reco::Track* track = nullptr;

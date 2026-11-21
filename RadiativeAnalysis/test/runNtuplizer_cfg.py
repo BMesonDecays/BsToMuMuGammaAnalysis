@@ -42,8 +42,8 @@ options.register('lumiMask', '', VarParsing.multiplicity.singleton, VarParsing.v
                  'JSON file with the certified luminosity sections')
 options.register('photonID', 1, VarParsing.multiplicity.singleton, VarParsing.varType.int,
                  'run the photon ID (VID); needs fixedGridRhoFastjetAll, missing in some private samples')
-options.register('channels', 'mmg,mmcg,mmgg,mmkk', VarParsing.multiplicity.singleton, VarParsing.varType.string,
-                 'comma-separated list of the channels to build: mmg, mmcg, mmgg, mmkk')
+options.register('channels', 'mmg,mmcg,mmgg,mmkk,chic', VarParsing.multiplicity.singleton, VarParsing.varType.string,
+                 'comma-separated list of the channels to build: mmg, mmcg, mmgg, mmkk, chic (chi_c -> J/psi gamma(conv))')
 options.register('trackCompatibility', 1, VarParsing.multiplicity.singleton, VarParsing.varType.int,
                  'compute the max track compatibility of the dimuon (slow-ish)')
 options.register('skim', 0, VarParsing.multiplicity.singleton, VarParsing.varType.int,
@@ -130,6 +130,7 @@ process.bmmg = radiativeAnalysis.clone(
     doMuMuConvGamma='mmcg' in channels,
     doMuMuGammaGamma='mmgg' in channels,
     doMuMuKK='mmkk' in channels,
+    doChiC='chic' in channels,
     computeTrackCompatibility=bool(options.trackCompatibility),
     onlyEventsWithCandidates=bool(options.skim),
     minCandidateVtxProb=options.skimMinVtxProb,

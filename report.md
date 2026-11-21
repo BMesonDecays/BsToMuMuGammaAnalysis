@@ -33,6 +33,24 @@ Entries are newest first.
 
 ---
 
+## 2026-11-21: χ_c → J/ψ γ(conversion) calibration channel (`chic_`)
+
+- **Purpose:** data sample for the energy scale of the converted photons (plan step 3 of the entry below), with photons closer to the signal p_T than the π⁰.
+- **Change:**
+  - `bmmg::buildChiC` (`CandidateBuilders`), `ChiCCandidate` (`Candidates.h`), `NtupleWriter::fillChiC`, block `chic_` (NTUPLE.md).
+  - Every J/ψ dimuon (`dimu_resonance == 1`, valid vertex) × every conversion, Q = m(μμγ) − m(μμ) < `chicMaxQ` (1 GeV). No kinematic fit: dimuon momentum + `SelectedConversion::p4`, the photon that enters `mmcg`.
+  - Photon pointing to the dimuon vertex: `chic_phoDCA`, `chic_phoDCAxy`, `chic_phoFlight`.
+  - Parameters `doChiC` (cfi default false), `chicMaxQ`, `chicInSkim` (the skim keeps events with a χ_c candidate, default true).
+  - The conversions are selected and stored if `doMuMuConvGamma` or `doChiC`.
+  - `runNtuplizer_cfg.py`: channel `chic`, now in the default `channels=mmg,mmcg,mmgg,mmkk,chic`.
+- **Regression** (`data_aod`, 5721 events, default channels without vs with `chic`): all object branches (`mu_`, `pho_`, `dimu_`, `conv_`, …) identical, plus the 9 `chic_` branches. The only differences are in fit branches of `mmcg` (82 events), `mmkk` (13) and `mmg` (3), with `vtxOnlyChi2` differing as well, i.e. the known run-to-run non-determinism of the fits.
+- **Data test:** `ParkingDoubleMuonLowMass0_Run2022C-10Dec2022-v2`, `channels=chic`:
+  - MiniAOD (84915 events, 28080 with a J/ψ): 1882 candidates (2.2% of the events). AOD (12811 events): 431.
+  - Without a cut the χ_c peak is barely visible. With `chic_phoDCA < 0.5` cm (MiniAOD: 600 candidates), 0.38 < Q < 0.48 GeV has 108 candidates against 50 in 0.52–0.62 GeV.
+  - **Fit** (MiniAOD, phoDCA < 0.5 cm, 0.25 < Q < 0.75 GeV): χ_c1 and χ_c2 Gaussians with a common width, positions from the PDG masses scaled by the photon energy scale s (m² − m_J/ψ² ∝ E_γ), linear background. Result: s = 0.969 (+0.014 −0.016), σ = 15.5 MeV, N(χ_c1) ≈ 30, N(χ_c2) ≈ 4. This agrees with the MC core scale (0.98) and with the size of the AN-2023/035 π⁰ corrections. AOD: too few (≈ 11 χ_c).
+  - Rate: ≈ 4·10⁻⁴ fitted χ_c per event after the DCA cut, i.e. ~10³ χ_c per 2.5M parking events. A map in a few (p_T, |η|) bins at the 1% level needs O(10⁸) events, a fraction of the 2022 parking data.
+- **Next:** χ_c from the full production; fit in (p_T, |η|) bins of the photon (m(μμγ) with the per-photon scale, χ_c1 + χ_c2 shapes from MC or double Crystal Ball); scale map; apply to `mmcg` (`mmcg_massCorr`); χ_c MC (or Bs → J/ψ γ-like samples) to compare data and MC scale.
+
 ## 2026-11-21: Converted photon energy scale: the π⁰ → γγ calibration of AN-2023/035 (B* → Bγ); plan
 
 - **AN-2023/035 v13, App. B** (`src/AN2023_035_v13.pdf`): the converted-photon energy scale (PES) is calibrated in data with π⁰ → γγ, both photons converted.
