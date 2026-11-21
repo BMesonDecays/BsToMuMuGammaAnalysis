@@ -54,6 +54,9 @@ def reference_fits(df, y, cfg, model, inclusive):
     has too few candidates falls back to the inclusive fit. Without shape_from: the inclusive fit for all.
     r21_from: selection of a region with resolved chi_c1/chi_c2 peaks; its N(chi_c2)/N(chi_c1) is fixed in the
     reference fits and in the bins (returned model).
+    r21_per: names of map variables: N(chi_c2)/N(chi_c1) from a fit of the r21_from region per bin of these
+    variables (the other variables merged), fixed in the bins (returned model['r21_bins'], see r21_for_bin).
+    The reference fits keep the r21_from value of the whole region.
     Returns {projected bin tuple: fit result}, the indices of the shape_from variables, summary rows, and the
     model for the bins.
     """
@@ -72,9 +75,33 @@ def reference_fits(df, y, cfg, model, inclusive):
                      'r21': r['values']['r21'], 'alpha': r['values']['alpha']})
         inclusive = dict(inclusive, values=dict(inclusive['values'], r21=r['values']['r21']))
         model = dict(model, fixed=dict(model.get('fixed') or {}, r21=r['values']['r21']))
-    if not dims:
-        return {(): inclusive}, dims, rows, model
     idx = cs.bin_index(df, binning)
+    r21_bins = None
+    if cfg.get('r21_from') and cfg.get('r21_per'):
+        # the production ratio changes with pt (0.49 -> 0.31 over pt_est 1 -> >3 GeV in 2022 data)
+        rdims = [names.index(n) for n in cfg['r21_per']]
+        rbins = [binning[d] for d in rdims]
+        values = np.full(tuple(len(b['edges']) - 1 for b in rbins), model['fixed']['r21'])
+        for pb in cs.all_bins(rbins):
+            selb = sel & np.all(idx[:, rdims] == np.array(pb), axis=1)
+            r = cs.fit(y[selb], dict(model, fixed={k: v for k, v in model['fixed'].items() if k != 'r21'}),
+                       start=dict(inclusive['values'], ntot=inclusive['ntot']))
+            rng = ', '.join('%s %g–%g' % (b['name'], b['edges'][k], b['edges'][k + 1]) for b, k in zip(rbins, pb))
+            if r['valid']:
+                values[pb] = r['values']['r21']
+                print('r21 from %s, %s: %.4f ± %.4f (s = %.4f)' % (cfg['r21_from'], rng, r['values']['r21'],
+                                                                   r['errors']['r21'], r['s']))
+            else:
+                print('WARNING: r21 fit in %s, %s not valid: the value of the whole region' % (cfg['r21_from'], rng))
+            rows.append({'fit': 'r21_from', 'bin': list(pb), 'n_range': r['n'], 'status': 0 if r['valid'] else 1,
+                         's': r['s'], 's_err': r['s_err'], 'r21': r['values']['r21'], 'r21_err': r['errors']['r21'],
+                         'alpha': r['values']['alpha'],
+                         **{b['name'] + '_lo': b['edges'][k] for b, k in zip(rbins, pb)},
+                         **{b['name'] + '_hi': b['edges'][k + 1] for b, k in zip(rbins, pb)}})
+        r21_bins = {'vars': [{'name': b['name'], 'expr': b['expr'], 'edges': [float(e) for e in b['edges']]}
+                             for b in rbins], 'values': values}
+    if not dims:
+        return {(): inclusive}, dims, rows, (dict(model, r21_bins=r21_bins) if r21_bins else model)
     inmap = np.all(idx >= 0, axis=1)
     refs = {}
     lo, hi = model['range']
@@ -91,7 +118,25 @@ def reference_fits(df, y, cfg, model, inclusive):
                          'r21': r['values']['r21']} if r else {}),
                      **{binning[d]['name'] + '_lo': binning[d]['edges'][k] for d, k in zip(dims, pb)},
                      **{binning[d]['name'] + '_hi': binning[d]['edges'][k + 1] for d, k in zip(dims, pb)}})
-    return refs, dims, rows, model
+    return refs, dims, rows, (dict(model, r21_bins=r21_bins) if r21_bins else model)
+
+
+def r21_for_bin(r21_bins, binning, b):
+    """N(chi_c2)/N(chi_c1) of bin b of `binning` from the per-bin values (r21_bins of reference_fits).
+
+    Every r21 variable is matched to the binning variable with the same expression; its value is taken at the
+    centre of that bin (clamped to the outer r21 bins). None if a variable is not in the binning (e.g. the
+    conversion-radius cross-check): the fit keeps the r21 of the whole r21_from region.
+    """
+    exprs = [bb['expr'] for bb in binning]
+    k = []
+    for v in r21_bins['vars']:
+        if v['expr'] not in exprs:
+            return None
+        d = exprs.index(v['expr'])
+        c = 0.5 * (binning[d]['edges'][b[d]] + binning[d]['edges'][b[d] + 1])
+        k.append(int(np.clip(np.searchsorted(v['edges'], c, side='right') - 1, 0, len(v['edges']) - 2)))
+    return float(r21_bins['values'][tuple(k)])
 
 
 def run_map(df, y, cfg, model, inclusive, label, r21_factor=1., refs=None, fix=None):
@@ -102,6 +147,8 @@ def run_map(df, y, cfg, model, inclusive, label, r21_factor=1., refs=None, fix=N
     """
     fix = cfg.get('fix_in_bins', []) if fix is None else fix
     binning = cfg['binning']
+    r21_bins = model.get('r21_bins')
+    model = {k: v for k, v in model.items() if k != 'r21_bins'}
     refs, dims = refs or ({(): inclusive}, [])
     idx = cs.bin_index(df, binning)
     shape = tuple(len(b['edges']) - 1 for b in binning)
@@ -111,7 +158,9 @@ def run_map(df, y, cfg, model, inclusive, label, r21_factor=1., refs=None, fix=N
     for b in cs.all_bins(binning):
         sel = np.all(idx == np.array(b), axis=1)
         ref = refs[tuple(b[d] for d in dims)]
-        r, st, n = fit_sample(y[sel], model, ref, fix, cfg.get('min_candidates', 0), r21_factor)
+        r21 = r21_for_bin(r21_bins, binning, b) if r21_bins else None
+        mb = dict(model, fixed=dict(model['fixed'], r21=r21)) if r21 is not None else model
+        r, st, n = fit_sample(y[sel], mb, ref, fix, cfg.get('min_candidates', 0), r21_factor)
         status[b] = st
         row = {'fit': label, 'bin': list(b), 'n_range': n, 'status': st}
         for k, bb in zip(b, binning):
@@ -251,8 +300,8 @@ def main():
     refs, dims, rrows, bmodel = reference_fits(df, y, cfg, model, inc)
     rows += rrows
     for r in rrows:
-        print('reference %s: n %d status %d s = %s alpha = %s r21 = %s' % (
-            ', '.join('%s %.2f–%.2f' % (k[:-3], r[k], r[k[:-3] + '_hi']) for k in r if k.endswith('_lo')),
+        print('%s %s: n %d status %d s = %s alpha = %s r21 = %s' % (
+            r['fit'], ', '.join('%s %.2f–%.2f' % (k[:-3], r[k], r[k[:-3] + '_hi']) for k in r if k.endswith('_lo')),
             r['n_range'], r['status'], '%.4f ± %.4f' % (r['s'], r['s_err']) if 's' in r else '-',
             '%.2f' % r['alpha'] if 'alpha' in r else '-', '%.3f' % r['r21'] if 'r21' in r else '-'))
     mrows, scale, error, status, results = run_map(df, y, cfg, bmodel, inc, 'nominal', refs=(refs, dims))
@@ -277,6 +326,8 @@ def main():
                 continue
             if r21_factor != 1.:
                 vbm = dict(vbm, fixed=dict(vbm['fixed'], r21=vbm['fixed']['r21'] * r21_factor))
+                if vbm.get('r21_bins'):
+                    vbm['r21_bins'] = dict(vbm['r21_bins'], values=vbm['r21_bins']['values'] * r21_factor)
             vrows, vscale, _, vstatus, _ = run_map(df, y, cfg, vm if 'r21' not in (vbm.get('fixed') or {}) else vbm,
                                                    vinc, name, 1. if 'r21' in (vbm.get('fixed') or {}) else r21_factor,
                                                    refs=(vrefs, vdims))
@@ -290,7 +341,10 @@ def main():
     smap = cs.ScaleMap(variables, scale, error, status, syst=syst, inclusive={'s': inc['s'], 's_err': inc['s_err']},
                        info={'selection': cfg.get('selection'), 'model': model, 'datasets': cfg['datasets'],
                              'n_candidates': int(len(df)), 'fixed_in_bins': cfg.get('fix_in_bins', []),
-                             'fixed_values': {k: inc['values'][k] for k in cfg.get('fix_in_bins', [])}})
+                             'fixed_values': {k: inc['values'][k] for k in cfg.get('fix_in_bins', [])},
+                             'r21_fixed': bmodel['fixed'].get('r21'), 'r21_from': cfg.get('r21_from'),
+                             'r21_bins': (dict(bmodel['r21_bins'], values=bmodel['r21_bins']['values'].tolist())
+                                          if bmodel.get('r21_bins') else None)})
     smap.to_json(os.path.join(out, 'conv_scale.json'))
 
     # 4. cross-checks
