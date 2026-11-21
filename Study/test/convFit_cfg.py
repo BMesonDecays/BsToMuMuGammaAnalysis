@@ -24,6 +24,7 @@ process.convFit = cms.EDAnalyzer(
     miniAOD=cms.bool(True),
     conversions=cms.InputTag("oniaPhotonCandidates:conversions"),
     genParticles=cms.InputTag("prunedGenParticles"),
+    pfCandidates=cms.InputTag("packedPFCandidates"),
 )
 
 process.TFileService = cms.Service(

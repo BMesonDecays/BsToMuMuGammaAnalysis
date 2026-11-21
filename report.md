@@ -33,6 +33,17 @@ Entries are newest first.
 
 ---
 
+## 2026-11-21: ECAL energy for the conversions from PF candidates (study; no change to the ntuplizer)
+
+- **Goal:** recover the bremsstrahlung loss of the conversion electrons (track energy −7%, long low tail) with the calorimeter.
+- **Available ECAL information:** AOD PF superclusters exist only above ≈ 4 GeV (barrel; min. E 4.1 GeV, endcap 9.7 GeV in the signal sample), basic clusters only inside them; MiniAOD keeps only the e/γ clusters (`reducedEgamma`). Usable in both formats: the PF candidates: ECAL energy linked to a charged candidate (AOD `PFCandidate::ecalEnergy()`, MiniAOD `caloFraction·(1 − hcalFraction)·E`, stored for charged candidates with pt > 0.5 GeV) and the PF photons (brem photons, excess ECAL energy).
+- **Study:** `Study/ConvFitStudy` now stores, per conversion, the PF candidates within |Δη| < 0.2, |Δφ| < 0.8 of the pair (`pf_pdgId`, `pf_E`, `pf_ecal`, `pf_dEta`, `pf_dPhi`, `pf_leg` = matched to conversion track 1/2: same charge, |Δpt|/pt < 2%, ΔR < 0.02), the generated photon energy `genE` and `pairEta` (new parameters `pfCandidates`, untracked `runFits`). Full `bsmmg_aod` (8888 events, 1463 signal-B conversions) and `bsmmg_miniaod` (32884, 1176).
+- **Results** (E/E_gen − 1, median / (q84 − q16)/2, fraction within ±5%):
+  - Both legs matched to a PF candidate in 20% (AOD) / 45% (MiniAOD) of the conversions (the legs are PF charged hadrons, 96–98%); 2–3 unmatched charged PF candidates per conversion lie nearby, so a looser match would raise this, but it does not change the conclusion below.
+  - On the conversions with both legs matched: track pair −10.2% / 16% / 0.35 (AOD), −6.0% / 9.9% / 0.45 (MiniAOD). ECAL of the legs alone: −31% / 31% and −28% / 27% (ECAL/track of the legs ≈ 0.77). ECAL of the legs + PF photons in a road (|Δη| < 0.05–0.10, |Δφ| < 0.3–0.8; 1.0–2.0 photons, 2.8–4.5 GeV): median −18% … +0% depending on the road, width 36–38%, only 6–10% within ±5%. max(track, ECAL + photons): bias ≈ 0 but width 18–27% and fewer within ±5% (0.20–0.31) than the tracks.
+  - The ECAL does not see the lost energy: when the track energy is > 10% low (51% AOD, 38% MiniAOD of these conversions), the ECAL + road estimate is low as well (median 0.72–0.77 of E_gen, width 40%). Linear combinations p_trk + w (E_cal − p_trk) are worse than the tracks for every w > 0 (correlation of E_cal − p_trk with E_gen − p_trk: 0.47–0.49 AOD, 0.32–0.33 MiniAOD).
+- **Conclusion:** the PF-level ECAL information of these 1–5 GeV electrons is too coarse to correct the brem loss (low-energy showers below the clustering thresholds, fragmented clusters of the curling electrons, PF hadron calibration of the energy linked to the legs). A calorimeter estimate would need a dedicated low-threshold clustering (cf. `BMMGCustomPhotonProducer`, plan.md Phase 9, AOD only). For now the best photon energy remains the track pair (colinearity fit), with the mass error corrected after the fit.
+
 ## 2026-11-21: `mmcg` fit with the pointing constraint inside the vertex fit (`mmcgPointingInVertexFit`, default false)
 
 - **Idea:** with `KinematicConstrainedVertexFitter` + `MultiTrackPointingKinematicConstraint(pv)` the muons, the photon and the vertex are refitted together with the pointing constraint, so with a realistic photon error (`conversionMomentumError`) the fit might correct the photon energy lost by bremsstrahlung.

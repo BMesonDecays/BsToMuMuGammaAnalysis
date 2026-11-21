@@ -7,6 +7,8 @@
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "DataFormats/EgammaCandidates/interface/Conversion.h"
 #include "DataFormats/PatCandidates/interface/CompositeCandidate.h"
+#include "DataFormats/PatCandidates/interface/PackedCandidate.h"
+#include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/Math/interface/deltaR.h"
 #include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
@@ -58,15 +60,29 @@ class ConvFitStudy : public edm::one::EDAnalyzer<edm::one::SharedResources> {
 public:
   explicit ConvFitStudy(const edm::ParameterSet& cfg)
       : miniAOD_(cfg.getParameter<bool>("miniAOD")),
+        runFits_(cfg.getUntrackedParameter<bool>("runFits", true)),
         ttToken_(esConsumes(edm::ESInputTag("", "TransientTrackBuilder"))) {
     if (miniAOD_) onia_ = consumes(cfg.getParameter<edm::InputTag>("conversions"));
     else conv_ = consumes(cfg.getParameter<edm::InputTag>("conversions"));
+    if (miniAOD_) packedPF_ = consumes(cfg.getParameter<edm::InputTag>("pfCandidates"));
+    else recoPF_ = consumes(cfg.getParameter<edm::InputTag>("pfCandidates"));
     gen_ = consumes(cfg.getParameter<edm::InputTag>("genParticles"));
     usesResource("TFileService");
     edm::Service<TFileService> fs;
     t_ = fs->make<TTree>("t", "conversions");
     t_->Branch("fromB", &fromB_);
     t_->Branch("genPt", &genPt_);
+    t_->Branch("genE", &genE_);
+    t_->Branch("pairEta", &pairEta_);
+    // PF candidates within |deta| < 0.2, |dphi| < 0.8 of the pair direction: pdgId, energy, ECAL energy
+    // (AOD PFCandidate::ecalEnergy; MiniAOD caloFraction*(1-hcalFraction)*E, charged pt > 0.5 and photons),
+    // deta/dphi to the pair, leg: 1/2 if matched to track 1/2 of the conversion
+    t_->Branch("pf_pdgId", &pfPdg_);
+    t_->Branch("pf_E", &pfE_);
+    t_->Branch("pf_ecal", &pfEcal_);
+    t_->Branch("pf_dEta", &pfDEta_);
+    t_->Branch("pf_dPhi", &pfDPhi_);
+    t_->Branch("pf_leg", &pfLeg_);
     t_->Branch("recoRho", &recoRho_);
     t_->Branch("recoProb", &recoProb_);
     t_->Branch("pairPt", &pairPt_);
@@ -111,6 +127,15 @@ public:
       for (const auto& p : *g)
         if (p.pdgId() == 22 && p.numberOfMothers() && (std::abs(p.mother(0)->pdgId()) == 511 || std::abs(p.mother(0)->pdgId()) == 531))
           gph.push_back(&p);
+    std::vector<PFInfo> pf;
+    if (miniAOD_) {
+      for (const auto& c : ev.get(packedPF_))
+        pf.push_back({c.pdgId(), c.charge(), c.pt(), c.eta(), c.phi(), c.energy(),
+                      c.caloFraction() * (1. - c.hcalFraction()) * c.energy()});
+    } else {
+      for (const auto& c : ev.get(recoPF_))
+        pf.push_back({c.pdgId(), c.charge(), c.pt(), c.eta(), c.phi(), c.energy(), c.ecalEnergy()});
+    }
     std::vector<std::tuple<const reco::Track*, const reco::Track*, GlobalPoint, float, reco::Candidate::LorentzVector>> in;
     if (miniAOD_) {
       auto h = ev.getHandle(onia_);
@@ -130,9 +155,11 @@ public:
     }
     for (auto& [t0, t1, vtx, prob, p4] : in) {
       if (!t0 || !t1 || t0->charge() * t1->charge() >= 0 || p4.pt() < 0.5) continue;
-      fromB_ = 0; genPt_ = -1;
+      fromB_ = 0; genPt_ = -1; genE_ = -1;
       for (auto* g : gph)
-        if (reco::deltaR(*g, p4) < 0.1 && std::abs(p4.pt() - g->pt()) < 0.5 * g->pt()) { fromB_ = 1; genPt_ = g->pt(); }
+        if (reco::deltaR(*g, p4) < 0.1 && std::abs(p4.pt() - g->pt()) < 0.5 * g->pt()) { fromB_ = 1; genPt_ = g->pt(); genE_ = g->energy(); }
+      pairEta_ = p4.eta();
+      fillPF(pf, t0, t1, p4);
       recoRho_ = vtx.perp();
       recoProb_ = prob;
       pairPt_ = p4.pt();
@@ -146,7 +173,7 @@ public:
       vtxMass_ = vtxMassErr_ = -1;
       sergeyFallback_ = 0; sergeyVtxPt_ = -1;
       for (int i = 0; i < kN; ++i) out_[i] = Out();
-      for (int i = 0; i < kN; ++i) run(i, tt0, tt1, vtx);
+      if (runFits_) for (int i = 0; i < kN; ++i) run(i, tt0, tt1, vtx);
       t_->Fill();
     }
   }
@@ -309,7 +336,36 @@ private:
   float dgLinRho_, dgLinDist_, dgLastShift_, dgLastRho_, dgMinShift_;
   int dgWillProp_, dgReason_, dgSteps_;
 
+  struct PFInfo { int pdgId, charge; double pt, eta, phi, E, ecal; };
+  void fillPF(const std::vector<PFInfo>& pf, const reco::Track* t0, const reco::Track* t1,
+              const reco::Candidate::LorentzVector& p4) {
+    pfPdg_.clear(); pfE_.clear(); pfEcal_.clear(); pfDEta_.clear(); pfDPhi_.clear(); pfLeg_.clear();
+    // leg match: same charge, |dpt|/pt < 0.02, dR < 0.02 (best)
+    int best[2] = {-1, -1};
+    for (int k = 0; k < 2; ++k) {
+      const reco::Track* t = k == 0 ? t0 : t1;
+      double bd = 1e9;
+      for (size_t i = 0; i < pf.size(); ++i) {
+        if (pf[i].charge != t->charge() || std::abs(pf[i].pt - t->pt()) > 0.02 * t->pt()) continue;
+        const double dr = reco::deltaR(pf[i].eta, pf[i].phi, t->eta(), t->phi());
+        if (dr < 0.02 && dr < bd) { bd = dr; best[k] = i; }
+      }
+    }
+    for (size_t i = 0; i < pf.size(); ++i) {
+      const double de = pf[i].eta - p4.eta(), dp = reco::deltaPhi(pf[i].phi, p4.phi());
+      const int leg = int(i) == best[0] ? 1 : (int(i) == best[1] ? 2 : 0);
+      if (!leg && (std::abs(de) > 0.2 || std::abs(dp) > 0.8)) continue;
+      pfPdg_.push_back(pf[i].pdgId); pfE_.push_back(pf[i].E); pfEcal_.push_back(pf[i].ecal);
+      pfDEta_.push_back(de); pfDPhi_.push_back(dp); pfLeg_.push_back(leg);
+    }
+  }
   const bool miniAOD_;
+  const bool runFits_;
+  edm::EDGetTokenT<std::vector<pat::PackedCandidate>> packedPF_;
+  edm::EDGetTokenT<std::vector<reco::PFCandidate>> recoPF_;
+  float genE_, pairEta_;
+  std::vector<int> pfPdg_, pfLeg_;
+  std::vector<float> pfE_, pfEcal_, pfDEta_, pfDPhi_;
   edm::ESGetToken<TransientTrackBuilder, TransientTrackRecord> ttToken_;
   edm::EDGetTokenT<std::vector<reco::Conversion>> conv_;
   edm::EDGetTokenT<std::vector<pat::CompositeCandidate>> onia_;
