@@ -33,6 +33,79 @@ Entries are newest first.
 
 ---
 
+## 2026-11-21: Converted-photon energy scale from χ_c → J/ψ γ(conv) on the Parquet tables (`analysis/`); development on 100 files
+
+Implements plan steps 2–3 of the 2026-11-21 χ_c / π⁰ entries. The map is meant to go into the ntuplizer later.
+
+**Code** (`analysis/`, README section "Converted-photon energy scale"):
+- `convert.py` knows the channel `chic`; `dimu_*` and `conv_*` are gathered into each row.
+  - `config/convert_chic.yaml`: separate output `~/bmmg/parquet_chic`, preselection `q < 0.9`.
+- `bmmg_ana/convscale.py`: fit model, fit (iminuit, added to `environment.yml`), `pt_est`, binning, `ScaleMap` (JSON, lookup), `corrected_mass`; MC truth helpers.
+- `scripts/conv_scale.py` with `config/conv_scale.yaml`: the inclusive fit, reference fits per |η| slice, the map fits, model variations, 1D cross-checks, closure, JSON/CSV/plots.
+- `scripts/conv_scale_mc.py` with `config/convert_convmc.yaml` / `config/conv_scale_mc.yaml`: the MC truth check on gen-matched `mmcg` of B_s → J/ψγ.
+- `tests/test_convscale.py` (toy closure, fixed parameters, `pt_est`, `ScaleMap`) and a `chic` test in `tests/test_schema.py`. All 29 tests pass.
+
+**Method:**
+- **Fit variable:** y = m(μμγ)² − m(μμ)² = 2 p_μμ·p_γ, linear in the photon energy.
+  - The χ_c1/χ_c2 peaks sit at s·(m_χc² − m_J/ψ²).
+  - With the PDG J/ψ mass instead of m(μμ), i.e. Q(Q + 2m_J/ψ), the scale and the width are the same (0.983, σ/y = 0.028).
+- **Model:** Crystal Ball peaks with the tail on the low side, plus a Chebyshev background (2nd order), in y ∈ [1.6, 5.2] GeV² (Q ≈ 0.25–0.75 GeV). Binned extended likelihood. The scale s is the CB mean, i.e. the peak.
+- **Choices forced by the development data:**
+  1. **CB n fixed to 2:** free, it runs to its lower limit (degenerate with the background). Inclusive s for n = 1.5 / 2 / 3 / 5 / 10: 0.9824 / 0.9830 / 0.9837 / 0.9843 / 0.9848. The variations use n = 1.5 and 5.
+  2. **Binning in `pt_est` = conv_pt · Y₁ / y, not in the reconstructed pt.**
+     - For a χ_c1 candidate, `pt_est` is the true photon pt, independent of the response, because y and conv_pt both scale with it.
+     - Binning in conv_pt selects on the response. Migration across the edges and the 0.5 GeV conversion threshold give s = 1.02–1.03 at 0.5–0.7 GeV.
+     - Below `pt_est` ≈ 1 GeV the threshold (y > 0.5 GeV · Y₁ / pt_est) cuts into the fit range, so the map starts at 1 GeV.
+  3. **The tail α fixed per |η| slice** (`shape_from: [abseta]`), not to the inclusive value.
+     - α is 0.97 / 0.90 / 0.55 for |η| 0–0.8 / 0.8–1.5 / 1.5–2.0.
+     - With the inclusive α (0.57), the barrel bins came out 0.5% high, and the merged barrel sample (0.985) was below every one of its pt bins (0.987–0.992).
+  4. **N(χ_c2)/N(χ_c1) from the barrel** (`r21_from: abs(conv_eta) < 1.5`, 0.396 ± 0.018), fixed everywhere.
+     - In the endcaps σ/y is 5–10% and the peaks merge. A free ratio trades χ_c2 for χ_c1: s = 0.885 with N2/N1 = 3 is about s = 0.99 with χ_c1.
+     - Variations: ±20% on the ratio.
+- **Selection:** `conv_fitOK == 1`, `phoDCA < 0.5` cm, |m(μμ) − m_J/ψ| < 0.1 GeV, `dimu_vtxProb > 0.01`.
+- **Systematics:** per bin, the largest deviation over the variations: background order 3, χ_c0 included, fit range 2.0–4.6 / 1.4–6.0 GeV², n = 1.5 / 5, ratio ±20%.
+
+**Development sample:** 100 files of `ParkingDoubleMuonLowMass0` 2022C v2 (about 44M processed events), from EOS.
+- Conversion: 24 s → 784k `chic` rows. The row count equals the raw `chic_q < 0.9` count, and 200 random candidates have the right `dimu_*`/`conv_*` values.
+- 235k candidates selected. Inclusive fit: s = 0.9830 ± 0.0011, σ/y = 2.8%, N(χ_c1) = 13.1k, χ²/ndf = 87/82.
+  - The earlier estimate from the 85k-event 2022C test file was 0.969 (+0.014 −0.016).
+- All fits and plots take 9 s.
+
+**Map** (s ± stat ± syst; `pt_est` [GeV] × |η|):
+
+| pt_est | 0–0.8 | 0.8–1.5 | 1.5–2.0 | 2.0–2.5 |
+|---|---|---|---|---|
+| 1.0–1.5 | 0.988 ± 0.002 ± 0.001 | 0.982 ± 0.004 ± 0.001 | 0.959 ± 0.010 ± 0.008 | 0.93 ± 0.03 ± 0.05 |
+| 1.5–2.0 | 0.987 ± 0.001 ± 0.001 | 0.979 ± 0.003 ± 0.001 | 0.970 ± 0.009 ± 0.004 | 0.93 ± 0.03 ± 0.06 |
+| 2.0–3.0 | 0.985 ± 0.001 ± 0.001 | 0.981 ± 0.002 ± 0.001 | 0.953 ± 0.005 ± 0.005 | 0.92 ± 0.02 ± 0.01 |
+| > 3.0 | 0.982 ± 0.001 ± 0.002 | 0.974 ± 0.002 ± 0.001 | 0.947 ± 0.006 ± 0.008 | status 2 (too few; inclusive value filled in) |
+
+- The scale falls slowly with pt (barrel 0.988 → 0.982) and strongly with |η|: 1–2% in the barrel, 3–5% at 1.5–2.0, 7–8% above 2.0. This is the trend of the AN-2023/035 π⁰ map.
+- **Conversion radius** (1D, free tail): 0.985 / 0.986 / 0.981 / 0.970 / 0.981 at ρ = 1.5–4 / 4–7 / 7–12 / 12–25 / 25–100 cm. After the pt × |η| correction this closes (1.002, 0.999, 0.996, –, 1.001), so the ρ dependence is mostly the |η| correlation.
+
+**Closure** (the map applied per candidate with its bin value, refit in the finer cross-check bins, candidates inside the map):
+- pt_est: 0.996–1.001. Reconstructed pt: 0.993–1.002. |η| < 1.2: 0.998–1.001.
+- |η| 1.2–2.5: 0.994 / 1.010 / 0.993 / 0.977 / 1.05, within about 2σ of the 0.3–2.4% errors.
+- The inclusive refit gives 0.995: one CB fitted to a mix of bins with different shapes. It is not a closure test.
+- Multilinear interpolation between bin centres is available (`interpolate: true`). With the steep |η| dependence and coarse bins it is −0.4% off in closure, so bin values are the default.
+
+**MC check** (`conv_scale_mc.py`, B_s → J/ψγ MiniAOD test file, 35k events, `channels=mmcg`):
+- Only 952 truth-matched conversions, all with photon pt > 3 GeV.
+- Inclusive peak of E_reco/E_true: 0.965 ± 0.003. The peak of y/(m_Bs² − m_J/ψ²) is 0.958 ± 0.004: the y method agrees with the photon response within 1.7σ.
+- Per bin (≥ 100 conversions) only two bins can be fitted, so no data/MC comparison is possible yet. The script prints none where the MC has no fit.
+- **Needed:** the B_s → J/ψγ MC production (`tasks_remaining_mc.yaml`) converted with `config/convert_convmc.yaml`.
+
+**For the full 2022 data:**
+- 744 files, 7.4 times this sample: statistical errors about 2.7 times smaller.
+- The |η| 2.0–2.5 slice should then fit, together with the bin at pt > 3 GeV.
+- Finer pt bins in the barrel will be possible, and ρ could become a third map variable.
+- Run with `python3 convert.py config/convert_chic.yaml`, then `python3 scripts/conv_scale.py config/conv_scale.yaml`.
+
+**Open:**
+1. The data/MC comparison and the MC map. The map is needed for MC too, from its own truth.
+2. The pt range: χ_c gives 1–5 GeV, the signal photons are at 3–40 GeV. The MC pt trend beyond 5 GeV decides how to extrapolate; the lookup is clamped at the last bin.
+3. Ntuplizer implementation: read the JSON (FileInPath), scale the conversion momentum by 1/s before the `mmcg` fit, store the applied s.
+
 ## 2026-11-21: Signal photon energy response E_reco/E_gen: the excess comes from the reconstruction threshold and from other particles in the supercluster; the muon ECAL deposits are a small effect (study; no code change)
 
 **Question:** reconstructed signal photon energies are on average above the generated ones, more in EE, also at high
