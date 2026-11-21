@@ -60,7 +60,7 @@ Preselection: `gedPhotons` with a supercluster, E_SC > `photonMinSCEnergy` (1 Ge
 | `pho_pt`, `pho_eta`, `pho_phi`, `pho_energy`, `pho_energyErr` | kinematics, energy uncertainty of the candidate |
 | `pho_fitEnergyErr` | energy uncertainty used in the kinematic fit (scaled, see `energyErrorScaleEB/EE`) |
 | `pho_mva` | photon MVA (`PhotonMVAEstimatorRunIIIWinter22v1`), −99 if not available |
-| `pho_tightId` | MVA ID working point 90% (`mvaPhoID-RunIIIWinter22-v1-wp90`), −1 if not available. The 90% efficiency target holds for photons above 10 GeV; at lower pt it is not validated |
+| `pho_tightId` | MVA ID working point 90% (`mvaPhoID-RunIIIWinter22-v1-wp90`), −1 if not available. The 90% efficiency target holds for photons above 10 GeV; at lower pt it is not validated. For the signal photons it is about 57%: the MVA isolation inputs (track sums in ΔR 0.3/0.4, HCAL) include the signal muons (report.md, 2026-11-21) |
 | `pho_isEB`, `pho_isEE`, `pho_hasPixelSeed`, `pho_hasConversionTracks` | flags |
 | `pho_hasClusterHits` | the supercluster has rechits (needed for the fit and for `pho_seedTime`) |
 | `pho_scEnergy`, `pho_scRawEnergy`, `pho_scEta`, `pho_scPhi`, `pho_scEtaWidth`, `pho_scPhiWidth` | supercluster |

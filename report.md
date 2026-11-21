@@ -33,6 +33,56 @@ Entries are newest first.
 
 ---
 
+## 2026-11-21: Photon MVA ID wp90 efficiency of the signal photons is 57%, not 90%: the signal muons are in the isolation cones (study; no code change)
+
+**Question:** `pho_tightId` (`mvaPhoID-RunIIIWinter22-v1-wp90`) is documented as 90% efficient. For gen-matched
+signal photons of the B_s → μμγ MC (`v1` production, MiniAOD, 129k photons) it is 57%. Does the ntuple assign
+wrong IDs?
+
+**The ID in the ntuple is correct:**
+- `pho_tightId == (pho_mva > cut)` for all 144k photons, with cut 0.0440 (EB) / −0.2495 (EE); the EB/EE category
+  agrees with |η_SC| < 1.479.
+- 5000 events of the MiniAOD test file were re-run without the skim. For each of the 1248 photons, our recomputed MVA
+  equals the official `slimmedPhotons` value `PhotonMVAEstimatorRunIIIWinter22v1Values` exactly (max difference 0).
+  `pho_tightId` equals the embedded `mvaPhoID-RunIIIWinter22-v1-wp90` for 100% of the photons.
+
+**The efficiency loss comes from the signal muons inside the isolation cones of the photon:**
+- The MVA inputs include `trkSumPtSolidConeDR04` and `trkSumPtHollowConeDR03`, which sum all tracks, muons included.
+  They also include `hcalPFClusterIso` and `hcalOverEcal`, which pick up the muon's energy deposit in the HCAL.
+- 93.5% of the signal photons are within ΔR < 0.4 of a signal muon. All signal photons have pt > 10 GeV, so the
+  pt range of the 90% target is not the issue.
+
+| signal photons | n | wp90 efficiency |
+|---|---|---|
+| all | 129446 | 0.569 |
+| ΔR(γ, nearest μ) < 0.2 | 59630 | 0.441 |
+| 0.2–0.3 | 39586 | 0.565 |
+| 0.3–0.4 | 21806 | 0.811 |
+| 0.4–0.6 | 8355 | 0.868 |
+| ΔR > 0.6, R9 > 0.94 | 41 | 0.90 ± 0.05 |
+| pt 10–15 / 15–20 / 20–30 / > 30 GeV | | 0.67 / 0.50 / 0.42 / 0.33 |
+
+The efficiency falls with photon pt because harder B decays are more collimated. Medians of the MVA inputs on the
+MiniAOD test file:
+
+| signal photons | `trkSumPtSolidConeDR04` | `trkSumPtHollowConeDR03` | `hcalPFClusterIso` | H/E |
+|---|---|---|---|---|
+| ΔR(μ) < 0.3 | 11.1 GeV | 7.6 GeV | 3.9 GeV | 0.067 |
+| ΔR(μ) > 0.4 | 1.0 GeV | 0.4 GeV | 2.3 GeV | 0.027 |
+
+The scalar sum of the muon pt in the cone is 15 GeV (ΔR < 0.4); the track isolations are dominated by the muons.
+
+**Consequences:**
+- `pho_tightId` must not be used as a selection for the signal photon. It removes about 43% of the signal, more at
+  high photon pt.
+- `pho_mva` (a BDT feature) carries the same muon dependence. It acts partly as a measure of the γ–μ opening angle,
+  not as a pure photon-quality variable.
+- **Options:**
+  1. Cut on `pho_mva` at a threshold tuned on signal vs background.
+  2. Re-evaluate the Winter22 MVA with the signal-muon contributions removed from the inputs: muon pt out of the
+     track isolations, muon deposit out of the HCAL terms.
+  3. Use the photon shower-shape variables directly in the analysis BDT.
+
 ## 2026-11-21: 2022 data production `v2` is empty: `channels` list passed as `str(list)` (fixed)
 
 The production from `crab/tasks_2022.yaml` (48 tasks, 2022C–G, `bmmg_ntuples_v2`) has
