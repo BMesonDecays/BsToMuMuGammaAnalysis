@@ -1,0 +1,27 @@
+# Configuration of convert.py for the chi_c -> J/psi gamma(conversion) calibration tables (channel chic),
+# input of scripts/conv_scale.py (converted-photon energy scale).
+#
+#   python3 convert.py config/convert_chic.yaml [--workers 16]
+#
+# A separate output directory: the manifest of a dataset fixes its channels and preselection, so the chic
+# tables cannot be added to the mmg/mmgg/mmkk tables of config/convert.yaml.
+
+output: ~/bmmg/parquet_chic
+
+channels: [chic]
+
+# loose: the fit range of conv_scale.py ends at Q = 0.75 GeV
+preselection: "q < 0.9"
+
+# not used by the calibration
+drop_columns: ["trg_*", "bs_*", "gen_*"]
+
+chunk_files: 200
+workers: 16
+compression: zstd
+
+datasets:
+  Parking2022:
+    files: ~/bmmg/ntuples/ParkingDoubleMuonLowMass*/**/bmmg_ntuple_*.root
+    isMC: false
+    label: "2022 data"

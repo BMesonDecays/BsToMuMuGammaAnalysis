@@ -64,3 +64,16 @@ def test_missing_leg_with_empty_collection_and_bad_index():
     bad = ak.with_field(ev, ak.Array([[0], [3]]), 'mmg_mu1')
     with pytest.raises(ValueError, match='points beyond mu_pt .* event 2'):
         build_table(bad, 'mmg')
+
+
+def test_chic_channel_gathers_dimuon_and_conversion():
+    ev = ak.Array({'evt_event': np.array([1], dtype=np.uint64),
+                   'dimu_mass': [[3.10, 3.05]], 'dimu_vtxProb': [[0.5, 0.1]],
+                   'conv_pt': [[1.5, 2.5, 0.8]], 'conv_fitOK': [[1, 0, 1]],
+                   'chic_mass': [[3.5, 3.6]], 'chic_q': [[0.40, 0.55]],
+                   'chic_dimu': [[0, 1]], 'chic_conv': [[2, 0]]})
+    df = build_table(ev, 'chic', preselection='q < 0.5')
+    assert len(df) == 1
+    assert df['dimu_mass'].iloc[0] == np.float64(3.10) and df['conv_pt'].iloc[0] == 0.8
+    assert df['conv_fitOK'].iloc[0] == 1 and df['conv'].iloc[0] == 2
+    assert 'chic_mass' in needed_branches(ev.fields, ['chic']) and 'conv_pt' in needed_branches(ev.fields, ['chic'])

@@ -22,6 +22,9 @@ CHANNELS = {
     'mmcg': {'mu1': 'mu', 'mu2': 'mu', 'dimu': 'dimu', 'conv': 'conv'},
     'mmgg': {'mu1': 'mu', 'mu2': 'mu', 'dimu': 'dimu', 'pho1': 'pho', 'pho2': 'pho'},
     'mmkk': {'mu1': 'mu', 'mu2': 'mu', 'dimu': 'dimu', 'trk1': 'trk', 'trk2': 'trk'},
+    # chi_c -> J/psi gamma(conversion), calibration of the converted-photon energy scale (no muon legs:
+    # the muons are reachable through dimu_mu1/dimu_mu2, the kinematics are in dimu_*)
+    'chic': {'dimu': 'dimu', 'conv': 'conv'},
 }
 # event-level scalar branches copied to every candidate (jagged branches with these prefixes, e.g. gen_pho_*, are skipped)
 EVENT_PREFIXES = ('evt_', 'bs_', 'pv_', 'trg_', 'gen_')
