@@ -33,6 +33,67 @@ Entries are newest first.
 
 ---
 
+## 2026-11-21: Photon MVA re-evaluated with the muons removed from its inputs: signal wp90 efficiency 0.60 → 0.77 (study; no code change)
+
+Follow-up of the entry below.
+
+**Method:**
+- The Winter22 V1 MVA is recomputed in FWLite from the official weight files
+  (`RunIII_Winter22/PhoMVA_ID_{EB,EE}_V1.weights.root`) and the 18 (EE) or 15 (EB) inputs of each `slimmedPhotons`
+  photon. The output is `tanh(GBRForest response)`.
+- **Closure:** the recomputed value equals the stored `PhotonMVAEstimatorRunIIIWinter22v1Values` to 5e-8.
+- **Muon terms removed** (all `slimmedMuons` of the event):
+  - **Track isolations:** the inner-track pt of each muon is subtracted with the official `PhotonTkIsolation`
+    rules. `trkSumPtSolidConeDR04` uses ΔR < 0.4; `trkSumPtHollowConeDR03` uses 0.04 ≤ ΔR < 0.3. Both require
+    |Δη| ≥ 0.015, |v_z − z_PV| < 0.2 cm and |d_xy(BS)| < 0.1 cm. The subtraction is exact: no photon gets a negative
+    residual, in MC or in data.
+  - **HCAL:** `calEnergy().had` of each muon is subtracted when its HCAL impact point (`calEnergy().hcal_position`)
+    is within ΔR < 0.3 of the SC (E_T, `hcalPFClusterIso`, EE only) or within 0.15 (`hcalOverEcal`). This is an
+    approximation: 7–9% of the signal photons would get a negative residual, which is set to 0.
+- **Samples:** the MiniAOD signal test file (32.9k events, 6043 gen-matched signal photons) and the 2022C MiniAOD
+  data test file (6.4k events, 604 photons).
+
+**Signal photon wp90 efficiency:**
+
+| | n | official | − muon tracks | − muon tracks and HCAL |
+|---|---|---|---|---|
+| all signal | 6043 | 0.595 | 0.755 | 0.772 |
+| ΔR(γ, μ) < 0.2 | 2658 | 0.459 | 0.694 | 0.728 |
+| 0.2–0.3 | 1716 | 0.594 | 0.776 | 0.784 |
+| 0.3–0.4 | 1004 | 0.801 | 0.832 | 0.834 |
+| > 0.4 | 651 | 0.837 | 0.837 | 0.837 |
+| pt 10–15 GeV | 3543 | 0.685 | 0.820 | 0.829 |
+| pt 15–20 GeV | 1383 | 0.534 | 0.716 | 0.736 |
+| pt 20–30 GeV | 806 | 0.424 | 0.644 | 0.675 |
+| pt > 30 GeV | 311 | 0.280 | 0.479 | 0.543 |
+| EB / EE | | 0.544 / 0.701 | 0.755 / 0.754 | 0.773 / 0.772 |
+
+- **Input medians of the signal photons, before → after:**
+  - `trkSumPtSolidConeDR04` 6.67 → 1.47 GeV
+  - `trkSumPtHollowConeDR03` 3.33 → 0.64 GeV
+  - `hcalPFClusterIso` 3.59 → 1.81 GeV
+  - H/E 0.054 → 0.026
+
+  For comparison, the signal photons with ΔR(μ) > 0.4 have 1.16 / 0.43 / 2.41 GeV / 0.042.
+- **Median signal MVA:** 0.20 → 0.62.
+- **Remaining gap:** photons at ΔR < 0.2 and at high pt stay below the isolated photons.
+  - Probable causes: muon energy inside the ECAL cluster (shower shapes, `ecalPFClusterIso`), and soft muons that PF
+    reconstructs as charged hadrons (`chargedHadronIso`). Neither is corrected here.
+  - Even the isolated signal photons reach only 0.84 rather than 0.90.
+
+**Background proxy:**
+- **Data photons:** 0.127 → 0.132 overall. Near a muon (ΔR < 0.4): 0.051 → 0.077, but only 117 photons (6 → 9).
+  Away from the muons: unchanged.
+- **Non-signal MC photons:** 0.162 → 0.163.
+- The effect on the background of the analysis has to be measured with more data, e.g. the photons of `mmg`
+  candidates in the B-mass sidebands.
+
+**For the ntuplizer:**
+- The muons to remove are the candidate's μ1 and μ2. The variable is therefore candidate-level, like the existing
+  candidate isolations.
+- Everything needed exists in both AOD and MiniAOD: muon inner tracks, `calEnergy()`, the photon inputs and the
+  GBRForest.
+
 ## 2026-11-21: Photon MVA ID wp90 efficiency of the signal photons is 57%, not 90%: the signal muons are in the isolation cones (study; no code change)
 
 **Question:** `pho_tightId` (`mvaPhoID-RunIIIWinter22-v1-wp90`) is documented as 90% efficient. For gen-matched
