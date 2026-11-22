@@ -33,6 +33,33 @@ Entries are newest first.
 
 ---
 
+## 2026-11-22: Signal yield per photon collection (`Study/`, `PhotonCollectionStudy`)
+- **Question:** the v1 tables give about 75 signal events in Run 3 before the BDT (MiniAOD, `slimmedPhotons`, preselection), while an older study on the legacy MC with the AOD `photons` collection gave about 300.
+- **What was done:**
+  - `Study/plugins/PhotonCollectionStudy.cc`: per event, a gen B_s → μ⁺μ⁻γ (hardest photon if PHOTOS added more); `HLT_DoubleMu4_3_LowMass_v*` fired; both gen muons matched to reco muons (same charge, ΔR < 0.05); the gen photon matched to the closest reco photon (ΔR < 0.1). The μμγ mass is the plain sum of the reco 4-vectors. One module per photon collection, the rest is shared.
+  - `Study/test/photonCollections_cfg.py` (`sample=legacy|new_aod|new_miniaod`), `Study/test/photonCollections.py` (yields and mass plot).
+  - Samples:
+    - new MC: 4 Run3Summer22 MINIAODSIM files and their 4 parent AODSIM files (the same 13,492 events, xrootd; file lists in `Study/test/files_new_*.txt`); σ = 5.746×10⁸ pb, filter eff. 1.701×10⁻³;
+    - legacy MC: 40,000 events (130 files); σ = 5.822×10⁸ pb, filter eff. 0.1298.
+  - Normalisation: B = 5×10⁻⁹, L = 297 fb⁻¹ (good-luminosity equivalent of 326 fb⁻¹ recorded, as in the Combine study).
+- **Results** (expected events, raw MC counts in brackets):
+
+  | sample | photons | trigger | + 2 μ matched | + γ matched | + m in [4.5, 6.5] |
+  |---|---|---|---|---|---|
+  | legacy AOD | `photons` | 2833 (1009) | 2814 (1002) | 149 (53) | 149 (53) |
+  | legacy AOD | `gedPhotons` | 2833 (1009) | 2814 (1002) | 180 (64) | 174 (62) |
+  | new AOD | `photons` | 727 (6752) | 722 (6703) | 177 (1647) | 173 (1603) |
+  | new AOD | `gedPhotons` | 727 (6752) | 722 (6703) | 176 (1638) | 173 (1610) |
+  | new MiniAOD | `slimmedPhotons` | 727 (6752) | 722 (6702) | 142 (1322) | 141 (1311) |
+
+- **Conclusions:**
+  - The photon reconstruction threshold is what costs the signal: no reco photon below 8.5–9 GeV in `photons`, below 10 GeV in `slimmedPhotons` (MiniAOD keep cut `pt > 10 && (pt > 14 || chargedHadronIso < 10)`); `gedPhotons` has a few lower-pt photons. Only 5–6% (legacy) and 20–25% (new MC, gen photon pt > 4 GeV) of the triggered events with matched muons have a matched photon.
+  - `photons` and `gedPhotons` give the same yield (new AOD 177 vs 176; legacy 149 ± 20 vs 180 ± 22). `slimmedPhotons` loses 20% with respect to `gedPhotons`.
+  - The legacy and new MC agree after the photon match (150–180 vs 176): the generator cuts of the new MC lose no reconstructable events.
+  - No photon collection gives 300 events with this normalisation; the earlier estimate must differ in the normalisation (BR, luminosity, cross section) or the matching.
+  - From ~140 (`slimmedPhotons`, no preselection) to ~75: the ntuple preselection.
+- **Open:** the legacy statistics are small (53–64 matched events, ±13–15%).
+
 ## 2026-11-22: Expected B_s → μμγ significance in Run 3 (326 fb⁻¹) with Combine, per BDT cut (`mmg`, v1 tables)
 
 **Result:** the expected (blind, Asimov) significance rises to **2.44σ at BDT > 0.998** (2.41σ at 0.999).
