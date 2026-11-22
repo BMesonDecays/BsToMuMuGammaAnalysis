@@ -5,6 +5,7 @@
 // tighter cuts (MVA, ID) are applied offline. minMVA cuts default to "no cut".
 
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/Candidates.h"
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/ConversionScaleMap.h"
 #include "DataFormats/Common/interface/Handle.h"
 #include "DataFormats/Common/interface/ValueMap.h"
 #include "DataFormats/Common/interface/View.h"
@@ -61,6 +62,11 @@ namespace bmmg {
   // compatible inner hits, no shared tracks). The vertex chi2 is not stored: minVertexProb is not applied.
   std::vector<SelectedConversion> selectConversions(const std::vector<pat::CompositeCandidate>& conversions,
                                                     const TransientTrackBuilder& ttBuilder, const ConversionCuts& cuts);
+
+  // energy-scale correction of the conversions: s from the map at the photon pt and eta; sets energyScale,
+  // p4Corr = p4 / s and photonCorr (the refitted photon with the momentum / s). Without it (selectConversions
+  // alone) p4Corr = p4, photonCorr = photon and energyScale = 1.
+  void applyConversionScale(std::vector<SelectedConversion>& conversions, const ConversionScaleMap& map);
 
   // high-purity tracks for the kaon legs, excluding the inner tracks of the selected muons;
   // "tracks" must outlive the result (SelectedTrack points to its elements)

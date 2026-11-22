@@ -75,7 +75,11 @@ namespace bmmg {
     reco::TransientTrack track1, track2; // positive, negative track
     std::optional<RefCountedKinematicParticle> photon;   // e+ e- vertex fit with colinearity constraint
     float fitProb = -1.f;               // chi2 probability of that fit (-1 if it failed)
-    reco::Candidate::LorentzVector p4;  // from the fitted photon, else pairP4
+    reco::Candidate::LorentzVector p4;  // from the fitted photon, else pairP4 (no energy-scale correction)
+    // energy-scale correction (applyConversionScale; used by mu mu gamma(conv), not by chi_c): p -> p / s
+    float energyScale = 1.f;            // s; 1 without a scale map
+    reco::Candidate::LorentzVector p4Corr;   // p4 / s
+    std::optional<RefCountedKinematicParticle> photonCorr;   // photon with the momentum / s
   };
 
   // chi_c -> J/psi gamma with a converted photon: energy-scale calibration of the conversions.

@@ -193,13 +193,13 @@ namespace bmmg {
         const SelectedConversion& conv = conversions[ic];
         BCandidate c = startCandidate(id, dimu);
         c.legs = {static_cast<int>(ic)};
-        c.xP4 = conv.p4;
+        c.xP4 = conv.p4Corr;   // energy-scale corrected (p4 if no scale map)
         c.prefitP4 = dimu.p4 + c.xP4;
         if (!finisher.inWindow(c) || !finisher.choosePV(c, dimu)) continue;
-        if (muonParticles(muons, dimu) && conv.photon)
+        if (muonParticles(muons, dimu) && conv.photonCorr)
           c.fit = (config.mmcgPointingInVertexFit ? MMGVertexFit::fitParticlesPointing : MMGVertexFit::fitParticles)(
-              {*muons[dimu.mu1].kinParticle, *muons[dimu.mu2].kinParticle, *conv.photon}, finisher.pvPoint(c));
-        finisher.observables(c, {&conv.track1.track(), &conv.track2.track()}, {{conv.p4, nullptr}});
+              {*muons[dimu.mu1].kinParticle, *muons[dimu.mu2].kinParticle, *conv.photonCorr}, finisher.pvPoint(c));
+        finisher.observables(c, {&conv.track1.track(), &conv.track2.track()}, {{conv.p4Corr, nullptr}});
         candidates.push_back(std::move(c));
       }
     }

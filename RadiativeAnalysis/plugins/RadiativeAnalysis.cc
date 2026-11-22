@@ -43,6 +43,7 @@
 #include "FWCore/Framework/interface/Run.h"
 #include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
+#include "FWCore/ParameterSet/interface/FileInPath.h"
 #include "FWCore/ParameterSet/interface/ConfigurationDescriptions.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/ParameterSet/interface/ParameterSetDescription.h"
@@ -112,6 +113,7 @@ private:
   bmmg::PhotonCuts photonCuts_;
   std::unique_ptr<bmmg::PhotonMVANoMuons> photonMVANoMuons_;   // null if disabled
   bmmg::ConversionCuts conversionCuts_;
+  std::unique_ptr<bmmg::ConversionScaleMap> conversionScaleMap_;   // null: no energy-scale correction
   bmmg::TrackCuts trackCuts_;
   bmmg::CandidateConfig candidateConfig_;
   bmmg::DiphotonConfig diphotonConfig_;
@@ -207,6 +209,13 @@ RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& cfg)
     conversionCuts_.minPt = cfg.getParameter<double>("conversionMinPt");
     conversionCuts_.minVertexProb = cfg.getParameter<double>("conversionMinVertexProb");
     conversionCuts_.momentumError = cfg.getParameter<double>("conversionMomentumError");
+    // converted-photon energy scale (chi_c calibration, analysis/scripts/conv_scale.py): path relative to the
+    // CMSSW search path (FileInPath) or absolute; empty: no correction
+    if (const std::string map = cfg.getParameter<std::string>("conversionScaleMap"); !map.empty()) {
+      const std::string path = map.front() == '/' ? map : edm::FileInPath(map).fullPath();
+      conversionScaleMap_ = std::make_unique<bmmg::ConversionScaleMap>(path);
+      edm::LogInfo("RadiativeAnalysis") << "converted-photon energy scale from " << path;
+    }
     trackCuts_.minPt = cfg.getParameter<double>("kaonMinPt");
     candidateConfig_.minPrefitMass = cfg.getParameter<double>("minPrefitMass");
     candidateConfig_.maxPrefitMass = cfg.getParameter<double>("maxPrefitMass");
@@ -393,6 +402,8 @@ void RadiativeAnalysis::analyze(const edm::Event& event, const edm::EventSetup& 
     } else {
       conversions = bmmg::selectConversions(event.get(conversionsToken_), ttBuilder, conversionCuts_);
     }
+    // mu mu gamma(conv) uses the corrected photon; conv_* and chi_c keep the uncorrected one (conv_scale: s)
+    if (conversionScaleMap_) bmmg::applyConversionScale(conversions, *conversionScaleMap_);
     writer_->fillConversions(conversions, gen.get(), convAvailable);
     if (doMuMuConvGamma_)
       writer_->fillCandidates(
@@ -538,6 +549,9 @@ void RadiativeAnalysis::fillDescriptions(edm::ConfigurationDescriptions& descrip
   desc.add<double>("conversionMinVertexProb", 1e-6);
   // relative momentum error added to the refitted conversion photon (electron bremsstrahlung, not in the track errors)
   desc.add<double>("conversionMomentumError", 0.);
+  // converted-photon energy-scale map (JSON of analysis/scripts/conv_scale.py), FileInPath-relative or absolute;
+  // empty: no correction. Applied to the mu mu gamma(conv) candidates (p -> p / s), stored as conv_scale.
+  desc.add<std::string>("conversionScaleMap", "");
   // mmcg B fit with the pointing constraint inside the common-vertex fit (daughters refitted with it)
   desc.add<bool>("mmcgPointingInVertexFit", false);
   desc.add<double>("diphotonMinMass", 0.05);

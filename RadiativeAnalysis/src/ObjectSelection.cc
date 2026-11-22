@@ -81,9 +81,22 @@ namespace bmmg {
         } else {
           sc.p4 = sc.pairP4;
         }
+        sc.p4Corr = sc.p4;   // no energy-scale correction unless applyConversionScale is called
+        sc.photonCorr = sc.photon;
+        sc.energyScale = 1.f;
       }
     }
   }  // namespace
+
+  void applyConversionScale(std::vector<SelectedConversion>& conversions, const ConversionScaleMap& map) {
+    for (auto& sc : conversions) {
+      const double s = map.scale(sc.p4.pt(), sc.p4.eta());
+      sc.energyScale = s;
+      sc.p4Corr = sc.p4 / s;
+      sc.photonCorr = sc.photon ? std::optional<RefCountedKinematicParticle>(MMGVertexFit::scaledParticle(*sc.photon, 1. / s))
+                                : std::nullopt;
+    }
+  }
 
   std::vector<SelectedConversion> selectConversions(const std::vector<reco::Conversion>& conversions,
                                                     const TransientTrackBuilder& ttBuilder, const ConversionCuts& cuts) {

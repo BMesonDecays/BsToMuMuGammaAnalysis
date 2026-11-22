@@ -21,6 +21,10 @@
 #                RunInfo nEvents counts all processed events, nEventsStored the written ones
 #   photonID     1 (default): run the photon MVA ID (score and wp90); 0: skip it (pho_mva = -99, pho_tightId = -1),
 #                e.g. for private samples without fixedGridRhoFastjetAll
+#   convScaleMap converted-photon energy-scale map (JSON of analysis/scripts/conv_scale.py), applied to the mmcg
+#                photon (p -> p / s; conv_scale stores s, conv_* and chic stay uncorrected): 'default' (the 2022
+#                data map, data/conv_scale_2022.json, also for MC, as AN-2023/035), 'none', or a path (absolute
+#                or relative to the CMSSW search path)
 #   maxEvents, outputFile (standard VarParsing options)
 
 import FWCore.ParameterSet.Config as cms
@@ -50,6 +54,8 @@ options.register('skim', 0, VarParsing.multiplicity.singleton, VarParsing.varTyp
                  '1: write only the events with >= 1 candidate whose fit succeeded (and vtxProb > skimMinVtxProb)')
 options.register('skimMinVtxProb', -1., VarParsing.multiplicity.singleton, VarParsing.varType.float,
                  'vertex probability a candidate needs for the skim (< 0: any successful fit)')
+options.register('convScaleMap', 'default', VarParsing.multiplicity.singleton, VarParsing.varType.string,
+                 "converted-photon energy-scale map: 'default' (2022 data map), 'none', or a JSON file")
 options.register('verbose', 0, VarParsing.multiplicity.singleton, VarParsing.varType.int,
                  'print the trigger filters used for the muon matching')
 options.setDefault('outputFile', 'bmmg_ntuple.root')
@@ -140,6 +146,8 @@ process.bmmg = radiativeAnalysis.clone(
     computeTrackCompatibility=bool(options.trackCompatibility),
     onlyEventsWithCandidates=bool(options.skim),
     minCandidateVtxProb=options.skimMinVtxProb,
+    conversionScaleMap={'default': 'BsToMuMuGammaAnalysis/RadiativeAnalysis/data/conv_scale_2022.json',
+                        'none': ''}.get(options.convScaleMap, options.convScaleMap),
 )
 process.TFileService = cms.Service('TFileService', fileName=cms.string(options.outputFile))
 

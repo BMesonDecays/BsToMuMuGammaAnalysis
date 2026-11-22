@@ -113,7 +113,7 @@ namespace bmmg {
       b_.bookScalar<int>("evt_convAvailable", 0);
       bookInts(b_, "conv_", {"index", "fitOK", "flags"});
       bookFloats(b_, "conv_", {"pt", "eta", "phi", "vtxX", "vtxY", "vtxZ", "vtxRho", "vtxProb", "fitProb",
-                               "trkPlusPt", "trkMinusPt"});
+                               "trkPlusPt", "trkMinusPt", "scale"});
       if (isMC_) {
         bookInts(b_, "conv_", {"genPdgId", "genMotherPdgId", "genFromSignalB"});
         bookFloats(b_, "conv_", {"genDR"});
@@ -443,6 +443,7 @@ namespace bmmg {
       b_.vec<float>("conv_vtxProb").push_back(sc.vertexProb);
       b_.vec<float>("conv_trkPlusPt").push_back(sc.track1.track().pt());
       b_.vec<float>("conv_trkMinusPt").push_back(sc.track2.track().pt());
+      b_.vec<float>("conv_scale").push_back(sc.energyScale);
       if (isMC_) {
         GenDecayChain::TruthMatchInfo m;
         if (gen) m = gen->matchPhotonToGen(reco::LeafCandidate(0, sc.p4));
