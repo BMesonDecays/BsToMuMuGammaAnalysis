@@ -14,6 +14,10 @@ Columns: signal = gen-matched candidates (expected events, in [4.5, 6.5] GeV and
 events (one per event), all signal-MC candidates in the signal window (with the combinatorial ones), the data
 sideband candidates (raw and scaled to Run 3) and S / sqrt(B) with B = the sidebands scaled to the signal
 window width (flat). The blind window of the data is never loaded.
+The 'ntuple' row is what the tables hold: the v1 tables keep only candidates with fitOK == 1 and vtxProb > 1e-3
+(convert.yaml preselection; the ntuplizer skim, skimMinVtxProb = 1e-3, is per event and weaker). The signal
+candidates below 1e-3 (13-18% of the gen-matched ones, report.md 2026-11-22) are missing from the first rows;
+the rows from the vertex cut (vtxProb > 0.01) on are not affected.
 """
 import argparse
 import os
@@ -82,7 +86,7 @@ def main():
     print('signal MC: %d candidates; data sidebands: %d candidates (before the preselection)' % (len(sig), len(data)))
 
     # cumulative
-    rows = [dict(cut='ntuple (no preselection)', **counts(sig, data, cfg, factor, sb_to_window))]
+    rows = [dict(cut='tables (vtxProb > 1e-3)', **counts(sig, data, cfg, factor, sb_to_window))]
     cs, cb = sig, data
     for name, q in list(trig.items()) + list(presel.items()) + list(extra.items()):
         cs, cb = cs.query(q), cb.query(q)
