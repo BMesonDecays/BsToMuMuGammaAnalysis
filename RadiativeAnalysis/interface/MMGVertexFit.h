@@ -117,6 +117,11 @@ class MMGVertexFit
         static std::optional<RefCountedKinematicParticle> conversionParticle(const reco::TransientTrack& e1,
             const reco::TransientTrack& e2, double momentumError = 0.);
 
+        // copy of a standalone particle (e.g. of conversionParticle) with the momentum multiplied by factor
+        // (energy-scale correction of a converted photon: factor = 1/s); the covariance is transformed
+        // accordingly (relative momentum errors unchanged), position, mass, chi2 and ndof are kept
+        static RefCountedKinematicParticle scaledParticle(const RefCountedKinematicParticle& particle, double factor);
+
         // photon measured by its ECAL cluster; the photon copy and the covariance the particle points to
         // are returned together with it and must be kept alive (see Result::fitPhotons)
         struct PhotonParticle

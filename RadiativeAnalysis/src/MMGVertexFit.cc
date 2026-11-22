@@ -150,6 +150,24 @@ std::optional<RefCountedKinematicParticle> MMGVertexFit::conversionParticle(cons
         }
     }
 
+RefCountedKinematicParticle MMGVertexFit::scaledParticle(const RefCountedKinematicParticle& particle, double factor)
+    {
+        const KinematicState& s = particle->currentState();
+        AlgebraicVector7 par = s.kinematicParameters().vector();
+        AlgebraicSymMatrix77 cov = s.kinematicParametersError().matrix();
+        // J = diag(1, 1, 1, f, f, f, 1): cov' = J cov J
+        auto f = [factor](int i) { return (i >= 3 && i < 6) ? factor : 1.; };
+        for (int i = 0; i < 7; ++i)
+        {
+            if (i >= 3 && i < 6) par(i) *= factor;
+            for (int j = i; j < 7; ++j) cov(i, j) *= f(i) * f(j);
+        }
+        const KinematicState scaled(KinematicParameters(par), KinematicParametersError(cov), s.particleCharge(),
+                                    s.magneticField());
+        float chi2 = particle->chiSquared(), ndof = particle->degreesOfFreedom();
+        return VirtualKinematicParticleFactory().particle(scaled, chi2, ndof, RefCountedKinematicParticle());
+    }
+
 std::optional<MMGVertexFit::PhotonParticle> MMGVertexFit::photonParticle(const reco::Photon& photon,
     const EcalClusterLazyTools& lazyTools, const TransientTrackBuilder* TTBuilder, const GlobalPoint& expansionPoint) const
     {
