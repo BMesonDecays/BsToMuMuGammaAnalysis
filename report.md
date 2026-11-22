@@ -33,6 +33,47 @@ Entries are newest first.
 
 ---
 
+## 2026-11-22: Converted-photon energy-scale correction in the ntuplizer (`mmcg`), with the 2022 χ_c map
+
+**Implementation** (commits 88421ec, 9caac9c, 2f8834c):
+- **`ConversionScaleMap`** (interface/, src/): reads the JSON `ScaleMap` of `analysis/scripts/conv_scale.py` with nlohmann/json (`<use name="json"/>`).
+  - Only a 2D map in `pt_est` × `abs(conv_eta)` is accepted (either order). A map in other variables, such as the MC truth map in gen pt, or a scale outside 0.5–1.5 is refused.
+  - The bin value is clamped to the outer bins, as `conv_scale.py` with `interpolate: false`; the filled high-pt bins are already in the JSON.
+  - The map is in the true photon pt, so a reconstructed photon uses s at pt_reco / s(pt_reco), one iteration.
+- **`MMGVertexFit::scaledParticle`:** copy of a standalone kinematic particle with the momentum and its covariance rows and columns scaled (relative errors unchanged).
+- **`applyConversionScale`:** sets `SelectedConversion::energyScale`, `p4Corr = p4/s` and `photonCorr`.
+  - Without a map they equal the uncorrected values.
+  - The `mmcg` builder uses the corrected photon: prefit mass and mass window, B vertex fit, observables.
+  - `conv_*` and `chic_*` stay uncorrected: the χ_c block is the calibration sample.
+  - New branch `conv_scale` = s.
+- **Configuration:** parameter `conversionScaleMap` (empty: no correction). cfg option `convScaleMap`:
+  - `default`: `RadiativeAnalysis/data/conv_scale_2022.json`, the full-2022 map of the previous entry, applied to data and MC as in AN-2023/035;
+  - `none`;
+  - or a path.
+- **Unit tests** (`testBmmgLibrary`, 54 assertions pass): lookup, clamping, the pt iteration, swapped variable order, refused maps.
+
+**Validation** on the B_s → J/ψγ MiniAOD test file (35k events, channels mmcg,chic), with `convScaleMap=none` against `default`:
+- **Unchanged:** `conv_pt` and `chic_mass` are identical.
+- **Applied scale:** `conv_scale` is 1 with `none`, and 0.89–0.99 (median 0.952) with the map.
+- **Prefit mass:** √(m_μμ² + (m² − m_μμ²)/s) to 4·10⁻⁵ GeV, for the 9925 candidates present in both.
+- **Fitted photon pt:** rises by 1/s exactly (median 1.063). The mass error rises by 1.6%, because the momentum error scales with the momentum.
+- **Gen-matched, fitted `mmcg` mass** (971 candidates):
+
+  | | without correction | with the 2022 data map |
+  |---|---|---|
+  | prefit mass: mode / core mean [GeV] | 5.305 / 5.310 | 5.345 / 5.350 |
+  | fitted mass: mode / core mean [GeV] | 5.315 / 5.315 | 5.375 / 5.371 |
+
+  m_Bs = 5.367 GeV. The data map brings the MC peak to within 4 MeV of m_Bs, so the MC and data scales agree at the 0.1% level for these photons. This is a test file only; the MC map of `conv_scale_mc.py` needs the production.
+- The number of `mmcg` candidates changes slightly (10236 → 9996), because the mass window uses the corrected prefit mass.
+
+**Notes:**
+- The map file is in the package `data/` directory, which CRAB ships in the sandbox. A new map (e.g. Run 3) is copied there or given with `convScaleMap=<path>`.
+- The 2022 map is the default for every year until per-year maps exist.
+- The local reference ntuples (`test/reference/`, `compareNtuples.py`) were made without the correction. The `mmcg` comparison now differs by design; use `convScaleMap=none` to compare.
+
+---
+
 ## 2026-11-22: Converted-photon scale: pt binning up to 13 GeV; empty bins filled from the last measured pt bin; coarser N2/N1 binning (full 2022 data)
 
 **Why.** The map had one pt_est bin from 3 GeV. AN-2023/035 (π⁰ → γγ, O(10⁶) π⁰ from all 2018 datasets) bins photon pt up to 17.2 GeV. A fine binning on the 2022 χ_c sample shows that s keeps falling above 3 GeV:
