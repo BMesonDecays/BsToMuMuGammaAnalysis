@@ -33,6 +33,30 @@ Entries are newest first.
 
 ---
 
+## 2026-11-22: Preselection variants: narrower J/ψ and ψ(2S) vetoes, lower vertex-probability cut (`scripts/presel_variants.py`, v1 tables)
+- **Dimuon resolution in data** (double Gaussian, after vertex and trigger cuts): J/ψ at 3.093 GeV, σ = 21 / 43 MeV (50/50; 19 / 34 MeV for |η| < 1, 35 / 60 MeV above); ψ(2S) σ = 24 / 45 MeV; φ σ = 9 / 19 MeV.
+- **Method:** the candidates are loaded once with the loosest selection, each variant is a query. Scores come from the Combine-study BDT (trained on the baseline; out-of-fold, folds by event number). Per BDT threshold: S in the signal window, B = sidebands × exponential factor fitted at that threshold × 326/38, Asimov Z with known background, at least 10 raw sideband candidates.
+- **Results** (best Z over the thresholds; at the best threshold, 0.9982, all variants with the old J/ψ low edge have the same 22 sideband candidates):
+
+  | variant | S presel | sidebands | Z@0.99 | Z@0.995 | Z@0.998 | Z best |
+  |---|---|---|---|---|---|---|
+  | baseline (J/ψ 2.9–3.3, ψ(2S) 3.55–3.8, vtxProb > 0.01) | 65.2 | 318,030 | 1.29 | 1.66 | 2.10 | 2.35 |
+  | vtxProb > 3e-3 | 68.9 | 348,724 | 1.31 | 1.67 | 2.13 | 2.39 |
+  | vtxProb > 1e-3 | 71.3 | 371,862 | 1.31 | 1.67 | 2.15 | 2.41 |
+  | J/ψ 2.90–3.20 | 68.3 | 330,030 | 1.30 | 1.69 | 2.13 | 2.39 |
+  | J/ψ 2.95–3.20 | 70.0 | 339,564 | 1.27 | 1.64 | 2.17 | 2.42 |
+  | J/ψ 3.00–3.20 | 71.7 | 353,561 | 1.19 | 1.54 | 2.00 | 2.11 |
+  | J/ψ 3.02–3.17 | 73.3 | 373,145 | 1.07 | 1.41 | 1.76 | 1.90 |
+  | J/ψ 3.04–3.15 | 74.6 | 406,191 | 0.92 | 1.21 | 1.56 | 1.75 |
+  | ψ(2S) 3.55–3.75 | 66.2 | 321,068 | 1.29 | 1.66 | 2.12 | 2.37 |
+  | J/ψ 2.90–3.20, ψ(2S) 3.55–3.75, vtxProb > 1e-3 | 76.0 | 389,525 | 1.31 | 1.70 | 2.21 | 2.47 |
+
+- **Conclusions:**
+  - Opening the J/ψ veto on the low side adds background the BDT does not remove: real J/ψ (radiative tail) with a photon from b-hadron decays, which the BDT never saw in training. The high side (3.2–3.3) and the ψ(2S) high edge can be opened.
+  - Lowering the vertex cut to the table floor (1e-3) gives +9% signal at the same background after a tight BDT cut.
+  - The combination: +16% signal after the preselection, Z 2.35 → 2.47 (+5%) with the baseline BDT.
+- **Open:** a BDT trained on the variant (the job was stopped before it finished); vtxProb < 1e-3 needs tables converted without the 1e-3 cut. To be redone on the v3 tables.
+
 ## 2026-11-22: Candidates removed before the analysis preselection (ntuple skim and conversion cut)
 - **Two filters with vtxProb > 1e-3 in the v1 production:**
   - ntuplizer `skim=1`, `skimMinVtxProb=1e-3` (`tasks_all.yaml`): per event. An event is written if any candidate of any channel has a valid fit with vtxProb > 1e-3; all its candidates are written. `RunInfo.nEvents` counts all events, so the normalisation is right;
