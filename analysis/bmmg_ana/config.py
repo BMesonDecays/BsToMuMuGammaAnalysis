@@ -18,6 +18,37 @@ def load_config(path):
     return cfg
 
 
+def load_combine_config(path):
+    """Configuration of the Combine significance scripts (e.g. config/combine_mmg.yaml).
+
+    The file names a base analysis configuration ("analysis", relative to the file) whose settings are used as
+    they are (preselection, features, BDT, windows); "override" replaces top-level keys of the base (e.g.
+    parquet, output). The other keys of the file are returned under cfg['combine'].
+    """
+    with open(path) as f:
+        cc = yaml.safe_load(f)
+    base = cc.pop('analysis')
+    if not os.path.isabs(base):
+        base = os.path.join(os.path.dirname(os.path.abspath(path)), base)
+    with open(base) as f:
+        cfg = yaml.safe_load(f)
+    cfg.update(cc.pop('override', None) or {})
+    for key in ('parquet', 'output'):
+        cfg[key] = os.path.expanduser(cfg[key])
+    cfg.setdefault('derived', {})
+    cfg.setdefault('preselection', {})
+    cfg.setdefault('best_candidate', None)
+    check_windows(cfg['mass'])
+    cfg['combine'] = cc
+    lumi = cc['lumi']
+    # Run 3 projection: data x target/recorded (recorded luminosities); the signal MC is normalised to the good
+    # (golden-JSON) luminosity equivalent to the target, golden x target/recorded
+    cc['data_factor'] = lumi['target_recorded_pb'] / lumi['data_recorded_pb']
+    cc['signal_lumi_pb'] = lumi['data_golden_pb'] * cc['data_factor']
+    cfg['lumi_pb'] = cc['signal_lumi_pb']
+    return cfg
+
+
 def check_windows(mass):
     """The sidebands must lie outside the blind window, and the signal window inside it."""
     blo, bhi = mass['blind']

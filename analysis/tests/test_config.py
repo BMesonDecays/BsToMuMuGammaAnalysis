@@ -32,3 +32,21 @@ def test_signal_candidate_policy(tmp_path):
     sig = config.load_samples(cfg, which=('signal',))['signal']
     # event 7: the combinatorial candidate wins the ranking, so the event gives no signal candidate
     assert list(sig['evt_event']) == [8] and 'vtxProb' in sig.columns
+
+
+def test_load_combine_config(tmp_path):
+    import yaml
+    from bmmg_ana import config
+    base = {'parquet': '~/a', 'output': '~/b', 'channel': 'mmg', 'lumi_pb': 1.0,
+            'mass': {'column': 'mass', 'signal_window': [5.15, 5.6], 'sidebands': [[4.5, 5.0], [5.75, 6.5]],
+                     'blind': [5.0, 5.75]}}
+    (tmp_path / 'analysis.yaml').write_text(yaml.safe_dump(base))
+    cc = {'analysis': 'analysis.yaml', 'override': {'parquet': '/data/parquet'},
+          'lumi': {'data_golden_pb': 34650, 'data_recorded_pb': 38000, 'target_recorded_pb': 326000},
+          'bdt_cuts': [0.9]}
+    (tmp_path / 'combine.yaml').write_text(yaml.safe_dump(cc))
+    cfg = config.load_combine_config(str(tmp_path / 'combine.yaml'))
+    assert cfg['parquet'] == '/data/parquet' and cfg['channel'] == 'mmg'
+    assert abs(cfg['combine']['data_factor'] - 326 / 38) < 1e-12
+    assert abs(cfg['lumi_pb'] - 34650 * 326 / 38) < 1e-6
+    assert cfg['combine']['bdt_cuts'] == [0.9]

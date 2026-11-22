@@ -1,0 +1,31 @@
+# Expected B_s -> mu mu gamma significance in the full Run 3 with Combine, at several BDT score cuts:
+#
+#   python3 scripts/combine_hists.py config/combine_mmg.yaml [--retrain]    # LCG view: BDT, mass histograms
+#   python3 scripts/combine_fit.py config/combine_mmg.yaml                  # Combine CMSSW area: fits, cards, combine
+#
+# Everything about the selection and the BDT (preselection, derived features, BDT features and parameters,
+# k-fold, sidebands, blind window, signal sample and BR assumption) comes from the base analysis configuration.
+
+analysis: analysis.yaml            # relative to this file
+override:                          # replaces these keys of the base configuration
+  parquet: /eos/user/s/sslawins/parquet      # v1 production
+  output: /eos/user/s/sslawins/bmmg/results/combine_mmg
+
+# Run 3 projection. 2022 data: 34.65 fb^-1 after the golden JSON (brilcalc), 38 fb^-1 recorded; Run 3 target
+# 326 fb^-1 recorded. Data (sidebands) x 326/38; signal MC normalised to 34.65 x 326/38 = 297 fb^-1 of good data.
+lumi:
+  data_golden_pb: 34650
+  data_recorded_pb: 38000
+  target_recorded_pb: 326000
+
+# BDT score cuts (score > cut); 0: the preselection only
+bdt_cuts: [0.0, 0.9, 0.95, 0.98, 0.99, 0.995, 0.998, 0.999, 0.9995]
+min_sideband: 3                    # cuts with fewer raw sideband candidates are not fitted
+
+mass_fit:
+  range: [4.5, 6.5]                # the sidebands and the blind window (base config: mass.sidebands / blind)
+  bin_width: 0.025
+
+combine:
+  cmssw: /eos/home-s/sslawins/combine/CMSSW_14_1_0_pre4   # Combine v11.1.0
+  limits: true                     # also the expected upper limit (AsymptoticLimits --run blind)
