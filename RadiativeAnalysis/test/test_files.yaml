@@ -135,3 +135,12 @@ bdjpsipi0_miniaod:
   dataFormat: MINIAOD
   files:
     - /eos/user/a/akalinow/Data/BdToJpsiPi0/BdToJpsiPi0_PURun3_Run2024_14_0_21_PURun3_17_11_2026_v2/14_0_21_PURun3_17_11_2026_v2_MINIAODSIM/261118_084959/0000/*.root
+
+bsmmg_legacy_aod:
+  description: >-
+    Private Bs to mu mu gamma MC AOD (CMSSW_12_4_11_patch3, 2025-07-09), zero bias, no pileup, no generator
+    cut on the photon pt; no endcap ECAL rechits and no rho: run with runNtuplizer_legacy_cfg.py
+  isMC: true
+  dataFormat: AOD
+  files:
+    - /eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToMuMuGamma_MCTunesRun3ECM13p6TeV_09_07_2025/BsToMuMuGamma_CMSSW_12_4_11_patch3_09_07_2025/250709_075534/*/*.root

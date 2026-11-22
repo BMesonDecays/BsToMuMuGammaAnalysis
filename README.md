@@ -35,6 +35,7 @@ cmsRun runNtuplizer_cfg.py inputFiles=file:in.root isMC=0 lumiMask=Cert.json out
 cmsRun runNtuplizer_cfg.py testSample=data_aod skim=1             # store only events with a valid B candidate (smaller ntuples)
 ```
 - The options are described at the top of `runNtuplizer_cfg.py`.
+- **Legacy AOD samples without endcap ECAL rechits** (e.g. the private zero-bias, no-pileup B_s → μμγ MC of 2025-07-09 without a generator photon-pt cut, test sample `bsmmg_legacy_aod`): `cmsRun runNtuplizer_legacy_cfg.py [options]`. It runs `runNtuplizer_cfg.py` with the same options and ntuple format, removes the endcap reco photons (|SC η| < 1.479; `mmg`/`mmgg` with barrel photons only), passes an empty endcap rechit collection (`EmptyEcalRecHitCollectionProducer`, `plugins/RadiativeAnalysis_legacy.cc`) and produces rho from `particleFlow` for the photon MVA. Converted photons (`mmcg`, `chic`) work in the whole tracker acceptance. The sample has no generator run info (RunInfo xsec = −1).
 - The test input samples are listed in `RadiativeAnalysis/test/test_files.yaml`: each has a short name (the `testSample` value) and the attributes `isMC`, `dataFormat` (AOD / MINIAOD), `files` (globs allowed) and `description`; `python3 RadiativeAnalysis/python/testFiles.py` prints them. Besides B_s → μμγ and data there are MC samples (AOD and MiniAOD) of B_s → J/ψγ, φγ, J/ψπ⁰, J/ψη, J/ψη′ and B_d → μμγ.
 - The ntuple content is documented in **[NTUPLE.md](NTUPLE.md)**.
 
