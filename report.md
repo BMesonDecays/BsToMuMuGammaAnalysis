@@ -33,6 +33,27 @@ Entries are newest first.
 
 ---
 
+## 2026-11-22: Impact of the preselection on the number of candidates (`scripts/presel_impact.py`, `mmg`, v1 tables)
+- **What was done:** `python3 scripts/presel_impact.py config/combine_mmg.yaml` (LCG_107, 12 s). Cumulative cut flow, each cut alone and N-1, for the gen-matched signal MC (Run 3 projection of the Combine study: 297 fb⁻¹ good luminosity, B = 5×10⁻⁹) and the data sidebands (× 326/38). B in the signal window = sidebands × 0.45/1.25. Tables in `<output>/presel/`.
+- **Cumulative** (S in the signal window [5.15, 5.60]; 1453 signal decays pass the generator filter):
+
+  | step | S window | S step eff. | sideband cand. | B step eff. | S/√B |
+  |---|---|---|---|---|---|
+  | ntuple | 137.1 | – | 1,116,601 | – | 0.074 |
+  | event trigger (information) | 95.7 | 0.70 | 1,093,388 | 0.98 | 0.052 |
+  | vertex prob > 0.01 | 87.4 | 0.91 | 958,484 | 0.88 | 0.051 |
+  | resonance veto | 67.0 | 0.77 | 399,149 | 0.42 | 0.060 |
+  | ρ/ω veto | 65.2 | 0.97 | 372,878 | 0.93 | 0.061 |
+  | both muons trigger-matched | 65.2 | 1.00 | 318,030 | 0.85 | 0.066 |
+  | (extra) soft muons | 64.2 | 0.98 | 299,868 | 0.94 | 0.067 |
+  | (extra) muon pt > 4 / 3 | 58.7 | 0.91 | 247,590 | 0.83 | 0.067 |
+
+- **N-1** (signal / sideband efficiency of each cut on top of the others): vertex 0.91 / 0.86; resonance veto 0.76 / 0.37; ρ/ω veto 0.97 / 0.93; trigger 0.70 / 0.84.
+- **Conclusions:**
+  - The trigger (30% of the signal) and the resonance veto (24%) cost the most. The trigger matching of the muons costs no signal on top of the event-level flag and removes 15% of the background.
+  - Resonance veto, signal in the windows after vertex and trigger: J/ψ (2.9–3.3) 14.8%, ψ(2S) (3.55–3.8) 7.0%, φ (0.97–1.07) 1.6%. The signal m(μμ) peaks at 2–3 GeV after the trigger. A J/ψ window matched to the dimuon resolution could recover part of the 15% (not tried).
+  - Without the trigger the ntuple has 160 gen-matched signal events in [4.5, 6.5] GeV (111 with the event trigger). `PhotonCollectionStudy` gave 141 with the trigger for `slimmedPhotons`: the ntuple `genMatched` also requires a pt compatibility of the reco and gen legs (`GenDecayChain::matchToGen`), and the photon must pass the ntuplizer object selection and the vertex fit.
+
 ## 2026-11-22: Signal yield per photon collection (`Study/`, `PhotonCollectionStudy`)
 - **Question:** the v1 tables give about 75 signal events in Run 3 before the BDT (MiniAOD, `slimmedPhotons`, preselection), while an older study on the legacy MC with the AOD `photons` collection gave about 300.
 - **What was done:**
