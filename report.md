@@ -33,6 +33,28 @@ Entries are newest first.
 
 ---
 
+## 2026-11-22: CRAB submission of the legacy MC (`submitCrab.py`, task key `legacy`)
+
+**Changes** (commit bd1601b):
+- **Task key `legacy: true`:** the pset is `test/runNtuplizer_legacy_cfg.py` instead of `runNtuplizer_cfg.py`. AOD only; `--dry-run` shows "(legacy cfg)".
+- **`testMaxFiles=1`:** the script adds it, because without an input option the legacy configuration lists its default test sample. CRAB loads the configuration once at submission and sets the input files of each job, so one file is enough.
+- **Input check in the legacy configuration:** it now looks for an input option in all of `sys.argv`. CRAB loads it with the configuration file, not `cmsRun`, as `argv[0]`.
+- **Missing file list:** a `fileList` that does not exist is now an error at `--dry-run`.
+- **Documentation:** an example task in `tasks_example.yaml`, and the README.
+
+**Checks:**
+- `--dry-run` of a legacy file-list task:
+  - `psetName` = `runNtuplizer_legacy_cfg.py`;
+  - `pyCfgParams` = isMC=1, dataFormat=AOD, outputFile, testMaxFiles=1, plus the task options;
+  - whitelist T2_CH_CERN.
+- The configuration loaded as CRAB does, with these parameters:
+  - empty endcap rechits, `photonMaxAbsSCEta` 1.479, the rho producers in the task, the 2022 conversion scale map;
+  - 1 s, 52 kB pickled.
+- The other tasks (`tasks_example.yaml`) are unchanged.
+- Not submitted.
+
+---
+
 ## 2026-11-22: Ntuplizer for legacy AOD MC without endcap ECAL rechits (`runNtuplizer_legacy_cfg.py`)
 
 **Sample.** `/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToMuMuGamma_MCTunesRun3ECM13p6TeV_09_07_2025/`.
