@@ -41,9 +41,16 @@ r21_from: abs(conv_eta) < 1.5
 # ... and per bin of these map variables (the others merged): in 2022 data N2/N1 falls from 0.49 to 0.31 between
 # pt_est 1-1.5 and > 3 GeV; the pt-inclusive value (0.43) biases the endcap scale (merged peaks) by up to ~0.7%.
 # The cross-check bins take the value at their centre (variables not in r21_per: the whole-region value).
-r21_per: [pt]
-# bins with fewer selected candidates in the fit range are not fitted (status 2: inclusive scale filled in)
-min_candidates: 3000
+# Own pt binning: above ~6.5 GeV the barrel sample is too small for a ratio per map bin (0.09 +- 0.06 at
+# 13-17 GeV); the high-pt map bins share the value of the last bin.
+r21_per:
+  - {name: pt, expr: pt_est, edges: [1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 5.0, 6.5, 100.]}
+# bins with fewer selected candidates in the fit range are not fitted (status 2)
+min_candidates: 2000
+# bins without a good fit (status != 0) take the scale of the last good bin below them along this variable
+# (s falls with pt: the slice average would be too high), with the step between the last two good bins
+# added to the systematic error (map info: filled)
+fill_from: pt
 
 # map binning: N variables, each {name, expr (pandas expression on the table), edges}.
 # Besides the table columns, the expressions can use y (the fit variable) and pt_est = conv_pt * Y1 / y,
@@ -54,10 +61,13 @@ min_candidates: 3000
 # Below pt_est ~ 1 GeV the conversion threshold conv_pt > 0.5 GeV cuts into the fit range
 # (y > 0.5 GeV * Y1 / pt_est), which the background model cannot describe.
 # The last pt edge is open-ended in practice: the lookup is clamped beyond the outer bin centres.
+# 2022 data: the barrel is measured up to ~13 GeV, the endcaps up to ~6.5-9 GeV (filled above, fill_from);
+# s falls with pt by ~0.5% (barrel) to ~2% (endcap) between 3 and 10 GeV, so the high-pt bins matter for
+# the signal photons. More data (Run 3) extends the reach.
 binning:
   - name: pt
     expr: pt_est
-    edges: [1.0, 1.5, 2.0, 3.0, 100.]
+    edges: [1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 5.0, 6.5, 9.0, 13.0, 100.]
   - name: abseta
     expr: abs(conv_eta)
     edges: [0.0, 0.8, 1.5, 1.8, 2.0, 2.5]   # s falls from 0.957 (1.5-1.8) to 0.941 (1.8-2.0)
