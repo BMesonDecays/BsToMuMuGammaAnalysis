@@ -33,6 +33,32 @@ Entries are newest first.
 
 ---
 
+## 2026-11-22: Ntuplizer for legacy AOD MC without endcap ECAL rechits (`runNtuplizer_legacy_cfg.py`)
+
+**Sample.** `/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToMuMuGamma_MCTunesRun3ECM13p6TeV_09_07_2025/`.
+- Private B_s → μμγ AOD, CMSSW_12_4_11_patch3, zero bias, no pileup: 7401 files, 1.7 TB, about 310 events per file.
+- It has **no generator cut on the photon pt**, unlike the samples used so far (cut at 4 GeV): in the test, 81% of the signal photons are below 4 GeV (median 2.0 GeV).
+- Missing products: `reducedEcalRecHitsEE`, any rho (`fixedGridRho*`), and the run/lumi generator info (`GenRunInfoProduct`, `GenFilterInfo`).
+- The main configuration fails: `EcalClusterLazyTools` gets both rechit collections in its constructor.
+
+**Implementation** (commit 6a2a2c3). `test/runNtuplizer_legacy_cfg.py` executes `runNtuplizer_cfg.py` (same options, same ntuple format; default test sample `bsmmg_legacy_aod`, added to `test_files.yaml`) and then:
+- removes the endcap reco photons: `photonMaxAbsSCEta = 1.479`, the barrel edge. Their cluster variables and the ECAL photon fits need the endcap rechits, so `mmg`/`mmgg` contain barrel photons only;
+- passes an empty endcap rechit collection: `EmptyEcalRecHitCollectionProducer` in `plugins/RadiativeAnalysis_legacy.cc`. With no endcap photons it is never looked up;
+- produces `fixedGridRhoAll` and `fixedGridRhoFastjetAll` from `particleFlow`, for the VID photon MVA and the photon MVA without the muons.
+
+The ntuplizer module itself is unchanged. Conversions use only the tracker, so `mmcg` and `chic` cover the whole acceptance.
+
+**Test** on 2 files (645 events, about 25 s):
+- exit 0;
+- 25 photons, none in the endcap (maximum |SC η| 1.440). `pho_mva` and `mmg_phoMvaNoMu` are computed for all of them (rho from PF);
+- 255 conversions, 185 of them with |η| > 1.479. 45 come from the signal B, 26 of those in the endcaps;
+- 5 `mmcg` candidates, 3 truth-matched; `conv_scale` 0.893–0.990;
+- RunInfo: xsec and filter efficiency −1 (no generator products in the sample), with a warning per run.
+
+**Note:** `crab/submitCrab.py` uses the main configuration and DAS datasets. The legacy sample is a list of EOS files and is meant to run locally or on the batch system with the legacy configuration.
+
+---
+
 ## 2026-11-22: Converted-photon energy-scale correction in the ntuplizer (`mmcg`), with the 2022 χ_c map
 
 **Implementation** (commits 88421ec, 9caac9c, 2f8834c):
