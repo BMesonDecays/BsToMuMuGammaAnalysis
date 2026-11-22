@@ -33,6 +33,26 @@ Entries are newest first.
 
 ---
 
+## 2026-11-22: Candidates removed before the analysis preselection (ntuple skim and conversion cut)
+- **Two filters with vtxProb > 1e-3 in the v1 production:**
+  - ntuplizer `skim=1`, `skimMinVtxProb=1e-3` (`tasks_all.yaml`): per event. An event is written if any candidate of any channel has a valid fit with vtxProb > 1e-3; all its candidates are written. `RunInfo.nEvents` counts all events, so the normalisation is right;
+  - `convert.py` with `config/convert.yaml`: `preselection: "fitOK == 1 and vtxProb > 1e-3"`, per candidate (recorded in the v1 manifests). This is why no candidate in the tables is below 0.001.
+- **Size of the loss:** the current ntuplizer without the skim (`skim=0`) on 10,000 events of `bsmmg_miniaod`. Gen-matched `mmg` candidates in [4.5, 6.5] GeV:
+
+  | | candidates | fit failed | vtxProb ≤ 1e-3 | (1e-3, 1e-2] | > 1e-2 |
+  |---|---|---|---|---|---|
+  | all | 1383 | 0 | 18.0% | 7.6% | 74.4% |
+  | + event trigger | 906 | 0 | 14.7% | 7.3% | 78.0% |
+  | + window [5.15, 5.60] | 777 | 0 | 13.1% | 7.2% | 79.7% |
+
+  Events with a gen-matched candidate: 1383, of which 1135 pass the skim and 1134 keep the candidate after the conversion cut. The conversion cut, not the skim, removes the candidates.
+- **Consequences for `presel_impact.py` (2026-11-22 entry below):**
+  - the rows from the vertex cut (vtxProb > 0.01) on, and so the 65 signal events after the preselection, are unchanged: a candidate with vtxProb > 0.01 always passes both filters;
+  - the first two rows are low by 15–18%. Corrected: ~195 in [4.5, 6.5] without the trigger, ~130 with the event trigger (110.8 / 0.853), ~110 in the signal window with the trigger (95.7 / 0.869);
+  - the vertex cut keeps 0.80 of the triggered signal in the window, not 0.91: it costs 20% of the signal;
+  - with the event trigger, ~130 is close to the 141 of `PhotonCollectionStudy` (`slimmedPhotons`); the rest is the stricter `genMatched` (pt compatibility).
+- The first row of `presel_impact.py` is now labelled `tables (vtxProb > 1e-3)`.
+
 ## 2026-11-22: Impact of the preselection on the number of candidates (`scripts/presel_impact.py`, `mmg`, v1 tables)
 - **What was done:** `python3 scripts/presel_impact.py config/combine_mmg.yaml` (LCG_107, 12 s). Cumulative cut flow, each cut alone and N-1, for the gen-matched signal MC (Run 3 projection of the Combine study: 297 fb⁻¹ good luminosity, B = 5×10⁻⁹) and the data sidebands (× 326/38). B in the signal window = sidebands × 0.45/1.25. Tables in `<output>/presel/`.
 - **Cumulative** (S in the signal window [5.15, 5.60]; 1453 signal decays pass the generator filter):
