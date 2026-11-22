@@ -5,9 +5,26 @@ import os
 import re
 
 import pandas as pd
+import pyarrow as pa
 import pyarrow.dataset as pads
 
 KEYS = ['evt_run', 'evt_lumi', 'evt_event']
+
+
+def _read(dset, files, columns):
+    """The columns of a Parquet dataset as a DataFrame.
+
+    pyarrow builds without a compression codec exist (the pyarrow 15 of the LCG_107 view has no zstd): then
+    the files are read with polars, which has its own decoders.
+    """
+    try:
+        return dset.to_table(columns=columns).to_pandas()
+    except pa.ArrowNotImplementedError as e:
+        if 'codec' not in str(e):
+            raise
+        import polars as pl
+        frames = [pl.read_parquet(f, columns=[c for c in columns if c in pl.read_parquet_schema(f)]) for f in files]
+        return pl.concat(frames, how='diagonal').to_pandas()
 
 
 def parts(base, dataset, channel):
@@ -71,7 +88,7 @@ def load(base, datasets, channel, cols=None, query=None, derived=None, keys=True
             for expr in list(derived.values()) + [query] + list(exprs):
                 want += sorted(_referenced(expr, available) - set(want))
         present = [c for c in want if c in available]
-        df = dset.to_table(columns=present).to_pandas()
+        df = _read(dset, files, present)
         for name, expr in derived.items():
             df[name] = df.eval(expr)
         if query:
