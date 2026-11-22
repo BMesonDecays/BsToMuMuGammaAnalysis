@@ -54,8 +54,10 @@ def reference_fits(df, y, cfg, model, inclusive):
     has too few candidates falls back to the inclusive fit. Without shape_from: the inclusive fit for all.
     r21_from: selection of a region with resolved chi_c1/chi_c2 peaks; its N(chi_c2)/N(chi_c1) is fixed in the
     reference fits and in the bins (returned model).
-    r21_per: names of map variables: N(chi_c2)/N(chi_c1) from a fit of the r21_from region per bin of these
-    variables (the other variables merged), fixed in the bins (returned model['r21_bins'], see r21_for_bin).
+    r21_per: list of map variable names or of binnings {name, expr, edges}: N(chi_c2)/N(chi_c1) from a fit of
+    the r21_from region per bin of these variables (the other variables merged), fixed in the bins (returned
+    model['r21_bins'], see r21_for_bin). An own binning (e.g. coarser pt bins where the sample is small) is
+    matched to the map bins by its expression.
     The reference fits keep the r21_from value of the whole region.
     Returns {projected bin tuple: fit result}, the indices of the shape_from variables, summary rows, and the
     model for the bins.
@@ -79,11 +81,11 @@ def reference_fits(df, y, cfg, model, inclusive):
     r21_bins = None
     if cfg.get('r21_from') and cfg.get('r21_per'):
         # the production ratio changes with pt (0.49 -> 0.31 over pt_est 1 -> >3 GeV in 2022 data)
-        rdims = [names.index(n) for n in cfg['r21_per']]
-        rbins = [binning[d] for d in rdims]
+        rbins = [binning[names.index(v)] if isinstance(v, str) else v for v in cfg['r21_per']]
+        ridx = cs.bin_index(df, rbins)
         values = np.full(tuple(len(b['edges']) - 1 for b in rbins), model['fixed']['r21'])
         for pb in cs.all_bins(rbins):
-            selb = sel & np.all(idx[:, rdims] == np.array(pb), axis=1)
+            selb = sel & np.all(ridx == np.array(pb), axis=1)
             r = cs.fit(y[selb], dict(model, fixed={k: v for k, v in model['fixed'].items() if k != 'r21'}),
                        start=dict(inclusive['values'], ntot=inclusive['ntot']))
             rng = ', '.join('%s %g–%g' % (b['name'], b['edges'][k], b['edges'][k + 1]) for b, k in zip(rbins, pb))
