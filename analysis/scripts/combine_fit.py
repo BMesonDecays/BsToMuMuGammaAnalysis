@@ -228,7 +228,7 @@ class Fitter:
             si = s * sig.createIntegral(nset, R.RooFit.NormSet(nset), R.RooFit.Range('bin')).getVal()
             bi = b * bkg.createIntegral(nset, R.RooFit.NormSet(nset), R.RooFit.Range('bin')).getVal()
             if bi > 0 and si > 0:
-                z2 += 2 * ((si + bi) * math.log(1 + si / bi) - si)
+                z2 += 2 * ((si + bi) * math.log1p(si / bi) - si)
         return math.sqrt(z2)
 
 
