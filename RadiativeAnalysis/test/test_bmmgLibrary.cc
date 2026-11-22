@@ -4,12 +4,16 @@
 
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/BranchSet.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/CandidateObservables.h"
+#include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/ConversionScaleMap.h"
 #include "BsToMuMuGammaAnalysis/RadiativeAnalysis/interface/DimuonBuilder.h"
 
 #include "TMath.h"
 #include "TTree.h"
 
 #include <cmath>
+#include <cstdio>
+#include <fstream>
+#include <string>
 
 namespace {
   reco::Vertex makeVertex(double x, double y, double z, double err = 1e-4) {
@@ -160,4 +164,45 @@ TEST_CASE("BranchSet", "[ntuple]") {
 
   CHECK(tree.GetEntries() == 2);
   CHECK(tree.Draw("x", "", "goff") == 2);      // two values, both in the first entry
+}
+
+namespace {
+  std::string writeFile(const std::string& name, const std::string& text) {
+    std::ofstream(name) << text;
+    return name;
+  }
+}  // namespace
+
+TEST_CASE("converted-photon energy-scale map", "[convscale]") {
+  // pt_est edges [1, 2, 5] x |eta| edges [0, 1.5, 2.5]; scale[pt][eta]
+  const std::string vars =
+      R"J([{"name": "pt", "expr": "pt_est", "edges": [1, 2, 5]}, {"name": "abseta", "expr": "abs(conv_eta)", "edges": [0, 1.5, 2.5]}])J";
+  const std::string path = writeFile("test_conv_scale_map.json",
+                                     R"J({"variables": )J" + vars + R"J(, "scale": [[0.99, 0.95], [0.98, 0.90]]})J");
+  const bmmg::ConversionScaleMap map(path);
+  CHECK(map.scaleAt(1.5, 0.3) == Approx(0.99));
+  CHECK(map.scaleAt(3., -2.0) == Approx(0.90));   // |eta|
+  CHECK(map.scaleAt(0.2, 0.3) == Approx(0.99));   // clamped below and above
+  CHECK(map.scaleAt(50., 3.0) == Approx(0.90));
+  // reconstructed pt 1.97 in the endcap: s(1.97) = 0.95, true pt ~ 1.97 / 0.95 = 2.07 -> the 2-5 GeV bin
+  CHECK(map.scale(1.97, 2.0) == Approx(0.90));
+  CHECK(map.scale(1.85, 0.5) == Approx(0.99));   // 1.85 / 0.99 = 1.87 stays in the first bin
+
+  // variables in the other order: the scale array is [eta][pt]
+  const std::string swapped = writeFile(
+      "test_conv_scale_map_swapped.json",
+      R"J({"variables": [{"name": "abseta", "expr": "abs(conv_eta)", "edges": [0, 1.5, 2.5]}, {"name": "pt", "expr": "pt_est", "edges": [1, 2, 5]}], "scale": [[0.99, 0.98], [0.95, 0.90]]})J");
+  CHECK(bmmg::ConversionScaleMap(swapped).scaleAt(3., 2.0) == Approx(0.90));
+  CHECK(bmmg::ConversionScaleMap(swapped).scaleAt(1.5, 2.0) == Approx(0.95));
+
+  // a map in other variables (e.g. the MC truth map in gen pt) or an implausible scale is refused
+  const std::string wrong = writeFile(
+      "test_conv_scale_map_wrong.json",
+      R"J({"variables": [{"name": "pt", "expr": "gen_pho1_pt", "edges": [1, 2]}, {"name": "abseta", "expr": "abs(conv_eta)", "edges": [0, 2.5]}], "scale": [[0.99]]})J");
+  CHECK_THROWS(bmmg::ConversionScaleMap(wrong));
+  const std::string bad =
+      writeFile("test_conv_scale_map_bad.json", R"J({"variables": )J" + vars + R"J(, "scale": [[0.99, 0.95], [0.98, 0.0]]})J");
+  CHECK_THROWS(bmmg::ConversionScaleMap(bad));
+  CHECK_THROWS(bmmg::ConversionScaleMap("does_not_exist.json"));
+  for (const auto& f : {path, swapped, wrong, bad}) std::remove(f.c_str());
 }
