@@ -9,6 +9,9 @@
   <use name="DataFormats/ParticleFlowCandidate"/>
   <use name="DataFormats/TrackReco"/>
   <use name="DataFormats/Math"/>
+  <use name="DataFormats/MuonReco"/>
+  <use name="DataFormats/Common"/>
+  <use name="FWCore/Common"/>
   <use name="RecoVertex/KinematicFit"/>
   <use name="RecoVertex/KinematicFitPrimitives"/>
   <use name="RecoVertex/VertexPrimitives"/>
