@@ -33,6 +33,88 @@ Entries are newest first.
 
 ---
 
+## 2026-11-22: Expected B_s → μμγ significance in Run 3 (326 fb⁻¹) with Combine, per BDT cut (`mmg`, v1 tables)
+
+**Result:** the expected (blind, Asimov) significance rises to **2.44σ at BDT > 0.998** (2.41σ at 0.999).
+- Shape fit of the B mass in Combine v11.1.0, background slope and yield floating.
+- B(B_s→μμγ) = 5×10⁻⁹ assumed; no systematics apart from the floating background.
+- The expected 95% CL limit at that cut is r < 0.81 (0.57–1.18 at ±1σ), i.e. B < 4.1×10⁻⁹.
+- Consistent with the earlier analytic estimate (2026-11-15: 1.9σ cut-and-count, 2.7–2.9σ with 3 categories and a known background shape): this is one category, and the background shape now floats.
+
+**Inputs and normalisation:**
+- **Tables:** v1 tables in `/eos/user/s/sslawins/parquet` (`Parking2022`, `BsToMuMuGamma_2022`), channel `mmg`.
+- **Selection and BDT:** the preselection and BDT of `config/analysis.yaml` (37 features, tuned parameters, 5 folds).
+- **Data:** 2022 = 34.65 fb⁻¹ golden, 38 fb⁻¹ recorded. Target: 326 fb⁻¹ recorded.
+  - The sidebands are scaled by 326/38 = 8.58.
+  - The signal MC is normalised to the equivalent good luminosity, 34.65 × 326/38 = 297 fb⁻¹, with the generator σ × filter efficiency of the sample and `br_scale` = 5×10⁻⁹.
+- **Signal after the preselection:** 75.4 in [4.5, 6.5] GeV, 65.4 in the signal window [5.15, 5.60] GeV. This matches the earlier 7.6 at 34.65 fb⁻¹ × 297/34.65 = 65.
+
+**Code** (commits 803ee04, 3ffa942, 3b41566, 686cc0c; README section "Expected significance in Run 3 with Combine"):
+- **`config/combine_mmg.yaml` + `config.load_combine_config`:** the base `analysis.yaml` is used as it is. The file overrides the parquet and output directories and adds the luminosity projection, the BDT cuts (0, 0.9, 0.95, 0.98, 0.99, 0.995, 0.998, 0.999, 0.9995) and the fit range [4.5, 6.5] GeV with 25 MeV bins.
+- **`scripts/combine_hists.py`** (LCG_107):
+  - samples via `load_samples`; the blind window is never loaded;
+  - k-fold BDT trained (or loaded) in `<output>/bdt`, out-of-fold scores;
+  - per cut, `mmg_mass_hists.root` with `signal`, `data_sb` (× 8.58) and `data_sb_raw`, plus `yields.csv`.
+- **`scripts/combine_fit.py`** (Combine area, CMSSW_14_1_0_pre4 + HiggsAnalysis-CombinedLimit v11.1.0 in `/eos/home-s/sslawins/combine/`), per cut:
+  - double-sided Crystal Ball fitted to the signal MC, refitted at each cut, then fixed;
+  - exponential fitted to the raw sidebands (binned Poisson likelihood in the sideband ranges);
+  - workspace, with background slope and yield as `flatParam`, and a datacard;
+  - `combine -M Significance -t -1 --expectSignal 1` and `-M AsymptoticLimits --run blind`;
+  - `results.csv`, fit plots (blind window not drawn), `significance_vs_cut.png`.
+- **`io.load` fix:** the v1 tables are zstd-compressed, and the pyarrow 15/20 of the LCG views (106–108) is built without zstd. `io.load` now falls back to polars (0.18 in LCG_107).
+- **XGBoost:** LCG_107's is built without CUDA, so `device: cuda` runs on the CPU (warning only). The training took about 20 min on 32 cores.
+
+**BDT:**
+- Out-of-fold AUC 0.991.
+- 60,893 signal and 318,030 sideband candidates; 1150–1240 trees per fold.
+- At BDT > 0.995: signal efficiency 0.38, sideband efficiency 3.2×10⁻⁴ (2026-11-15: 0.33 at 2×10⁻⁴).
+- Signal train/test KS p-values 10⁻¹³–10⁻²² (as before); all numbers use out-of-fold scores.
+
+**Results:**
+- S, B: in [4.5, 6.5] GeV / in [5.15, 5.60] GeV, at 326 fb⁻¹.
+- sb raw: unscaled 2022 sideband candidates.
+- σ: DSCB core width.
+- λ: exponential slope [GeV⁻¹].
+- Z(known B): binned Asimov with the background fixed.
+- Z(Combine): background slope and yield float.
+- r_exp: expected 95% CL limit on B/(5×10⁻⁹).
+
+| BDT > | S | S win | B | B win | sb raw | σ [GeV] | λ | Z(known B) | **Z(Combine)** | r_exp (±1σ) | B limit |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 0 | 75.4 | 65.4 | 4.43×10⁶ | 1.02×10⁶ | 318030 | 0.062 | −0.29 | 0.08 | (0.23)* | 30 (22–41) | 1.5×10⁻⁷ |
+| 0.9 | 62.2 | 55.7 | 43764 | 9546 | 3218 | 0.060 | −1.02 ± 0.03 | 0.71 | 0.65 | 3.11 (2.26–4.34) | 1.6×10⁻⁸ |
+| 0.95 | 56.8 | 51.4 | 23200 | 4957 | 1723 | 0.060 | −1.13 ± 0.04 | 0.91 | 0.83 | 2.42 (1.74–3.37) | 1.2×10⁻⁸ |
+| 0.98 | 47.3 | 43.4 | 9015 | 1863 | 680 | 0.059 | −1.28 ± 0.07 | 1.27 | 1.15 | 1.73 (1.25–2.42) | 8.7×10⁻⁹ |
+| 0.99 | 38.3 | 35.7 | 3693 | 748 | 281 | 0.061 | −1.36 ± 0.11 | 1.66 | 1.50 | 1.32 (0.95–1.86) | 6.6×10⁻⁹ |
+| 0.995 | 28.7 | 27.1 | 1325 | 256 | 103 | 0.059 | −1.53 ± 0.19 | 2.16 | 1.95 | 1.02 (0.72–1.45) | 5.1×10⁻⁹ |
+| **0.998** | 16.7 | 16.0 | 335 | 53.1 | 28 | 0.057 | −2.10 ± 0.48 | 2.75 | **2.44** | 0.81 (0.57–1.18) | 4.1×10⁻⁹ |
+| 0.999 | 9.4 | 9.1 | 97 | 15.9 | 8 | 0.056 | −2.01 ± 0.87 | 2.73 | 2.41 | 0.84 (0.57–1.26) | 4.2×10⁻⁹ |
+| 0.9995 | 4.4 | 4.3 | – | – | 1 | – | – | – | not fitted (< 3 sideband candidates) | | |
+
+\* At cut 0 the expected ΔNLL is Z²/2 ≈ 0.003 on 4.4×10⁶ weighted events, below the precision of the minimisation: Combine's 0.23 (0.22 with the background frozen) is a numerical artefact. The known-background value 0.079 is robust (same with log1p and as Σs²/b). The cut is irrelevant for the result.
+
+**Validation:**
+- **Combine install:** a counting card with S = 10, B = 100 gives Z = 0.9840 (formula 0.984).
+- **Asimov dataset** (`GenerateOnly -t -1`): 80 bins, 351.3 events = 334.6 B + 16.7 S. The model in the Combine workspace is identical to the fitted one (pdf values, parameters, yields).
+- **Cost of the floating background** at BDT > 0.998: in the Combine workspace the yield is `shapeBkg_bkg_mmg__norm`.
+  - both frozen: 2.761 (formula 2.759);
+  - only the yield floating: 2.601;
+  - slope and yield floating: 2.439.
+  So the slope, constrained only by the 28 sideband candidates (λ = −2.1 ± 0.5), costs about 0.16σ and the yield another 0.16σ.
+- **Fits:**
+  - the signal DSCB describes the MC at every cut (σ_core 0.056–0.062 GeV; flat pulls);
+  - the exponential describes the sidebands (deviance 45–62 for 48 degrees of freedom) at BDT ≥ 0.9; at the preselection level it does not (387/48), which is irrelevant for the result;
+  - at tight cuts almost all sideband candidates are in the low sideband (0.998: 27 low, 1 high), so the slope is steep and comes mostly from below the peak.
+
+**Caveats:**
+1. **Background model:** a single exponential, extrapolated from a low sideband dominated by a steeply falling component (probably partially reconstructed B decays) under the peak. A different shape (e.g. a component ending near 5.2 GeV) changes B under the peak. The background-shape systematic (alternative functions, discrete profiling) is not included.
+2. **No other systematics:** signal yield (BR, σ × filter efficiency of the MC, luminosity, efficiencies), signal shape (mass scale and resolution in data).
+3. **Statistical precision:** at the best cuts the background comes from 8–28 sideband candidates of 2022. The choice of the best cut on the same candidates biases Z up slightly. The 0.998 and 0.999 results agree within that precision.
+4. **Production and conditions:** v1 production (MiniAOD photons with p_T > 10 GeV, no photon-energy or conversion corrections); 2022 conditions and trigger for all of Run 3.
+5. **One category:** combining several BDT-score categories in one datacard would gain, as in the analytic estimate (3 categories: +0.3–0.5σ).
+
+---
+
 ## 2026-11-22: CRAB submission of the legacy MC (`submitCrab.py`, task key `legacy`)
 
 **Changes** (commit bd1601b):
