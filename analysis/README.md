@@ -124,3 +124,25 @@ python3 scripts/conv_scale_mc.py config/conv_scale_mc.yaml   # MC map from E_rec
   - The closure: the map applied to every candidate, then refits in the finer cross-check bins (pt, reconstructed pt, |η|, conversion radius).
 - **Applying the map:** the correction uses the value of the candidate's bin (`interpolate: false`). For `mmcg`, `corrected_mass(m, m_μμ, s)` gives √(m_μμ² + (m² − m_μμ²)/s). It is exact for the unfitted mass and approximate for the fitted one. The ntuplizer applies the map itself (`conversionScaleMap`, default `RadiativeAnalysis/data/conv_scale_2022.json`): the `mmcg` photon is scaled by 1/s before the B fit, and `conv_scale` stores s (NTUPLE.md). To update it, copy a new `conv_scale.json` there.
 - **Range:** the signal photons cover 3–40 GeV. With 2022 data (35 fb⁻¹) the χ_c sample measures the barrel up to 13 GeV and the endcaps up to 6.5–9 GeV; above, the map holds the last measured bin. More data (Run 3) extends the reach. The MC (`conv_scale_mc.py`) gives the pt dependence beyond the data range.
+
+## Expected significance in Run 3 with Combine (`mmg`)
+Expected (blind, Asimov) significance of B_s → μμγ at several BDT score cuts, from a shape fit of the B mass in Combine v11.1.0. Configuration: `config/combine_mmg.yaml`. It takes the selection, the BDT and the mass windows from `config/analysis.yaml` (`analysis:`), and overrides the input and output directories.
+```bash
+# Combine (once), outside the repository: CMSSW_14_1_0_pre4 + HiggsAnalysis-CombinedLimit v11.1.0
+cmsrel CMSSW_14_1_0_pre4 && cd CMSSW_14_1_0_pre4/src && cmsenv
+git clone --depth 1 --branch v11.1.0 https://github.com/cms-analysis/HiggsAnalysis-CombinedLimit.git HiggsAnalysis/CombinedLimit
+cd HiggsAnalysis/CombinedLimit && scram b -j 16
+
+# 1. LCG view: BDT (k-fold, trained or loaded from <output>/bdt) and mass histograms per cut
+python3 scripts/combine_hists.py config/combine_mmg.yaml [--retrain]
+# 2. Combine area (cmsenv): fits, workspaces, datacards, combine
+python3 scripts/combine_fit.py config/combine_mmg.yaml [--cuts 0.99,0.995]
+```
+- **Luminosity:** the data sidebands are scaled by target/recorded (326/38 fb⁻¹). The signal MC is normalised to the equivalent good luminosity, 34.65 × 326/38 = 297 fb⁻¹, with the BR of `samples.signal.br_scale`.
+- **`mmg_mass_hists.root`:** per cut (`cut_0p99`, …) the histograms `signal`, `data_sb` (scaled) and `data_sb_raw` (unscaled, for the fit). The blind window is never loaded.
+- **Models:**
+  - Signal: a double-sided Crystal Ball, refitted at every cut and then fixed.
+  - Background: an exponential fitted to the raw sidebands. In Combine its slope and yield float (`flatParam`).
+- **Combine runs:** `-M Significance -t -1 --expectSignal 1` (Asimov data generated from the model), and `-M AsymptoticLimits --run blind` (expected limit on r = BR / assumed BR). The datacard's `data_obs` is only a placeholder (the background expectation).
+- **Output** (`<output>/combine/`): `results.csv`, `significance_vs_cut.png`, `fits/`, `cards/`, `ws/`, `logs/`.
+- **Reading the v1 tables:** they are zstd-compressed, and the pyarrow of the LCG views has no zstd. `io.load` then reads with polars.

@@ -3,8 +3,6 @@ import os
 
 import yaml
 
-from . import io, selection, weights
-
 
 def load_config(path):
     with open(path) as f:
@@ -89,6 +87,8 @@ def load_samples(cfg, columns=(), which=('signal', 'data')):
               best-candidate choice, as in data); weight = MC normalisation to lumi_pb
               (1 per candidate if lumi_pb is not set).
     """
+    # imported here: the configuration functions also work without pyarrow (e.g. in a CMSSW area)
+    from . import io, selection, weights
     mcol = cfg['mass']['column']
     cols = list(dict.fromkeys([mcol] + list(columns) + list(cfg.get('bdt', {}).get('features', []))
                               + list(cfg.get('mlp', {}).get('features', []))
