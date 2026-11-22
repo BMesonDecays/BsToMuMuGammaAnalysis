@@ -35,13 +35,16 @@ import yaml
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PSET = os.path.normpath(os.path.join(HERE, '..', 'test', 'runNtuplizer_cfg.py'))
+# legacy AOD samples without endcap ECAL rechits (task key "legacy: true"), e.g. the private zero-bias Bs -> mu mu
+# gamma MC of 2025-07-09: endcap reco photons removed, converted photons everywhere (README.md)
+PSET_LEGACY = os.path.normpath(os.path.join(HERE, '..', 'test', 'runNtuplizer_legacy_cfg.py'))
 OUTPUT_FILE = 'bmmg_ntuple.root'
 
 # task keys (everything else in a task is an error, to catch typos)
 TASK_KEYS = {
     'name', 'dataset', 'datasets', 'fileList', 'isMC', 'dataFormat', 'lumiMask', 'runRange',
     'splitting', 'unitsPerJob', 'totalUnits', 'maxMemoryMB', 'maxJobRuntimeMin', 'numCores',
-    'workArea', 'outLFNDirBase', 'storageSite', 'tag', 'whitelist', 'blacklist', 'options',
+    'workArea', 'outLFNDirBase', 'storageSite', 'tag', 'whitelist', 'blacklist', 'options', 'legacy',
 }
 # runNtuplizer_cfg.py options set by the script itself (not allowed in 'options')
 RESERVED_OPTIONS = {'isMC', 'dataFormat', 'outputFile', 'inputFiles', 'testSample', 'testMaxFiles', 'maxEvents'}
@@ -136,12 +139,18 @@ def finalize(t, path):
         for key in ('name', 'isMC', 'dataFormat'):
             if key not in t:
                 raise ValueError('%s: a fileList task needs "%s"' % (where, key))
+        listPath = t['fileList'] if os.path.isabs(t['fileList']) else os.path.join(HERE, t['fileList'])
+        if not os.path.isfile(listPath):
+            raise ValueError('%s: file list %s not found' % (where, listPath))
     if t.get('dataFormat') is None:
         raise ValueError('%s: set "dataFormat" (AOD or MINIAOD)' % where)
     t['dataFormat'] = t['dataFormat'].upper()
     if t['dataFormat'] not in ('AOD', 'MINIAOD'):
         raise ValueError('%s: dataFormat must be AOD or MINIAOD' % where)
     t['isMC'] = bool(t['isMC'])
+    t['legacy'] = bool(t.get('legacy', False))
+    if t['legacy'] and t['dataFormat'] != 'AOD':
+        raise ValueError('%s: legacy (runNtuplizer_legacy_cfg.py) is for AOD samples' % where)
     if not t['isMC'] and not t.get('lumiMask'):
         print('WARNING: %s: data without a lumiMask' % where)
     bad = set(t['options']) & RESERVED_OPTIONS
@@ -162,6 +171,10 @@ def finalize(t, path):
 
 def pyCfgParams(t):
     params = ['isMC=%d' % t['isMC'], 'dataFormat=' + t['dataFormat'], 'outputFile=' + OUTPUT_FILE]
+    if t.get('legacy'):
+        # the legacy configuration takes its test sample (all files of the legacy MC) when no input is given;
+        # one file is enough when CRAB loads it (CRAB sets the input files of each job)
+        params.append('testMaxFiles=1')
     for k, v in sorted(t['options'].items()):
         if isinstance(v, bool):
             v = int(v)
@@ -183,7 +196,7 @@ def crabConfig(t, user):
     c.General.transferLogs = False
 
     c.JobType.pluginName = 'Analysis'
-    c.JobType.psetName = PSET
+    c.JobType.psetName = PSET_LEGACY if t.get('legacy') else PSET
     c.JobType.pyCfgParams = pyCfgParams(t)
     c.JobType.outputFiles = [OUTPUT_FILE]
     c.JobType.maxMemoryMB = int(t['maxMemoryMB'])
@@ -354,9 +367,10 @@ class Reporter:
 def taskInfo(t):
     """One-line description of a task for the dry run."""
     what = t.get('dataset') or 'file list ' + t['fileList']
-    return '%s  %s %s, %s %d%s, options: %s' % (
-        what, 'MC' if t['isMC'] else 'data', t['dataFormat'], t['splitting'], t['unitsPerJob'],
-        ', lumiMask' if t.get('lumiMask') else '', ' '.join(pyCfgParams(t)[3:]) or 'none')
+    return '%s  %s %s%s, %s %d%s, options: %s' % (
+        what, 'MC' if t['isMC'] else 'data', t['dataFormat'], ' (legacy cfg)' if t.get('legacy') else '',
+        t['splitting'], t['unitsPerJob'], ', lumiMask' if t.get('lumiMask') else '',
+        ' '.join(pyCfgParams(t)[4 if t.get('legacy') else 3:]) or 'none')
 
 
 # ------------------------------------------------------------------ main

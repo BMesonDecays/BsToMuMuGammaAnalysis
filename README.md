@@ -53,6 +53,7 @@ python3 submitCrab.py tasks_example.yaml --command status -v # full CRAB output 
 ```
 - By default every task prints one line (submitted / job states / failure reason with the end of the CRAB output); the full CRAB output is kept in `crab_projects/logs/<task>.<command>.log`. `-v`/`--verbose` prints the full output (and the full configurations with `--dry-run`).
 - `tasks_example.yaml` documents the keys: dataset(s) or file list, `isMC`, `dataFormat`, lumi mask, splitting, output site, and the `runNtuplizer_cfg.py` options (`skim`, `globalTag`, `channels`, …). The channels are `mmg`, `mmcg`, `mmgg`, `mmkk` and `chic` (χ_c → J/ψ γ with a converted photon, the calibration sample of the conversion energy scale); default: all.
+- Legacy AOD samples without endcap ECAL rechits: task key `legacy: true` runs `runNtuplizer_legacy_cfg.py` instead of `runNtuplizer_cfg.py` (AOD only; example in `tasks_example.yaml`). The files of a private sample on `/eos/cms` go in a `fileList` (`makeFileList.py`).
 - `isMC` and `dataFormat` default to the dataset's data tier and must agree with it.
 - `makeFileList.py` writes the LFN list for private samples.
 

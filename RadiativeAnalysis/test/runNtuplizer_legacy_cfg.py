@@ -22,8 +22,9 @@ import sys
 
 import FWCore.ParameterSet.Config as cms
 
-# default input: the legacy sample (unless the input is given)
-if not any(a.startswith(('testSample=', 'inputFiles=', 'dataset=')) for a in sys.argv[2:]):
+# default input: the legacy sample (unless the input is given). All arguments are checked: under cmsRun
+# sys.argv[0] is cmsRun, when CRAB loads the configuration it is the configuration file.
+if not any(a.startswith(('testSample=', 'inputFiles=', 'dataset=')) for a in sys.argv[1:]):
     sys.argv.append('testSample=bsmmg_legacy_aod')
 
 _mainCfg = os.path.join(os.environ['CMSSW_BASE'], 'src', 'BsToMuMuGammaAnalysis', 'RadiativeAnalysis', 'test',

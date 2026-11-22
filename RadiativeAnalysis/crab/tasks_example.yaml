@@ -26,6 +26,9 @@
 #   outLFNDirBase    default /store/user/{user}/bmmg_ntuples ({user} = your CERN user name)
 #   storageSite      default T3_CH_CERNBOX
 #   whitelist, blacklist   lists of sites (file lists run at T2_CH_CERN unless a whitelist is given)
+#   legacy           true: run test/runNtuplizer_legacy_cfg.py (AOD samples without endcap ECAL rechits, e.g. the
+#                    private zero-bias Bs -> mu mu gamma MC of 2025-07-09; endcap reco photons removed,
+#                    converted photons everywhere); default false: test/runNtuplizer_cfg.py
 #   options          options of test/runNtuplizer_cfg.py (key: value), e.g. skim, skimMinVtxProb,
 #                    globalTag, channels, photonID, trackCompatibility. isMC, dataFormat and outputFile
 #                    are set by the script from the task.
@@ -59,3 +62,13 @@ tasks:
   #   fileList: BsToMuMuGammaFileList.txt
   #   isMC: true
   #   dataFormat: AOD
+
+  # ---------------------------------------------------------------- legacy private MC without endcap rechits
+  # python3 makeFileList.py '/eos/cms/store/group/phys_bphys/privateMC_ForBsMMGAnalysis/TrackingVertexing/Private_BsToMuMuGamma_MCTunesRun3ECM13p6TeV_09_07_2025/**/*.root' BsToMuMuGammaFileList.txt
+  # - name: BsTo2MuG_legacy
+  #   fileList: BsToMuMuGammaFileList.txt
+  #   isMC: true
+  #   dataFormat: AOD
+  #   legacy: true
+  #   options:
+  #     skim: 0
