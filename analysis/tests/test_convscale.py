@@ -80,3 +80,19 @@ def test_bin_index():
     df = pd.DataFrame({'a': [0.5, 1.5, 2.5, -1.0, np.nan]})
     idx = cs.bin_index(df, [{'name': 'a', 'expr': 'a', 'edges': [0, 1, 2]}])
     assert list(idx[:, 0]) == [0, 1, -1, -1, -1]
+
+
+def test_fill_along():
+    # 4 pt bins x 2 eta slices; slice 0: last two bins empty, slice 1: first bin empty, third failed
+    scale = np.array([[0.99, 0.95], [0.98, 0.94], [0.97, 0.93], [0.96, 0.92]])
+    error = np.full((4, 2), 0.001)
+    syst = np.full((4, 2), 0.002)
+    status = np.array([[0, 2], [0, 0], [2, 1], [2, 0]])
+    s, e, y, fills = cs.fill_along(scale, error, syst, status, axis=0)
+    # from the last good bin below, step of the last two good bins (0.01) added to the systematic
+    assert np.allclose(s[2:, 0], 0.98) and np.allclose(y[2:, 0], np.hypot(0.002, 0.01))
+    # one good bin below: no step
+    assert np.isclose(s[2, 1], 0.94) and np.isclose(y[2, 1], 0.002)
+    # no good bin below (first bin) and good bins are unchanged
+    assert s[0, 1] == 0.95 and s[3, 1] == 0.92 and s[1, 0] == 0.98
+    assert {tuple(f['bin']) for f in fills} == {(2, 0), (3, 0), (2, 1)}

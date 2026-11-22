@@ -214,6 +214,33 @@ def all_bins(binning):
     return list(itertools.product(*[range(len(b['edges']) - 1) for b in binning]))
 
 
+def fill_along(scale, error, syst, status, axis):
+    """Fill the bins without a good fit (status != 0) from the last good bin below them along `axis`.
+
+    For a variable with a trend (photon pt: s falls with pt), the closest measured bin of the same slice of the
+    other variables is a better estimate than an average over the slice. A filled bin takes the scale and the
+    statistical error of the source bin; its systematic error is the source systematic (+) the step between the
+    last two good bins (the trend extrapolated by one bin; 0 if there is only one). Bins without a good bin
+    below them are left unchanged.
+    Returns new (scale, error, syst) arrays and a list of {'bin': [...], 'from': [...], 'extrapolation': step}.
+    """
+    scale, error, syst = (np.array(a, dtype=float) for a in (scale, error, syst))
+    status = np.asarray(status)
+    s0, e0, y0 = scale.copy(), error.copy(), syst.copy()
+    fills = []
+    for b in itertools.product(*[range(n) for n in status.shape]):
+        if status[b] == 0:
+            continue
+        good = [k for k in range(b[axis]) if status[b[:axis] + (k,) + b[axis + 1:]] == 0]
+        if not good:
+            continue
+        src = b[:axis] + (good[-1],) + b[axis + 1:]
+        step = abs(s0[src] - s0[b[:axis] + (good[-2],) + b[axis + 1:]]) if len(good) > 1 else 0.
+        scale[b], error[b], syst[b] = s0[src], e0[src], float(np.hypot(y0[src], step))
+        fills.append({'bin': [int(i) for i in b], 'from': [int(i) for i in src], 'extrapolation': float(step)})
+    return scale, error, syst, fills
+
+
 # ---------------------------------------------------------------------------------------------- map
 
 class ScaleMap:
@@ -221,8 +248,9 @@ class ScaleMap:
 
     JSON: {"variables": [{"name", "expr", "edges"}], "scale": nested lists (N-dim), "error" (statistical),
            "syst" (systematic), "status", "inclusive": {"s", "s_err"}, "info": {...}}.
-    status: 0 good fit; 1 fit not valid; 2 too few candidates. Bins with status != 0 hold the scale of their
-    reference fit (conv_scale.py: the |eta| slice, or the inclusive fit).
+    status: 0 good fit; 1 fit not valid; 2 too few candidates. Bins with status != 0 hold the scale of the last
+    good bin below them along the fill variable (conv_scale.py `fill_from`, e.g. pt; info['filled'] lists them),
+    otherwise of their reference fit (conv_scale.py: the |eta| slice, or the inclusive fit).
     """
 
     def __init__(self, variables, scale, error, status, syst=None, inclusive=None, info=None):
@@ -240,7 +268,8 @@ class ScaleMap:
              'status': self.status.tolist(), 'inclusive': self.inclusive, 'info': self.info,
              'definition': 'peak scale of the converted-photon energy (E_reco = s * E_true at the peak); '
                            'correct the photon momentum by 1/s. status: 0 fit ok, 1 fit not valid, '
-                           '2 too few candidates (scale of the reference fit filled in).'}
+                           '2 too few candidates; for status != 0 the scale of the last good bin below along '
+                           'info.fill_from (info.filled), else of the reference fit.'}
         with open(path, 'w') as f:
             json.dump(d, f, indent=1)
 
