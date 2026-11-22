@@ -116,11 +116,11 @@ python3 scripts/conv_scale_mc.py config/conv_scale_mc.yaml   # MC map from E_rec
   - The map starts at `pt_est` = 1 GeV: below that, the threshold cuts into the fit range.
 - **Shape parameters:**
   - The tail α comes from one reference fit per |η| slice (`shape_from`); it is 0.9–1.0 in the barrel and smaller forward.
-  - N(χ_c2)/N(χ_c1) comes from the barrel (`r21_from`) per pt_est bin (`r21_per`) and is fixed in the bins of the same pt_est. In the endcaps the two peaks merge and a free ratio is degenerate with s; the ratio falls with pt (0.49 → 0.31 in 2022 data), so a pt-inclusive value biases the endcap scale.
+  - N(χ_c2)/N(χ_c1) comes from the barrel (`r21_from`) per pt_est bin (`r21_per`, which can have its own coarser binning) and is fixed in the bins of the same pt_est. In the endcaps the two peaks merge and a free ratio is degenerate with s; the ratio falls with pt (0.49 → 0.26 in 2022 data), so a pt-inclusive value biases the endcap scale.
 - **Systematics:** the model variations in the config (background order, χ_c0, fit range, n, ±20% on the ratio). Per bin, the largest deviation is the systematic error.
 - **Output:**
-  - `conv_scale.json`: the `ScaleMap`, with variables, edges, `scale`, `error` (stat), `syst` and `status` (0 ok, 1 fit not valid, 2 too few candidates; bins with status ≠ 0 hold the scale of their |η| slice).
+  - `conv_scale.json`: the `ScaleMap`, with variables, edges, `scale`, `error` (stat), `syst` and `status` (0 ok, 1 fit not valid, 2 too few candidates). Bins with status ≠ 0 take the last good pt bin below them in the same |η| slice (`fill_from: pt`, listed in `info.filled`), with the step between the last two good bins added to the systematic error.
   - Fit plots per bin, the summary plot, a CSV of all fits.
   - The closure: the map applied to every candidate, then refits in the finer cross-check bins (pt, reconstructed pt, |η|, conversion radius).
 - **Applying the map:** the correction uses the value of the candidate's bin (`interpolate: false`). For `mmcg`, `corrected_mass(m, m_μμ, s)` gives √(m_μμ² + (m² − m_μμ²)/s). It is exact for the unfitted mass and approximate for the fitted one; the ntuplizer will apply 1/s to the photon before the fit.
-- **Range:** the χ_c photons cover about 1–5 GeV, the signal photons 3–40 GeV. Above the last edge the lookup returns the last bin. The MC (`conv_scale_mc.py`) gives the pt dependence beyond the data range.
+- **Range:** the signal photons cover 3–40 GeV. With 2022 data (35 fb⁻¹) the χ_c sample measures the barrel up to 13 GeV and the endcaps up to 6.5–9 GeV; above, the map holds the last measured bin. More data (Run 3) extends the reach. The MC (`conv_scale_mc.py`) gives the pt dependence beyond the data range.

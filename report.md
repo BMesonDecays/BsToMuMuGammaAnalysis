@@ -33,6 +33,56 @@ Entries are newest first.
 
 ---
 
+## 2026-11-22: Converted-photon scale: pt binning up to 13 GeV; empty bins filled from the last measured pt bin; coarser N2/N1 binning (full 2022 data)
+
+**Why.** The map had one pt_est bin from 3 GeV. AN-2023/035 (π⁰ → γγ, O(10⁶) π⁰ from all 2018 datasets) bins photon pt up to 17.2 GeV. A fine binning on the 2022 χ_c sample shows that s keeps falling above 3 GeV:
+- barrel |η| < 0.8: 0.9836 at 3–3.5 GeV → 0.978 at 9–13 GeV;
+- |η| 1.5–1.8: 0.944 → 0.924 at 5–6.5 GeV.
+
+The open bin, dominated by 3–4 GeV photons, overestimated s for the harder photons: by about 0.5% in the barrel and up to 2% in the endcaps at about 10 GeV.
+
+**Changes:**
+- **`fill_along`** (bmmg_ana/convscale.py, 5b2ed07, with test): a bin without a good fit takes the scale and stat error of the last good bin below it along one variable. The step between the last two good bins is added to its systematic error.
+  - Before, such bins held the |η| slice average, which at high pt is too high: the forward 8–100 GeV bins got 0.955 / 0.943 / 0.939 in the first fine-binning test, above the measured 6–8 GeV values.
+  - Config `fill_from: pt` (c333b0c); the filled bins are listed in `info.filled` of the map.
+- **`r21_per` with its own binning** (67313b5). N2/N1 per map pt bin is noisy at high pt: 0.09 ± 0.06 at 13–17 GeV, 0.32 ± 0.04 at 10–13 GeV. The ratio now has bins up to 6.5 GeV and one value above; the map bins take the value at their centre.
+- **Config** (e33de0e):
+  - pt_est edges [1, 1.5, 2, 2.5, 3, 3.5, 4, 5, 6.5, 9, 13, 100];
+  - N2/N1 edges [1, 1.5, …, 5, 6.5, 100];
+  - `min_candidates` 2000 (was 3000; fits with about 2500 candidates in the fit range are stable, stat 0.7–1.1%).
+
+**N2/N1 in the barrel per pt_est bin:** 0.485, 0.445, 0.400, 0.360, 0.334, 0.319, 0.294, 0.276 (5–6.5 GeV), 0.257 ± 0.013 (> 6.5 GeV).
+
+**Map** (s ± stat ⊕ syst; "filled": no good fit, taken from the last measured pt bin):
+
+| pt_est [GeV] | \|η\| 0–0.8 | 0.8–1.5 | 1.5–1.8 | 1.8–2.0 | 2.0–2.5 |
+|---|---|---|---|---|---|
+| 1–1.5 | 0.9899 ± 0.0009 | 0.9849 ± 0.0009 | 0.967 ± 0.003 | 0.952 ± 0.006 | 0.948 ± 0.006 |
+| 1.5–2 | 0.9875 ± 0.0009 | 0.9820 ± 0.0008 | 0.962 ± 0.004 | 0.951 ± 0.008 | 0.945 ± 0.008 |
+| 2–2.5 | 0.9857 ± 0.0009 | 0.9796 ± 0.0008 | 0.959 ± 0.003 | 0.941 ± 0.004 | 0.938 ± 0.006 |
+| 2.5–3 | 0.9840 ± 0.0010 | 0.9771 ± 0.0009 | 0.949 ± 0.003 | 0.934 ± 0.003 | 0.933 ± 0.009 |
+| 3–3.5 | 0.9836 ± 0.0010 | 0.9752 ± 0.0010 | 0.944 ± 0.003 | 0.927 ± 0.005 | 0.929 ± 0.004 |
+| 3.5–4 | 0.9825 ± 0.0010 | 0.9745 ± 0.0010 | 0.941 ± 0.004 | 0.927 ± 0.010 | 0.920 ± 0.016 |
+| 4–5 | 0.9822 ± 0.0011 | 0.9735 ± 0.0010 | 0.934 ± 0.004 | 0.921 ± 0.008 | 0.916 ± 0.011 |
+| 5–6.5 | 0.9808 ± 0.0011 | 0.9705 ± 0.0014 | 0.924 ± 0.007 | 0.922 ± 0.010 | 0.913 ± 0.027 |
+| 6.5–9 | 0.9790 ± 0.0014 | 0.9689 ± 0.0019 | 0.924 ± 0.012 (filled) | 0.922 ± 0.010 (filled) | 0.893 ± 0.014 |
+| 9–13 | 0.9779 ± 0.0020 | 0.969 ± 0.003 | 0.924 ± 0.012 (filled) | 0.922 ± 0.010 (filled) | 0.893 ± 0.025 (filled) |
+| > 13 | 0.978 ± 0.002 (filled) | 0.969 ± 0.004 (filled) | 0.924 ± 0.012 (filled) | 0.922 ± 0.010 (filled) | 0.893 ± 0.025 (filled) |
+
+- **Closure:** unchanged; inclusive 0.9991, pt_est bins 0.997–1.000, |η| bins 0.994–1.002.
+- **Reach of 2022 (35 fb⁻¹):**
+  - barrel to 13 GeV (9–13 GeV: about 700 / 350 signal, stat 0.2% / 0.5%);
+  - endcaps to 6.5 GeV (2.0–2.5 to 9 GeV).
+  - Above, the filled values assume no further pt dependence. The added extrapolation step is a crude estimate: in |η| 1.8–2.0 the last two measured bins happen to agree (step 0.0007).
+- **Projection for Run 3 (about 350 fb⁻¹, ×10).** The candidate counts in the fit range give:
+  - forward 6.5–9 GeV: about 25k; 9–13 GeV: about 10k; > 13 GeV: about 3.5k;
+  - barrel 13–17 GeV: about 8k / 3.6k; > 17 GeV: about 3k / 1.2k.
+  - So the endcaps would be measured up to about 13 GeV and the barrel to about 17–20 GeV, with a finer high-pt binning. The code takes several datasets (`datasets: [...]` in both configs).
+  - Before merging years, the scale should be compared per year or era. The conversion energy comes from the tracker, but material and alignment conditions can differ.
+- The first fine-binning run crashed with a segmentation fault during plotting, after the map was printed. An identical rerun was fine (an intermittent fault in the LCG_107 environment; not reproduced).
+
+---
+
 ## 2026-11-22: Converted-photon scale: tighter forward selection reduces the endcap systematic from 1.4–4% to 0.3–0.9% (full 2022 data)
 
 Follows the previous entry (open item: the endcap systematic, dominated by `range_wide`).
