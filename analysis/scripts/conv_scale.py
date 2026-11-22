@@ -339,6 +339,15 @@ def main():
             print('variation %-14s inclusive s = %.4f (%+.4f); per-bin max |ds| = %.4f'
                   % (name, vinc['s'], vinc['s'] - inc['s'], np.max(np.abs(vscale - scale)[ok]) if ok.any() else 0))
 
+    # bins without a good fit: the last good bin below along fill_from (e.g. pt: s has a trend), with the step
+    # between the last two good bins added to the systematic error
+    fills = []
+    if cfg.get('fill_from'):
+        fax = [b['name'] for b in cfg['binning']].index(cfg['fill_from'])
+        scale, error, syst, fills = cs.fill_along(scale, error, syst, status, fax)
+        for f in fills:
+            print('filled bin %s from %s (extrapolation %.4f)' % (f['bin'], f['from'], f['extrapolation']))
+
     variables = [{'name': b['name'], 'expr': b['expr'], 'edges': [float(e) for e in b['edges']]} for b in cfg['binning']]
     smap = cs.ScaleMap(variables, scale, error, status, syst=syst, inclusive={'s': inc['s'], 's_err': inc['s_err']},
                        info={'selection': cfg.get('selection'), 'model': model, 'datasets': cfg['datasets'],
@@ -346,7 +355,8 @@ def main():
                              'fixed_values': {k: inc['values'][k] for k in cfg.get('fix_in_bins', [])},
                              'r21_fixed': bmodel['fixed'].get('r21'), 'r21_from': cfg.get('r21_from'),
                              'r21_bins': (dict(bmodel['r21_bins'], values=bmodel['r21_bins']['values'].tolist())
-                                          if bmodel.get('r21_bins') else None)})
+                                          if bmodel.get('r21_bins') else None),
+                             'fill_from': cfg.get('fill_from'), 'filled': fills})
     smap.to_json(os.path.join(out, 'conv_scale.json'))
 
     # 4. cross-checks
