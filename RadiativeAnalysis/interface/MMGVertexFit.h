@@ -135,13 +135,17 @@ class MMGVertexFit
         static double pointingAngle(const GlobalVector& p, const GlobalVector& d);
 
         // fit one mu mu gamma candidate; pv is the primary vertex used in the pointing constraint.
+        // expansionPoint: start of the photon initial state (see photonParticle), pv if not given; it should be
+        // the photon production vertex assumed for the photon momentum, so that the initial photon line passes
+        // through the cluster.
         // Returns nothing if the photon has no cluster hits or if the fit fails or diverges.
         std::optional<Result> fitCandidate(const RefCountedKinematicParticle& mu1,
             const RefCountedKinematicParticle& mu2,
             const reco::Photon& photon,
             const EcalClusterLazyTools& lazyTools,
             const TransientTrackBuilder* TTBuilder,
-            const GlobalPoint& pv) const;
+            const GlobalPoint& pv,
+            const std::optional<GlobalPoint>& expansionPoint = std::nullopt) const;
 
         // the same with any number of photons (e.g. mu mu gamma gamma); daughters: mu1, mu2, photons...
         std::optional<Result> fitCandidate(const RefCountedKinematicParticle& mu1,
@@ -149,7 +153,8 @@ class MMGVertexFit
             const std::vector<const reco::Photon*>& photons,
             const EcalClusterLazyTools& lazyTools,
             const TransientTrackBuilder* TTBuilder,
-            const GlobalPoint& pv) const;
+            const GlobalPoint& pv,
+            const std::optional<GlobalPoint>& expansionPoint = std::nullopt) const;
 
         // one Result per mu mu gamma combination that was fitted successfully, all with the
         // pointing constraint to primaryVertices[0]; the Result indices refer to muons and photons.

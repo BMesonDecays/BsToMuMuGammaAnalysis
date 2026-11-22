@@ -231,9 +231,11 @@ std::optional<MMGVertexFit::Result> MMGVertexFit::fitCandidate(const RefCountedK
     const reco::Photon& photon,
     const EcalClusterLazyTools& lazyTools,
     const TransientTrackBuilder* TTBuilder,
-    const GlobalPoint& pv) const
+    const GlobalPoint& pv,
+    const std::optional<GlobalPoint>& expansionPoint) const
     {
-        return fitCandidate(mu1, mu2, std::vector<const reco::Photon*>{&photon}, lazyTools, TTBuilder, pv);
+        return fitCandidate(mu1, mu2, std::vector<const reco::Photon*>{&photon}, lazyTools, TTBuilder, pv,
+                            expansionPoint);
     }
 
 std::optional<MMGVertexFit::Result> MMGVertexFit::fitCandidate(const RefCountedKinematicParticle& mu1,
@@ -241,13 +243,14 @@ std::optional<MMGVertexFit::Result> MMGVertexFit::fitCandidate(const RefCountedK
     const std::vector<const reco::Photon*>& photons,
     const EcalClusterLazyTools& lazyTools,
     const TransientTrackBuilder* TTBuilder,
-    const GlobalPoint& pv) const
+    const GlobalPoint& pv,
+    const std::optional<GlobalPoint>& expansionPoint) const
     {
         std::vector<RefCountedKinematicParticle> particles{mu1, mu2};
         std::vector<PhotonParticle> photonParticles;
         for (const reco::Photon* pho : photons)
         {
-            auto pp = photonParticle(*pho, lazyTools, TTBuilder, pv);
+            auto pp = photonParticle(*pho, lazyTools, TTBuilder, expansionPoint.value_or(pv));
             if (!pp) return std::nullopt;
             particles.push_back(pp->particle);
             photonParticles.push_back(std::move(*pp));
@@ -263,6 +266,8 @@ std::optional<MMGVertexFit::Result> MMGVertexFit::fitCandidate(const RefCountedK
         return result;
     }
 
+// Not used in RadiativeAnalysis analyzer; used by MMGVertexFitExample
+// The initial photon expansion point remains the primary vertex (as it was before in "fitCandidate")
 std::vector<MMGVertexFit::Result> MMGVertexFit::fit(const std::vector<const reco::Muon*>& muons,
     const std::vector<const reco::Photon*>& photons,
     const EcalClusterLazyTools& lazyTools,

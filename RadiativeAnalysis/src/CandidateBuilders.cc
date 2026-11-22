@@ -159,16 +159,22 @@ namespace bmmg {
       const DimuonCandidate& dimu = dimuons[id];
       if (!dimu.vtxValid) continue;
       for (size_t ip = 0; ip < photons.size(); ++ip) {
-        const reco::Photon& pho = *photons[ip].photon;
+        // photon produced at the dimuon vertex: reco::Photon::setVertex sets the direction to
+        // caloPosition - dimu.vtx and keeps the energy. clone() keeps the full type (pat::Photon with
+        // its embedded supercluster, needed by the fit); a reco::Photon copy would slice it.
+        std::unique_ptr<reco::Photon> pho(photons[ip].photon->clone());
+        pho->setVertex(reco::Photon::Point(dimu.vtx.x(), dimu.vtx.y(), dimu.vtx.z()));
+        
         BCandidate c = startCandidate(id, dimu);
         c.legs = {static_cast<int>(ip)};
-        c.xP4 = pho.p4();
+        c.xP4 = pho->p4();
         c.prefitP4 = dimu.p4 + c.xP4;
         if (!finisher.inWindow(c) || !finisher.choosePV(c, dimu)) continue;
         if (muonParticles(muons, dimu))
-          c.fit = fitter.fitCandidate(*muons[dimu.mu1].kinParticle, *muons[dimu.mu2].kinParticle, pho, lazyTools,
-                                      &ttBuilder, finisher.pvPoint(c));
-        finisher.observables(c, {}, {{pho.p4(), &photons[ip].footprint}});
+          // pointing constraint to the chosen PV; photon initial state at the dimuon vertex, consistent with pho
+          c.fit = fitter.fitCandidate(*muons[dimu.mu1].kinParticle, *muons[dimu.mu2].kinParticle, *pho, lazyTools,
+                                      &ttBuilder, finisher.pvPoint(c), dimu.vtx);
+        finisher.observables(c, {}, {{pho->p4(), &photons[ip].footprint}});
         candidates.push_back(std::move(c));
       }
     }
@@ -223,20 +229,25 @@ namespace bmmg {
     for (size_t id = 0; id < dimuons.size(); ++id) {
       const DimuonCandidate& dimu = dimuons[id];
       if (!dimu.vtxValid) continue;
+      const reco::Photon::Point dimuVtx(dimu.vtx.x(), dimu.vtx.y(), dimu.vtx.z());
       for (size_t i1 = 0; i1 < photons.size(); ++i1) {
+        // photons produced at the dimuon vertex, as in buildMuMuGamma (clone() keeps the pat::Photon type)
+        std::unique_ptr<reco::Photon> p1(photons[i1].photon->clone());
+        p1->setVertex(dimuVtx);
         for (size_t i2 = i1 + 1; i2 < photons.size(); ++i2) {
-          const reco::Photon& p1 = *photons[i1].photon;
-          const reco::Photon& p2 = *photons[i2].photon;
+          std::unique_ptr<reco::Photon> p2(photons[i2].photon->clone());
+          p2->setVertex(dimuVtx);
           BCandidate c = startCandidate(id, dimu);
           c.legs = {static_cast<int>(i1), static_cast<int>(i2)};
-          c.xP4 = p1.p4() + p2.p4();
+          c.xP4 = p1->p4() + p2->p4();
           if (c.xP4.mass() < diphoton.minMass || c.xP4.mass() > diphoton.maxMass) continue;
           c.prefitP4 = dimu.p4 + c.xP4;
           if (!finisher.inWindow(c) || !finisher.choosePV(c, dimu)) continue;
+          // pointing constraint to the chosen PV; photon initial states at the dimuon vertex, consistent with p1, p2
           if (muonParticles(muons, dimu))
-            c.fit = fitter.fitCandidate(*muons[dimu.mu1].kinParticle, *muons[dimu.mu2].kinParticle, {&p1, &p2},
-                                        lazyTools, &ttBuilder, finisher.pvPoint(c));
-          finisher.observables(c, {}, {{p1.p4(), &photons[i1].footprint}, {p2.p4(), &photons[i2].footprint}});
+            c.fit = fitter.fitCandidate(*muons[dimu.mu1].kinParticle, *muons[dimu.mu2].kinParticle,
+                                        {p1.get(), p2.get()}, lazyTools, &ttBuilder, finisher.pvPoint(c), dimu.vtx);
+          finisher.observables(c, {}, {{p1->p4(), &photons[i1].footprint}, {p2->p4(), &photons[i2].footprint}});
           candidates.push_back(std::move(c));
         }
       }

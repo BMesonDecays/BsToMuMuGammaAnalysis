@@ -132,82 +132,83 @@ private:
 };
 
 RadiativeAnalysis::RadiativeAnalysis(const edm::ParameterSet& cfg)
-    : isMC_(cfg.getParameter<bool>("isMC")),
-      verbose_(cfg.getUntrackedParameter<bool>("verbose")),
-      isMiniAOD_(cfg.getParameter<std::string>("dataFormat") == "MINIAOD"),
-      muonsToken_(consumes(cfg.getParameter<edm::InputTag>("muons"))),
-      photonsToken_(consumes(cfg.getParameter<edm::InputTag>("photons"))),
-      photonMvaToken_(consumes(cfg.getParameter<edm::InputTag>("photonMVA"))),
-      photonTightIdToken_(consumes(cfg.getParameter<edm::InputTag>("photonTightId"))),
-      beamSpotToken_(consumes(cfg.getParameter<edm::InputTag>("beamSpot"))),
-      verticesToken_(consumes(cfg.getParameter<edm::InputTag>("primaryVertices"))),
-      ebRecHitsToken_(consumes(cfg.getParameter<edm::InputTag>("ebRecHits"))),
-      eeRecHitsToken_(consumes(cfg.getParameter<edm::InputTag>("eeRecHits"))),
-      triggerResultsToken_(consumes(cfg.getParameter<edm::InputTag>("triggerResults"))),
-      ttBuilderToken_(esConsumes(edm::ESInputTag("", "TransientTrackBuilder"))),
-      lazyToolsTokens_(consumesCollector()),
-      mmgVertexFit_({cfg.getParameter<double>("clusterCovScalePhiEB"), cfg.getParameter<double>("clusterCovScaleThetaEB"),
-                     cfg.getParameter<double>("energyErrorScaleEB")},
-                    {cfg.getParameter<double>("clusterCovScalePhiEE"), cfg.getParameter<double>("clusterCovScaleThetaEE"),
-                     cfg.getParameter<double>("energyErrorScaleEE")}),
-      triggerMatcher_(cfg.getParameter<std::vector<std::string>>("triggerPaths"),
-                      cfg.getParameter<std::string>("hltProcess"),
-                      cfg.getParameter<double>("triggerMatchDeltaR")),
-      muonMVA_(cfg),
-      doMuMuGamma_(cfg.getParameter<bool>("doMuMuGamma")),
-      doMuMuConvGamma_(cfg.getParameter<bool>("doMuMuConvGamma")),
-      doMuMuGammaGamma_(cfg.getParameter<bool>("doMuMuGammaGamma")),
-      doMuMuKK_(cfg.getParameter<bool>("doMuMuKK")),
-      onlyEventsWithCandidates_(cfg.getParameter<bool>("onlyEventsWithCandidates")),
-      minCandidateVtxProb_(cfg.getParameter<double>("minCandidateVtxProb")) {
-    if (doMuMuConvGamma_) {
-      if (isMiniAOD_)
-        oniaConversionsToken_ = consumes(cfg.getParameter<edm::InputTag>("conversions"));
-      else
-        conversionsToken_ = consumes(cfg.getParameter<edm::InputTag>("conversions"));
-    }
-    if (isMiniAOD_) {
-      triggerObjectsToken_ = consumes(cfg.getParameter<edm::InputTag>("triggerObjects"));
-      packedToken_ = consumes(cfg.getParameter<edm::InputTag>("packedCandidates"));
-      lostTracksToken_ = consumes(cfg.getParameter<edm::InputTag>("lostTracks"));
-    } else {
-      triggerEventToken_ = consumes(cfg.getParameter<edm::InputTag>("triggerEvent"));
-      pfCandidatesToken_ = consumes(cfg.getParameter<edm::InputTag>("pfCandidates"));
-      photonFootprintToken_ = consumes(cfg.getParameter<edm::InputTag>("photonPFFootprint"));
-      if (doMuMuKK_) tracksToken_ = consumes(cfg.getParameter<edm::InputTag>("tracks"));
-    }
-    if (isMC_) {
-      genParticlesToken_ = consumes(cfg.getParameter<edm::InputTag>("genParticles"));
-      if (isMiniAOD_) packedGenParticlesToken_ = consumes(cfg.getParameter<edm::InputTag>("packedGenParticles"));
-      pileupToken_ = consumes(cfg.getParameter<edm::InputTag>("pileup"));
-      genRunInfoToken_ = consumes<GenRunInfoProduct, edm::InRun>(cfg.getParameter<edm::InputTag>("genRunInfo"));
-      genFilterInfoToken_ = consumes<GenFilterInfo, edm::InLumi>(cfg.getParameter<edm::InputTag>("genFilterInfo"));
-    }
-    muonCuts_.minPt = cfg.getParameter<double>("muonMinPt");
-    muonCuts_.maxAbsEta = cfg.getParameter<double>("muonMaxAbsEta");
-    muonCuts_.minMVA = cfg.getParameter<double>("muonMinMVA");
-    photonCuts_.minSCEnergy = cfg.getParameter<double>("photonMinSCEnergy");
-    photonCuts_.maxAbsSCEta = cfg.getParameter<double>("photonMaxAbsSCEta");
-    photonCuts_.minMVA = cfg.getParameter<double>("photonMinMVA");
-    conversionCuts_.minPt = cfg.getParameter<double>("conversionMinPt");
-    conversionCuts_.minVertexProb = cfg.getParameter<double>("conversionMinVertexProb");
-    trackCuts_.minPt = cfg.getParameter<double>("kaonMinPt");
-    candidateConfig_.minPrefitMass = cfg.getParameter<double>("minPrefitMass");
-    candidateConfig_.maxPrefitMass = cfg.getParameter<double>("maxPrefitMass");
-    candidateConfig_.computeTrackCompatibility = cfg.getParameter<bool>("computeTrackCompatibility");
-    candidateConfig_.isolationCone = cfg.getParameter<double>("isolationCone");
-    candidateConfig_.isolationMinChargedPt = cfg.getParameter<double>("isolationMinChargedPt");
-    isolationMinNeutralPt_ = cfg.getParameter<double>("isolationMinNeutralPt");
-    diphotonConfig_.minMass = cfg.getParameter<double>("diphotonMinMass");
-    diphotonConfig_.maxMass = cfg.getParameter<double>("diphotonMaxMass");
-    kaonConfig_.minPt = trackCuts_.minPt;
-    kaonConfig_.minKKMass = cfg.getParameter<double>("kkMinMass");
-    kaonConfig_.maxKKMass = cfg.getParameter<double>("kkMaxMass");
-    kaonConfig_.jpsiOnly = cfg.getParameter<bool>("kkJpsiOnly");
-    kaonConfig_.minBMass = cfg.getParameter<double>("kkMinBMass");
-    kaonConfig_.maxBMass = cfg.getParameter<double>("kkMaxBMass");
-    usesResource(TFileService::kSharedResource);
+  : isMC_(cfg.getParameter<bool>("isMC")),
+    verbose_(cfg.getUntrackedParameter<bool>("verbose")),
+    isMiniAOD_(cfg.getParameter<std::string>("dataFormat") == "MINIAOD"),
+    muonsToken_(consumes(cfg.getParameter<edm::InputTag>("muons"))),
+    photonsToken_(consumes(cfg.getParameter<edm::InputTag>("photons"))),
+    photonMvaToken_(consumes(cfg.getParameter<edm::InputTag>("photonMVA"))),
+    photonTightIdToken_(consumes(cfg.getParameter<edm::InputTag>("photonTightId"))),
+    beamSpotToken_(consumes(cfg.getParameter<edm::InputTag>("beamSpot"))),
+    verticesToken_(consumes(cfg.getParameter<edm::InputTag>("primaryVertices"))),
+    ebRecHitsToken_(consumes(cfg.getParameter<edm::InputTag>("ebRecHits"))),
+    eeRecHitsToken_(consumes(cfg.getParameter<edm::InputTag>("eeRecHits"))),
+    triggerResultsToken_(consumes(cfg.getParameter<edm::InputTag>("triggerResults"))),
+    ttBuilderToken_(esConsumes(edm::ESInputTag("", "TransientTrackBuilder"))),
+    lazyToolsTokens_(consumesCollector()),
+    mmgVertexFit_({cfg.getParameter<double>("clusterCovScalePhiEB"), cfg.getParameter<double>("clusterCovScaleThetaEB"),
+                    cfg.getParameter<double>("energyErrorScaleEB")},
+                  {cfg.getParameter<double>("clusterCovScalePhiEE"), cfg.getParameter<double>("clusterCovScaleThetaEE"),
+                    cfg.getParameter<double>("energyErrorScaleEE")}),
+    triggerMatcher_(cfg.getParameter<std::vector<std::string>>("triggerPaths"),
+                    cfg.getParameter<std::string>("hltProcess"),
+                    cfg.getParameter<double>("triggerMatchDeltaR")),
+    muonMVA_(cfg),
+    doMuMuGamma_(cfg.getParameter<bool>("doMuMuGamma")),
+    doMuMuConvGamma_(cfg.getParameter<bool>("doMuMuConvGamma")),
+    doMuMuGammaGamma_(cfg.getParameter<bool>("doMuMuGammaGamma")),
+    doMuMuKK_(cfg.getParameter<bool>("doMuMuKK")),
+    onlyEventsWithCandidates_(cfg.getParameter<bool>("onlyEventsWithCandidates")),
+    minCandidateVtxProb_(cfg.getParameter<double>("minCandidateVtxProb"))
+{
+  if (doMuMuConvGamma_) {
+    if (isMiniAOD_)
+      oniaConversionsToken_ = consumes(cfg.getParameter<edm::InputTag>("conversions"));
+    else
+      conversionsToken_ = consumes(cfg.getParameter<edm::InputTag>("conversions"));
   }
+  if (isMiniAOD_) {
+    triggerObjectsToken_ = consumes(cfg.getParameter<edm::InputTag>("triggerObjects"));
+    packedToken_ = consumes(cfg.getParameter<edm::InputTag>("packedCandidates"));
+    lostTracksToken_ = consumes(cfg.getParameter<edm::InputTag>("lostTracks"));
+  } else {
+    triggerEventToken_ = consumes(cfg.getParameter<edm::InputTag>("triggerEvent"));
+    pfCandidatesToken_ = consumes(cfg.getParameter<edm::InputTag>("pfCandidates"));
+    photonFootprintToken_ = consumes(cfg.getParameter<edm::InputTag>("photonPFFootprint"));
+    if (doMuMuKK_) tracksToken_ = consumes(cfg.getParameter<edm::InputTag>("tracks"));
+  }
+  if (isMC_) {
+    genParticlesToken_ = consumes(cfg.getParameter<edm::InputTag>("genParticles"));
+    if (isMiniAOD_) packedGenParticlesToken_ = consumes(cfg.getParameter<edm::InputTag>("packedGenParticles"));
+    pileupToken_ = consumes(cfg.getParameter<edm::InputTag>("pileup"));
+    genRunInfoToken_ = consumes<GenRunInfoProduct, edm::InRun>(cfg.getParameter<edm::InputTag>("genRunInfo"));
+    genFilterInfoToken_ = consumes<GenFilterInfo, edm::InLumi>(cfg.getParameter<edm::InputTag>("genFilterInfo"));
+  }
+  muonCuts_.minPt = cfg.getParameter<double>("muonMinPt");
+  muonCuts_.maxAbsEta = cfg.getParameter<double>("muonMaxAbsEta");
+  muonCuts_.minMVA = cfg.getParameter<double>("muonMinMVA");
+  photonCuts_.minSCEnergy = cfg.getParameter<double>("photonMinSCEnergy");
+  photonCuts_.maxAbsSCEta = cfg.getParameter<double>("photonMaxAbsSCEta");
+  photonCuts_.minMVA = cfg.getParameter<double>("photonMinMVA");
+  conversionCuts_.minPt = cfg.getParameter<double>("conversionMinPt");
+  conversionCuts_.minVertexProb = cfg.getParameter<double>("conversionMinVertexProb");
+  trackCuts_.minPt = cfg.getParameter<double>("kaonMinPt");
+  candidateConfig_.minPrefitMass = cfg.getParameter<double>("minPrefitMass");
+  candidateConfig_.maxPrefitMass = cfg.getParameter<double>("maxPrefitMass");
+  candidateConfig_.computeTrackCompatibility = cfg.getParameter<bool>("computeTrackCompatibility");
+  candidateConfig_.isolationCone = cfg.getParameter<double>("isolationCone");
+  candidateConfig_.isolationMinChargedPt = cfg.getParameter<double>("isolationMinChargedPt");
+  isolationMinNeutralPt_ = cfg.getParameter<double>("isolationMinNeutralPt");
+  diphotonConfig_.minMass = cfg.getParameter<double>("diphotonMinMass");
+  diphotonConfig_.maxMass = cfg.getParameter<double>("diphotonMaxMass");
+  kaonConfig_.minPt = trackCuts_.minPt;
+  kaonConfig_.minKKMass = cfg.getParameter<double>("kkMinMass");
+  kaonConfig_.maxKKMass = cfg.getParameter<double>("kkMaxMass");
+  kaonConfig_.jpsiOnly = cfg.getParameter<bool>("kkJpsiOnly");
+  kaonConfig_.minBMass = cfg.getParameter<double>("kkMinBMass");
+  kaonConfig_.maxBMass = cfg.getParameter<double>("kkMaxBMass");
+  usesResource(TFileService::kSharedResource);
+}
 
 void RadiativeAnalysis::beginJob() {
   edm::Service<TFileService> fs;
