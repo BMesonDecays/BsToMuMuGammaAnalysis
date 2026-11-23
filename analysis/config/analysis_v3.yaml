@@ -27,3 +27,23 @@ derived:
   nMuInPV: "mu1InPV + mu2InPV"
   # activity of the candidate's PV without the candidate's tracks
   logPvSumPt: "log(pvSumPt + 1)"
+
+# features: scripts/feature_study.py set r2_abs_pf (config/features_v3.yaml, report.md 2026-11-23): the v1 features
+# with pho_mva replaced by the MVA without the muons, plus the daughter isolations without the B products, the PV
+# activity and the standard PF isolations. Out-of-fold signal efficiency at sideband efficiency 2e-4: 0.43 (v1
+# features on the same tables: 0.32); check_sculpting.py: no sign of sculpting.
+bdt:
+  features: [
+    # vertex, flight and pointing
+    vtxProb, cosAlpha3DVtxOnly, cosAlpha2D, logPointing, lxySig, l3dSig, ctSig, dimu_lxySig, dimu_cosAlphaBS, dimu_dca,
+    # isolation of the candidate, of the daughters without the B products, standard PF isolations, PV activity
+    isolation, maxTrackCompatibility, muIsoRel_max, muIsoRel_min, phoIsoRel, muIsoCh_max, muIsoNeu_max, phoIsoCh,
+    phoIsoNeu, mu1_pfRelIsoR03, mu2_pfRelIsoR03, pho_pfIsoCharged, pho_pfIsoPhoton, pho_trkIsoR03, pvNTracks,
+    logPvSumPt, pvVecSumPt,
+    # muons
+    mu1_pt, mu2_pt, mu1_mva, mu2_mva, mu_ipSig_min, mu_ipSig_max,
+    # photon
+    pho_pt, phoMvaNoMu, pho_r9, pho_sigmaIetaIeta, pho_sigmaIphiIphi, pho_hOverE, pho_scEtaWidth, pho_scPhiWidth,
+    pho_energyErr, pho_hasConversionTracks, pho_absEta,
+    # kinematics and angles of the decay
+    dR_mumu_pho, dR_mu_pho_min, pho_ptFrac, pt, dimu_pt, absEta, helicity, abs_cosThetaL]
