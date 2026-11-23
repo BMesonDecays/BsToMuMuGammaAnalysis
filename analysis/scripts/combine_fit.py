@@ -232,20 +232,20 @@ class Fitter:
         return math.sqrt(z2)
 
 
-DATACARD = """# B_s -> mu mu gamma (mmg), BDT score > {cut}: Run 3 projection ({lumi:.0f} pb^-1 recorded), blind
+DATACARD = """# B_s -> mu mu gamma ({ch}), BDT score > {cut}: Run 3 projection ({lumi:.0f} pb^-1 recorded), blind
 # signal: double-sided Crystal Ball from the signal MC (fixed); background: exponential, slope and yield float
 imax 1
 jmax 1
 kmax *
 ---------------
-shapes sig      mmg {ws} w:sig
-shapes bkg      mmg {ws} w:bkg
-shapes data_obs mmg {ws} w:data_obs
+shapes sig      {ch} {ws} w:sig
+shapes bkg      {ch} {ws} w:bkg
+shapes data_obs {ch} {ws} w:data_obs
 ---------------
-bin         mmg
+bin         {ch}
 observation -1
 ---------------
-bin         mmg     mmg
+bin         {ch}     {ch}
 process     sig     bkg
 process     0       1
 rate        {s:.6g}  1
@@ -321,7 +321,7 @@ def main():
         fitter.workspace(ws, m, sig, bkg, b_full)
         card = os.path.join(work, 'cards', 'card_%s.txt' % name)
         with open(card, 'w') as f:
-            f.write(DATACARD.format(cut=cut, lumi=cc['lumi']['target_recorded_pb'], ws=os.path.relpath(ws, os.path.dirname(card)),
+            f.write(DATACARD.format(ch=cfg['channel'], cut=cut, lumi=cc['lumi']['target_recorded_pb'], ws=os.path.relpath(ws, os.path.dirname(card)),
                                     s=s_full))
         z_known = fitter.asimov_z_known_bkg(m, sig, bkg, s_full, b_full)
         row = {'cut': cut, 'status': 'ok', 'S': s_full, 'S_window': s_win, 'B': b_full, 'B_window': b_win,
