@@ -33,6 +33,30 @@ Entries are newest first.
 
 ---
 
+## 2026-11-23: Preselection variants with retrained BDTs on v3; mmg significance with the new preselection
+- **Variants** (`presel_variants.py config/combine_v3_mmg.yaml ... --retrain ... --device cuda`; every retrained variant has its own 5-fold BDT, about 40 s on the GPU; Z with known exponential background, at least 10 sideband candidates):
+
+  | variant | S presel | Z@0.99 (S, n_sb) | Z@0.995 (S, n_sb) | Z@0.998 (S, n_sb) |
+  |---|---|---|---|---|
+  | baseline (own BDT) | 65.2 | 1.63 (41.4, 251) | 2.11 (34.0, 100) | 2.80 (23.3, 27) |
+  | vtxProb > 1e-3 | 71.3 | 1.67 (45.1, 270) | 2.30 (37.1, 107) | 2.70 (25.8, 36) |
+  | J/ψ 2.90–3.20, ψ(2S) 3.55–3.75 | 69.4 | 1.74 (43.4, 250) | 2.27 (35.5, 99) | 3.14 (24.2, 25) |
+  | J/ψ 2.90–3.20, ψ(2S) 3.55–3.75, vtxProb > 1e-3 | 75.9 | 1.76 (47.7, 284) | 2.33 (39.2, 122) | 3.84 (27.0, 30) |
+  | J/ψ 3.02–3.17 | 73.3 | 1.65 (43.9, 243) | 2.24 (35.8, 93) | 3.08 (24.4, 25) |
+
+  With its own BDT a variant gains 4–10% in S/√B at the same threshold; the symmetric narrow J/ψ window no longer hurts (the BDT learns the J/ψ-tail background that the v1 BDT never saw, 2026-11-22). Adopted in `analysis_v3.yaml` (mmg only): J/ψ 2.90–3.20, ψ(2S) 3.55–3.75, vtxProb > 1e-3. `analysis_v3_mmcg.yaml` keeps the analysis.yaml cuts.
+- **mmg with the new preselection** (`combine_hists.py --retrain`, AUC 0.9938; `combine_fit.py`):
+
+  | BDT > | S | S window | sideband cand. (high) | B window exp | slope | Z Combine | exp. limit on B | B window flat | Z known B, flat |
+  |---|---|---|---|---|---|---|---|---|---|
+  | 0.99 | 52.3 | 47.8 | 284 (35) | 719 | −1.56 ± 0.12 | 1.99 | 5.0×10⁻⁹ | 907 | 1.57 |
+  | 0.995 | 42.5 | 39.4 | 122 (7) | 270 | −1.86 ± 0.21 | **2.62** | 3.7×10⁻⁹ | 390 | 1.96 |
+  | 0.998 | 28.8 | 27.1 | 30 (0) | 41 | −2.72 ± 0.64 | 4.02 | 2.3×10⁻⁹ | 96 | 2.65 |
+  | 0.999 | 19.4 | 18.4 | 12 (0) | 17 | −2.67 ± 0.98 | 3.98 | 2.2×10⁻⁹ | 38 | 2.78 |
+  | 0.9995 | 11.7 | 11.2 | 3 (0) | 6 | −1.94 ± 1.36 | 3.70 | 2.5×10⁻⁹ | 10 | 3.13 |
+
+  Compared with the previous entry (old preselection): 1.85 → 1.99 at 0.99 and 2.40 → 2.62 at 0.995, where both sidebands are populated. At 0.998 and above the high sideband is empty, the exponential becomes steep and its Z (4.0) is driven by the background model; the flat estimate gives 2.65–3.1. Until the low-mass background component is modelled, the robust statement is ~2.6σ at 0.995 and 2.7–4.0σ at the tightest cuts, depending on the background shape.
+
 ## 2026-11-23: BDT tuning, expected Run 3 significance on v3 (mmg), and a first BDT for the converted-photon channel (mmcg)
 - **mmg tuning** (`tune_bdt.py config/analysis_v3.yaml --trials 40 --device cuda`, 52 features): the current parameters (trial 0) are among the best (eff@2e-4 0.430, eff@5e-5 0.282, AUC 0.9939); the highest eff@2e-4 (trial 31, 0.437) is lower at 5e-5 (0.254). Parameters unchanged.
 - **mmcg BDT** (`config/analysis_v3_mmcg.yaml`):
