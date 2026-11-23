@@ -67,11 +67,19 @@ def train(cfg, sig, bkg, outdir, jobs):
 
 
 def histogram(values, weights, lo, hi, nbins):
-    import hist
-    h = hist.Hist(hist.axis.Regular(nbins, lo, hi, name='mass', label='m(#mu#mu#gamma) [GeV]'),
-                  storage=hist.storage.Weight())
-    h.fill(mass=np.asarray(values, dtype=float), weight=np.asarray(weights, dtype=float))
-    return h
+    """TH1D (uproot writable) with sum of weights squared, from numpy (no hist: its axis edges are wrong with
+    boost-histogram 1.3.2 in LCG_108)."""
+    from uproot.writing.identify import to_TAxis, to_TH1x
+    x = np.asarray(values, dtype=float)
+    w = np.asarray(weights, dtype=float)
+    edges = np.linspace(lo, hi, nbins + 1)
+    idx = np.digitize(x, edges)          # 0: underflow, nbins + 1: overflow
+    sumw = np.bincount(idx, weights=w, minlength=nbins + 2)[:nbins + 2]
+    sumw2 = np.bincount(idx, weights=w * w, minlength=nbins + 2)[:nbins + 2]
+    inr = (idx >= 1) & (idx <= nbins)
+    axis = to_TAxis('xaxis', 'm(#mu#mu#gamma) [GeV]', nbins, lo, hi)
+    return to_TH1x('mass', '', sumw, float(len(x)), float(w[inr].sum()), float((w[inr] ** 2).sum()),
+                   float((w[inr] * x[inr]).sum()), float((w[inr] * x[inr] ** 2).sum()), sumw2, axis)
 
 
 def main():
