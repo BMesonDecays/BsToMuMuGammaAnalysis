@@ -35,7 +35,7 @@ Entries are newest first.
 
 ## 2026-11-23: mmcg in AOD vs MINIAOD on the same new-MC events; pileup explains the legacy excess
 
-Follow-up of the next entry (legacy mmcg 3.9× the new MC above 4 GeV). The 4 MINIAOD files of the new B_s → μμγ MC
+Follow-up of the entry below (legacy mmcg 3.9× the new MC above 4 GeV). The 4 MINIAOD files of the new B_s → μμγ MC
 (`Study/test/files_new_miniaod.txt`) and their 4 AOD parents (`files_new_aod.txt`) were ntuplized with
 `runNtuplizer_cfg.py` (`dataFormat=AOD` / `MINIAOD`, `globalTag=130X_mcRun3_2022_realistic_v5`, `channels=mmg,mmcg`,
 `skim=0`; read through `xrootd-cms.infn.it`: `cms-xrd-global` timed out). Comparison on the 4334 events present in
