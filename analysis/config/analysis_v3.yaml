@@ -1,0 +1,29 @@
+# mmg analysis on the v3 tables (convert_v3.yaml). Everything not set here comes from analysis.yaml.
+base: analysis.yaml
+
+parquet: /eos/user/s/sslawins/bmmg/parquet_v3
+output: /eos/user/s/sslawins/bmmg/results/v3_mmg
+
+# The v3 data tables of 2026-11-23 hold 96.69% of the processed events of the complete v1 conversion
+# (ParkingDoubleMuonLowMass0 not finished: 407 of ~476 files): good luminosity 34650 x 0.9669.
+# Update after converting the remaining files (meta.json nEvents / 2770401797).
+lumi_pb: 33503
+
+# extra columns from the v3 variables (merged with the derived columns of analysis.yaml)
+derived:
+  # isolation of the daughters with the B products removed (charged: tracks of the candidate's PV; neutral: PF
+  # photons and neutral hadrons), absolute and relative to the daughter pt
+  mu1Iso: "mu1IsoCh + mu1IsoNeu"
+  mu2Iso: "mu2IsoCh + mu2IsoNeu"
+  mu1IsoRel: "mu1Iso / mu1_pt"
+  mu2IsoRel: "mu2Iso / mu2_pt"
+  muIsoRel_max: "(mu1IsoRel + mu2IsoRel + abs(mu1IsoRel - mu2IsoRel)) / 2"
+  muIsoRel_min: "(mu1IsoRel + mu2IsoRel - abs(mu1IsoRel - mu2IsoRel)) / 2"
+  muIsoCh_max: "(mu1IsoCh + mu2IsoCh + abs(mu1IsoCh - mu2IsoCh)) / 2"
+  muIsoNeu_max: "(mu1IsoNeu + mu2IsoNeu + abs(mu1IsoNeu - mu2IsoNeu)) / 2"
+  phoIso: "phoIsoCh + phoIsoNeu"
+  phoIsoRel: "phoIso / pho_pt"
+  # muons used in the fit of the candidate's PV: 0, 1 or 2 (signal muons come from a displaced B)
+  nMuInPV: "mu1InPV + mu2InPV"
+  # activity of the candidate's PV without the candidate's tracks
+  logPvSumPt: "log(pvSumPt + 1)"
