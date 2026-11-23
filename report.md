@@ -33,6 +33,44 @@ Entries are newest first.
 
 ---
 
+## 2026-11-23: BDT tuning, expected Run 3 significance on v3 (mmg), and a first BDT for the converted-photon channel (mmcg)
+- **mmg tuning** (`tune_bdt.py config/analysis_v3.yaml --trials 40 --device cuda`, 52 features): the current parameters (trial 0) are among the best (eff@2e-4 0.430, eff@5e-5 0.282, AUC 0.9939); the highest eff@2e-4 (trial 31, 0.437) is lower at 5e-5 (0.254). Parameters unchanged.
+- **mmcg BDT** (`config/analysis_v3_mmcg.yaml`):
+  - preselection of analysis.yaml + `convFitPt > 3`. The background conversions are soft (median 0.9 GeV vs 6.7 GeV for the signal); the cut keeps 99.9% of the signal MC (generator cut: photon pt > 4 GeV) and 3.5% of the sidebands. Sample: 8752 signal MC candidates (10.8 expected in Run 3, 9.0 in the window), 136,089 sideband candidates. After the preselection the mmcg background rises slowly with the mass.
+  - features (`features_v3_mmcg.yaml`, 3 seeds): the v1-like set with the conversion (`convFitPt`, `conv_absEta`, `conv_logRho`, `conv_trkAsym`, `conv_logFitProb`, `dR_mumu_conv`, `dR_mu_conv_min`, `conv_ptFrac`): eff@2e-4 0.22; + daughter isolations 0.30 (chosen); + PV activity 0.27; + muon PF isolations 0.28; + muon-PV flags 0.24; all 0.31 (but lower at 5e-5).
+  - tuning (30 trials) then 4 seeds: trial 17 (depth 4, colsample 0.49, λ = 51) eff@5e-5 0.185 vs 0.169 with the mmg parameters, same at 2e-4 and 1e-3, smaller train/test differences: adopted.
+  - signal and data events overlap with mmg: of 21,460 signal events with a gen-matched mmcg candidate, 3127 also have one in mmg (before selection).
+- **Expected significance** (`combine_hists.py` in LCG_108_cuda, `combine_fit.py` in the Combine area; `combine_v3_mmg.yaml`, `combine_v3_mmcg.yaml`; 326 fb⁻¹, B = 5×10⁻⁹, data × 326/36.74 for the converted fraction). `combine_hists.py` now writes the TH1D without `hist` (also for empty selections); the datacard bin is the channel name.
+
+  mmg (out-of-fold AUC 0.9939):
+
+  | BDT > | S | S window | sideband cand. | B window (exp) | Z Combine | exp. limit on B | B window (flat) | Z known B, flat |
+  |---|---|---|---|---|---|---|---|---|
+  | 0.99 | 45.2 | 41.5 | 251 | 629 | 1.85 | 5.4×10⁻⁹ | 802 | 1.45 |
+  | 0.995 | 36.6 | 34.1 | 100 | 248 | 2.40 | 4.1×10⁻⁹ | 319 | 1.87 |
+  | 0.998 | 24.8 | 23.3 | 27 | 62 | **3.13** | 3.1×10⁻⁹ | 86 | 2.41 |
+  | 0.999 | 16.4 | 15.7 | 9 | 16 | 3.65 | 2.5×10⁻⁹ | 29 | 2.70 |
+  | 0.9995 | 9.7 | 9.4 | 3 | 6 | 3.33 | 2.8×10⁻⁹ | 10 | 2.66 |
+
+  v1 at 0.998 (2026-11-22): S 16.0 in the window, 28 sideband candidates, Z 2.44. With the v3 features the signal at the same background is ~45% larger.
+
+  mmcg:
+
+  | BDT > | S window | sideband cand. | B window (exp) | Z Combine | B window (flat) | Z known B, flat |
+  |---|---|---|---|---|---|---|
+  | 0.99 | 5.4 | 132 | 278 | 0.38 | 422 | 0.26 |
+  | 0.995 | 4.1 | 58 | 91 | 0.51 | 185 | 0.30 |
+  | 0.998 | 2.0 | 5 | 2.1 | (1.34) | 16 | 0.49 |
+
+  At 0.998 the mmcg background rests on 5 candidates with slope −4.6 ± 3.0: not usable. A rough combination of the two channels in quadrature (overlap ignored): mmg 3.13 and mmcg 0.51 → 3.17.
+- **Caveat, background shape:** at tight cuts the high sideband is (almost) empty and the low-sideband candidates cluster below 5 GeV (fits/bkg_cut_0p998.png, bkg_cut_0p999.png): likely partially reconstructed b-hadron decays, not a smooth exponential. The exponential extrapolation then predicts much less background in the window than the average sideband density (flat column): at 0.998 62 vs 86 events, Z 3.1 vs ~2.4 (known-B Z 3.55 vs 2.41). Until the shape of the low-mass component is understood (e.g. from inclusive b → μμ X MC or a threshold function in the fit), the mmg expectation at 0.998 is between ~2.2 and 3.1σ. The best cut (0.999) rests on 9 sideband candidates.
+- **Open:**
+  - the remaining ParkingDoubleMuonLowMass0 files (re-run `convert.py config/convert_v3.yaml`, update the luminosity factor 0.9669);
+  - the background model of the low-mass component;
+  - a combined mmg + mmcg datacard with the event overlap resolved;
+  - the preselection variants (J/ψ / ψ(2S) windows, vertex cut) retrained on v3 (`presel_variants.py --retrain ... --device cuda`);
+  - mmcg below 4 GeV conversion pt is not covered by the signal MC (generator cut); the zero-bias legacy MC could tell how much signal is there.
+
 ## 2026-11-23: v3 tables and the new variables in the mmg BDT
 - **Conversion** (`python3 convert.py config/convert_v3.yaml`, LCG_107/108, lz4 compression since these pyarrow builds lack zstd):
   - output `/eos/user/s/sslawins/bmmg/parquet_v3`, channels mmg, mmcg, mmgg, same cut as v1 (`fitOK == 1 and vtxProb > 1e-3`);
