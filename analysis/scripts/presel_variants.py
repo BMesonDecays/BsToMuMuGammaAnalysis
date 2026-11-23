@@ -84,6 +84,7 @@ def main():
     ap.add_argument('--retrain', nargs='*', default=[], help='variants scored with their own BDT')
     ap.add_argument('--min-sb', type=int, default=10, help='minimum raw sideband candidates for a Z value')
     ap.add_argument('--jobs', type=int, default=-1)
+    ap.add_argument('--device', default='cpu', help='XGBoost device of the --retrain trainings (cpu, cuda)')
     args = ap.parse_args()
     cfg = config.load_combine_config(args.config)
     cc = cfg['combine']
@@ -131,7 +132,7 @@ def main():
                 models, _ = bdt.load(d)
             else:
                 bcfg = cfg['bdt']
-                params = dict(bcfg.get('params') or {}, device='cpu')
+                params = dict(bcfg.get('params') or {}, device=args.device)
                 print('training the BDT of %s on %d signal and %d sideband candidates' % (name, len(vs), len(vb)))
                 models, info = bdt.train_kfold(vs, vb, features, params=params, k=bcfg.get('kfold', 5),
                                                n_jobs=args.jobs, early_stopping=bcfg.get('early_stopping', 20))
