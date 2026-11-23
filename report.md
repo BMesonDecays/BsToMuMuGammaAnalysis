@@ -33,6 +33,40 @@ Entries are newest first.
 
 ---
 
+## 2026-11-23: mmcg in AOD vs MINIAOD on the same new-MC events; pileup explains the legacy excess
+
+Follow-up of the next entry (legacy mmcg 3.9× the new MC above 4 GeV). The 4 MINIAOD files of the new B_s → μμγ MC
+(`Study/test/files_new_miniaod.txt`) and their 4 AOD parents (`files_new_aod.txt`) were ntuplized with
+`runNtuplizer_cfg.py` (`dataFormat=AOD` / `MINIAOD`, `globalTag=130X_mcRun3_2022_realistic_v5`, `channels=mmg,mmcg`,
+`skim=0`; read through `xrootd-cms.infn.it`: `cms-xrd-global` timed out). Comparison on the 4334 events present in
+both (scratch scripts, not committed).
+
+Gen-matched signal events after the analysis preselection (same events):
+
+| | AOD (`allConversions`) | MINIAOD (`oniaPhotonCandidates`) |
+|---|---|---|
+| mmg | 686 | 650 |
+| mmcg | 142 | 102 |
+| mmcg, mass in [5.15, 5.60] | 112 | 88 |
+| gen-matched mmcg candidates per event | 1.98 | 1.01 |
+
+- Every MINIAOD event is also found in AOD; the AOD-only events (40) have harder conversions (convFitPt median 15 GeV
+  vs 6.7, leading-track pt 3.1 vs 1.7 GeV). MINIAOD loses conversions above 10 GeV: per event with matched muons and a
+  gen photon > 10 GeV, 2.0% have a preselected mmcg candidate in MINIAOD and 5.4% in AOD (4–10 GeV: 8% in both).
+- **The collection accounts for a factor 1.4, not 3.9.** The gen photon spectra above 4 GeV of the two samples agree
+  (`Study`, events with trigger and both muons matched: 303/306/143 legacy vs 303/257/155 new for 4–6/6–10/> 10 GeV),
+  so the normalisation is not the cause either.
+- **The rest is pileup.** The legacy MC has none (evt_nPU = 0). In the new MC (AOD) the fraction of events with a
+  gen photon > 4 GeV that have a preselected mmcg candidate falls with pileup: 10.5% (nPU ≤ 30), 7.9% (30–40),
+  3.5% (40–50), 3% (> 50); MINIAOD 7.6%, 6.6%, 2.7%, 2.2%. The legacy MC gives 20% (31% for 4–10 GeV). The
+  denominator (events with any candidate) is only a proxy, but the trend is clear: conversion finding loses its
+  efficiency with pileup, so the legacy sample overestimates mmcg and cannot be used for its yield.
+- Consequence for the analysis: switching to AOD conversions would give about +40% mmcg signal (+27% in the window),
+  i.e. 9 → about 11–12 events in the window for Run 3, with a duplicate removal needed (2 candidates per event). The
+  background change is not measured (needs data AOD).
+
+---
+
 ## 2026-11-23: mmcg candidates in the legacy MC (AOD, `allConversions`)
 
 The legacy zero-bias B_s → μμγ MC (`tasks_legacy.yaml`: 7401 AOD files, 106 jobs, skim 0, all complete) is converted with
