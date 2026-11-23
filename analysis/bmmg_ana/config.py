@@ -4,9 +4,36 @@ import os
 import yaml
 
 
-def load_config(path):
+def _read_yaml(path):
+    """A configuration file, with its base configuration (key "base", a path relative to the file) merged in.
+
+    The keys of the file replace those of the base; dictionaries are merged recursively, and a key set to null
+    in a merged dictionary removes the base entry (e.g. preselection: {vertex: null} drops the vertex cut).
+    Lists and other values replace the base value. Bases can have bases.
+    """
     with open(path) as f:
-        cfg = yaml.safe_load(f)
+        cfg = yaml.safe_load(f) or {}
+    base = cfg.pop('base', None)
+    if base is None:
+        return cfg
+    if not os.path.isabs(base):
+        base = os.path.join(os.path.dirname(os.path.abspath(path)), base)
+    return merge(_read_yaml(base), cfg)
+
+
+def merge(base, over):
+    """Recursive merge of configuration dictionaries (see _read_yaml)."""
+    out = dict(base)
+    for k, v in over.items():
+        if isinstance(v, dict) and isinstance(out.get(k), dict):
+            out[k] = {kk: vv for kk, vv in merge(out[k], v).items() if vv is not None}
+        else:
+            out[k] = v
+    return out
+
+
+def load_config(path):
+    cfg = _read_yaml(path)
     for key in ('parquet', 'output'):
         cfg[key] = os.path.expanduser(cfg[key])
     cfg.setdefault('derived', {})
@@ -28,8 +55,7 @@ def load_combine_config(path):
     base = cc.pop('analysis')
     if not os.path.isabs(base):
         base = os.path.join(os.path.dirname(os.path.abspath(path)), base)
-    with open(base) as f:
-        cfg = yaml.safe_load(f)
+    cfg = _read_yaml(base)
     cfg.update(cc.pop('override', None) or {})
     for key in ('parquet', 'output'):
         cfg[key] = os.path.expanduser(cfg[key])

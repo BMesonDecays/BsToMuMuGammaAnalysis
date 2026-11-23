@@ -50,3 +50,19 @@ def test_load_combine_config(tmp_path):
     assert abs(cfg['combine']['data_factor'] - 326 / 38) < 1e-12
     assert abs(cfg['lumi_pb'] - 34650 * 326 / 38) < 1e-6
     assert cfg['combine']['bdt_cuts'] == [0.9]
+
+
+def test_base_config(tmp_path):
+    import yaml
+    base = {'parquet': '~/a', 'output': '~/b', 'channel': 'mmg', 'mass': MASS,
+            'preselection': {'vertex': 'vtxProb > 0.01', 'trigger': 'trg == 1'},
+            'bdt': {'features': ['a', 'b'], 'kfold': 5}}
+    (tmp_path / 'analysis.yaml').write_text(yaml.safe_dump(base))
+    mid = {'base': 'analysis.yaml', 'parquet': '/v3', 'preselection': {'vertex': None, 'veto': 'x == 0'}}
+    (tmp_path / 'mid.yaml').write_text(yaml.safe_dump(mid))
+    top = {'base': 'mid.yaml', 'bdt': {'features': ['c']}}
+    (tmp_path / 'top.yaml').write_text(yaml.safe_dump(top))
+    cfg = config.load_config(str(tmp_path / 'top.yaml'))
+    assert cfg['parquet'] == '/v3' and cfg['channel'] == 'mmg'
+    assert cfg['preselection'] == {'trigger': 'trg == 1', 'veto': 'x == 0'}
+    assert cfg['bdt'] == {'features': ['c'], 'kfold': 5}
