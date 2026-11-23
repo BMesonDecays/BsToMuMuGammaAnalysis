@@ -69,7 +69,9 @@ def data_vs_mc(data_values, mc, var, bins, rng, path, xlabel=None, blind=None, l
     if blind:
         d = d[(d < blind[0]) | (d >= blind[1])]
     hd = histogram(d, bins, rng)
-    centers = hd.axes[0].centers
+    # bin centres from the range: Axis.centers/edges are wrong with boost-histogram 1.3.2 in LCG_108
+    edges = np.linspace(rng[0], rng[1], bins + 1)
+    centers = 0.5 * (edges[1:] + edges[:-1])
     hidden = ((centers >= blind[0]) & (centers < blind[1])) if blind else np.zeros(len(centers), bool)
     hmc = [histogram(v, bins, rng, w) for v, w in mc.values()]
     if hmc:
