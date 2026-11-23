@@ -1,0 +1,19 @@
+# Feature sets of scripts/feature_study.py for the v3 tables (derived columns: config/analysis_v3.yaml).
+# A set without base starts from bdt.features of the analysis configuration.
+sets:
+  baseline: {}
+  # photon MVA recomputed without the contributions of the candidate's muons, instead of pho_mva
+  phoMvaNoMu: {remove: [pho_mva], add: [phoMvaNoMu]}
+  # muons used in the fit of the candidate's PV
+  muInPV: {add: [mu1InPV, mu2InPV]}
+  # isolation of each daughter without the B products, relative and absolute
+  daughterIsoRel: {add: [muIsoRel_max, muIsoRel_min, phoIsoRel]}
+  daughterIsoAbs: {add: [muIsoCh_max, muIsoNeu_max, phoIsoCh, phoIsoNeu]}
+  # activity of the candidate's PV without the candidate's tracks
+  pvActivity: {add: [pvNTracks, logPvSumPt, pvVecSumPt]}
+  # standard PF / tracker isolations (contain the other B daughters)
+  pfIso: {add: [mu1_pfRelIsoR03, mu2_pfRelIsoR03, pho_pfIsoCharged, pho_pfIsoPhoton, pho_trkIsoR03]}
+  # combinations
+  allNew: {base: phoMvaNoMu, add: [mu1InPV, mu2InPV, muIsoRel_max, muIsoRel_min, phoIsoRel, pvNTracks, logPvSumPt,
+                                   pvVecSumPt]}
+  allNew_noOldIso: {base: allNew, remove: [isolation]}
