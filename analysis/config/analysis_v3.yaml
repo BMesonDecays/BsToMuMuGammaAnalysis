@@ -9,6 +9,14 @@ output: /eos/user/s/sslawins/bmmg/results/v3_mmg
 # Update after converting the remaining files (meta.json nEvents / 2770401797).
 lumi_pb: 33503
 
+# preselection: as analysis.yaml with the J/psi veto window opened on the high side (2.90-3.20 instead of 2.9-3.3),
+# the psi(2S) window 3.55-3.75 instead of 3.55-3.8, and the vertex cut at the table floor (vtxProb > 1e-3; vtxProb
+# is a BDT feature). scripts/presel_variants.py with a BDT retrained per variant (report.md 2026-11-23): +15% signal,
+# S/sqrt(B) +4-10% at BDT cuts 0.99-0.998.
+preselection:
+  vertex: "vtxProb > 1e-3"
+  resonance veto: "not (dimu_mass > 0.97 and dimu_mass < 1.07) and not (dimu_mass > 2.90 and dimu_mass < 3.20) and not (dimu_mass > 3.55 and dimu_mass < 3.75)"
+
 # extra columns from the v3 variables (merged with the derived columns of analysis.yaml)
 derived:
   # isolation of the daughters with the B products removed (charged: tracks of the candidate's PV; neutral: PF

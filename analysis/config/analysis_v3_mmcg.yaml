@@ -8,7 +8,10 @@ output: /eos/user/s/sslawins/bmmg/results/v3_mmcg
 # the preselection of analysis.yaml plus a conversion pt cut: the background conversions are soft (median 0.9 GeV,
 # signal 6.7 GeV). convFitPt > 3 keeps 99.9% of the signal MC (generator cut: photon pt > 4 GeV) and 3.5% of the
 # sideband candidates (report.md 2026-11-23)
+# (vertex and resonance veto as in analysis.yaml: the variant of analysis_v3.yaml is validated for mmg only)
 preselection:
+  vertex: "vtxProb > 0.01"
+  resonance veto: "dimu_resonance == 0"
   conversion pt: "convFitPt > 3"
 
 # the ECAL-photon columns of the mmg channel do not exist here: their derived columns are removed and redefined
