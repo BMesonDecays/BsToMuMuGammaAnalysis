@@ -1,0 +1,22 @@
+# Configuration of convert.py for the legacy B_s -> mu mu gamma MC (zero-bias Pythia sample without generator cuts on
+# the photon, Run3Summer22 conditions, AOD, ntuplized with skim 0: RadiativeAnalysis/crab/tasks_legacy.yaml).
+# No preselection, so that the cut flow can start from the fit.
+#
+#   python3 convert.py config/convert_legacy.yaml
+#
+# The ntuple RunInfo has no cross section: normalise with sigma(pythia) 5.822e8 pb x filter efficiency 0.1298
+# (or sigma(bb) x f_s x 2 x B: 0.5 mb x 0.1 x 2 x B).
+
+output: /eos/user/s/sslawins/bmmg/parquet_legacy
+channels: [mmg, mmcg]
+preselection: ""
+drop_columns: []
+chunk_files: 20
+workers: 16
+compression: zstd
+
+datasets:
+  BsToMuMuGamma_legacy:
+    files: /eos/user/s/sslawins/bmmg_ntuples_legacy/BsTo2MuG_legacy/**/bmmg_ntuple_*.root
+    isMC: true
+    label: "Bs -> mu mu gamma, legacy zero-bias MC"
