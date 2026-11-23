@@ -33,6 +33,31 @@ Entries are newest first.
 
 ---
 
+## 2026-11-23: v3 tables and the new variables in the mmg BDT
+- **Conversion** (`python3 convert.py config/convert_v3.yaml`, LCG_107/108, lz4 compression since these pyarrow builds lack zstd):
+  - output `/eos/user/s/sslawins/bmmg/parquet_v3`, channels mmg, mmcg, mmgg, same cut as v1 (`fitOK == 1 and vtxProb > 1e-3`);
+  - MC: 7 datasets in 22 s. Data: 3705 files in 634 s (24 workers), no unreadable file. mmg 3.04M candidates (2.4 GB), mmcg 28.5M (15 GB), mmgg 30k;
+  - the CRAB production is not complete: ParkingDoubleMuonLowMass0 has 407 of ~476 files. The data hold 96.69% of the processed events of v1, so `analysis_v3.yaml` uses `lumi_pb: 33503` and `combine_v3_mmg.yaml` both luminosities × 0.9669. A re-run of the conversion adds the missing files (incremental); then update the luminosities.
+- **Configuration:** `load_config` now supports a base configuration (`base:`, recursive merge, `null` removes an entry). `analysis_v3.yaml` (base `analysis.yaml`) adds derived columns of the new variables: daughter isolations without the B products (`muIsoRel_max/min`, `muIsoCh_max`, `muIsoNeu_max`, `phoIsoRel`, …), `nMuInPV`, `logPvSumPt`.
+- **GPU:** `LCG_108_cuda` has XGBoost with CUDA (RTX 2000 Ada): a 5-fold training takes 30–40 s instead of ~20 min. In LCG_108, `hist` axis edges and centres are wrong (boost-histogram 1.3.2; contents are right): fixed in `plotting.data_vs_mc` and `combine_hists.py` (TH1D written from numpy).
+- **Feature study** (`scripts/feature_study.py config/analysis_v3.yaml config/features_v3.yaml`): 60,882 signal and 307,388 sideband candidates; out-of-fold signal efficiency at sideband efficiency 2e-4 (mean of 2–3 seeds, spread ≈ 0.005):
+
+  | set | eff@2e-4 | eff@1e-3 | AUC |
+  |---|---|---|---|
+  | baseline (v1 features) | 0.319 | 0.526 | 0.9905 |
+  | `pho_mva` → `phoMvaNoMu` | 0.335 | 0.547 | 0.9914 |
+  | + `mu1InPV`, `mu2InPV` | 0.317 | 0.524 | 0.9905 |
+  | + relative daughter isolations | 0.369 | 0.571 | 0.9922 |
+  | + absolute daughter isolations | 0.384 | 0.583 | 0.9922 |
+  | + PV activity (`pvNTracks`, `logPvSumPt`, `pvVecSumPt`) | 0.328 | 0.551 | 0.9916 |
+  | + standard PF isolations | 0.356 | 0.562 | 0.9921 |
+  | all of the above except the PV flags, + abs. isolations (`r2_abs`) | 0.402 | 0.611 | 0.9935 |
+  | `r2_abs` + standard PF isolations (`r2_abs_pf`, **chosen**) | 0.429 | 0.623 | 0.9939 |
+
+  - The daughter isolations without the B products are the strongest new input; the photon MVA without the muons helps a little, the muon-PV flags not at all (their information is presumably already in the impact-parameter and flight variables).
+  - Mass sculpting (`check_sculpting.py`, inner/adjacent sideband strips): baseline 0.99 ± 0.04 / 0.93 ± 0.12 / 1.10 ± 0.23 at background efficiencies 1e-2 / 1e-3 / 3e-4; `r2_abs_pf` 0.90 ± 0.04 / 0.89 ± 0.11 / 0.76 ± 0.18. No sign of the BDT favouring masses near the signal window.
+  - `analysis_v3.yaml` uses `r2_abs_pf` (52 features).
+
 ## 2026-11-22: Preselection variants: narrower J/ψ and ψ(2S) vetoes, lower vertex-probability cut (`scripts/presel_variants.py`, v1 tables)
 - **Dimuon resolution in data** (double Gaussian, after vertex and trigger cuts): J/ψ at 3.093 GeV, σ = 21 / 43 MeV (50/50; 19 / 34 MeV for |η| < 1, 35 / 60 MeV above); ψ(2S) σ = 24 / 45 MeV; φ σ = 9 / 19 MeV.
 - **Method:** the candidates are loaded once with the loosest selection, each variant is a query. Scores come from the Combine-study BDT (trained on the baseline; out-of-fold, folds by event number). Per BDT threshold: S in the signal window, B = sidebands × exponential factor fitted at that threshold × 326/38, Asimov Z with known background, at least 10 raw sideband candidates.
