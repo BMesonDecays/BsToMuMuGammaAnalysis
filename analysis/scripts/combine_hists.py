@@ -74,8 +74,8 @@ def histogram(values, weights, lo, hi, nbins):
     w = np.asarray(weights, dtype=float)
     edges = np.linspace(lo, hi, nbins + 1)
     idx = np.digitize(x, edges)          # 0: underflow, nbins + 1: overflow
-    sumw = np.bincount(idx, weights=w, minlength=nbins + 2)[:nbins + 2]
-    sumw2 = np.bincount(idx, weights=w * w, minlength=nbins + 2)[:nbins + 2]
+    sumw = np.bincount(idx, weights=w, minlength=nbins + 2)[:nbins + 2].astype(np.float64)   # int if empty
+    sumw2 = np.bincount(idx, weights=w * w, minlength=nbins + 2)[:nbins + 2].astype(np.float64)
     inr = (idx >= 1) & (idx <= nbins)
     axis = to_TAxis('xaxis', 'm(#mu#mu#gamma) [GeV]', nbins, lo, hi)
     return to_TH1x('mass', '', sumw, float(len(x)), float(w[inr].sum()), float((w[inr] ** 2).sum()),
