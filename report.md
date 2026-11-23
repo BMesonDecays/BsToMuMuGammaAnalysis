@@ -33,6 +33,40 @@ Entries are newest first.
 
 ---
 
+## 2026-11-23: mmcg candidates in the legacy MC (AOD, `allConversions`)
+
+The legacy zero-bias B_s → μμγ MC (`tasks_legacy.yaml`: 7401 AOD files, 106 jobs, skim 0, all complete) is converted with
+`config/convert_legacy.yaml` (no preselection) to `/eos/user/s/sslawins/bmmg/parquet_legacy`: 2.43M events, mmg 6261
+and mmcg 26273 candidates. Normalisation: 5.822e8 pb × 0.1298 (the ntuple RunInfo has no cross section), 297 fb⁻¹
+golden-equivalent (326 fb⁻¹ recorded), B = 5e-9. With σ(bb̄) × f_s × 2 × B = 500 fb the legacy numbers are × 1.32.
+
+Gen-matched signal after the analysis preselection (fit, vtxProb > 0.01, resonance and ρ/ω vetoes, both muons
+trigger-matched), counted in **events** (the AOD conversions give 1.48 gen-matched candidates per event; MINIAOD 1.00):
+
+| | legacy (AOD, `allConversions`) | new (MINIAOD, `oniaPhotonCandidates`) |
+|---|---|---|
+| mmg, preselection (candidates) | 78.5 | 75.6 |
+| mmcg, preselection | 77.6 | 10.9 |
+| mmcg, convFitPt > 3 | 50.0 | 10.9 |
+| mmcg, convFitPt > 4 | 40.0 | 10.4 |
+| mmcg, convFitPt > 3, mass in [5.15, 5.60] | 42.1 | 9.0 |
+| mmcg, 1 < convFitPt < 3 | 25.2 | 0.04 (generator cut) |
+
+- mmg agrees between the two samples, so the normalisations are consistent.
+- **mmcg: the AOD conversions give 3.9× more signal above 4 GeV than the MINIAOD ones.** It is not the phase-space
+  difference (above 4 GeV both samples cover it) and not the ρ > 1.5 cm cut of `OniaPhotonConversionProducer` (no
+  gen-matched AOD conversion is below 1.8 cm). The likely cause is the other cuts of that producer, in particular
+  generalTracksOnly: `allConversions` also contains the conversions found by the dedicated conversion tracking
+  (ECAL-seeded and conversionStep tracks), which are not in generalTracks. Not checked directly: the track algorithm
+  is not stored in the ntuple. A direct check is the AOD parents of the new MC ntuplized with `allConversions`.
+- Below 3 GeV the legacy MC adds another 25 events (half of the > 3 GeV yield), which the new MC cannot see (photon
+  pt > 4 GeV at generator level). The background there is much larger (sidebands × 28 below 3 GeV, report.md
+  2026-11-23).
+- AOD conversions need a duplicate removal (one conversion per e⁺e⁻ pair, e.g. shared tracks or best vertex
+  probability) before a BDT.
+
+---
+
 ## 2026-11-23: Preselection variants with retrained BDTs on v3; mmg significance with the new preselection
 - **Variants** (`presel_variants.py config/combine_v3_mmg.yaml ... --retrain ... --device cuda`; every retrained variant has its own 5-fold BDT, about 40 s on the GPU; Z with known exponential background, at least 10 sideband candidates):
 
