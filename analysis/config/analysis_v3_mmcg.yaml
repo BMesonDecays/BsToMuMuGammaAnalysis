@@ -37,6 +37,10 @@ derived:
 # features: the v1-like set with the conversion instead of the ECAL photon, plus the daughter isolations without the
 # B products (scripts/feature_study.py, config/features_v3_mmcg.yaml set daughterIso, report.md 2026-11-23)
 bdt:
+  # scripts/tune_bdt.py (30 trials), trial 17; over 4 seeds against the mmg parameters: signal efficiency at sideband
+  # efficiency 5e-5 0.185 vs 0.169, same at 2e-4 (0.305) and 1e-3 (0.56), best cut-and-count Z 0.41 vs 0.38
+  params: {n_estimators: 4000, max_depth: 4, learning_rate: 0.0747, subsample: 0.72, colsample_bytree: 0.49,
+           min_child_weight: 1.67, reg_lambda: 51, gamma: 1.0, max_bin: 256, device: cuda}
   features: [
     # vertex, flight and pointing
     vtxProb, cosAlpha3DVtxOnly, cosAlpha2D, logPointing, lxySig, l3dSig, ctSig, dimu_lxySig, dimu_cosAlphaBS, dimu_dca,
