@@ -1,0 +1,14 @@
+# Feature sets of scripts/feature_study.py for the mmcg channel (config/analysis_v3_mmcg.yaml).
+# A set without base starts from bdt.features of analysis_v3_mmcg.yaml (v1-like features, photon -> conversion).
+sets:
+  baseline: {}
+  # isolation of each daughter without the B products, relative and absolute
+  daughterIso: {add: [muIsoRel_max, muIsoRel_min, convIsoRel, muIsoCh_max, muIsoNeu_max, convIsoCh, convIsoNeu]}
+  # activity of the candidate's PV without the candidate's tracks
+  pvActivity: {add: [pvNTracks, logPvSumPt, pvVecSumPt]}
+  # standard PF isolations of the muons (contain the other B daughters)
+  pfIso: {add: [mu1_pfRelIsoR03, mu2_pfRelIsoR03]}
+  # muons used in the fit of the candidate's PV
+  muInPV: {add: [mu1InPV, mu2InPV]}
+  all: {base: daughterIso, add: [pvNTracks, logPvSumPt, pvVecSumPt, mu1_pfRelIsoR03, mu2_pfRelIsoR03]}
+  all_noOldIso: {base: all, remove: [isolation]}

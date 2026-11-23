@@ -1,0 +1,62 @@
+# B -> mu mu gamma with a converted photon (mmcg) on the v3 tables. Everything not set here comes from
+# analysis_v3.yaml / analysis.yaml (samples, preselection, mass windows, BDT parameters, significance).
+base: analysis_v3.yaml
+
+channel: mmcg
+output: /eos/user/s/sslawins/bmmg/results/v3_mmcg
+
+# the preselection of analysis.yaml plus a conversion pt cut: the background conversions are soft (median 0.9 GeV,
+# signal 6.7 GeV). convFitPt > 3 keeps 99.9% of the signal MC (generator cut: photon pt > 4 GeV) and 3.5% of the
+# sideband candidates (report.md 2026-11-23)
+preselection:
+  conversion pt: "convFitPt > 3"
+
+# the ECAL-photon columns of the mmg channel do not exist here: their derived columns are removed and redefined
+# with the conversion (fitted direction convFitEta/Phi, pair pt conv_pt)
+derived:
+  dR_mumu_pho: null
+  dR_mu1_pho: null
+  dR_mu2_pho: null
+  dR_mu_pho_min: null
+  pho_ptFrac: null
+  pho_absEta: null
+  phoIso: null
+  phoIsoRel: null
+  dR_mumu_conv: "sqrt((dimu_eta - convFitEta)**2 + arctan2(sin(dimu_phi - convFitPhi), cos(dimu_phi - convFitPhi))**2)"
+  dR_mu1_conv: "sqrt((mu1_eta - convFitEta)**2 + arctan2(sin(mu1_phi - convFitPhi), cos(mu1_phi - convFitPhi))**2)"
+  dR_mu2_conv: "sqrt((mu2_eta - convFitEta)**2 + arctan2(sin(mu2_phi - convFitPhi), cos(mu2_phi - convFitPhi))**2)"
+  dR_mu_conv_min: "(dR_mu1_conv + dR_mu2_conv - abs(dR_mu1_conv - dR_mu2_conv)) / 2"
+  conv_ptFrac: "convFitPt / pt"
+  conv_absEta: "abs(conv_eta)"
+  conv_logRho: "log(conv_vtxRho)"
+  conv_trkAsym: "abs(conv_trkPlusPt - conv_trkMinusPt) / (conv_trkPlusPt + conv_trkMinusPt)"
+  conv_logFitProb: "log10(conv_fitProb + 1e-10)"
+  convIso: "convIsoCh + convIsoNeu"
+  convIsoRel: "convIso / convFitPt"
+
+# features: the v1-like set with the conversion instead of the ECAL photon, plus the daughter isolations without the
+# B products (scripts/feature_study.py, config/features_v3_mmcg.yaml set daughterIso, report.md 2026-11-23)
+bdt:
+  features: [
+    # vertex, flight and pointing
+    vtxProb, cosAlpha3DVtxOnly, cosAlpha2D, logPointing, lxySig, l3dSig, ctSig, dimu_lxySig, dimu_cosAlphaBS, dimu_dca,
+    # isolation of the candidate and of the daughters without the B products
+    isolation, maxTrackCompatibility, muIsoRel_max, muIsoRel_min, convIsoRel, muIsoCh_max, muIsoNeu_max, convIsoCh,
+    convIsoNeu,
+    # muons
+    mu1_pt, mu2_pt, mu1_mva, mu2_mva, mu_ipSig_min, mu_ipSig_max,
+    # converted photon
+    convFitPt, conv_absEta, conv_logRho, conv_trkAsym, conv_logFitProb,
+    # kinematics and angles of the decay
+    dR_mumu_conv, dR_mu_conv_min, conv_ptFrac, pt, dimu_pt, absEta, helicity, abs_cosThetaL]
+
+plots:
+  pho_pt: null
+  pho_mva: null
+  dR_mumu_pho: null
+  dR_mu_pho_min: null
+  pho_ptFrac: null
+  convFitPt: [50, 0, 20]
+  conv_vtxRho: [50, 0, 60]
+  dR_mumu_conv: [50, 0, 1.5]
+  conv_ptFrac: [50, 0, 1]
