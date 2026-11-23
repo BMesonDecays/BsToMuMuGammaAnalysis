@@ -60,7 +60,7 @@ trigger-matched), counted in **events** (the AOD conversions give 1.48 gen-match
   (ECAL-seeded and conversionStep tracks), which are not in generalTracks. Not checked directly: the track algorithm
   is not stored in the ntuple. A direct check is the AOD parents of the new MC ntuplized with `allConversions`.
 - Below 3 GeV the legacy MC adds another 25 events (half of the > 3 GeV yield), which the new MC cannot see (photon
-  pt > 4 GeV at generator level). The background there is much larger (sidebands × 28 below 3 GeV, report.md
+  pt > 4 GeV at generator level). The background there is much larger (convFitPt > 3 keeps 3.5% of the sideband candidates, report.md
   2026-11-23).
 - AOD conversions need a duplicate removal (one conversion per e⁺e⁻ pair, e.g. shared tracks or best vertex
   probability) before a BDT.
